@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class SimulatorParser {
 
-	public final static String SIMULATOR = "simulator";
+	public final static String SIMULATOR = "santa";
 
 	public final static String REPLICATE_COUNT = "replicates";
 
