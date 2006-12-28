@@ -8,12 +8,10 @@
  */
 package santa.simulator.selectors;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 import santa.simulator.Random;
 import santa.simulator.Virus;
+
+import java.util.*;
 
 /**
  * @author rambaut
@@ -33,6 +31,10 @@ public class RouletteWheelSelector implements Selector {
      * Direct sample of a virus to be selected -- very slow !
      */
     public Virus nextSelection_old() {
+// This is the old way of doing it. This involved drawing the random numbers,
+// sorting them, and then walking up the list of numbers and matching them off
+// the cumulative fitnesses
+
         double r = Random.nextUniform(0.0, 1.0);
         int selected = 0;
         while (r > cumulativeFitness[selected]) {
@@ -53,10 +55,6 @@ public class RouletteWheelSelector implements Selector {
          */
         return currentGeneration[pickedParents[randomIntNumbers.get(currentIndex++)]];
     }
-
-// This is the old way of doing it. This involved drawing the random numbers,
-// sorting them, and then walking up the list of numbers and matching them off
-// the cumulative fitnesses
 
     public final void selectParents() {
         int populationSize = currentGeneration.length;

@@ -40,13 +40,18 @@ public class SimulatorMain {
                 System.exit(1);
             }
 
+			// @todo - it would be good to be able to report the RNG seed here and set it
+
+	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
+	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
+
+	        //Logger.getLogger("santa.simulator.memory").setLevel(Level.FINEST);
+
+	        simulator.run();
+        } else {
+	        System.out.println("Usage: santa <input_file>");
+	        System.exit(0);
         }
 
-        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
-        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
-
-        //Logger.getLogger("santa.simulator.memory").setLevel(Level.FINEST);
-
-        simulator.run();
     }
 }

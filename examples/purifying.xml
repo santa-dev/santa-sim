@@ -1,6 +1,7 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="santa.xsd">
-	<replicates>10</replicates>
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+
+	<replicates>1</replicates>
 
 	<simulation>
 		<generationCount>1001</generationCount>
@@ -10,7 +11,7 @@
 		</genome>
 
 		<population>
-			<populationSize>10000</populationSize>
+			<populationSize>100000</populationSize>
 
 			<inoculum>
 				<sequence label="wildtype">
@@ -47,6 +48,10 @@
 		<replicator>
 			<clonalReplicator/>
 		</replicator>
+
+		<selector>
+			<rouletteWheelSelector/>
+		</selector>
 
 		<samplingSchedule>
 			<sampler>
