@@ -44,6 +44,7 @@ public class SimulatorParser {
 	public final static String SELECTOR = "selector";
 	public final static String MONTE_CARLO_SELECTOR = "monteCarloSelector";
 	public final static String ROULETTE_WHEEL_SELECTOR = "rouletteWheelSelector";
+	public final static String DISCRETE_ROULETTE_WHEEL_SELECTOR = "discreteRouletteWheelSelector";
 
 	public final static String FITNESS_FUNCTION = "fitnessFunction";
 	public final static String EMPIRICAL_FITNESS_FUNCTION = "empiricalFitness";
@@ -631,6 +632,8 @@ public class SimulatorParser {
 			return new MonteCarloSelector();
 		} else if (e.getName().equals(ROULETTE_WHEEL_SELECTOR)) {
 			return new RouletteWheelSelector();
+		} else if (e.getName().equals(DISCRETE_ROULETTE_WHEEL_SELECTOR)) {
+			return new DiscreteRouletteWheelSelector(100);
 		} else {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}
