@@ -1,5 +1,5 @@
 #labels Featured
-#Documentation for running SANTA simulator.
+Documentation for running SANTA simulator.
 
 = Introduction =
 
