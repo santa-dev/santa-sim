@@ -1,0 +1,67 @@
+<simulator>
+	<replicates>1</replicates>
+
+	<simulation>
+		<generationCount>1001</generationCount>
+
+		<genome>
+			<length>609</length>
+		</genome>
+
+		<population>
+			<populationSize>100000</populationSize>
+
+			<inoculum>
+				<sequence label="virus1gen1000">
+					GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+				</sequence>
+			</inoculum>
+		</population>
+
+		<fitnessFunction>
+			<aminoAcids>
+				<sites>1-5</sites>
+				<ageDependentFitness>
+					<declineRate>0.005</declineRate>
+				</ageDependentFitness>
+			</aminoAcids>
+		</fitnessFunction>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>1.0E-4</mutationRate>
+				<transitionBias>2.0</transitionBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<clonalReplicator/>
+		</replicator>
+
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>100</atFrequency>
+				<fileName>age_%r.nex</fileName>
+				<alignment>
+					<schedule>
+						<!-- generation count -->
+						200  10
+						400  10
+						600  10
+						800  10
+						1000  10
+					</schedule>
+					<format>NEXUS</format>
+					<label>age_%g_%s</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atFrequency>1</atFrequency>
+				<fileName>age_%r.csv</fileName>
+				<statistics></statistics>
+			</sampler>
+		</samplingSchedule>
+
+	</simulation>
+
+</simulator>

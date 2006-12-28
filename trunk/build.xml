@@ -1,0 +1,51 @@
+<project name="SANTA" default="dist" basedir=".">
+    <description>
+    Build file for TreeStat
+    </description>
+    <!-- set global properties for this build -->
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+
+    <property name="lib" location="lib"/>
+    <property name="dist" location="dist"/>
+
+    <property environment="env"/>
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${lib}"/>
+    </target>
+
+<!--
+    <target name="copyLibs" depends="init">
+        <copy file="../JEBL/dist/jebl.jar" tofile="${lib}/jebl.jar"/>
+    </target>
+-->
+
+    <target name="compile" depends="init">
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac source="1.5" srcdir="${src}" destdir="${build}"
+            classpath="${lib}/jebl.jar:${lib}/commons-math-1.1.jar:${lib}/jdom.jar">
+            <include name="santa/**"/>
+        </javac>
+    </target>
+
+    <target name="dist" depends="compile" description="generate the distribution">
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}"/>
+
+        <jar jarfile="${dist}/santa.jar">
+            <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
+            </manifest>
+            <zipgroupfileset dir="${lib}" includes="*.jar"/>
+        </jar>
+    </target>
+
+</project>

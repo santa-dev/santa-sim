@@ -7,7 +7,7 @@ import java.util.logging.Logger;
  * @author Alexei Drummond
  * @version $Id: Simulator.java,v 1.8 2006/04/19 09:26:30 kdforc0 Exp $
  */
-public class  bnhkg,mnjhkbSimulator {
+public class Simulator {
 
     private final int replicateCount;
     private final Simulation simulation;
