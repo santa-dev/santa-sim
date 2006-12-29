@@ -26,6 +26,10 @@ public class RecombinantReplicator implements Replicator {
         preCalculateBinomial(GenomeDescription.getGenomeLength() - 1, recombinationProbability);
     }
 
+	public int getParentCount() {
+		return 2;
+	}
+
     public void replicate(Virus virus, Selector selector, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability) {

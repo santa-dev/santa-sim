@@ -22,43 +22,33 @@ public class RouletteWheelSelector implements Selector {
     public RouletteWheelSelector() {
     }
 
-    public void initializeSelector(Virus[] currentGeneration) {
+    public void initializeSelector(Virus[] currentGeneration, int parentCount) {
         this.currentGeneration = currentGeneration;
-        selectParents();
+        selectParents(currentGeneration, parentCount);
     }
 
-    /**
-     * Direct sample of a virus to be selected -- very slow !
-     */
-    public Virus nextSelection_old() {
-// This is the old way of doing it. This involved drawing the random numbers,
-// sorting them, and then walking up the list of numbers and matching them off
-// the cumulative fitnesses
-
-        double r = Random.nextUniform(0.0, 1.0);
-        int selected = 0;
-        while (r > cumulativeFitness[selected]) {
-            selected ++;
-        }
-
-        return currentGeneration[selected];
-    }
+	/**
+	 * Sample a virus from a precalculated set of parents.
+	 */
+	public Virus nextSelection() {
+	    return currentGeneration[nextSelectionIndex()];
+	}
 
     /**
      * Sample a virus from a precalculated set of parents.
      */
-    public Virus nextSelection() {
+    public int nextSelectionIndex() {
 
         /*
          * randomIntNumbers is a selection without replacement of all parents that have
          * been precalculated.
          */
-        return currentGeneration[pickedParents[randomIntNumbers.get(currentIndex++)]];
+        return pickedParents[randomIntNumbers.get(currentIndex++)];
     }
 
-    public final void selectParents() {
+    private final void selectParents(Virus[] currentGeneration, int parentCount) {
         int populationSize = currentGeneration.length;
-        int sampleSize = 2 * populationSize; // maximum number needed when every child has two parents.
+        int sampleSize = parentCount * populationSize; // maximum number needed when every child has two parents.
 
         calculateCumulativeFitness(currentGeneration);
 
@@ -106,10 +96,10 @@ public class RouletteWheelSelector implements Selector {
             cumulativeFitness = new double[populationSize];
         }
 
-        cumulativeFitness[0] = currentGeneration[0].getGenome().getFitness();
+        cumulativeFitness[0] = currentGeneration[0].getFitness();
 
         for (int i = 1; i < populationSize; i++) {
-            cumulativeFitness[i] = cumulativeFitness[i-1] + currentGeneration[i].getGenome().getFitness();
+            cumulativeFitness[i] = cumulativeFitness[i-1] + currentGeneration[i].getFitness();
         }
 
         double totalFitness = cumulativeFitness[populationSize-1];
