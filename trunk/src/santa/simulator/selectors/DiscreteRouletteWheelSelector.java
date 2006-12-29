@@ -9,7 +9,7 @@ import santa.simulator.Virus;
  * then be picked by simply drawing uniformly from the bins.
  *
  * The fewer the bins, the faster the selector but the more course-scaled an
- * approximation it will be.
+ * approximation it will be. Probably not worth using.
  *
  * @author Andrew Rambaut
  */
