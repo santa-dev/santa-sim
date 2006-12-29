@@ -632,8 +632,6 @@ public class SimulatorParser {
 			return new MonteCarloSelector();
 		} else if (e.getName().equals(ROULETTE_WHEEL_SELECTOR)) {
 			return new RouletteWheelSelector();
-		} else if (e.getName().equals(DISCRETE_ROULETTE_WHEEL_SELECTOR)) {
-			return new DiscreteRouletteWheelSelector(100);
 		} else {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}

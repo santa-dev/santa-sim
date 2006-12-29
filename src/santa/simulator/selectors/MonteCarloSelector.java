@@ -12,9 +12,15 @@ import santa.simulator.Virus;
 import santa.simulator.Random;
 
 /**
- * @author rambaut
- *         Date: Apr 22, 2005
- *         Time: 9:12:27 AM
+ * This is an experimental selector that which attempts to draw parents proportional
+ * to their fitness. The main advantage of this is that it can do it with the fitnesses
+ * in log space to avoid having to exponentiate them however, it has to log the random
+ * number instead so it probably makes little difference.
+ *
+ * Koen thinks it doesn't sample correctly but it gets a very high correlation in the
+ * frequency picked to fitness using the TestSelectors class.
+ *
+ * @author Andrew Rambaut
  */
 public class MonteCarloSelector implements Selector {
 
@@ -26,7 +32,7 @@ public class MonteCarloSelector implements Selector {
     public void initializeSelector(Virus[] currentGeneration, int parentCount) {
         this.currentGeneration = currentGeneration;
 
-        maxLogFitness = currentGeneration[0].getLogFitness();
+        double maxLogFitness = currentGeneration[0].getLogFitness();
         for (int i = 1; i < currentGeneration.length; i++) {
             double f = currentGeneration[i].getLogFitness();
             if (f > maxLogFitness) {
@@ -34,9 +40,9 @@ public class MonteCarloSelector implements Selector {
             }
         }
 
-        maxLogFitness = Math.exp(maxLogFitness);
+        maxFitness = Math.exp(maxLogFitness);
 
-        if (maxLogFitness == 0.0) {
+        if (maxFitness == 0.0) {
             throw new RuntimeException("Population crashed! No viable children.");
         }
 
@@ -54,17 +60,20 @@ public class MonteCarloSelector implements Selector {
     public int nextSelectionIndex() {
         int selected = -1;
         do {
-            double r = Math.log(Random.nextUniform(0.0, maxLogFitness));
+	        currentVirus = Random.nextInt(0, currentGeneration.length - 1);
+
+            double r = Math.log(Random.nextUniform(0.0, maxFitness));
             if (r < currentGeneration[currentVirus].getLogFitness()) {
                 selected = currentVirus;
             }
-            currentVirus = (currentVirus + 1) % currentGeneration.length;
+
+      //    currentVirus = (currentVirus + 1) % currentGeneration.length;
         } while (selected < 0);
 
         return selected;
     }
 
-    private double maxLogFitness;
+    private double maxFitness;
     private Virus[] currentGeneration;
     private int currentVirus;
 }
