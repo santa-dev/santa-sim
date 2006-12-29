@@ -19,6 +19,10 @@ public class ClonalReplicator implements Replicator {
         // nothing to do
     }
 
+	public int getParentCount() {
+		return 1;
+	}
+
     public void replicate(Virus virus, Selector selector, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
         Virus parent = selector.nextSelection();

@@ -23,12 +23,12 @@ public class MonteCarloSelector implements Selector {
         System.err.println("Koen thinks the MonteCarloSelector is not sampling correctly.");
     }
 
-    public void initializeSelector(Virus[] currentGeneration) {
+    public void initializeSelector(Virus[] currentGeneration, int parentCount) {
         this.currentGeneration = currentGeneration;
 
-        maxLogFitness = currentGeneration[0].getGenome().getLogFitness();
+        maxLogFitness = currentGeneration[0].getLogFitness();
         for (int i = 1; i < currentGeneration.length; i++) {
-            double f = currentGeneration[i].getGenome().getLogFitness();
+            double f = currentGeneration[i].getLogFitness();
             if (f > maxLogFitness) {
                 maxLogFitness = f;
             }
@@ -44,17 +44,24 @@ public class MonteCarloSelector implements Selector {
 
     }
 
-    public Virus nextSelection() {
+	/**
+	 * Sample a virus from a precalculated set of parents.
+	 */
+	public Virus nextSelection() {
+	    return currentGeneration[nextSelectionIndex()];
+	}
+
+    public int nextSelectionIndex() {
         int selected = -1;
         do {
             double r = Math.log(Random.nextUniform(0.0, maxLogFitness));
-            if (r < currentGeneration[currentVirus].getGenome().getLogFitness()) {
+            if (r < currentGeneration[currentVirus].getLogFitness()) {
                 selected = currentVirus;
             }
             currentVirus = (currentVirus + 1) % currentGeneration.length;
         } while (selected < 0);
 
-        return currentGeneration[selected];
+        return selected;
     }
 
     private double maxLogFitness;

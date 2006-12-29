@@ -13,6 +13,8 @@ import santa.simulator.selectors.Selector;
  */
 public interface Replicator {
 
+	int getParentCount();
+
     void replicate(Virus virus, Selector selector, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool);
 
 }

@@ -69,7 +69,7 @@ public class Population {
 
     public void selectNextGeneration(Replicator replicator, Mutator mutator, FitnessFunction fitnessFunction) {
 
-        selector.initializeSelector(currentGeneration);
+        selector.initializeSelector(currentGeneration, replicator.getParentCount());
 
         // first swap the arrays around
         Virus[] tmp = currentGeneration;

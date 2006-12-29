@@ -33,6 +33,14 @@ public class Virus {
         return parent;
     }
 
+	public double getLogFitness() {
+		return genome.getLogFitness();
+	}
+
+	public double getFitness() {
+		return genome.getFitness();
+	}
+
     public void setGenome(Genome genome) {
         this.genome = genome;
     }
