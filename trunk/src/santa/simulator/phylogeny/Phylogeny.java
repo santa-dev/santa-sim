@@ -149,11 +149,10 @@ public class Phylogeny {
 
 		// find the next shared node for each lineage
 		for (int i = 0; i < sample.length; i++) {
-			Lineage lineage = lineages[i];
-			while (lineage != null && lineage.count == 1) {
-				lineage = lineage.parent;
+			while (lineages[i] != null && lineages[i].count == 1) {
+				lineages[i] = lineages[i].parent;
 			}
-			if (lineage == null) {
+			if (lineages[i] == null) {
 				// the phylogeny has not fully coalesced.
 				return null;
 			}
@@ -162,7 +161,8 @@ public class Phylogeny {
 		int lineageCount = sample.length;
 		List<Node> children = new ArrayList<Node>();
 		while (lineageCount > 1) {
-			for (int i = 0; i < lineageCount; i++) {
+			int i = 0;
+			while (i < lineageCount) {
 				children.clear();
 
 				// find matches
@@ -173,6 +173,7 @@ public class Phylogeny {
 
 						// move the lineage/node from the end of the arrays
 						lineages[j] = lineages[lineageCount - 1];
+						lineages[lineageCount - 1] = null;
 						nodes[j] = nodes[lineageCount - 1];
 						lineageCount --;
 					} else {
@@ -186,6 +187,24 @@ public class Phylogeny {
 					Node node = tree.createInternalNode(children);
 					tree.setHeight(node, tipGeneration - lineages[i].generation);
 					nodes[i] = node;
+
+					if (lineageCount > 1) {
+						// we still have lineages to coalesce
+
+						int currentCount = lineages[i].count;
+						lineages[i] = lineages[i].parent;
+						// find the next shared node for this lineage - this is found when
+						// the count increases by one
+						while (lineages[i] != null && lineages[i].count == currentCount) {
+							lineages[i] = lineages[i].parent;
+						}
+						if (lineages[i] == null) {
+							// the phylogeny has not fully coalesced.
+							return null;
+						}
+					}
+				} else {
+					i++;
 				}
 			}
 		}

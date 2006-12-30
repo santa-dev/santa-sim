@@ -20,14 +20,14 @@
 		</population>
 
 		<fitnessFunction>
+			<nucleotides>
+				<neutralFitness/>
+			</nucleotides>
 			<aminoAcids>
 				<empiricalFitness>
 					1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
 				</empiricalFitness>
 			</aminoAcids>
-			<nucleotides>
-				<neutralFitness/>
-			</nucleotides>
 		</fitnessFunction>
 
 		<mutator>
