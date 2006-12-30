@@ -4,7 +4,6 @@ import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.mutators.Mutator;
-import santa.simulator.selectors.Selector;
 
 /**
  * @author rambaut
@@ -15,6 +14,6 @@ public interface Replicator {
 
 	int getParentCount();
 
-    void replicate(Virus virus, Selector selector, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool);
+    void replicate(Virus virus, Virus[] parents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool);
 
 }

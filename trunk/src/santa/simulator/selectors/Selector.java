@@ -13,9 +13,6 @@ import santa.simulator.Virus;
  */
 public interface Selector {
 
-    void initializeSelector(Virus[] currentGeneration, int parentCount);
+	void selectParents(Virus[] currentGeneration, int[] selectedParents);
 
-    Virus nextSelection();
-
-	int nextSelectionIndex();
 }

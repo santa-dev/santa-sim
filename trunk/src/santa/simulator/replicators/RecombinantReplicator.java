@@ -1,16 +1,16 @@
 package santa.simulator.replicators;
 
-import santa.simulator.Virus;
-import santa.simulator.Random;
-import santa.simulator.selectors.Selector;
-import santa.simulator.genomes.*;
-import santa.simulator.fitness.FitnessFunction;
-import santa.simulator.mutators.Mutator;
+import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.BinomialDistribution;
 import org.apache.commons.math.distribution.DistributionFactory;
-import org.apache.commons.math.MathException;
+import santa.simulator.Random;
+import santa.simulator.Virus;
+import santa.simulator.fitness.FitnessFunction;
+import santa.simulator.genomes.*;
+import santa.simulator.mutators.Mutator;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.SortedSet;
 
 /**
  * @author rambaut
@@ -30,15 +30,13 @@ public class RecombinantReplicator implements Replicator {
 		return 2;
 	}
 
-    public void replicate(Virus virus, Selector selector, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
+    public void replicate(Virus virus, Virus[] parents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability) {
             // dual infection and recombination
-            Virus parent1 = selector.nextSelection();
-            Virus parent2 = selector.nextSelection();
 
-            Genome parent1Genome = parent1.getGenome();
-            Genome parent2Genome = parent2.getGenome();
+            Genome parent1Genome = parents[0].getGenome();
+            Genome parent2Genome = parents[1].getGenome();
 
             Sequence recombinantSequence = getRecombinantSequence(parent1Genome, parent2Genome);
 
@@ -51,20 +49,18 @@ public class RecombinantReplicator implements Replicator {
 	        genome.applyMutations(mutations, fitnessFunction);
 
             virus.setGenome(genome);
-            virus.setParent(parent1);
+            virus.setParent(parents[0]);
 
         } else {
             // single infection - no recombination...
-            Virus parent = selector.nextSelection();
-
-            Genome parentGenome = parent.getGenome();
+            Genome parentGenome = parents[0].getGenome();
 
             SortedSet<Mutation> mutations = mutator.mutate(parentGenome);
 
             Genome genome = genePool.duplicateGenome(parentGenome, mutations, fitnessFunction);
 
             virus.setGenome(genome);
-            virus.setParent(parent);
+            virus.setParent(parents[0]);
         }
 
     }

@@ -13,9 +13,9 @@ import santa.simulator.genomes.*;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.selectors.Selector;
 import santa.simulator.fitness.FitnessFunction;
+import santa.simulator.phylogeny.Phylogeny;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author rambaut
@@ -24,252 +24,287 @@ import java.util.List;
  */
 public class Population {
 
-    public Population(int populationSize, GenePool genePool, Selector selector) {
+	public Population(int populationSize, GenePool genePool, Selector selector) {
 
-        this.populationSize = populationSize;
-        this.genePool = genePool;
-        this.selector = selector;
+		this.phylogeny = new Phylogeny(populationSize);
 
-        lastGeneration = new Virus[populationSize];
-        currentGeneration = new Virus[populationSize];
-    }
+		this.populationSize = populationSize;
+		this.genePool = genePool;
+		this.selector = selector;
 
-    public void initialize(List<Sequence> inoculum, FitnessFunction fitnessFunction) {
-        Genome[] ancestors;
+		lastGeneration = new Virus[populationSize];
+		currentGeneration = new Virus[populationSize];
+	}
 
-        genePool.initialize();
+	public void initialize(List<Sequence> inoculum, FitnessFunction fitnessFunction) {
+		Genome[] ancestors;
 
-        ancestors = new Genome[inoculum.size()];
-        for (int i = 0; i < ancestors.length; i++) {
-            Sequence sequence = inoculum.get(i);
-            ancestors[i] = genePool.createGenome(sequence);
-            ancestors[i].setLogFitness(fitnessFunction.computeLogFitness(ancestors[i]));
-        }
+		genePool.initialize();
 
-        if (ancestors.length > 1) {
-            for (int i = 0; i < populationSize; i++) {
-                Genome ancestor = ancestors[Random.nextInt(0, ancestors.length - 1)];
-                currentGeneration[i] = new Virus(ancestor, null);
-                lastGeneration[i] = new Virus();
-                ancestor.incrementFrequency();
-            }
-        } else {
-            for (int i = 0; i < populationSize; i++) {
-                currentGeneration[i] = new Virus(ancestors[0], null);
-                lastGeneration[i] = new Virus();
-                ancestors[0].incrementFrequency();
-            }
-        }
-    }
+		ancestors = new Genome[inoculum.size()];
+		for (int i = 0; i < ancestors.length; i++) {
+			Sequence sequence = inoculum.get(i);
+			ancestors[i] = genePool.createGenome(sequence);
+			ancestors[i].setLogFitness(fitnessFunction.computeLogFitness(ancestors[i]));
+		}
 
-    public void updateFitness(FitnessFunction fitnessFunction) {
-        genePool.updateFitness(fitnessFunction);
-        statisticsKnown = false;
-    }
+		if (ancestors.length > 1) {
+			for (int i = 0; i < populationSize; i++) {
+				Genome ancestor = ancestors[Random.nextInt(0, ancestors.length - 1)];
+				currentGeneration[i] = new Virus(ancestor, null);
+				lastGeneration[i] = new Virus();
+				ancestor.incrementFrequency();
+			}
+		} else {
+			for (int i = 0; i < populationSize; i++) {
+				currentGeneration[i] = new Virus(ancestors[0], null);
+				lastGeneration[i] = new Virus();
+				ancestors[0].incrementFrequency();
+			}
+		}
 
-    public void selectNextGeneration(Replicator replicator, Mutator mutator, FitnessFunction fitnessFunction) {
+		if (phylogeny != null) {
+			phylogeny.initialize();
+		}
+	}
 
-        selector.initializeSelector(currentGeneration, replicator.getParentCount());
+	public void updateFitness(FitnessFunction fitnessFunction) {
+		genePool.updateFitness(fitnessFunction);
+		statisticsKnown = false;
+	}
 
-        // first swap the arrays around
-        Virus[] tmp = currentGeneration;
-        currentGeneration = lastGeneration;
-        lastGeneration = tmp;
+	public void selectNextGeneration(int generation, Replicator replicator, Mutator mutator, FitnessFunction fitnessFunction) {
 
-        // then select the currentGeneration based on the last.
-        for (int i = 0; i < populationSize; i++) {
+		if (selectedParents == null) {
+			selectedParents = new int[currentGeneration.length * replicator.getParentCount()];
+		}
 
-            // replicate the parents to create a new virus
-            replicator.replicate(currentGeneration[i], selector, mutator, fitnessFunction, genePool);
+		selector.selectParents(currentGeneration, selectedParents);
 
-        }
+		Virus[] parents = new Virus[replicator.getParentCount()];
 
-        // then kill off the genomes in the last population.
-        for (int i = 0; i < populationSize; i++) {
-            genePool.killGenome(lastGeneration[i].getGenome());
-        }
+		// first swap the arrays around
+		Virus[] tmp = currentGeneration;
+		currentGeneration = lastGeneration;
+		lastGeneration = tmp;
 
-        statisticsKnown = false;
-    }
+		// then select the currentGeneration based on the last.
+		int currentParent = 0;
 
-    protected Virus[] getSample(int sampleSize) {
-        Virus[] viruses = getCurrentGeneration();
-        Object[] tmp = Random.nextSample(Arrays.asList(viruses), sampleSize);
-        Virus[] sample = new Virus[tmp.length];
-        System.arraycopy(tmp, 0, sample, 0, tmp.length);
-        return sample;
-    }
+		for (int i = 0; i < populationSize; i++) {
 
-    public void estimateDiversity(int sampleSize) {
-        Virus[] sample = getSample(sampleSize);
+			if (parents.length == 1) {
+				parents[0] = lastGeneration[selectedParents[currentParent]];
+				currentParent ++;
+			} else {
+				for (int j = 0; j < parents.length; j++) {
+					parents[j] = lastGeneration[selectedParents[currentParent]];
+					currentParent ++;
+				}
+			}
 
-        maxDiversity = 0;
-        meanDiversity = 0;
+			// replicate the parents to create a new virus
+			replicator.replicate(currentGeneration[i], parents, mutator, fitnessFunction, genePool);
 
-        int count = 0;
-        for (int i = 0; i < sample.length; ++i) {
-            for (int j = i+1; j < sample.length; ++j) {
-                double d = computeDistance(sample[i], sample[j]);
+		}
 
-                if (d > maxDiversity)
-                    maxDiversity = d;
-                meanDiversity += d;
-                ++count;
-            }
-        }
+		// then kill off the genomes in the last population.
+		for (int i = 0; i < populationSize; i++) {
+			genePool.killGenome(lastGeneration[i].getGenome());
+		}
 
-        meanDiversity /= (double)count;
-    }
+		if (phylogeny != null) {
+			phylogeny.addGeneration(generation, selectedParents);
+		}
 
-    private double computeDistance(Virus virus1, Virus virus2) {
-        if (virus1.getGenome() == virus2.getGenome())
-            return 0;
+		statisticsKnown = false;
+	}
 
-        Sequence seq1 = virus1.getGenome().getSequence();
-        Sequence seq2 = virus2.getGenome().getSequence();
+	protected Virus[] getSample(int sampleSize) {
+		Virus[] viruses = getCurrentGeneration();
+		Object[] tmp = Random.nextSample(Arrays.asList(viruses), sampleSize);
+		Virus[] sample = new Virus[tmp.length];
+		System.arraycopy(tmp, 0, sample, 0, tmp.length);
+		return sample;
+	}
 
-        int distance = 0;
+	public void estimateDiversity(int sampleSize) {
+		Virus[] sample = getSample(sampleSize);
 
-        for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
-            if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
-                ++distance;
-        }
+		maxDiversity = 0;
+		meanDiversity = 0;
 
-        return distance;
-    }
+		int count = 0;
+		for (int i = 0; i < sample.length; ++i) {
+			for (int j = i+1; j < sample.length; ++j) {
+				double d = computeDistance(sample[i], sample[j]);
 
-    private void collectStatistics() {
+				if (d > maxDiversity)
+					maxDiversity = d;
+				meanDiversity += d;
+				++count;
+			}
+		}
 
-        double d = 0;
-        maxFrequency = 0;
+		meanDiversity /= (double)count;
+	}
 
-        mostFrequentGenome = 0;
-        sumFitness = 0.0;
-        minFitness = Double.MAX_VALUE;
-        maxFitness = 0.0;
+	private double computeDistance(Virus virus1, Virus virus2) {
+		if (virus1.getGenome() == virus2.getGenome())
+			return 0;
 
-        for (int i = 0; i < populationSize; i++) {
-            Genome genome = currentGeneration[i].getGenome();
+		Sequence seq1 = virus1.getGenome().getSequence();
+		Sequence seq2 = virus2.getGenome().getSequence();
 
-            d += genome.getTotalMutationCount();
+		int distance = 0;
 
-            if (genome.getFrequency() > maxFrequency) {
-                mostFrequentGenome = i;
-                maxFrequency = genome.getFrequency();
-            }
+		for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
+			if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
+				++distance;
+		}
 
-            sumFitness += genome.getFitness();
-            if (genome.getFitness() > maxFitness) {
-                maxFitness = genome.getFitness();
-            }
-            if (genome.getFitness() < minFitness) {
-                minFitness = genome.getFitness();
-            }
-        }
+		return distance;
+	}
 
-        meanFitness = sumFitness / populationSize;
-        meanDistance = d / populationSize;
+	private void collectStatistics() {
 
-        statisticsKnown = true;
-    }
+		double d = 0;
+		maxFrequency = 0;
 
-    public int getMaxFrequency() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return maxFrequency;
-    }
+		mostFrequentGenome = 0;
+		sumFitness = 0.0;
+		minFitness = Double.MAX_VALUE;
+		maxFitness = 0.0;
 
-    public double getMaxFitness() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return maxFitness;
-    }
+		for (int i = 0; i < populationSize; i++) {
+			Genome genome = currentGeneration[i].getGenome();
 
-    public double getMinFitness() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return minFitness;
-    }
+			d += genome.getTotalMutationCount();
 
-    public double getSumFitness() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return sumFitness;
-    }
+			if (genome.getFrequency() > maxFrequency) {
+				mostFrequentGenome = i;
+				maxFrequency = genome.getFrequency();
+			}
 
-    public int getPopulationSize() {
-        return populationSize;
-    }
+			sumFitness += genome.getFitness();
+			if (genome.getFitness() > maxFitness) {
+				maxFitness = genome.getFitness();
+			}
+			if (genome.getFitness() < minFitness) {
+				minFitness = genome.getFitness();
+			}
+		}
 
-    public double getMeanDistance() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return meanDistance;
-    }
+		meanFitness = sumFitness / populationSize;
+		meanDistance = d / populationSize;
 
-    public double getMeanFitness() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return meanFitness;
-    }
+		statisticsKnown = true;
+	}
 
-    public int getMostFrequentGenome() {
-        if (!statisticsKnown) {
-            collectStatistics();
-        }
-        return mostFrequentGenome;
-    }
+	public GenePool getGenePool() {
+		return genePool;
+	}
 
-    public double getMaxDiversity() {
-        return maxDiversity;
-    }
+	public int getMaxFrequency() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return maxFrequency;
+	}
 
-    public double getMeanDiversity() {
-        return meanDiversity;
-    }
+	public double getMaxFitness() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return maxFitness;
+	}
 
-    public double[] getAlleleFrequencies(int site) {
-        int[] freqs = genePool.getStateFrequencies(site);
-        double[] normalizedFreqs = new double[freqs.length];
-        for (int i = 0; i < freqs.length; i++) {
-            normalizedFreqs[i] = freqs[i] / (double)populationSize;
-        }
-        return normalizedFreqs;
-    }
+	public double getMinFitness() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return minFitness;
+	}
 
-    public Virus[] getCurrentGeneration() {
-        return currentGeneration;
-    }
+	public double getSumFitness() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return sumFitness;
+	}
 
-    private final int populationSize;
+	public int getPopulationSize() {
+		return populationSize;
+	}
 
-    private final GenePool genePool;
+	public double getMeanDistance() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return meanDistance;
+	}
 
-    private final Selector selector;
+	public double getMeanFitness() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return meanFitness;
+	}
 
-    private Virus[] lastGeneration;
-    private Virus[] currentGeneration;
-    private int[] pickedParents;
+	public int getMostFrequentGenome() {
+		if (!statisticsKnown) {
+			collectStatistics();
+		}
+		return mostFrequentGenome;
+	}
 
-    private boolean statisticsKnown = false;
+	public double getMaxDiversity() {
+		return maxDiversity;
+	}
 
-    private int mostFrequentGenome;
-    private int maxFrequency;
-    private double meanDistance;
+	public double getMeanDiversity() {
+		return meanDiversity;
+	}
 
-    private double meanFitness;
-    private double sumFitness;
-    private double minFitness;
-    private double maxFitness;
-    private double maxDiversity;
-    private double meanDiversity;
-    public GenePool getGenePool() {
-        return genePool;
-    }
+	public double[] getAlleleFrequencies(int site) {
+		int[] freqs = genePool.getStateFrequencies(site);
+		double[] normalizedFreqs = new double[freqs.length];
+		for (int i = 0; i < freqs.length; i++) {
+			normalizedFreqs[i] = freqs[i] / (double)populationSize;
+		}
+		return normalizedFreqs;
+	}
+
+	public Virus[] getCurrentGeneration() {
+		return currentGeneration;
+	}
+
+	public Phylogeny getPhylogeny() {
+		return phylogeny;
+	}
+
+	private final int populationSize;
+
+	private final GenePool genePool;
+
+	private final Selector selector;
+
+	private final Phylogeny phylogeny;
+
+	private Virus[] lastGeneration;
+	private Virus[] currentGeneration;
+	private int[] selectedParents;
+
+	private boolean statisticsKnown = false;
+
+	private int mostFrequentGenome;
+	private int maxFrequency;
+	private double meanDistance;
+
+	private double meanFitness;
+	private double sumFitness;
+	private double minFitness;
+	private double maxFitness;
+	private double maxDiversity;
+	private double meanDiversity;
 }

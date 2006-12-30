@@ -1,8 +1,5 @@
 package santa.simulator.phylogeny;
 
-import java.util.List;
-import java.util.LinkedList;
-
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
@@ -10,40 +7,25 @@ import java.util.LinkedList;
  */
 public class Lineage {
 
-    private Lineage(Lineage parent, int generations) {
-        this.parent = parent;
-        this.generations = generations;
+    Lineage() {
+	    // empty
     }
 
-    public int getGenerations() {
-        return generations;
-    }
-
-    void setGenerations(int generations) {
-        this.generations = generations;
+    public int getGeneration() {
+        return generation;
     }
 
     public Lineage getParent() {
         return parent;
     }
 
-    void setParent(Lineage parent) {
-        this.parent = parent;
-    }
+	public int getChildCount() {
+	    return childCount;
+	}
 
-    private Lineage parent;
-    private int generations;
+	Lineage parent;
+    int generation;
+	int childCount;
 
-    public static Lineage createLineage(Lineage parent, int generations) {
-        if (availableLineages.isEmpty()) {
-            return new Lineage(parent, generations);
-        }
-        return availableLineages.remove(0);
-    }
-
-    public static void destroyLineage(Lineage lineage) {
-        availableLineages.add(lineage);
-    }
-
-    private static List<Lineage> availableLineages = new LinkedList<Lineage>();
+	Lineage next;
 }
