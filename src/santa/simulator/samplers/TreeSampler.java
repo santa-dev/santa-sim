@@ -3,6 +3,7 @@ package santa.simulator.samplers;
 import jebl.evolution.io.*;
 import jebl.evolution.taxa.Taxon;
 import jebl.evolution.trees.RootedTree;
+import jebl.evolution.trees.Tree;
 import santa.simulator.Population;
 import santa.simulator.Random;
 
@@ -29,6 +30,7 @@ public class TreeSampler implements Sampler {
 	private int replicate;
 
 	private TreeExporter exporter;
+	private List<Tree> trees = new ArrayList<Tree>();
 
 	/**
 	 * Construct an alignment sampler
@@ -87,11 +89,7 @@ public class TreeSampler implements Sampler {
 		if (sample != null) {
 			RootedTree tree = population.getPhylogeny().reconstructPhylogeny(sample, taxa);
 			if (tree != null) {
-				try {
-					exporter.exportTree(tree);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				trees.add(tree);
 			}
 		}
 	}
@@ -109,6 +107,14 @@ public class TreeSampler implements Sampler {
 	}
 
 	public void cleanUp() {
+		try {
+			if (trees.size() > 0) {
+				exporter.exportTrees(trees);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		destination.close();
 		destination = null;
 	}

@@ -3,14 +3,14 @@
 	<replicates>1</replicates>
 
 	<simulation>
-		<generationCount>1000</generationCount>
+		<generationCount>10001</generationCount>
 
 		<genome>
 			<length>9</length>
 		</genome>
 
 		<population>
-			<populationSize>100</populationSize>
+			<populationSize>1000</populationSize>
 
 			<inoculum>
 				<sequence label="virus1gen1000">
@@ -38,11 +38,11 @@
 
 		<samplingSchedule>
 			<sampler>
-				<atFrequency>100</atFrequency>
+				<atFrequency>1000</atFrequency>
 				<fileName>trees_%r.nex</fileName>
 				<tree>
+					<sampleSize>100</sampleSize>
 					<format>NEXUS</format>
-					<sampleSize>10</sampleSize>
 					<label>tip_%g_%s</label>
 				</tree>
 			</sampler>
