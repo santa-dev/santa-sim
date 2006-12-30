@@ -75,6 +75,7 @@ public class SimulatorParser {
 	public final static String AT_GENERATION = "atGeneration";
 
 	public final static String ALIGNMENT = "alignment";
+	public final static String TREE = "tree";
 	public final static String RECURRING_SAMPLER = "recurringSampler";
 	public final static String SAMPLE_SIZE = "sampleSize";
 	public final static String SCHEDULE = "schedule";
@@ -640,9 +641,9 @@ public class SimulatorParser {
 	private SamplingSchedule parseSamplingSchedule(Element element) throws ParseException {
 		SamplingSchedule samplingSchedule = new SamplingSchedule();
 
-		if (element.getChildren().size() == 0) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
-		}
+//		if (element.getChildren().size() == 0) {
+//			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
+//		}
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
@@ -699,6 +700,8 @@ public class SimulatorParser {
 			Element e1 = (Element)o;
 			if (e1.getName().equals(ALIGNMENT)) {
 				sampler = parseAlignmentSampler(e1, samplingSchedule, fileName);
+			} else if (e1.getName().equals(TREE)) {
+					sampler = parseTreeSampler(e1, samplingSchedule, fileName);
 			} else if (e1.getName().equals(ALLELE_FREQUENCY)) {
 				sampler = parseAlleleFrequencySampler(e1, samplingSchedule, fileName);
 			} else if (e1.getName().equals(STATISTICS)) {
@@ -790,6 +793,60 @@ public class SimulatorParser {
 		}
 
 		return new AlignmentSampler(sampleSize, consensus, schedule, format, label, fileName);
+	}
+
+	private Sampler parseTreeSampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
+
+		int sampleSize = -1;
+		Map<Integer,Integer> schedule = null;
+		String label = null;
+
+		TreeSampler.Format format = TreeSampler.Format.NEXUS;
+
+		for (Object o : element.getChildren()) {
+			Element e1 = (Element)o;
+			if (e1.getName().equals(SAMPLE_SIZE)) {
+				try {
+					sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+				} catch (ParseException pe) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+				}
+			} else if (e1.getName().equals(SCHEDULE)) {
+				String[] values = e1.getTextTrim().split("\\s+");
+				schedule = new TreeMap<Integer,Integer>();
+				try {
+					for (int i = 0; i<values.length/2; ++i) {
+						int g = Integer.parseInt(values[i*2]);
+						int n = Integer.parseInt(values[i*2 + 1]);
+
+						schedule.put(g, n);
+					}
+				} catch (NumberFormatException e) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: "
+							+ e.getMessage());
+				}
+			} else if (e1.getName().equals(FORMAT)) {
+				String formatText = e1.getTextNormalize();
+				if (formatText.equalsIgnoreCase("NEXUS")) {
+					format = TreeSampler.Format.NEXUS;
+				} else if (formatText.equalsIgnoreCase("NEWICK")) {
+					format = TreeSampler.Format.NEWICK;
+				} else {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FORMAT + "> value of " + formatText + " is unrecognized");
+				}
+			} else if (e1.getName().equals(LABEL)) {
+				label = e1.getTextNormalize();
+			} else {
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+			}
+
+		}
+
+		if (schedule != null && sampleSize != -1) {
+			throw new ParseException("Error parsing <" + element.getName() + "> element: specify only one of <" + SAMPLE_SIZE + "> or <" + SCHEDULE + ">.");
+		}
+
+		return new TreeSampler(sampleSize, schedule, format, label, fileName);
 	}
 
 	private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {

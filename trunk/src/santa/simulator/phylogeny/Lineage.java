@@ -27,5 +27,5 @@ public class Lineage {
     int generation;
 	int childCount;
 
-	Lineage next;
+	int count;
 }

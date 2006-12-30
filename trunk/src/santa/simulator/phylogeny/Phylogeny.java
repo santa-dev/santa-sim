@@ -128,14 +128,67 @@ public class Phylogeny {
 		for (int i = 0; i < sample.length; i++) {
 			lineages[i] = extantLineages[sample[i]];
 			nodes[i] = tree.createExternalNode(taxa.get(i));
-			tree.setHeight(nodes[i], lineages[i].generation);
+			tree.setHeight(nodes[i], 0);
+
+			Lineage lineage = lineages[i];
+			while (lineage != null) {
+				lineage.count = 0;
+				lineage = lineage.parent;
+			}
 		}
+
+		int tipGeneration = lineages[0].generation;
+
+		for (int i = 0; i < sample.length; i++) {
+			Lineage lineage = lineages[i];
+			while (lineage != null) {
+				lineage.count ++;
+				lineage = lineage.parent;
+			}
+		}
+
+		// find the next shared node for each lineage
+		for (int i = 0; i < sample.length; i++) {
+			Lineage lineage = lineages[i];
+			while (lineage != null && lineage.count == 1) {
+				lineage = lineage.parent;
+			}
+			if (lineage == null) {
+				// the phylogeny has not fully coalesced.
+				return null;
+			}
+		}
+
 		int lineageCount = sample.length;
-
+		List<Node> children = new ArrayList<Node>();
 		while (lineageCount > 1) {
-// @todo
-		}
+			for (int i = 0; i < lineageCount; i++) {
+				children.clear();
 
+				// find matches
+				int j = i + 1;
+				while (j < lineageCount) {
+					if (lineages[i] == lineages[j]) {
+						children.add(nodes[j]);
+
+						// move the lineage/node from the end of the arrays
+						lineages[j] = lineages[lineageCount - 1];
+						nodes[j] = nodes[lineageCount - 1];
+						lineageCount --;
+					} else {
+						j++;
+					}
+				}
+
+				// if node i matched anything then create an internal node
+				if (children.size() > 0) {
+					children.add(nodes[i]);
+					Node node = tree.createInternalNode(children);
+					tree.setHeight(node, tipGeneration - lineages[i].generation);
+					nodes[i] = node;
+				}
+			}
+		}
 
 		return tree;
 	}

@@ -1,30 +1,25 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="santa.xsd">
+       xsi:noNamespaceSchemaLocation="santa.xsd">
 	<replicates>1</replicates>
 
 	<simulation>
 		<generationCount>1000</generationCount>
 
 		<genome>
-			<length>609</length>
+			<length>9</length>
 		</genome>
 
 		<population>
-			<populationSize>10000</populationSize>
+			<populationSize>100</populationSize>
 
 			<inoculum>
 				<sequence label="virus1gen1000">
-					GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+					GAAGAAGAG
 				</sequence>
 			</inoculum>
 		</population>
 
 		<fitnessFunction>
-			<aminoAcids>
-				<empiricalFitness>
-					1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
-				</empiricalFitness>
-			</aminoAcids>
 			<nucleotides>
 				<neutralFitness/>
 			</nucleotides>
@@ -43,9 +38,13 @@
 
 		<samplingSchedule>
 			<sampler>
-				<atFrequency>1</atFrequency>
-				<fileName>small.csv</fileName>
-				<statistics></statistics>
+				<atFrequency>100</atFrequency>
+				<fileName>trees_%r.nex</fileName>
+				<tree>
+					<format>NEXUS</format>
+					<sampleSize>10</sampleSize>
+					<label>tip_%g_%s</label>
+				</tree>
 			</sampler>
 		</samplingSchedule>
 

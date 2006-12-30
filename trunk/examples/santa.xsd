@@ -56,8 +56,23 @@
 	<xs:element name="fitnessFunction">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element maxOccurs="unbounded" ref="aminoAcids"/>
-				<xs:element minOccurs="0" ref="nucleotides"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="nucleotides"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="aminoAcids"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="nucleotides">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element ref="ageDependentFitness"/>
+					<xs:element ref="empiricalFitness"/>
+					<xs:element ref="exposureDependentFitness"/>
+					<xs:element ref="fluctuatingFitness"/>
+					<xs:element ref="frequencyDependentFitness"/>
+					<xs:element ref="purifyingFitness"/>
+					<xs:element ref="neutralFitness"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -72,6 +87,7 @@
 					<xs:element ref="fluctuatingFitness"/>
 					<xs:element ref="frequencyDependentFitness"/>
 					<xs:element ref="purifyingFitness"/>
+					<xs:element ref="neutralFitness"/>
 				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
@@ -119,17 +135,10 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="fittest" type="xs:string"/>
-	<xs:element name="nucleotides">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="neutralFitness"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
 	<xs:element name="neutralFitness">
 		<xs:complexType/>
 	</xs:element>
+	<xs:element name="fittest" type="xs:string"/>
 	<xs:element name="mutator">
 		<xs:complexType>
 			<xs:sequence>
@@ -189,7 +198,7 @@
 	<xs:element name="samplingSchedule">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element maxOccurs="unbounded" ref="sampler"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="sampler"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -200,6 +209,7 @@
 				<xs:element ref="fileName"/>
 				<xs:choice>
 					<xs:element ref="alignment"/>
+					<xs:element ref="tree"/>
 					<xs:element ref="statistics"/>
 				</xs:choice>
 			</xs:sequence>
@@ -208,6 +218,15 @@
 	<xs:element name="atFrequency" type="xs:integer"/>
 	<xs:element name="fileName" type="xs:string"/>
 	<xs:element name="alignment">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="schedule"/>
+				<xs:element ref="format"/>
+				<xs:element ref="label"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="tree">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="schedule"/>
