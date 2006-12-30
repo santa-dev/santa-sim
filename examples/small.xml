@@ -1,0 +1,54 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="santa.xsd">
+	<replicates>1</replicates>
+
+	<simulation>
+		<generationCount>1000</generationCount>
+
+		<genome>
+			<length>609</length>
+		</genome>
+
+		<population>
+			<populationSize>10000</populationSize>
+
+			<inoculum>
+				<sequence label="virus1gen1000">
+					GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+				</sequence>
+			</inoculum>
+		</population>
+
+		<fitnessFunction>
+			<aminoAcids>
+				<empiricalFitness>
+					1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
+				</empiricalFitness>
+			</aminoAcids>
+			<nucleotides>
+				<neutralFitness/>
+			</nucleotides>
+		</fitnessFunction>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>1.0E-4</mutationRate>
+				<transitionBias>2.0</transitionBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<clonalReplicator/>
+		</replicator>
+
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>1</atFrequency>
+				<fileName>small.csv</fileName>
+				<statistics></statistics>
+			</sampler>
+		</samplingSchedule>
+
+	</simulation>
+
+</santa>

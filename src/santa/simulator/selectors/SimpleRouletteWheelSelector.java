@@ -11,31 +11,17 @@ public class SimpleRouletteWheelSelector implements Selector {
     public SimpleRouletteWheelSelector() {
     }
 
-    public void initializeSelector(Virus[] currentGeneration, int parentCount) {
-        this.currentGeneration = currentGeneration;
+	public void selectParents(Virus[] currentGeneration, int[] selectedParents) {
 	    calculateCumulativeFitness(currentGeneration);
-    }
 
-
-	/**
-	 * Sample a virus from a precalculated set of parents.
-	 */
-	public Virus nextSelection() {
-	    return currentGeneration[nextSelectionIndex()];
-	}
-
-    /**
-     * Sample a virus from a precalculated set of parents.
-     */
-    public int nextSelectionIndex() {
-
-	    double r = Random.nextUniform(0.0, 1.0);
-	    int selected = 0;
-	    while (r > cumulativeFitness[selected]) {
-	        selected ++;
-	    }
-
-	    return selected;
+		for (int i = 0; i < selectedParents.length; i++) {
+			double r = Random.nextUniform(0.0, 1.0);
+			int selected = 0;
+			while (r > cumulativeFitness[selected]) {
+				selected ++;
+			}
+			selectedParents[i] = selected;
+		}
     }
 
     private final void calculateCumulativeFitness(Virus[] currentGeneration) {
@@ -63,6 +49,5 @@ public class SimpleRouletteWheelSelector implements Selector {
         }
     }
 
-    private Virus[] currentGeneration;
     private double[] cumulativeFitness = null;
 }

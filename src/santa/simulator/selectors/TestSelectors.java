@@ -37,7 +37,6 @@ public class TestSelectors {
 
 		testSelector(new SimpleRouletteWheelSelector(), population, simpleSelection);
 		testSelector(new RouletteWheelSelector(), population, rouletteSelection);
-		testSelector(new DiscreteRouletteWheelSelector(50), population, discreteRouletteSelection);
 		testSelector(new MonteCarloSelector(), population, monteCarloSelection);
 
 		System.out.println("fitness\tsimple\troulette\tdiscrete\tmonteCarlo");
@@ -52,11 +51,13 @@ public class TestSelectors {
 
 	void testSelector(Selector selector, Virus[] population, int[] selections) {
 		long startTime = System.currentTimeMillis();
+
+		int[] selected = new int[popSize];
+
 		for (int r = 0; r < repCount; r++) {
-			selector.initializeSelector(population, 1);
+			selector.selectParents(population, selected);
 			for (int i = 0; i < popSize; i++) {
-				int selection = selector.nextSelectionIndex();
-				selections[selection] ++;
+				selections[selected[i]] ++;
 			}
 			if (r % 10000 == 0) System.err.print(".");
 		}

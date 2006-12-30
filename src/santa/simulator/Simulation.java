@@ -79,14 +79,19 @@ public class Simulation {
             if (fitnessFunction.updateGeneration(generation, population))
                 population.updateFitness(fitnessFunction);
 
-            population.selectNextGeneration(replicator, mutator, fitnessFunction);
+            population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
 
             if (generation % 100 == 0) {
+	            population.getPhylogeny().pruneDeadLineages();
+
                 System.err.println("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
                         ", distance = " + population.getMeanDistance() +
                         ", max freq = " + population.getMaxFrequency() +
-                        ", genepool size= " + genePool.getUniqueGenomeCount() +
-                        "(" + genePool.getUnusedGenomeCount() + " available)");
+                        ", genepool size = " + genePool.getUniqueGenomeCount() +
+                        " (" + genePool.getUnusedGenomeCount() + " available)" +
+		                ", phylogeny size = " + population.getPhylogeny().getSize() +
+		                " (used = " + population.getPhylogeny().getLineageCount()+ ")" +
+		                ", tmrca = " + population.getPhylogeny().getMRCA().getGeneration() );
             } else {
                 if (false)
                     logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +

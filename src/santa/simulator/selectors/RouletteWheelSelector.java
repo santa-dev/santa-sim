@@ -22,44 +22,11 @@ public class RouletteWheelSelector implements Selector {
     public RouletteWheelSelector() {
     }
 
-    public void initializeSelector(Virus[] currentGeneration, int parentCount) {
-        this.currentGeneration = currentGeneration;
-        selectParents(currentGeneration, parentCount);
-    }
-
-	/**
-	 * Sample a virus from a precalculated set of parents.
-	 */
-	public Virus nextSelection() {
-	    return currentGeneration[nextSelectionIndex()];
-	}
-
-    /**
-     * Sample a virus from a precalculated set of parents.
-     */
-    public int nextSelectionIndex() {
-
-        /*
-         * randomIntNumbers is a selection without replacement of all parents that have
-         * been precalculated.
-         */
-        return pickedParents[randomIntNumbers.get(currentIndex++)];
-    }
-
-    private final void selectParents(Virus[] currentGeneration, int parentCount) {
+	public void selectParents(Virus[] currentGeneration, int[] selectedParents) {
         int populationSize = currentGeneration.length;
-        int sampleSize = parentCount * populationSize; // maximum number needed when every child has two parents.
+        int sampleSize = selectedParents.length;
 
         calculateCumulativeFitness(currentGeneration);
-
-        if (randomIntNumbers == null) {
-            randomIntNumbers = new ArrayList<Integer>();
-            for (int i = 0; i < sampleSize; ++i)
-                randomIntNumbers.add(i);
-        }
-
-        // shuffle the selection of parents
-        Collections.shuffle(randomIntNumbers);
 
         if (randomNumbers == null) {
             randomNumbers = new double[sampleSize];
@@ -71,21 +38,17 @@ public class RouletteWheelSelector implements Selector {
 
         Arrays.sort(randomNumbers);
 
-        if (pickedParents == null) {
-            pickedParents = new int[sampleSize];
-        }
-
         int i = 0;
         int j = 0;
         do {
             while (j < sampleSize && randomNumbers[j] < cumulativeFitness[i]) {
-                pickedParents[j] = i;
+                selectedParents[j] = i;
                 j++;
             }
             i++;
         } while (i < populationSize);
 
-        currentIndex = 0;
+		Collections.shuffle(Arrays.asList(selectedParents));
     }
 
     private final void calculateCumulativeFitness(Virus[] currentGeneration) {
@@ -113,11 +76,6 @@ public class RouletteWheelSelector implements Selector {
         }
     }
 
-    private Virus[] currentGeneration;
     private double[] cumulativeFitness = null;
-
     private double[] randomNumbers;
-    private ArrayList<Integer> randomIntNumbers;
-    private int[] pickedParents;
-    int currentIndex;
 }
