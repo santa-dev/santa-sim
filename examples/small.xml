@@ -10,7 +10,7 @@
 		</genome>
 
 		<population>
-			<populationSize>1000</populationSize>
+			<populationSize>100</populationSize>
 
 			<inoculum>
 				<sequence label="virus1gen1000">
@@ -38,10 +38,10 @@
 
 		<samplingSchedule>
 			<sampler>
-				<atFrequency>1000</atFrequency>
-				<fileName>trees_%r.nex</fileName>
+				<atGeneration>10000</atGeneration>
+				<fileName>trees_%r.tree</fileName>
 				<tree>
-					<sampleSize>100</sampleSize>
+					<sampleSize>5</sampleSize>
 					<format>NEXUS</format>
 					<label>tip_%g_%s</label>
 				</tree>
