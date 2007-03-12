@@ -1,82 +1,102 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
 
-	<replicates>1</replicates>
+    <replicates>1</replicates>
 
-	<simulation>
-		<generationCount>1001</generationCount>
+    <simulation>
+        <generationCount>1001</generationCount>
 
-		<genome>
-			<length>609</length>
-		</genome>
+        <genome>
+            <length>609</length>
+        </genome>
 
-		<population>
-			<populationSize>100000</populationSize>
+        <population>
+            <populationSize>100000</populationSize>
 
-			<inoculum>
-				<sequence label="wildtype">
-					GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
-				</sequence>
-			</inoculum>
-		</population>
+            <inoculum>
+                <sequence label="wildtype">
+                    GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+                </sequence>
+            </inoculum>
+        </population>
 
-		<fitnessFunction>
-			<aminoAcids>
-				<purifyingFitness>
-					<fittest>
-						GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
-					</fittest>
-					<strength>
-						<!--
-		                        coeficient ~ puryfication strength
-		                        0:    neutral
-		                        +inf: completely purifying
-	                            -->
-						0.5
-					</strength>
-				</purifyingFitness>
-			</aminoAcids>
-		</fitnessFunction>
+        <fitnessFunction>
+            <aminoAcids>
+                <purifyingFitness>
+                    <fittest>
+                        GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+                    </fittest>
+                    <strength>
+                        <!--
+                                      coeficient ~ puryfication strength
+                                      0:    neutral
+                                      +inf: completely purifying
+                                      -->
+                        0.5
+                    </strength>
+                </purifyingFitness>
+            </aminoAcids>
+        </fitnessFunction>
 
-		<mutator>
-			<nucleotideMutator>
-				<mutationRate>1.0E-4</mutationRate>
-				<transitionBias>2.0</transitionBias>
-			</nucleotideMutator>
-		</mutator>
+        <fitnessFunction>
+            <empiricalFitness id="background">
+                <aminoAcids>1-201,203-279,281-434</aminoAcids>
 
-		<replicator>
-			<clonalReplicator/>
-		</replicator>
+                <rank breakTies="random|ordered">
+                    <sequences>
+                        CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
+                    </sequences>
+                </rank>
+                <fitness>
+                    <logistic>
+                        <minimumFitness>0.1</minimumFitness>
+                        <mostFitCount>4</mostFitCount>
+                        <leastFitCount>16</leastFitCount>
+                    </logistic>
+                    <!--<values>1.0 ... 1.0</values>-->
+                </fitness>
+            </empiricalFitness>
+        </fitnessFunction>
 
-		<selector>
-			<rouletteWheelSelector/>
-		</selector>
+        <mutator>
+            <nucleotideMutator>
+                <mutationRate>1.0E-4</mutationRate>
+                <transitionBias>2.0</transitionBias>
+            </nucleotideMutator>
+        </mutator>
 
-		<samplingSchedule>
-			<sampler>
-				<atFrequency>100</atFrequency>
-				<fileName>purify_%r.nex</fileName>
-				<alignment>
-					<schedule>
-						<!-- generation count -->
-						200  10
-						400  10
-						600  10
-						800  10
-						1000  10
-					</schedule>
-					<format>NEXUS</format>
-					<label>purify_%g_%s</label>
-				</alignment>
-			</sampler>
-			<sampler>
-				<atFrequency>10</atFrequency>
-				<fileName>purifying_%r.csv</fileName>
-				<statistics></statistics>
-			</sampler>
-		</samplingSchedule>
+        <replicator>
+            <clonalReplicator/>
+        </replicator>
 
-	</simulation>
+        <selector>
+            <rouletteWheelSelector/>
+        </selector>
+
+        <samplingSchedule>
+            <sampler>
+                <atFrequency>100</atFrequency>
+                <fileName>purify_%r.nex</fileName>
+                <alignment>
+                    <schedule>
+                        <!-- generation count -->
+                        200  10
+                        400  10
+                        600  10
+                        800  10
+                        1000  10
+                    </schedule>
+                    <format>NEXUS</format>
+                    <label>purify_%g_%s</label>
+                </alignment>
+            </sampler>
+            <sampler>
+                <atFrequency>10</atFrequency>
+                <fileName>purifying_%r.csv</fileName>
+                <statistics></statistics>
+            </sampler>
+        </samplingSchedule>
+
+    </simulation>
 
 </santa>
