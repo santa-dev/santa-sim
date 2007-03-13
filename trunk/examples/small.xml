@@ -3,6 +3,7 @@
 	<replicates>1</replicates>
 
 	<simulation>
+
 		<genome>
 			<length>9</length>
 		</genome>
@@ -18,6 +19,9 @@
 		</population>
 
 		<fitnessFunction>
+            <neutralFitness>
+                <nucleotides>1-9</nucleotides>
+            </neutralFitness>
 		</fitnessFunction>
 
 		<mutator>
@@ -31,11 +35,11 @@
 			<clonalReplicator/>
 		</replicator>
 
-		<epoch>
-			<generationCount>10001</generationCount>
-		</epoch>
+        <epoch>
+            <generationCount>10001</generationCount>
+        </epoch>
 
-		<samplingSchedule>
+        <samplingSchedule>
 			<sampler>
 				<atGeneration>10000</atGeneration>
 				<fileName>trees_%r.tree</fileName>
