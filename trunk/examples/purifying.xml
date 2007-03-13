@@ -19,24 +19,20 @@
         </population>
 
         <fitnessFunction>
-        	<purifyingFitness>
-        		<aminoAcids>1-201,203-279,281-434</aminoAcids>
-
-        		<rank>
-        			<breakTies>random</breakTies>
-        			<sequences>
-                    	GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
-        			</sequences>
-        		</rank>
-        		<fitness>
-        			<logistic>
-        				<minimumFitness>0.1</minimumFitness>
-        				<mostFitCount>4</mostFitCount>
-        				<leastFitCount>16</leastFitCount>
-        			</logistic>
-        			<!--<values>1.0 ... 1.0</values>-->
-        		</fitness>
-        	</purifyingFitness>
+            <purifyingFitness>
+                <aminoAcids>1-203</aminoAcids>
+                <rank>
+                    <breakTies>random</breakTies>
+                    <sequences>
+                        GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+                    </sequences>
+                </rank>
+                <fitness>
+                    <minFitness>0.1</minFitness>
+                    <lowFitness>0.9</lowFitness>
+                    <probableSet>biochemical</probableSet>
+                </fitness>
+            </purifyingFitness>
         </fitnessFunction>
 
         <mutator>
@@ -53,10 +49,6 @@
         <epoch>
             <generationCount>1001</generationCount>
         </epoch>
-
-		<epoch>
-        	<generationCount>1001</generationCount>
-		</epoch>
 
         <samplingSchedule>
             <sampler>
