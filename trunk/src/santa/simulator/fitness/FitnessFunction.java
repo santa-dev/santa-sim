@@ -54,11 +54,8 @@ public class FitnessFunction  {
     public double computeLogFitness(Genome genome) {
         double result = 0;
 
-        FitnessGenomeCache cache = genome.getFitnessCache();
-        if (cache == null) {
-            cache = new FitnessGenomeCache();
-            genome.setFitnessCache(cache);
-        }
+        FitnessGenomeCache cache = new FitnessGenomeCache();
+        genome.setFitnessCache(cache);
 
         int i = 0;
         for (FitnessFunctionFactor f : factors) {

@@ -1,8 +1,11 @@
 package santa.simulator.fitness;
 
+import java.util.Set;
+
 import santa.simulator.Population;
 import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Mutation;
+import santa.simulator.genomes.SequenceAlphabet;
 
 /**
  * An abstract class defining a general fitness function on a byte-encoded molecular sequence
@@ -38,4 +41,8 @@ public interface FitnessFunctionFactor {
      *         using updateLogFitness(genome, logFitness).
      */
     boolean updateGeneration(int generation, Population population);
+
+    SequenceAlphabet getAlphabet();
+
+    Set<Integer> getSites();
 }

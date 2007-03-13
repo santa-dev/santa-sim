@@ -35,6 +35,8 @@ public interface GenePool {
 
     int getUnusedGenomeCount();
 
+    void computeFitness(FitnessFunction fitnessFunction);
+    
     void updateFitness(FitnessFunction fitnessFunction);
 
     List<Genome> getGenomes();

@@ -36,7 +36,7 @@ public class Population {
 		currentGeneration = new Virus[populationSize];
 	}
 
-	public void initialize(List<Sequence> inoculum, FitnessFunction fitnessFunction) {
+	public void initialize(List<Sequence> inoculum) {
 		Genome[] ancestors;
 
 		genePool.initialize();
@@ -45,7 +45,7 @@ public class Population {
 		for (int i = 0; i < ancestors.length; i++) {
 			Sequence sequence = inoculum.get(i);
 			ancestors[i] = genePool.createGenome(sequence);
-			ancestors[i].setLogFitness(fitnessFunction.computeLogFitness(ancestors[i]));
+			//ancestors[i].setLogFitness(fitnessFunction.computeLogFitness(ancestors[i]));
 		}
 
 		if (ancestors.length > 1) {
@@ -67,6 +67,11 @@ public class Population {
 			phylogeny.initialize();
 		}
 	}
+
+    public void computeFitness(FitnessFunction fitnessFunction) {
+        genePool.computeFitness(fitnessFunction);
+        statisticsKnown = false;
+    }
 
 	public void updateFitness(FitnessFunction fitnessFunction) {
 		genePool.updateFitness(fitnessFunction);

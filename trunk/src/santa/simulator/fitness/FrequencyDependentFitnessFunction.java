@@ -79,4 +79,8 @@ public class FrequencyDependentFitnessFunction extends AbstractSignatureFitnessF
     public double updateLogFitness(Genome genome, double logFitness) {
         return computeLogFitness(genome);
     }
+
+    public double getShape() {
+        return shape;
+    }
 }

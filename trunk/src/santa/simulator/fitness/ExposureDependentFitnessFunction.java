@@ -84,4 +84,8 @@ public class ExposureDependentFitnessFunction extends AbstractSignatureFitnessFu
     public double updateLogFitness(Genome genome, double logFitness) {
         return computeLogFitness(genome);
     }
+
+    public double getPenalty() {
+        return penalty;
+    }
 }

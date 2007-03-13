@@ -63,4 +63,12 @@ public abstract class AbstractSignatureFitnessFunction implements FitnessFunctio
         return new Signature(state);
     }
 
+    public SequenceAlphabet getAlphabet() {
+        return alphabet;
+    }
+
+    public Set<Integer> getSites() {
+        return sites;
+    }
+
 }

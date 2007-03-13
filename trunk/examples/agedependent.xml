@@ -3,14 +3,12 @@
 	<replicates>1</replicates>
 
 	<simulation>
-		<generationCount>1001</generationCount>
-
 		<genome>
 			<length>609</length>
 		</genome>
 
 		<population>
-			<populationSize>100000</populationSize>
+			<populationSize>1000</populationSize>
 
 			<inoculum>
 				<sequence label="virus1gen1000">
@@ -20,12 +18,10 @@
 		</population>
 
 		<fitnessFunction>
-			<aminoAcids>
-				<sites>1-5</sites>
-				<ageDependentFitness>
-					<declineRate>0.005</declineRate>
-				</ageDependentFitness>
-			</aminoAcids>
+			<ageDependentFitness>
+				<aminoAcids>1-5</aminoAcids>
+				<declineRate>0.005</declineRate>
+			</ageDependentFitness>
 		</fitnessFunction>
 
 		<mutator>
@@ -38,6 +34,10 @@
 		<replicator>
 			<clonalReplicator/>
 		</replicator>
+
+		<epoch>
+			<generationCount>1000</generationCount>
+		</epoch>
 
 		<samplingSchedule>
 			<sampler>
