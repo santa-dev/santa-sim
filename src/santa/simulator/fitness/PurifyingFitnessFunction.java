@@ -6,55 +6,31 @@
  */
 package santa.simulator.fitness;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.ChiSquaredDistribution;
-import org.apache.commons.math.distribution.DistributionFactory;
-import santa.simulator.Random;
-import santa.simulator.genomes.*;
-
 import java.util.Set;
+
+import santa.simulator.Population;
+import santa.simulator.genomes.Genome;
+import santa.simulator.genomes.GenomeDescription;
+import santa.simulator.genomes.SequenceAlphabet;
 
 /**
  * A Purifying fitness function performs puryfing selection. It is configured by
- * giving it a wild-type (fittest) sequence, and a selection strength.
- *
- * The selection strength k is used as a parameter to a chi-square function,
- * which is used to draw selection coefficients from for different amino-
- * acids. The (negative) log10 fitness difference is drawn from a chi-square
- * distribution with k degrees of freedom. This gives a mean log10 fitness
- * difference of -k, and a variation in log fitness difference of 2*k.
- *
- * k = 0 corresponds to neutral selection, and increasing values of k increase
- * the level of purifying selection. For example, k = 1 gives an average
- * log10 (fitness) of -1 for an amino acid change, compared to fitness=1 for WT.
+ * giving it a rank and model for its fitness values.
  */
 public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
-    private byte fittestStates[];
-    private double purificationStrength;
+    private PurifyingFitnessRank rank;
+    private PurifyingFitnessModel valueModel;
+    
+    boolean changed;
 
-    public PurifyingFitnessFunction(Sequence fittest, double purificationStrength,
+    public PurifyingFitnessFunction(PurifyingFitnessRank rank,
+                                    PurifyingFitnessModel valueModel,
                                     Set<Integer> sites, SequenceAlphabet alphabet) {
         super(sites, alphabet);
 
-        this.purificationStrength = purificationStrength;
-
-        int states = fittest.getLength(alphabet);
-
-        fittestStates = new byte[states];
-        for (int i = 0; i < fittestStates.length; ++i) {
-            fittestStates[i] = fittest.getState(alphabet, i);
-        }
-
-        setFitnesses();
-    }
-
-    public PurifyingFitnessFunction(byte fittestStates[], double purificationStrength,
-                                    Set<Integer> sites, SequenceAlphabet alphabet) {
-        super(sites, alphabet);
-
-        this.purificationStrength = purificationStrength;
-        this.fittestStates = fittestStates;
-
+        this.rank = rank;
+        this.valueModel = valueModel;
+        
         setFitnesses();
     }
 
@@ -62,54 +38,14 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         int stateSize = getAlphabet().getStateCount();
         Set<Integer> sites = getSites();
 
-        ChiSquaredDistribution distr = null;
-
-        if (purificationStrength > 0)
-            distr = DistributionFactory.newInstance().createChiSquareDistribution(purificationStrength);
-
-        double average = 0;
-
+        double[] fitnesses = valueModel.getFitnesses();
         double[][] logFitness = new double[GenomeDescription.getGenomeLength(getAlphabet())][stateSize];
-
-	    double x = 0.0;
-	    System.out.println("Using purifying fitness function: " + purificationStrength);
-	    System.out.println("Distribution:");
-	    System.out.println(x + "\t0.0");
-	    x += 0.05;
-	    for (int j = 1; j < stateSize - 1; ++j) {
-		    try {
-		        double v = - distr.inverseCumulativeProbability(x);
-		        v *= Math.log(10);
-			    System.out.println(x + "\t" + v);
-			    x += 0.05;
-		    } catch (MathException e) {
-		        throw new RuntimeException(e);
-		    }
-	    }
-	    System.out.println();
-	    System.out.println();
 
         for (int i = 0; i < logFitness.length; ++i) {
             if (sites.contains(i + 1)) {
-                for (int j = 0; j < stateSize; ++j) {
-                    boolean isFittest = (j == fittestStates[i]);
-
-                    if (isFittest)
-                        logFitness[i][j] = 0;
-                    else {
-                        if (distr != null) {
-                            double p = Random.nextUniform(0, 1);
-                            try {
-                                double v = - distr.inverseCumulativeProbability(p);
-                                v *= Math.log(10);
-                                average += v;
-                                logFitness[i][j] = v;
-                            } catch (MathException e) {
-                                throw new RuntimeException(e);
-                            }
-                        } else
-                            logFitness[i][j] = 0;
-                    }
+                byte[] states = rank.getStates(i);
+                for (int j = 0; j < stateSize; ++j) {                    
+                    logFitness[i][states[j]] = Math.log(fitnesses[j]);
                 }
             } else {
                 for (int j = 0; j < stateSize; ++j) {
@@ -118,21 +54,32 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
             }
         }
 
-        average /= (sites.size() * (stateSize-1));
-        System.err.println("10^(Average log10 amino acid fitness): " + Math.exp(average));
-
         initialize(logFitness);
     }
 
-    protected double getPurificationStrength() {
-        return purificationStrength;
-    }
+    @Override
+    public boolean updateGeneration(int generation, Population population) {
+        changed = false;
 
-    protected void setPurificationStrength(double purificationStrength) {
-        this.purificationStrength = purificationStrength;
+        changed = rank.updateGeneration(generation, population);
+        if (changed)
+            setFitnesses();
+        
+        return changed;
     }
 
     public double updateLogFitness(Genome genome, double logFitness) {
-        return logFitness;
+        if (changed) {
+            return computeLogFitness(genome);
+        } else
+            return logFitness;
+     }
+
+    public PurifyingFitnessRank getRank() {
+        return rank;
+    }
+
+    public PurifyingFitnessModel getValueModel() {
+        return valueModel;
     }
 }

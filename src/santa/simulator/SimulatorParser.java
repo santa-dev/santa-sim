@@ -1,7 +1,6 @@
 package santa.simulator;
 
 import jebl.evolution.sequences.SequenceType;
-import org.jdom.DataConversionException;
 import org.jdom.Element;
 import santa.simulator.fitness.*;
 import santa.simulator.genomes.*;
@@ -20,84 +19,104 @@ import java.util.*;
  */
 public class SimulatorParser {
 
-	public final static String SIMULATOR = "santa";
+	private final static String SIMULATOR = "santa";
 
-	public final static String REPLICATE_COUNT = "replicates";
+	private final static String REPLICATE_COUNT = "replicates";
 
-	public final static String SIMULATION = "simulation";
+	private final static String SIMULATION = "simulation";
 
-	public final static String STOPPING = "stopping";
-	public final static String GENERATION_COUNT = "generationCount";
+	private final static String EPOCH = "epoch";
+    private final static String NAME = "name";
+	private final static String GENERATION_COUNT = "generationCount";
 
-	public final static String POPULATION = "population";
-	public final static String POPULATION_SIZE = "populationSize";
-	public final static String INOCULUM = "inoculum";
-	public final static String SEQUENCE = "sequence";
+	private final static String POPULATION = "population";
+	private final static String POPULATION_SIZE = "populationSize";
+	private final static String INOCULUM = "inoculum";
+	private final static String SEQUENCE = "sequence";
 
-	public final static String GENOME_DESCRIPTION = "genome";
-	public final static String GENOME_LENGTH = "length";
+	private final static String GENOME_DESCRIPTION = "genome";
+	private final static String GENOME_LENGTH = "length";
 
-	public final static String GENE_POOL = "genePool";
-	public final static String SIMPLE_GENE_POOL = "simpleGenePool";
-	public final static String COMPACT_GENE_POOL = "complexGenePool";
+	private final static String GENE_POOL = "genePool";
+	private final static String SIMPLE_GENE_POOL = "simpleGenePool";
+	private final static String COMPACT_GENE_POOL = "complexGenePool";
 
-	public final static String SELECTOR = "selector";
-	public final static String MONTE_CARLO_SELECTOR = "monteCarloSelector";
-	public final static String ROULETTE_WHEEL_SELECTOR = "rouletteWheelSelector";
-	public final static String DISCRETE_ROULETTE_WHEEL_SELECTOR = "discreteRouletteWheelSelector";
+	private final static String SELECTOR = "selector";
+	private final static String MONTE_CARLO_SELECTOR = "monteCarloSelector";
+	private final static String ROULETTE_WHEEL_SELECTOR = "rouletteWheelSelector";
 
-	public final static String FITNESS_FUNCTION = "fitnessFunction";
-	public final static String EMPIRICAL_FITNESS_FUNCTION = "empiricalFitness";
-	public final static String RANDOM = "random";
-	public final static String NUCLEOTIDES = "nucleotides";
-	public final static String AMINO_ACIDS = "aminoAcids";
-	public final static String NEUTRAL_MODEL_FITNESS_FUNCTION = "neutralFitness";
-	public final static String PURIFYING_FITNESS_FUNCTION = "purifyingFitness";
-	public final static String FITTEST = "fittest";
-	public final static String STRENGTH = "strength";
-	public final static String LAMBDA = "lambda";
-	public final static String SITES = "sites";
-	public final static String FLUCTUATING_FITNESS_FUNCTION = "fluctuatingFitness";
-	public final static String FREQUENCY_DEPENDENT_FITNESS_FUNCTION = "frequencyDependentFitness";
-	public final static String SHAPE = "shape";
-    public final static String AGE_DEPENDENT_FITNESS_FUNCTION = "ageDependentFitness";
-    public final static String DECLINE_RATE = "declineRate";
-    public final static String EXPOSURE_DEPENDENT_FITNESS_FUNCTION = "exposureDependentFitness";
-    public final static String PENALTY = "penalty";
+	private final static String FITNESS_FUNCTION = "fitnessFunction";
+	private final static String NUCLEOTIDES = "nucleotides";
+	private final static String AMINO_ACIDS = "aminoAcids";
+	private final static String NEUTRAL_MODEL_FITNESS_FUNCTION = "neutralFitness";
 
-	public final static String MUTATOR = "mutator";
-	public final static String REPLICATOR = "replicator";
+    private final static String PURIFYING_FITNESS_FUNCTION = "purifyingFitness";
+    private final static String FITNESS = "fitness";
+    private final static String VALUES = "values";
+    private final static String LOGISTIC = "logistic";
+    private final static String MINIMUM_FITNESS = "minimumFitness";
+    private final static String MOST_FIT_COUNT = "mostFitCount";
+    private final static String LEAST_FIT_COUNT = "leastFitCount";
+    private static final String RANK = "rank";
+    private final static String SEQUENCES = "sequences";
+    private final static String FLUCTUATE = "fluctuate";
+    private static final String FITNESS_FUNCTION_ID = "id";
+    private static final String BREAK_TIES = "breakTies";
+    private static final Object BREAK_TIES_RANDOM = "random";
+    private static final Object BREAK_TIES_ORDERED = "ordered";
 
-	public final static String SAMPLING_SCHEDULE = "samplingSchedule";
-	public final static String SAMPLER = "sampler";
-	public final static String FILE_NAME = "fileName";
-	public final static String AT_FREQUENCY = "atFrequency";
-	public final static String AT_GENERATION = "atGeneration";
+	private final static String LAMBDA = "lambda";
+	private final static String FREQUENCY_DEPENDENT_FITNESS_FUNCTION = "frequencyDependentFitness";
+	private final static String SHAPE = "shape";
+    private final static String AGE_DEPENDENT_FITNESS_FUNCTION = "ageDependentFitness";
+    private final static String DECLINE_RATE = "declineRate";
+    private final static String EXPOSURE_DEPENDENT_FITNESS_FUNCTION = "exposureDependentFitness";
+    private final static String PENALTY = "penalty";
 
-	public final static String ALIGNMENT = "alignment";
-	public final static String TREE = "tree";
-	public final static String RECURRING_SAMPLER = "recurringSampler";
-	public final static String SAMPLE_SIZE = "sampleSize";
-	public final static String SCHEDULE = "schedule";
-	public final static String FORMAT = "format";
-	public final static String LABEL = "label";
-	public final static String CONSENSUS = "consensus";
 
-	public final static String ALLELE_FREQUENCY = "alleleFrequency";
-	public final static String SITE = "site";
+	private final static String MUTATOR = "mutator";
+	private final static String REPLICATOR = "replicator";
 
-	public final static String STATISTICS = "statistics";
+	private final static String SAMPLING_SCHEDULE = "samplingSchedule";
+	private final static String SAMPLER = "sampler";
+	private final static String FILE_NAME = "fileName";
+	private final static String AT_FREQUENCY = "atFrequency";
+	private final static String AT_GENERATION = "atGeneration";
 
-	public final static String NUCLEOTIDE_MUTATOR = "nucleotideMutator";
-	public final static String MUTATION_RATE = "mutationRate";
-	public final static String TRANSITION_BIAS = "transitionBias";
-	public final static String RATE_BIAS = "rateBias";
+	private final static String ALIGNMENT = "alignment";
+	private final static String TREE = "tree";
+	private final static String SAMPLE_SIZE = "sampleSize";
+	private final static String SCHEDULE = "schedule";
+	private final static String FORMAT = "format";
+	private final static String LABEL = "label";
+	private final static String CONSENSUS = "consensus";
 
-	public final static String CLONAL_REPLICATOR = "clonalReplicator";
-	public final static String RECOMBINANT_REPLICATOR = "recombinantReplicator";
-	public final static String DUAL_INFECTION_PROBABILITY = "dualInfectionProbability";
-	public final static String RECOMBINATION_PROBABILITY = "recombinationProbability";
+	private final static String ALLELE_FREQUENCY = "alleleFrequency";
+	private final static String SITE = "site";
 
+	private final static String STATISTICS = "statistics";
+
+    private final static String NUCLEOTIDE_MUTATOR = "nucleotideMutator";
+	private final static String MUTATION_RATE = "mutationRate";
+	private final static String TRANSITION_BIAS = "transitionBias";
+	private final static String RATE_BIAS = "rateBias";
+
+	private final static String CLONAL_REPLICATOR = "clonalReplicator";
+	private final static String RECOMBINANT_REPLICATOR = "recombinantReplicator";
+	private final static String DUAL_INFECTION_PROBABILITY = "dualInfectionProbability";
+	private final static String RECOMBINATION_PROBABILITY = "recombinationProbability";
+
+
+    private Map<String, Object> objectIdMap = new HashMap<String, Object>();
+
+    private Object lookupObjectById(String id) {
+        return objectIdMap.get(id);
+    }
+
+    private void storeObjectById(String id, Object o) {
+        objectIdMap.put(id, o);
+    }
+    
 	Simulator parse(Element element) throws ParseException {
 
 		if (!element.getName().equals(SIMULATOR)) {
@@ -140,10 +159,9 @@ public class SimulatorParser {
 
 	Simulation parseSimulation(Element element) throws ParseException {
 
-		StoppingCriterion stoppingCriterion = null;
 		int populationSize = -1;
 		List<Sequence> inoculum = null;
-
+        
         boolean genomeDescription = false;
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
@@ -159,13 +177,7 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
-			if (e.getName().equals(GENERATION_COUNT)) {
-				try {
-					stoppingCriterion = StoppingCriterion.generationCount(parseInteger(e, 1, Integer.MAX_VALUE));
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + SIMULATION + "> element: " + pe.getMessage());
-				}
-			} else if (e.getName().equals(POPULATION)) {
+			if (e.getName().equals(POPULATION)) {
 
 				for (Object o1 : e.getChildren()) {
 					Element e1 = (Element)o1;
@@ -187,17 +199,10 @@ public class SimulatorParser {
 					!e.getName().equals(FITNESS_FUNCTION) &&
 					!e.getName().equals(MUTATOR) &&
 					!e.getName().equals(REPLICATOR) &&
-					!e.getName().equals(SAMPLING_SCHEDULE)) {
+					!e.getName().equals(SAMPLING_SCHEDULE) &&
+                    !e.getName().equals(EPOCH)) {
 				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
 			}
-		}
-
-        if (stoppingCriterion == null) {
-            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + INOCULUM + "> is missing");
-        }
-
-		if (stoppingCriterion == null) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + STOPPING + "> is missing");
 		}
 
 		if (populationSize == -1) {
@@ -208,45 +213,33 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + GENOME_DESCRIPTION + "> is missing");
 		}
 
-		FitnessFunction fitnessFunction = null;
-		Mutator mutator = null;
-		Replicator replicator = null;
-		SamplingSchedule samplingSchedule = null;
-		GenePool genePool = null;
-		Selector selector = null;
+        SamplingSchedule samplingSchedule = null;
+        GenePool genePool = null;
+        Selector selector = null;
+
+        FitnessFunction defaultFitnessFunction = null;
+        Mutator defaultMutator = null;
+        Replicator defaultReplicator = null;
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(GENE_POOL)) {
 				genePool = parseGenePool(e);
-			} else if (e.getName().equals(FITNESS_FUNCTION)) {
-				fitnessFunction = parseFitnessFunction(e);
-			} else if (e.getName().equals(MUTATOR)) {
-				mutator = parseMutator(e);
-			} else if (e.getName().equals(REPLICATOR)) {
-				replicator = parseReplicator(e);
 			} else if (e.getName().equals(SELECTOR)) {
 				selector = parseSelector(e);
 			} else if (e.getName().equals(SAMPLING_SCHEDULE)) {
 				samplingSchedule = parseSamplingSchedule(e);
+            } else if (e.getName().equals(FITNESS_FUNCTION)) {
+                defaultFitnessFunction = parseFitnessFunction(e);
+            } else if (e.getName().equals(MUTATOR)) {
+                defaultMutator = parseMutator(e);
+            } else if (e.getName().equals(REPLICATOR)) {
+                defaultReplicator = parseReplicator(e);
 			}
 		}
 
-		if (fitnessFunction == null) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + FITNESS_FUNCTION + "> is missing");
-		}
-
-		if (mutator == null) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + MUTATOR + "> is missing");
-		}
-
-		if (replicator == null) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + REPLICATOR + "> is missing");
-		}
-
-		if (samplingSchedule == null) {
+		if (samplingSchedule == null)
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + SAMPLING_SCHEDULE + "> is missing");
-		}
 
 		if (genePool == null) {
 			genePool = new SimpleGenePool();
@@ -256,8 +249,74 @@ public class SimulatorParser {
 			selector = new RouletteWheelSelector();
 		}
 
-		return new Simulation(populationSize, inoculum, stoppingCriterion, genePool, fitnessFunction, mutator, replicator, selector, samplingSchedule);
+        if (defaultFitnessFunction == null)
+            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + FITNESS_FUNCTION + "> is missing");
+
+        if (defaultMutator == null)
+            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + MUTATOR + "> is missing");
+
+        if (defaultReplicator == null)
+            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + REPLICATOR + "> is missing");
+
+        List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
+
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(EPOCH)) {
+                SimulationEpoch epoch = parseSimulationEpoch(e,
+                        defaultFitnessFunction, defaultMutator, defaultReplicator);
+
+                epochs.add(epoch);
+            }
+        }
+
+        if (epochs.isEmpty())
+            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
+        
+		return new Simulation(populationSize, inoculum, genePool, epochs, selector, samplingSchedule);
 	}
+
+    SimulationEpoch parseSimulationEpoch(Element element,
+            FitnessFunction fitnessFunction, Mutator mutator,
+            Replicator replicator) throws ParseException {
+        
+        String name = null;
+        int generationCount = -1;
+
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(GENERATION_COUNT)) {
+                try {
+                    generationCount = parseInteger(e, 1, Integer.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + EPOCH + "> element: " + pe.getMessage());
+                }
+            } else if (e.getName().equals(NAME)) {
+                name = e.getTextNormalize();
+            } else if (!e.getName().equals(FITNESS_FUNCTION) &&
+                    !e.getName().equals(MUTATOR) &&
+                    !e.getName().equals(REPLICATOR)) {
+                throw new ParseException("Error parsing <" + EPOCH + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
+
+        if (generationCount == -1) {
+            throw new ParseException("Error parsing <" + EPOCH + "> element: <" + POPULATION_SIZE + "> is missing");
+        }
+
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(FITNESS_FUNCTION)) {
+                fitnessFunction = parseFitnessFunction(e);
+            } else if (e.getName().equals(MUTATOR)) {
+                mutator = parseMutator(e);
+            } else if (e.getName().equals(REPLICATOR)) {
+                replicator = parseReplicator(e);
+            }
+        }
+
+        return new SimulationEpoch(name, generationCount, fitnessFunction, mutator, replicator);
+    }
 
 	private List<Sequence> parseInoculum(Element element) throws ParseException {
 		List<Sequence> inoculum = new ArrayList<Sequence>();
@@ -312,153 +371,387 @@ public class SimulatorParser {
 	}
 
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
-		if (element.getChildren().size() == 0) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
-		}
-
 		List<FitnessFunctionFactor> components = new ArrayList<FitnessFunctionFactor>();
 
-		for (int c = 0; c < element.getChildren().size(); ++c) {
-			Element e = (Element)element.getChildren().get(c);
-			if (e.getName().equals(AMINO_ACIDS)) {
-				FitnessFunctionFactor f1 = parseFitnessFunction(e, SequenceAlphabet.AMINO_ACIDS);
-				if (f1 != null)
-					components.add(f1);
-			} else if (e.getName().equals(NUCLEOTIDES)) {
-				FitnessFunctionFactor f1 = parseFitnessFunction(e, SequenceAlphabet.NUCLEOTIDES);
-				if (f1 != null)
-					components.add(f1);
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
-		}
+		for (Object o : element.getChildren()) {
+            Element e = (Element) o;
+
+            FitnessFactorCommon factor = null;
+
+            if (e.getName().equals(NEUTRAL_MODEL_FITNESS_FUNCTION)) {
+                // don't need to add a factor to the product
+            } else if (e.getName().equals(PURIFYING_FITNESS_FUNCTION)) {
+                factor = parseFitnessFactor(e, PurifyingFitnessFunction.class.getName());
+                if (!e.getChildren().isEmpty())
+                    components.add(parsePurifyingFitnessFunction(e, factor));
+                else
+                    components.add(factor.referenced);
+            } else if (e.getName().equals(FREQUENCY_DEPENDENT_FITNESS_FUNCTION)) {
+                factor = parseFitnessFactor(e, FrequencyDependentFitnessFunction.class.getName());
+                if (!e.getChildren().isEmpty())
+                    components.add(parseFrequencyDependentFitnessFunction(e, factor));
+                else
+                    components.add(factor.referenced);
+            } else if (e.getName().equals(AGE_DEPENDENT_FITNESS_FUNCTION)) {
+                factor = parseFitnessFactor(e, AgeDependentFitnessFunction.class.getName());
+                if (!e.getChildren().isEmpty())
+                    components.add(parseAgeDependentFitnessFunction(e, factor));
+                else
+                    components.add(factor.referenced);
+            } else if (e.getName().equals(EXPOSURE_DEPENDENT_FITNESS_FUNCTION)) {
+                factor = parseFitnessFactor(e, ExposureDependentFitnessFunction.class.getName());
+                if (!e.getChildren().isEmpty())
+                    components.add(parseExposureDependentFitnessFunction(e, factor));
+                else
+                    components.add(factor.referenced);
+            } else {
+                throw new ParseException("Error parsing <" + element.getName()
+                        + "> element: <" + e.getName() + "> is unrecognized");
+            }
+
+            if (factor.id != null) {
+                storeObjectById(factor.id, components.get(components.size() - 1));
+            }
+        }
 
 		return new FitnessFunction(components);
 
 	}
 
-	private FitnessFunctionFactor parseFitnessFunction(Element element, SequenceAlphabet alphabet) throws ParseException {
-		if (element.getChildren().size() == 0) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
-		}
+    static private class FitnessFactorCommon {
+        SequenceAlphabet      alphabet;
+        Set<Integer>          sites;
+        String                id;
+        FitnessFunctionFactor referenced;
+        
+        FitnessFactorCommon(String id, FitnessFunctionFactor referenced) {
+            this.alphabet = referenced.getAlphabet();
+            this.sites = referenced.getSites();
+            this.id = id;
+            this.referenced = referenced;
+        }
 
-		Set<Integer> sites = null;
+        FitnessFactorCommon(String id, Set<Integer> sites, SequenceAlphabet alphabet) {
+            this.alphabet = alphabet;
+            this.sites = sites;
+            this.id = id;
+            this.referenced = null;
+        }
+}
+    
+    private ExposureDependentFitnessFunction parseExposureDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+        double penalty = 0.001;
 
-		for (int c = 0; c < element.getChildren().size(); ++c) {
-			Element e = (Element)element.getChildren().get(c);
-			if (e.getName().equals(SITES)) {
-				sites = parseSites(e);
-			} else if (e.getName().equals(EMPIRICAL_FITNESS_FUNCTION)) {
-				boolean random = false;
-				if (e.getAttribute(RANDOM) != null) {
-					try {
-						random = e.getAttribute(RANDOM).getBooleanValue();
-					} catch (DataConversionException dce) {
-						throw new ParseException("Error parsing <" + e.getName() + "> attribute: " + dce.getMessage());
-					}
-				}
-				double[] fitnesses = parseNumberList(e);
+        if (factor.referenced != null) {
+            ExposureDependentFitnessFunction referenced = (ExposureDependentFitnessFunction) factor.referenced;
+            penalty = referenced.getPenalty();
+        }
 
-				return new EmpiricalFitnessFunction(fitnesses, random, sites, alphabet);
-			} else if (e.getName().equals(NEUTRAL_MODEL_FITNESS_FUNCTION)) {
-				return null;
-			} else if (e.getName().equals(PURIFYING_FITNESS_FUNCTION)) {
-				double strength = 1;
-				Sequence fittest = null;
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            
+            if (e.getName().equals(PENALTY)) {
+                try {
+                    penalty = parseDouble(e, 0, Double.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                }
+            } else if (!e.getName().equals(NUCLEOTIDES) && !e.getName().equals(AMINO_ACIDS)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
 
-				for (Object o : e.getChildren()) {
-					Element e1 = (Element)o;
-					if (e1.getName().equals(FITTEST)) {
-						fittest = parseSequence(e1.getTextNormalize());
-					} else if (e1.getName().equals(STRENGTH)) {
-						strength = parseDouble(e1, 0, Double.MAX_VALUE);
-					} else {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-					}
-				}
+        if (penalty < 0) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + PENALTY + ">");
+        }
 
-				if (fittest == null) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FITTEST + "> is missing");
-				}
+        return new ExposureDependentFitnessFunction(penalty, factor.sites, factor.alphabet);
+    }
 
-				return new PurifyingFitnessFunction(fittest, strength, sites, alphabet);
-			} else if (e.getName().equals(FLUCTUATING_FITNESS_FUNCTION)) {
-				double strength = 1;
-				double lambda = 0.01;
+    /**
+     * @param element
+     * @return 
+     * @throws ParseException
+     */
+    private AgeDependentFitnessFunction parseAgeDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+        double declineRate = -1;
 
-				for (Object o : e.getChildren()) {
-					Element e1 = (Element)o;
-					if (e1.getName().equals(LAMBDA)) {
-						lambda = parseDouble(e1, 0, Double.MAX_VALUE);
-					} else if (e1.getName().equals(STRENGTH)) {
-						strength = parseDouble(e1, 0, Double.MAX_VALUE);
-					} else {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-					}
-				}
+        if (factor.referenced != null) {
+            AgeDependentFitnessFunction referenced = (AgeDependentFitnessFunction) factor.referenced;
+            declineRate = referenced.getDeclineRate();
+        }
 
-				return new FluctuatingFitnessFunction(strength, lambda, sites, alphabet);
-			} else if (e.getName().equals(FREQUENCY_DEPENDENT_FITNESS_FUNCTION)) {
-				double shape = 0.5;
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(DECLINE_RATE)) {
+                try {
+                    declineRate = parseDouble(e, 0, Double.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                }
+            } else if (!e.getName().equals(NUCLEOTIDES) && !e.getName().equals(AMINO_ACIDS)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
 
-				for (Object o : e.getChildren()) {
-					Element e1 = (Element)o;
-					if (e1.getName().equals(SHAPE)) {
-						shape = parseDouble(e1, 0, Double.MAX_VALUE);
-					} else {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-					}
-				}
+        if (declineRate < 0) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + DECLINE_RATE + ">");
+        }
 
-				return new FrequencyDependentFitnessFunction(shape, sites, alphabet);
-            } else if (e.getName().equals(AGE_DEPENDENT_FITNESS_FUNCTION)) {
-                double declineRate = 0.001;
+        return new AgeDependentFitnessFunction(declineRate, factor.sites, factor.alphabet);
+    }
 
-                for (Object o : e.getChildren()) {
-                    Element e1 = (Element)o;
-                    if (e1.getName().equals(DECLINE_RATE)) {
-                        declineRate = parseDouble(e1, 0, Double.MAX_VALUE);
+    /**
+     * @param element
+     * @return 
+     * @throws ParseException
+     */
+    private FrequencyDependentFitnessFunction parseFrequencyDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+        double shape = -1.0;
+
+        if (factor.referenced != null) {
+            FrequencyDependentFitnessFunction referenced = (FrequencyDependentFitnessFunction) factor.referenced;
+            shape = referenced.getShape();
+        }
+
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(SHAPE)) {
+                try {
+                    shape = parseDouble(e, 0, Double.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                }
+            } else if (!e.getName().equals(NUCLEOTIDES) && !e.getName().equals(AMINO_ACIDS)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
+
+        if (shape < 0) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + SHAPE + ">");
+        }
+        
+        return new FrequencyDependentFitnessFunction(shape, factor.sites, factor.alphabet);
+    }
+
+    private PurifyingFitnessFunction parsePurifyingFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+        PurifyingFitnessRank rank = null;
+        PurifyingFitnessModel valueModel = null;
+
+        if (factor.referenced != null) {
+            PurifyingFitnessFunction referenced = (PurifyingFitnessFunction) factor.referenced;
+            rank = referenced.getRank();
+            valueModel = referenced.getValueModel();
+        }
+
+        for (Object o:element.getChildren()) {
+            Element e = (Element) o;
+            if (e.getName().equals(RANK)) {
+                rank = parsePuryfingFitnessRank(e, factor);
+            } else if (e.getName().equals(FITNESS)) {
+                valueModel = parsePurifyingFitnessModel(e, factor);
+            } else if (!e.getName().equals(NUCLEOTIDES) && !e.getName().equals(AMINO_ACIDS)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");                    
+            }
+        }
+
+        if (rank == null)
+            throw new ParseException("Error parsing <" + element.getName() + "> element: missing <rank>");
+
+        if (valueModel == null)
+            throw new ParseException("Error parsing <" + element.getName() + "> element: missing <fitness>");
+
+        return new PurifyingFitnessFunction(rank, valueModel, factor.sites, factor.alphabet);
+    }
+
+    /**
+     * @param element
+     * @throws ParseException
+     */
+    private FitnessFactorCommon parseFitnessFactor(Element element, String classType) throws ParseException {
+        FitnessFactorCommon result = null;
+
+        String id = element.getAttributeValue(FITNESS_FUNCTION_ID);
+        FitnessFunctionFactor referenced = null;
+        if (id != null) {
+            try {
+                referenced = (FitnessFunctionFactor) lookupObjectById(id);
+            } catch (ClassCastException e) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + id + "' is not a fitness function.");
+            }
+
+            if (referenced != null) {
+                if (!referenced.getClass().getName().equals(classType)) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + id + "' is not a fitness function of the same type.");               
+                }
+
+                result = new FitnessFactorCommon(id, referenced);
+            }
+        }
+        
+        for (Object o:element.getChildren()) {
+            Element e = (Element) o;
+
+            if (e.getName().equals(AMINO_ACIDS)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one of <aminoAcids> or <nucleotides>");
+                result = new FitnessFactorCommon(id, parseSites(e), SequenceAlphabet.AMINO_ACIDS);
+            } else if (e.getName().equals(NUCLEOTIDES)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one of <aminoAcids> or <nucleotides>");
+                result = new FitnessFactorCommon(id, parseSites(e), SequenceAlphabet.NUCLEOTIDES);
+            }
+        }
+
+        return result;
+    }
+
+    private PurifyingFitnessModel parsePurifyingFitnessModel(Element element, FitnessFactorCommon factor) throws ParseException {
+        PurifyingFitnessModel result = null;
+        
+        for (Object o:element.getChildren()) {
+            Element e = (Element) o;
+
+            if (e.getName().equals(VALUES)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one model definition");
+
+                double[] fitnesses;
+                try {
+                    fitnesses = parseNumberList(e);
+                } catch (NumberFormatException e1) {
+                    throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
+                }
+                
+                result = new PurifyingFitnessValuesModel(fitnesses);
+            } else if (e.getName().equals(LOGISTIC)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one model definition");
+
+                /* default to linear function */
+                double minimumFitness = 0;
+                double mostFitCount = 1;
+                double leastFitCount = 1;
+                
+                for (Object o2:e.getChildren()) {
+                    Element e2 = (Element) o2;
+
+                    if (e2.getName().equals(MINIMUM_FITNESS)) {
+                        try {
+                            minimumFitness = parseDouble(e2, 0, 1);
+                        } catch (ParseException pe) {
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                        }
+                    } else if (e2.getName().equals(MOST_FIT_COUNT)) {
+                        try {
+                            mostFitCount = parseDouble(e2, 1, factor.alphabet.getStateCount() - 1);                        
+                        } catch (ParseException pe) {
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                        }
+                    } else if (e2.getName().equals(LEAST_FIT_COUNT)) {
+                        try {
+                            leastFitCount = parseDouble(e2, 1, factor.alphabet.getStateCount() - 1);                        
+                        } catch (ParseException pe) {
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                        }
                     } else {
-                        throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                        throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e.getName() + "> is unrecognized");  
                     }
                 }
 
-                return new AgeDependentFitnessFunction(declineRate, sites, alphabet);
-            } else if (e.getName().equals(EXPOSURE_DEPENDENT_FITNESS_FUNCTION)) {
-                double penalty = 0.001;
+                result = new PurifyingFitnessLogisticModel(factor.alphabet, minimumFitness, mostFitCount, leastFitCount);
+                
+            } else {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");  
+            }
+        }
 
-                for (Object o : e.getChildren()) {
-                    Element e1 = (Element)o;
-                    if (e1.getName().equals(PENALTY)) {
-                        penalty = parseDouble(e1, 0, Double.MAX_VALUE);
+        if (result == null) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + VALUES + "> or <" + LOGISTIC + "> expected");
+        }
+        
+        return result;
+    }
+
+    private PurifyingFitnessRank parsePuryfingFitnessRank(Element element, FitnessFactorCommon factor) throws ParseException {
+        PurifyingFitnessRank result = null;
+
+        String breakTies = null;
+
+        Element breakTiesE = element.getChild(BREAK_TIES);
+        if (breakTiesE != null) {
+            breakTies = breakTiesE.getTextNormalize();
+        }
+        
+        for (Object o:element.getChildren()) {
+            Element e = (Element) o;
+
+            if (e.getName().equals(SEQUENCES)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one ranking definition");
+                /*
+                 * FIXME: parse more than one sequence.
+                 */
+                List<Sequence> sequences = new ArrayList<Sequence>();
+                sequences.add(parseSequence(e.getTextNormalize()));
+
+                if (breakTies == null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting breakTies");
+
+                boolean breakTiesRandom;
+                if (breakTies.equals(BREAK_TIES_RANDOM))
+                    breakTiesRandom = true;
+                else if (breakTies.equals(BREAK_TIES_ORDERED))
+                    breakTiesRandom = false;
+                else
+                    throw new ParseException("Error parsing <" + BREAK_TIES + "> element: value must be one of '"
+                            + BREAK_TIES_RANDOM + "' or '" + BREAK_TIES_ORDERED + "'");
+
+                result = new PurifyingFitnessAlignmentRank(factor.alphabet, sequences, breakTiesRandom);
+            } else if (e.getName().equals(FLUCTUATE)) {
+                if (result != null)
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one ranking definition");
+
+                double lambda = 0.01;
+                
+                for (Object o2:e.getChildren()) {
+                    Element e2 = (Element) o2;
+
+                    if (e2.getName().equals(LAMBDA)) {
+                        lambda = parseDouble(e2, 0, 1);
                     } else {
-                        throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                        throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");  
                     }
                 }
 
-                return new ExposureDependentFitnessFunction(penalty, sites, alphabet);
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
-		}
+                result = new PurifyingFitnessFluctuatingRank(factor.sites, factor.alphabet, lambda);
+            } else if (!e.getName().equals(BREAK_TIES)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
 
-		throw new ParseException("Error parsing <" + element.getName() + "> element: " +
-				"expecting one of <" + EMPIRICAL_FITNESS_FUNCTION + ">, " +
-				"< " + NEUTRAL_MODEL_FITNESS_FUNCTION + ">, " +
-				"< " + PURIFYING_FITNESS_FUNCTION + ">, " +
-				"< " + FLUCTUATING_FITNESS_FUNCTION + ">");
-	}
+        if (result == null) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + SEQUENCES + "> or <" + FLUCTUATE + "> expected");
+        }
+        
+        return result;
+    }
 
 	/**
-	 * @param e
+	 * @param element
 	 * @return the number list
+	 * @throws ParseException 
 	 */
-	private double[] parseNumberList(Element e) throws NumberFormatException {
-		String text = e.getTextNormalize();
+	private double[] parseNumberList(Element element) throws ParseException {
+		String text = element.getTextNormalize();
 		String[] values = text.split("\\s*,\\s*|\\s+");
 		double[] fitnesses = new double[values.length];
 		for (int i = 0; i < fitnesses.length; i++) {
-			fitnesses[i] = Double.parseDouble(values[i]);
+			try {
+                fitnesses[i] = Double.parseDouble(values[i]);
+            } catch (NumberFormatException e1) {
+                throw new ParseException("content of <" + element.getName() + "> is not a number");
+            }
 		}
 		return fitnesses;
 	}

@@ -20,11 +20,8 @@ public class Simulation {
 
     private final int populationSize;
     private final List<Sequence> inoculum;
-    private final StoppingCriterion stoppingCriterion;
     private final GenePool genePool;
-    private final FitnessFunction fitnessFunction;
-    private final Mutator mutator;
-    private final Replicator replicator;
+    private final List<SimulationEpoch> epochs;
     private final Selector selector;
     private final SamplingSchedule samplingSchedule;
 
@@ -33,27 +30,16 @@ public class Simulation {
     public Simulation (
             int populationSize,
             List<Sequence> inoculum,
-            StoppingCriterion stoppingCriterion,
             GenePool genePool,
-            FitnessFunction fitnessFunction,
-            Mutator mutator,
-            Replicator replicator,
+            List<SimulationEpoch> epochs,
             Selector selector,
             SamplingSchedule samplingSchedule) {
 
         this.populationSize = populationSize;
-
         this.inoculum = inoculum;
-
-        this.stoppingCriterion = stoppingCriterion;
-
-        this.fitnessFunction = fitnessFunction;
-        this.mutator = mutator;
-        this.replicator = replicator;
+        this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
-
         this.genePool = genePool;
-
         this.selector = selector;
 
         // This pre-computes all possible mutation objects as singletons...
@@ -68,45 +54,29 @@ public class Simulation {
 
         logger.finer("Initializing population: " + populationSize + " viruses.");
 
-        population.initialize(inoculum, fitnessFunction);
+        population.initialize(inoculum);
 
         int generation = 0;
 
-        if (fitnessFunction.updateGeneration(generation, population))
-            population.updateFitness(fitnessFunction);
-
-        while (!stoppingCriterion.stop(generation, population)) {
-
-            if (fitnessFunction.updateGeneration(generation, population))
-                population.updateFitness(fitnessFunction);
-
-            population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
-
-            if (generation % 100 == 0) {
-	            population.getPhylogeny().pruneDeadLineages();
-
-                System.err.println("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
-                        ", distance = " + population.getMeanDistance() +
-                        ", max freq = " + population.getMaxFrequency() +
-                        ", genepool size = " + genePool.getUniqueGenomeCount() +
-                        " (" + genePool.getUnusedGenomeCount() + " available)" +
-		                ", phylogeny size = " + population.getPhylogeny().getSize() +
-		                " (used = " + population.getPhylogeny().getLineageCount()+ ")" +
-		                ", tmrca = " + population.getPhylogeny().getMRCA().getGeneration() );
-            } else {
-                if (false)
-                    logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
-                            ", distance = " + population.getMeanDistance() +
-                            ", max freq = " + population.getMaxFrequency() +
-                            ", genepool size= " + genePool.getUniqueGenomeCount() +
-                            "(" + genePool.getUnusedGenomeCount() + " available)");
-            }
-
-            samplingSchedule.doSampling(generation, population);
-
-            generation++;
+        for (SimulationEpoch epoch:epochs) {
+            generation = epoch.run(this, logger, generation);
         }
-
         samplingSchedule.cleanUp();
+    }
+
+    public GenePool getGenePool() {
+        return genePool;
+    }
+
+    public Population getPopulation() {
+        return population;
+    }
+
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    public SamplingSchedule getSamplingSchedule() {
+        return samplingSchedule;
     }
 }

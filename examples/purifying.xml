@@ -4,7 +4,6 @@
     <replicates>1</replicates>
 
     <simulation>
-
         <genome>
             <length>609</length>
         </genome>
@@ -19,42 +18,45 @@
             </inoculum>
         </population>
 
-            <fitnessFunction>
-                <purifyingFitness>
-                    <aminoAcids>1-201,203-279,281-434</aminoAcids>
+        <fitnessFunction>
+        	<purifyingFitness>
+        		<aminoAcids>1-201,203-279,281-434</aminoAcids>
 
-                    <rank>
-                        <breakTies>random</breakTies>
-                        <sequences>
-                            CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
-                        </sequences>
-                    </rank>
-                    <fitness>
-                        <logistic>
-                            <minimumFitness>0.1</minimumFitness>
-                            <mostFitCount>4</mostFitCount>
-                            <leastFitCount>16</leastFitCount>
-                        </logistic>
-                        <!--<values>1.0 ... 1.0</values>-->
-                    </fitness>
-                </purifyingFitness>
-            </fitnessFunction>
+        		<rank>
+        			<breakTies>random</breakTies>
+        			<sequences>
+                    	GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+        			</sequences>
+        		</rank>
+        		<fitness>
+        			<logistic>
+        				<minimumFitness>0.1</minimumFitness>
+        				<mostFitCount>4</mostFitCount>
+        				<leastFitCount>16</leastFitCount>
+        			</logistic>
+        			<!--<values>1.0 ... 1.0</values>-->
+        		</fitness>
+        	</purifyingFitness>
+        </fitnessFunction>
 
-            <mutator>
-                <nucleotideMutator>
-                    <mutationRate>1.0E-4</mutationRate>
-                    <transitionBias>2.0</transitionBias>
-                </nucleotideMutator>
-            </mutator>
+        <mutator>
+        	<nucleotideMutator>
+        		<mutationRate>1.0E-4</mutationRate>
+        		<transitionBias>2.0</transitionBias>
+        	</nucleotideMutator>
+        </mutator>
 
-            <replicator>
-                <clonalReplicator/>
-            </replicator>
+        <replicator>
+        	<clonalReplicator />
+        </replicator>
 
         <epoch>
             <generationCount>1001</generationCount>
-
         </epoch>
+
+		<epoch>
+        	<generationCount>1001</generationCount>
+		</epoch>
 
         <samplingSchedule>
             <sampler>
@@ -79,7 +81,6 @@
                 <statistics></statistics>
             </sampler>
         </samplingSchedule>
-
     </simulation>
 
 </santa>

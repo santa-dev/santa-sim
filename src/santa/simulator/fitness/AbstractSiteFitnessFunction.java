@@ -133,7 +133,7 @@ public abstract class AbstractSiteFitnessFunction extends AbstractFitnessFunctio
         logFitness[i][state] = f;
     }
 
-    protected Set<Integer> getSites() {
+    public Set<Integer> getSites() {
         return sites;
     }
 

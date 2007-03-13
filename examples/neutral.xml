@@ -3,8 +3,6 @@
 	<replicates>10</replicates>
 
 	<simulation>
-		<generationCount>1001</generationCount>
-
 		<genome>
 			<length>609</length>
 		</genome>
@@ -20,14 +18,6 @@
 		</population>
 
 		<fitnessFunction>
-			<nucleotides>
-				<neutralFitness/>
-			</nucleotides>
-			<aminoAcids>
-				<empiricalFitness>
-					1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
-				</empiricalFitness>
-			</aminoAcids>
 		</fitnessFunction>
 
 		<mutator>
@@ -40,6 +30,10 @@
 		<replicator>
 			<clonalReplicator/>
 		</replicator>
+
+		<epoch>
+			<generationCount>1001</generationCount>
+		</epoch>
 
 		<samplingSchedule>
 			<sampler>

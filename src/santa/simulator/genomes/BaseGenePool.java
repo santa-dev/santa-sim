@@ -79,6 +79,12 @@ public abstract class BaseGenePool implements GenePool {
         }
     }
 
+    public void computeFitness(FitnessFunction fitnessFunction) {
+        for (Genome genome : genomes) {
+            fitnessFunction.computeLogFitness(genome);
+        }
+    }
+    
     public void updateFitness(FitnessFunction fitnessFunction) {
         for (Genome genome : genomes) {
             fitnessFunction.updateLogFitness(genome);

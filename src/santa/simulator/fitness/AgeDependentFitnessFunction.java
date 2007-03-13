@@ -65,7 +65,7 @@ public class AgeDependentFitnessFunction extends AbstractSignatureFitnessFunctio
             }
         }
 
-        System.err.println("Average viral genome age: " + sumAges / population.getPopulationSize());
+        //System.err.println("Average viral genome age: " + sumAges / population.getPopulationSize());
 
         Set<Entry<Signature, Integer>> entries = birthGenerations.entrySet();
         for (Iterator<Entry<Signature, Integer>> i = entries.iterator(); i.hasNext();) {
@@ -86,5 +86,9 @@ public class AgeDependentFitnessFunction extends AbstractSignatureFitnessFunctio
 
     public double updateLogFitness(Genome genome, double logFitness) {
         return computeLogFitness(genome);
+    }
+
+    public double getDeclineRate() {
+        return declineRate;
     }
 }
