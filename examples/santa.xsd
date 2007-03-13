@@ -57,6 +57,7 @@
     <xs:element name="epoch">
         <xs:complexType>
             <xs:all>
+                <xs:element minOccurs="0" name="name" type="xs:string"/>
                 <xs:element name="generationCount" type="xs:integer"/>
                 <xs:element minOccurs="0" ref="fitnessFunction"/>
                 <xs:element minOccurs="0" ref="mutator"/>
@@ -69,6 +70,7 @@
         <xs:complexType>
             <xs:choice minOccurs="1" maxOccurs="unbounded">
                 <xs:element ref="purifyingFitness"/>
+                <xs:element ref="empiricalFitness"/>
                 <xs:element ref="ageDependentFitness"/>
                 <xs:element ref="exposureDependentFitness"/>
                 <xs:element ref="frequencyDependentFitness"/>
@@ -95,29 +97,47 @@
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:choice minOccurs="1"  maxOccurs="1">
+                            <xs:choice minOccurs="0"  maxOccurs="1">
                                 <xs:element name="sequences" type="xs:string"/>
-                                <xs:element name="fluctuating"/>
+                                <xs:element name="order" type="xs:string"/>
                             </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="fitness">
                     <xs:complexType>
-                        <xs:choice minOccurs="1"  maxOccurs="1">
-                            <xs:element name="logistic">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="minimumFitness" type="xs:decimal"/>
-                                        <xs:element name="mostFitCount" type="xs:decimal"/>
-                                        <xs:element name="leastFitCount" type="xs:decimal"/>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                            <xs:element name="values" type="xs:string"/>
-                        </xs:choice>
+                        <xs:sequence>
+                            <xs:choice>
+                                <xs:sequence>
+                                    <xs:element name="minFitness" type="xs:decimal"/>
+                                    <xs:element name="lowFitness" type="xs:decimal"/>
+                                    <xs:element name="probableSet" type="xs:string"/>
+                                </xs:sequence>
+                                <xs:element name="values" type="xs:string"/>
+                            </xs:choice>
+                        </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element minOccurs="0" maxOccurs="1" name="fluctuate">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="fitnessLimit" type="xs:decimal"/>
+                            <xs:element name="rate" type="xs:decimal"/>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="empiricalFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+                <xs:element name="values" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -179,10 +199,13 @@
 
     <xs:element name="nucleotideMutator">
         <xs:complexType>
-            <xs:all>
+            <xs:sequence>
                 <xs:element name="mutationRate" type="xs:double"/>
-                <xs:element name="transitionBias" type="xs:decimal"/>
-            </xs:all>
+                <xs:choice>
+                    <xs:element name="transitionBias" type="xs:decimal"/>
+                    <xs:element name="rateBias" type="xs:string"/>
+                </xs:choice>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

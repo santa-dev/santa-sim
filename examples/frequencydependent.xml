@@ -35,10 +35,6 @@
 			<clonalReplicator/>
 		</replicator>
 
-		<selector>
-			<rouletteWheelSelector/>
-		</selector>
-
 		<epoch>
 			<generationCount>1001</generationCount>
 		</epoch>
