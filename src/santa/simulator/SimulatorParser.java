@@ -409,7 +409,7 @@ public class SimulatorParser {
                         + "> element: <" + e.getName() + "> is unrecognized");
             }
 
-            if (factor.id != null) {
+            if (factor != null && factor.id != null) {
                 storeObjectById(factor.id, components.get(components.size() - 1));
             }
         }
