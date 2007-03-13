@@ -41,7 +41,17 @@ public class SamplingSchedule {
         }
     }
 
-	private List<Entry> entries = new ArrayList<Entry>();
+    public boolean isSamplingTrees() {
+        return isSamplingTrees;
+    }
+
+    public void setSamplingTrees(boolean samplingTrees) {
+        isSamplingTrees = samplingTrees;
+    }
+
+    private boolean isSamplingTrees = false;
+
+    private List<Entry> entries = new ArrayList<Entry>();
 
 	private class Entry {
 

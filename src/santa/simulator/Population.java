@@ -24,9 +24,9 @@ import java.util.*;
  */
 public class Population {
 
-	public Population(int populationSize, GenePool genePool, Selector selector) {
+	public Population(int populationSize, GenePool genePool, Selector selector, Phylogeny phylogeny) {
 
-		this.phylogeny = new Phylogeny(populationSize);
+		this.phylogeny = phylogeny;
 
 		this.populationSize = populationSize;
 		this.genePool = genePool;
