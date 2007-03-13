@@ -6,6 +6,7 @@ import santa.simulator.mutators.Mutator;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.selectors.Selector;
+import santa.simulator.phylogeny.Phylogeny;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -58,7 +59,7 @@ public class Simulation {
         // This pre-computes all possible mutation objects as singletons...
         Mutation.initialize();
 
-        population = new Population(populationSize, genePool, selector);
+        population = new Population(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
 
     public void run(int replicate, Logger logger) {

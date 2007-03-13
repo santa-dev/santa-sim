@@ -98,7 +98,6 @@ public class SimulatorParser {
 	public final static String DUAL_INFECTION_PROBABILITY = "dualInfectionProbability";
 	public final static String RECOMBINATION_PROBABILITY = "recombinationProbability";
 
-
 	Simulator parse(Element element) throws ParseException {
 
 		if (!element.getName().equals(SIMULATOR)) {
@@ -145,7 +144,7 @@ public class SimulatorParser {
 		int populationSize = -1;
 		List<Sequence> inoculum = null;
 
-		boolean genomeDescription = false;
+        boolean genomeDescription = false;
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(GENOME_DESCRIPTION)) {
@@ -846,7 +845,9 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: specify only one of <" + SAMPLE_SIZE + "> or <" + SCHEDULE + ">.");
 		}
 
-		return new TreeSampler(sampleSize, schedule, format, label, fileName);
+        samplingSchedule.setSamplingTrees(true);
+
+        return new TreeSampler(sampleSize, schedule, format, label, fileName);
 	}
 
 	private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {

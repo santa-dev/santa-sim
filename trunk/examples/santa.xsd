@@ -1,262 +1,298 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	<xs:element name="santa">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="replicates" type="xs:integer"/>
-				<xs:element ref="simulation"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="santa">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="replicates" type="xs:integer"/>
+                <xs:element ref="simulation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="simulation">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="generationCount" type="xs:integer"/>
-				<xs:element ref="genome"/>
-				<xs:element ref="population"/>
-				<xs:element ref="fitnessFunction"/>
-				<xs:element ref="mutator"/>
-				<xs:element ref="replicator"/>
-				<xs:element minOccurs="0" ref="selector"/>
-				<xs:element ref="samplingSchedule"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="simulation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="genome"/>
+                <xs:element ref="population"/>
+                <xs:element ref="fitnessFunction"/>
+                <xs:element ref="mutator"/>
+                <xs:element ref="replicator"/>
+                <xs:element minOccurs="1" maxOccurs="unbounded" ref="epoch"/>
+                <xs:element ref="samplingSchedule"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="genome">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="length" type="xs:integer"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="genome">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="length" type="xs:integer"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="population">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="populationSize" type="xs:integer"/>
-				<xs:element ref="inoculum"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="population">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="populationSize" type="xs:integer"/>
+                <xs:element ref="inoculum"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="inoculum">
-		<xs:complexType>
-			<xs:all>
-				<xs:element ref="sequence"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="inoculum">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="sequence"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="sequence">
-		<xs:complexType mixed="true">
-			<xs:attribute name="label" use="required" type="xs:NCName"/>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="sequence">
+        <xs:complexType mixed="true">
+            <xs:attribute name="label" use="required" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="fitnessFunction">
-		<xs:complexType>
-			<xs:sequence  minOccurs="0" maxOccurs="unbounded">
-				<xs:choice>
-					<xs:element name="nucleotides" type="fitnessType"/>
-					<xs:element name="aminoAcids" type="fitnessType"/>
-				</xs:choice>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="epoch">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="generationCount" type="xs:integer"/>
+                <xs:element minOccurs="0" ref="fitnessFunction"/>
+                <xs:element minOccurs="0" ref="mutator"/>
+                <xs:element minOccurs="0" ref="replicator"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:complexType name="fitnessType">
-		<xs:sequence>
-			<xs:element minOccurs="0" name="sites" type="xs:string"/>
-			<xs:choice minOccurs="1"  maxOccurs="1">
-				<xs:element ref="ageDependentFitness"/>
-				<xs:element ref="empiricalFitness"/>
-				<xs:element ref="exposureDependentFitness"/>
-				<xs:element ref="fluctuatingFitness"/>
-				<xs:element ref="frequencyDependentFitness"/>
-				<xs:element ref="purifyingFitness"/>
-				<xs:element ref="neutralFitness"/>
-			</xs:choice>
-		</xs:sequence>
-	</xs:complexType>
+    <xs:element name="fitnessFunction">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="purifyingFitness"/>
+                <xs:element ref="ageDependentFitness"/>
+                <xs:element ref="exposureDependentFitness"/>
+                <xs:element ref="frequencyDependentFitness"/>
+                <xs:element ref="neutralFitness"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="ageDependentFitness">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="declineRate" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="purifyingFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+                <xs:element name="rank">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="breakTies">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="random"/>
+                                        <xs:enumeration value="ordered"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:choice minOccurs="1"  maxOccurs="1">
+                                <xs:element name="sequences" type="xs:string"/>
+                                <xs:element name="fluctuating"/>
+                            </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="fitness">
+                    <xs:complexType>
+                        <xs:choice minOccurs="1"  maxOccurs="1">
+                            <xs:element name="logistic">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="minimumFitness" type="xs:decimal"/>
+                                        <xs:element name="mostFitCount" type="xs:decimal"/>
+                                        <xs:element name="leastFitCount" type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="values" type="xs:string"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="empiricalFitness">
-		<xs:simpleType>
-			<xs:list itemType="xs:decimal"/>
-		</xs:simpleType>
-	</xs:element>
+    <xs:element name="ageDependentFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+                <xs:element name="declineRate" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="exposureDependentFitness">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="penalty" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="exposureDependentFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+                <xs:element name="penalty" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="fluctuatingFitness">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="lambda" type="xs:decimal"/>
-				<xs:element name="strength" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="frequencyDependentFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+                <xs:element name="shape" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="frequencyDependentFitness">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="shape" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="neutralFitness">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="aminoAcids" type="xs:string"/>
+                    <xs:element name="nucleotides" type="xs:string"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="purifyingFitness">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="fittest" type="xs:string"/>
-				<xs:element name="strength" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="mutator">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="nucleotideMutator"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="neutralFitness">
-		<xs:complexType/>
-	</xs:element>
-
-	<xs:element name="mutator">
-		<xs:complexType>
-			<xs:all>
-				<xs:element ref="nucleotideMutator"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="nucleotideMutator">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="mutationRate" type="xs:double"/>
-				<xs:element name="transitionBias" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="nucleotideMutator">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="mutationRate" type="xs:double"/>
+                <xs:element name="transitionBias" type="xs:decimal"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
 
-	<xs:element name="replicator">
-		<xs:complexType>
-			<xs:choice>
-				<xs:element ref="clonalReplicator"/>
-				<xs:element ref="recombinantReplicator"/>
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="replicator">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="clonalReplicator"/>
+                <xs:element ref="recombinantReplicator"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="clonalReplicator">
-		<xs:complexType/>
-	</xs:element>
+    <xs:element name="clonalReplicator">
+        <xs:complexType/>
+    </xs:element>
 
-	<xs:element name="recombinantReplicator">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="dualInfectionProbability" type="xs:decimal"/>
-				<xs:element name="recombinationProbability" type="xs:decimal"/>
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="recombinantReplicator">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="dualInfectionProbability" type="xs:decimal"/>
+                <xs:element name="recombinationProbability" type="xs:decimal"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="selector">
-		<xs:complexType>
-			<xs:choice>
-				<xs:element name="rouletteWheelSelector">
-					<xs:complexType/>
-				</xs:element>
-				<xs:element name="monteCarloSelector">
-					<xs:complexType/>
-				</xs:element>
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="selector">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="rouletteWheelSelector">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="monteCarloSelector">
+                    <xs:complexType/>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="samplingSchedule">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="sampler"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="samplingSchedule">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="sampler"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="sampler">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:choice>
-					<xs:element name="atFrequency" type="xs:integer"/>
-					<xs:element name="atGeneration" type="xs:integer"/>
-				</xs:choice>
-				<xs:element name="fileName" type="xs:string"/>
-				<xs:choice>
-					<xs:element ref="alignment"/>
-					<xs:element ref="tree"/>
-					<xs:element ref="statistics"/>
-				</xs:choice>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="sampler">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="atFrequency" type="xs:integer"/>
+                    <xs:element name="atGeneration" type="xs:integer"/>
+                </xs:choice>
+                <xs:element name="fileName" type="xs:string"/>
+                <xs:choice>
+                    <xs:element ref="alignment"/>
+                    <xs:element ref="tree"/>
+                    <xs:element ref="statistics"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="alignment">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:choice>
-					<xs:element ref="schedule"/>
-					<xs:element name="sampleSize" type="xs:integer"/>
-				</xs:choice>
-				<xs:element name="format">
-					<xs:simpleType>
-						<xs:restriction base="xs:string">
-							<xs:enumeration value="NEXUS"/>
-							<xs:enumeration value="FASTA"/>
-							<xs:enumeration value="XML"/>
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:element>
-				<xs:element minOccurs="0" maxOccurs="1" name="label" type="xs:string"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="alignment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element ref="schedule"/>
+                    <xs:element name="sampleSize" type="xs:integer"/>
+                </xs:choice>
+                <xs:element name="format">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="NEXUS"/>
+                            <xs:enumeration value="FASTA"/>
+                            <xs:enumeration value="XML"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element minOccurs="0" maxOccurs="1" name="label" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="tree">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:choice>
-					<xs:element ref="schedule"/>
-					<xs:element name="sampleSize" type="xs:integer"/>
-				</xs:choice>
-				<xs:element name="format">
-					<xs:simpleType>
-						<xs:restriction base="xs:string">
-							<xs:enumeration value="NEXUS"/>
-							<xs:enumeration value="NEWICK"/>
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:element>
-				<xs:element minOccurs="0" maxOccurs="1" name="label" type="xs:string"/>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+    <xs:element name="tree">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element ref="schedule"/>
+                    <xs:element name="sampleSize" type="xs:integer"/>
+                </xs:choice>
+                <xs:element name="format">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="NEXUS"/>
+                            <xs:enumeration value="NEWICK"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element minOccurs="0" maxOccurs="1" name="label" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:element name="schedule">
-		<xs:simpleType>
-			<xs:list itemType="xs:integer"/>
-		</xs:simpleType>
-	</xs:element>
+    <xs:element name="schedule">
+        <xs:simpleType>
+            <xs:list itemType="xs:integer"/>
+        </xs:simpleType>
+    </xs:element>
 
-	<xs:element name="statistics"/>
+    <xs:element name="statistics"/>
 </xs:schema>
