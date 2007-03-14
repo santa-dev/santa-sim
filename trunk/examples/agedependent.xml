@@ -8,7 +8,7 @@
 		</genome>
 
 		<population>
-			<populationSize>1000</populationSize>
+			<populationSize>100000</populationSize>
 
 			<inoculum>
 				<sequence label="virus1gen1000">

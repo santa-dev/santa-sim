@@ -45,7 +45,6 @@ public class Population {
 		for (int i = 0; i < ancestors.length; i++) {
 			Sequence sequence = inoculum.get(i);
 			ancestors[i] = genePool.createGenome(sequence);
-			//ancestors[i].setLogFitness(fitnessFunction.computeLogFitness(ancestors[i]));
 		}
 
 		if (ancestors.length > 1) {
@@ -271,14 +270,23 @@ public class Population {
 		return meanDiversity;
 	}
 
-	public double[] getAlleleFrequencies(int site) {
-		int[] freqs = genePool.getStateFrequencies(site);
-		double[] normalizedFreqs = new double[freqs.length];
-		for (int i = 0; i < freqs.length; i++) {
-			normalizedFreqs[i] = freqs[i] / (double)populationSize;
-		}
-		return normalizedFreqs;
-	}
+    public double[] getAlleleFrequencies(int site) {
+        int[] freqs = genePool.getStateFrequencies(site);
+        double[] normalizedFreqs = new double[freqs.length];
+        for (int i = 0; i < freqs.length; i++) {
+            normalizedFreqs[i] = freqs[i] / (double)populationSize;
+        }
+        return normalizedFreqs;
+    }
+
+    public double[] getAlleleFrequencies(int site, SequenceAlphabet alphabet) {
+        int[] freqs = genePool.getStateFrequencies(site, alphabet);
+        double[] normalizedFreqs = new double[freqs.length];
+        for (int i = 0; i < freqs.length; i++) {
+            normalizedFreqs[i] = freqs[i] / (double)populationSize;
+        }
+        return normalizedFreqs;
+    }
 
 	public Virus[] getCurrentGeneration() {
 		return currentGeneration;

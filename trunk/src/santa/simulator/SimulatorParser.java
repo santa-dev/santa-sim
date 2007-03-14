@@ -1,6 +1,5 @@
 package santa.simulator;
 
-import jebl.evolution.sequences.SequenceType;
 import org.jdom.Element;
 import santa.simulator.fitness.*;
 import santa.simulator.genomes.*;
@@ -64,7 +63,7 @@ public class SimulatorParser {
     private final static String BREAK_TIES_ORDERED = "ordered";
     private final static String ORDER = "order";
     private final static String FLUCTUATE = "fluctuate";
-    private final static String FLUCTUATE_FITNESS_LIMIT = "fluctuate";
+    private final static String FLUCTUATE_FITNESS_LIMIT = "fitnessLimit";
     private final static String FLUCTUATE_RATE = "rate";
 
 	private final static String FREQUENCY_DEPENDENT_FITNESS_FUNCTION = "frequencyDependentFitness";
@@ -73,7 +72,7 @@ public class SimulatorParser {
     private final static String DECLINE_RATE = "declineRate";
     private final static String EXPOSURE_DEPENDENT_FITNESS_FUNCTION = "exposureDependentFitness";
     private final static String PENALTY = "penalty";
-
+    private static final Object EMPERICAL_FITNESS_FUNCTION = "empiricalFitness";
 
 	private final static String MUTATOR = "mutator";
 	private final static String REPLICATOR = "replicator";
@@ -93,7 +92,8 @@ public class SimulatorParser {
 	private final static String CONSENSUS = "consensus";
 
 	private final static String ALLELE_FREQUENCY = "alleleFrequency";
-	private final static String SITE = "site";
+    private static final String AMINO_ACID = "aminoAcid";
+    private static final String NUCLEOTIDE = "nucleotide";
 
 	private final static String STATISTICS = "statistics";
 
@@ -109,8 +109,6 @@ public class SimulatorParser {
 
     private static final String ID = "id";
     private static final String REF = "ref";
-
-    private static final Object EMPERICAL_FITNESS_FUNCTION = null;
 
     private Map<String, Element> elementIdMap = new HashMap<String, Element>();
 
@@ -545,9 +543,9 @@ public class SimulatorParser {
             } else if (e.getName().equals(FLUCTUATE)) {
                 for (Object o2:e.getChildren()) {
                     Element e2 = (Element) o2;
-                    if (e.getName().equals(FLUCTUATE_FITNESS_LIMIT)) {
+                    if (e2.getName().equals(FLUCTUATE_FITNESS_LIMIT)) {
                         fluctuateFitnessLimit = parseDouble(e2, 0, 1);
-                    } else if (e.getName().equals(FLUCTUATE_RATE)) {
+                    } else if (e2.getName().equals(FLUCTUATE_RATE)) {
                         fluctuateRate = parseDouble(e2, 0, 1);
                     } else {
                         throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e2.getName() + "> is unrecognized");                                            
@@ -576,7 +574,7 @@ public class SimulatorParser {
             if (e.getName().equals(VALUES)) {
                 try {
                     fitnesses = parseNumberList(e, factor.alphabet.getStateCount());
-                } catch (NumberFormatException e1) {
+                } catch (ParseException e1) {
                     throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
                 }
 
@@ -597,8 +595,6 @@ public class SimulatorParser {
      * @throws ParseException
      */
     private FitnessFactorCommon parseFitnessFactor(Element element) throws ParseException {
-        FitnessFactorCommon result = null;
-
         String ref = element.getAttributeValue(REF);
         if (ref != null) {
             if (!element.getChildren().isEmpty()) {
@@ -612,17 +608,14 @@ public class SimulatorParser {
             Element e = (Element) o;
 
             if (e.getName().equals(AMINO_ACIDS)) {
-                if (result != null)
-                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one of <aminoAcids> or <nucleotides>");
-                result = new FitnessFactorCommon(parseSites(e), SequenceAlphabet.AMINO_ACIDS, element);
+                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.AMINO_ACIDS, element);
             } else if (e.getName().equals(NUCLEOTIDES)) {
-                if (result != null)
-                    throw new ParseException("Error parsing <" + element.getName() + "> element: expecting only one of <aminoAcids> or <nucleotides>");
-                result = new FitnessFactorCommon(parseSites(e), SequenceAlphabet.NUCLEOTIDES, element);
+                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.NUCLEOTIDES, element);
             }
         }
 
-        return result;
+        throw new ParseException("Error parsing <" + element.getName() + "> element: expecting one of <"
+                + AMINO_ACIDS + "> or <" + NUCLEOTIDES + ">");
     }
 
     private PurifyingFitnessModel parsePurifyingFitnessModel(Element element, FitnessFactorCommon factor) throws ParseException {
@@ -638,7 +631,7 @@ public class SimulatorParser {
                 double[] fitnesses;
                 try {
                     fitnesses = parseNumberList(e, factor.alphabet.getStateCount());
-                } catch (NumberFormatException e1) {
+                } catch (ParseException e1) {
                     throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
                 }
                 
@@ -666,7 +659,7 @@ public class SimulatorParser {
                     probableSet = PurifyingFitnessPiecewiseLinearModel.ProbableSetEnum.OBSERVED;
                 } else {
                     try {
-                        probableNumber = parseInteger(element, 1, factor.alphabet.getStateCount());
+                        probableNumber = parseInteger(e, 1, factor.alphabet.getStateCount());
                         probableSet = PurifyingFitnessPiecewiseLinearModel.ProbableSetEnum.NUMBER;
                     } catch (ParseException pe) {
                         throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
@@ -856,7 +849,7 @@ public class SimulatorParser {
 				} else if (e1.getName().equals(RATE_BIAS)) {
 					try {
 						rateBiases = parseNumberList(e1, 12);
-					} catch (NumberFormatException pe) {
+					} catch (ParseException pe) {
 						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
 					}
 				} else {
@@ -1177,26 +1170,36 @@ public class SimulatorParser {
         return new TreeSampler(sampleSize, schedule, format, label, fileName);
 	}
 
-	private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
+    private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
 
-		int site = -1;
+        int site = -1;
+        SequenceAlphabet alphabet = null;
 
-		for (Object o : element.getChildren()) {
-			Element e1 = (Element)o;
-			if (e1.getName().equals(SITE)) {
-				try {
-					site = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-			}
+        for (Object o : element.getChildren()) {
+            Element e1 = (Element)o;
+            if (e1.getName().equals(AMINO_ACID)) {
+                try {
+                    site = parseInteger(e1, 1, Integer.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                }
+                alphabet = SequenceAlphabet.AMINO_ACIDS;
+            } else if (e1.getName().equals(NUCLEOTIDE)) {
+                try {
+                    site = parseInteger(e1, 1, Integer.MAX_VALUE);
+                } catch (ParseException pe) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                }
+                alphabet = SequenceAlphabet.NUCLEOTIDES;
+            } else {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName()
+                        + "> is unrecognized");
+            }
 
-		}
+        }
 
-		return new AlleleFrequencySampler(site - 1, SequenceType.CODON, fileName);
-	}
+        return new AlleleFrequencySampler(site - 1, alphabet, fileName);
+        }
 
 	private int parseInteger(Element element, int minValue, int maxValue) throws ParseException {
 		int value;
