@@ -743,11 +743,11 @@ public class SimulatorParser {
 
         if (text.charAt(0) == '>') {
             /* FASTA format */
-            String[] seqStrings = text.split("(?m)^>.*$");
+            String[] seqStrings = text.split("(?m)^\\s*>.*$");
             
-            for (String seqString:seqStrings) {
-                seqString = seqString.replaceAll("\\s", "");
-                result.add(parseSequence(seqString));
+            for (int i = 1; i < seqStrings.length; i++) {
+                seqStrings[i] = seqStrings[i].replaceAll("\\s", "");
+                result.add(parseSequence(seqStrings[i]));
             }
         } else {
             /* newline delimited sequences */
