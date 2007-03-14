@@ -1,9 +1,6 @@
 package santa.simulator;
 
-import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.*;
-import santa.simulator.mutators.Mutator;
-import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.selectors.Selector;
 import santa.simulator.phylogeny.Phylogeny;

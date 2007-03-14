@@ -28,9 +28,9 @@
                     </sequences>
                 </rank>
                 <fitness>
-                    <minFitness>0.1</minFitness>
+                    <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.9</lowFitness>
-                    <probableSet>biochemical</probableSet>
+                    <probableSet>1</probableSet>
                 </fitness>
             </purifyingFitness>
         </fitnessFunction>

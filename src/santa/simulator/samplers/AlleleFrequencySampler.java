@@ -1,11 +1,12 @@
 package santa.simulator.samplers;
 
-import jebl.evolution.sequences.SequenceType;
-import jebl.evolution.sequences.State;
-import santa.simulator.Population;
-
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+
+import santa.simulator.Population;
+import santa.simulator.genomes.AminoAcid;
+import santa.simulator.genomes.Nucleotide;
+import santa.simulator.genomes.SequenceAlphabet;
 
 /**
  * @author Andrew Rambaut
@@ -16,12 +17,12 @@ public class AlleleFrequencySampler implements Sampler {
 
     private final int site;
     private PrintStream destination;
-    private final SequenceType type;
+    private final SequenceAlphabet alphabet;
     private String fileName;
 
-    public AlleleFrequencySampler(int site, SequenceType type, String fileName) {
+    public AlleleFrequencySampler(int site, SequenceAlphabet alphabet, String fileName) {
         this.site = site;
-        this.type = type;
+        this.alphabet = alphabet;
         this.fileName = fileName;
     }
 
@@ -32,10 +33,14 @@ public class AlleleFrequencySampler implements Sampler {
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not open file for writing: " + fname);
         }
-
-        destination.print("generation");
-        for (State state : type.getCanonicalStates()) {
-            destination.print("\t"+state.getCode());
+        
+        destination.print("gen");
+        for (int i = 0; i < alphabet.getStateCount(); ++i) {
+            if (alphabet == SequenceAlphabet.NUCLEOTIDES) {
+                destination.print("\t" + Nucleotide.asChar((byte) i));
+            } else if (alphabet == SequenceAlphabet.AMINO_ACIDS) {
+                destination.print("\t" + AminoAcid.asChar((byte) i));
+            }
         }
         destination.println();
     }
@@ -44,8 +49,8 @@ public class AlleleFrequencySampler implements Sampler {
 
         destination.print(generation);
 
-        double[] frequencies = population.getAlleleFrequencies(site);
-        for (int i = 0; i < type.getCanonicalStateCount(); i++) {
+        double[] frequencies = population.getAlleleFrequencies(site, alphabet);
+        for (int i = 0; i < alphabet.getStateCount(); ++i) {
             destination.print("\t" + frequencies[i]);
         }
         destination.println();

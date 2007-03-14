@@ -27,6 +27,8 @@ public interface GenePool {
 
     int[] getStateFrequencies(int site);
 
+    int[] getStateFrequencies(int site, SequenceAlphabet alphabet);
+
     Sequence getConsensusSequence();
 
     int hammingDistance(Genome genome1, Genome genome2);

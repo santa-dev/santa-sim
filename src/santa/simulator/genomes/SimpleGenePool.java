@@ -25,6 +25,7 @@ public class SimpleGenePool extends BaseGenePool {
 
     public Genome createGenome(Sequence sequence) {
         SimpleGenome newGenome = recycleOrCreateGenome(sequence);
+        newGenome.setFrequency(0);
         uniqueGenomeCount++;
 
         return newGenome;

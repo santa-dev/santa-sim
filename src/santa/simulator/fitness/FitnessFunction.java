@@ -48,7 +48,7 @@ public class FitnessFunction  {
     }
 
     /**
-     * Compute the fitness of a genome from scratch, and store the cached
+     * Compute and set the fitness of a genome from scratch, and store the cached
      * values for each factor.
      */
     public double computeLogFitness(Genome genome) {
@@ -63,6 +63,8 @@ public class FitnessFunction  {
             cache.factorContributions[i++] = contrib;
             result += contrib;
         }
+
+        genome.setLogFitness(result);
 
         return result;
     }
