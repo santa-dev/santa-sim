@@ -6,6 +6,8 @@
  */
 package santa.simulator.genomes;
 
+import java.util.List;
+
 public enum SequenceAlphabet {
     NUCLEOTIDES(4, 1),
     AMINO_ACIDS(20, 3);
@@ -36,5 +38,4 @@ public enum SequenceAlphabet {
     
     private final int stateCount;
     private final int tokenSize;
-
 }

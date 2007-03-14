@@ -18,7 +18,8 @@
 		</population>
 
 		<fitnessFunction>
-		</fitnessFunction>
+            <neutralFitness/>
+        </fitnessFunction>
 
 		<mutator>
 			<nucleotideMutator>
