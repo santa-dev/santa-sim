@@ -6,11 +6,7 @@
  */
 package santa.simulator.fitness;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import santa.simulator.Population;
 import santa.simulator.Random;
@@ -133,7 +129,11 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
     }
 
     public static PurifyingFitnessFunction createEmpiricalFitnessFunction(double[] fitnesses, Set<Integer> sites, SequenceAlphabet alphabet) {
-        PurifyingFitnessRank rank = new PurifyingFitnessRank(alphabet, fitnesses);
+        List<Byte> states = new ArrayList<Byte>();
+        for (byte b = 0; b < alphabet.getStateCount(); b++) {
+            states.add(b);
+        }
+        PurifyingFitnessRank rank = new PurifyingFitnessRank(alphabet, states, alphabet.getStateCount());
         PurifyingFitnessValuesModel model = new PurifyingFitnessValuesModel(fitnesses);
         
         return new PurifyingFitnessFunction(rank, model, 0, 0, sites, alphabet);

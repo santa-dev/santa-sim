@@ -21,16 +21,16 @@
         <fitnessFunction>
             <purifyingFitness>
                 <aminoAcids>1-203</aminoAcids>
-                <rank>
+                <rank id="rank1">
                     <breakTies>random</breakTies>
                     <sequences>
                         GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
                     </sequences>
+                    <probableSet>biochemical</probableSet>
                 </rank>
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.9</lowFitness>
-                    <probableSet>1</probableSet>
                 </fitness>
             </purifyingFitness>
         </fitnessFunction>

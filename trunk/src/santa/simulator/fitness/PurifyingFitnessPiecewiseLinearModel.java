@@ -31,7 +31,7 @@ public class PurifyingFitnessPiecewiseLinearModel implements PurifyingFitnessMod
         
         switch (probableSet) {
         case OBSERVED:
-            probable = rank.getObservedStatesCount(site);
+            probable = rank.getProbableSetSize(site);
             break;
         case NUMBER:
             probable = probableNumber;

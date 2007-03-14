@@ -97,10 +97,14 @@
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:choice minOccurs="0"  maxOccurs="1">
-                                <xs:element name="sequences" type="xs:string"/>
-                                <xs:element name="order" type="xs:string"/>
+                            <xs:choice>
+                                <xs:sequence>
+                                    <xs:element name="sequences" type="xs:string"/>
+                                    <xs:element name="order" type="xs:string"/>
+                                </xs:sequence>
+                                <xs:element name="values" type="xs:string"/>
                             </xs:choice>
+                            <xs:element name="probableSet" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -109,9 +113,8 @@
                         <xs:sequence>
                             <xs:choice>
                                 <xs:sequence>
-                                    <xs:element name="minFitness" type="xs:decimal"/>
+                                    <xs:element name="minimumFitness" type="xs:decimal"/>
                                     <xs:element name="lowFitness" type="xs:decimal"/>
-                                    <xs:element name="probableSet" type="xs:string"/>
                                 </xs:sequence>
                                 <xs:element name="values" type="xs:string"/>
                             </xs:choice>
@@ -180,7 +183,7 @@
 
     <xs:element name="neutralFitness">
         <xs:complexType>
-            <xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="1">
                 <xs:choice>
                     <xs:element name="aminoAcids" type="xs:string"/>
                     <xs:element name="nucleotides" type="xs:string"/>
@@ -229,19 +232,6 @@
                 <xs:element name="dualInfectionProbability" type="xs:decimal"/>
                 <xs:element name="recombinationProbability" type="xs:decimal"/>
             </xs:all>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="selector">
-        <xs:complexType>
-            <xs:choice>
-                <xs:element name="rouletteWheelSelector">
-                    <xs:complexType/>
-                </xs:element>
-                <xs:element name="monteCarloSelector">
-                    <xs:complexType/>
-                </xs:element>
-            </xs:choice>
         </xs:complexType>
     </xs:element>
 
