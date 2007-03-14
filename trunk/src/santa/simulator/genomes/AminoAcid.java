@@ -29,6 +29,53 @@ public class AminoAcid {
     public static final byte Y = 19;
     public static final byte STP = 20;
 
+    public static byte parse(char c) {
+        switch (c) {
+        case 'A':
+            return A;
+        case 'C':
+            return C;
+        case 'D':
+            return D;
+        case 'E':
+            return E;
+        case 'F':
+            return F;
+        case 'G':
+            return G;
+        case 'H':
+            return H;
+        case 'I':
+            return I;
+        case 'K':
+            return K;
+        case 'L':
+            return L;
+        case 'M':
+            return M;
+        case 'N':
+            return N;
+        case 'P':
+            return P;
+        case 'Q':
+            return Q;
+        case 'R':
+            return R;
+        case 'S':
+            return S;
+        case 'T':
+            return T;
+        case 'V':
+            return V;
+        case 'W':
+            return W;
+        case 'Y':
+            return Y;
+        default:
+            throw new RuntimeException("Cannot parse '" + c + "' as a nucelotide (acgt)");
+        }
+    }
+
     public static char asChar(byte state) {
         final char aminoAcidChars[]
             = { 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L',

@@ -6,15 +6,18 @@
  */
 package santa.simulator.fitness;
 
-public class PurifyingFitnessValuesModel implements PurifyingFitnessModel {
+import java.util.Arrays;
 
+public class PurifyingFitnessValuesModel implements PurifyingFitnessModel {
+    
     private double[] values;
 
     public PurifyingFitnessValuesModel(double[] values) {
         this.values = values;
+        Arrays.sort(this.values);
     }
     
-    public double[] getFitnesses() {
+    public double[] getFitnesses(int site, PurifyingFitnessRank rank) {
         return values;
     }
 

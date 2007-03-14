@@ -10,7 +10,9 @@ public interface PurifyingFitnessModel {
 
     /**
      * @return 20 fitness values, in decreasing order, all between 0 and 1.
+     *            may use the rank to obtain an estimate for observed counts to shape the model
+     *            properly
      */
-    double[] getFitnesses();
+    double[] getFitnesses(int site, PurifyingFitnessRank rank);
     
 }
