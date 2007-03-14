@@ -23,6 +23,17 @@ public enum SequenceAlphabet {
         return tokenSize;
     }
 
+    public byte parse(char c) {
+        switch(this) {
+        case NUCLEOTIDES:
+            return Nucleotide.parse(c);
+        case AMINO_ACIDS:
+            return AminoAcid.parse(c);
+        default:
+            throw new RuntimeException("Unknown alphabet");
+        }
+    }
+    
     private final int stateCount;
     private final int tokenSize;
 
