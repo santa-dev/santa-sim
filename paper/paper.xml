@@ -295,7 +295,7 @@
                 </fitness>
             </purifyingFitness>
             <purifyingFitness id="background">
-                <aminoAcids>5-172</aminoAcids>
+                <aminoAcids>1-172</aminoAcids>
                 <rank ref="alignment" />
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
