@@ -110,24 +110,20 @@ public class SimulatorParser {
     private static final String ID = "id";
     private static final String REF = "ref";
 
-    private Map<String, Element> elementIdMap = new HashMap<String, Element>();
+    private Map<String, Object> objectIdMap = new HashMap<String, Object>();
 
-    private Element lookupObjectById(String id, String name) throws ParseException {
-        Element e = elementIdMap.get(id);
+    private Object lookupObjectById(String id) throws ParseException {
+        Object o = objectIdMap.get(id);
         
-        if (e == null) {
+        if (o == null) {
             throw new ParseException("Referenced object '" + id + "' was not defined.");
         }
-        if (!e.getName().equals(name)) {
-            throw new ParseException("Referenced object '" + id 
-                    + "' type mismatch (expected <" + name + ">, got <" + e.getName() + ">");
-        }
         
-        return e;
+        return o;
     }
 
-    private void storeObjectById(String id, Element e) {
-        elementIdMap.put(id, e);
+    private void storeObjectById(String id, Object o) {
+        objectIdMap.put(id, o);
     }
 
     private Map<String, PurifyingFitnessRank> rankIdMap = new HashMap<String, PurifyingFitnessRank>();
@@ -402,33 +398,30 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
             Element e = (Element) o;
-
-            FitnessFactorCommon factor = null;
+            FitnessFunctionFactor factor = null;
 
             if (e.getName().equals(NEUTRAL_MODEL_FITNESS_FUNCTION)) {
                 // don't need to add a factor to the product
             } else if (e.getName().equals(PURIFYING_FITNESS_FUNCTION)) {
-                factor = parseFitnessFactor(e);
-                components.add(parsePurifyingFitnessFunction(factor.element, factor));
+                factor = parsePurifyingFitnessFunction(e);
             } else if (e.getName().equals(EMPERICAL_FITNESS_FUNCTION)) {
-                factor = parseFitnessFactor(e);
-                components.add(parseEmpericalFitnessFunction(factor.element, factor));
+                factor = parseEmpericalFitnessFunction(e);
             } else if (e.getName().equals(FREQUENCY_DEPENDENT_FITNESS_FUNCTION)) {
-                factor = parseFitnessFactor(e);
-                components.add(parseFrequencyDependentFitnessFunction(factor.element, factor));
+                factor = parseFrequencyDependentFitnessFunction(e);
             } else if (e.getName().equals(AGE_DEPENDENT_FITNESS_FUNCTION)) {
-                factor = parseFitnessFactor(e);
-                components.add(parseAgeDependentFitnessFunction(factor.element, factor));
+                factor = parseAgeDependentFitnessFunction(e);
             } else if (e.getName().equals(EXPOSURE_DEPENDENT_FITNESS_FUNCTION)) {
-                factor = parseFitnessFactor(e);
-                components.add(parseExposureDependentFitnessFunction(factor.element, factor));
-            } else {
+                factor = parseExposureDependentFitnessFunction(e);
+             } else {
                 throw new ParseException("Error parsing <" + element.getName()
                         + "> element: <" + e.getName() + "> is unrecognized");
             }
 
-            if (factor != null && factor.element.getAttributeValue(ID) != null) {
-                storeObjectById(factor.element.getAttributeValue(ID), factor.element);
+            if (factor != null) {
+                components.add(factor);
+
+                if (e.getAttributeValue(ID) != null)
+                    storeObjectById(e.getAttributeValue(ID), factor);
             }
         }
 
@@ -439,16 +432,21 @@ public class SimulatorParser {
     static private class FitnessFactorCommon {
         SequenceAlphabet      alphabet;
         Set<Integer>          sites;
-        Element               element;
         
-        FitnessFactorCommon(Set<Integer> sites, SequenceAlphabet alphabet, Element element) {
+        FitnessFactorCommon(Set<Integer> sites, SequenceAlphabet alphabet) {
             this.alphabet = alphabet;
             this.sites = sites;
-            this.element = element;
         }
 }
     
-    private ExposureDependentFitnessFunction parseExposureDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+    private FitnessFunctionFactor parseExposureDependentFitnessFunction(Element element) throws ParseException {
+        FitnessFunctionFactor result = getFitnessFactor(element, ExposureDependentFitnessFunction.class.getName());
+
+        if (result != null)
+            return result;
+
+        FitnessFactorCommon factor = parseFitnessFactor(element);
+
         double penalty = 0.001;
 
         for (Object o : element.getChildren()) {
@@ -477,7 +475,14 @@ public class SimulatorParser {
      * @return 
      * @throws ParseException
      */
-    private AgeDependentFitnessFunction parseAgeDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+    private FitnessFunctionFactor parseAgeDependentFitnessFunction(Element element) throws ParseException {
+        FitnessFunctionFactor result = getFitnessFactor(element, AgeDependentFitnessFunction.class.getName());
+
+        if (result != null)
+            return result;
+
+        FitnessFactorCommon factor = parseFitnessFactor(element);
+
         double declineRate = -1;
 
         for (Object o : element.getChildren()) {
@@ -505,7 +510,14 @@ public class SimulatorParser {
      * @return 
      * @throws ParseException
      */
-    private FrequencyDependentFitnessFunction parseFrequencyDependentFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+    private FitnessFunctionFactor parseFrequencyDependentFitnessFunction(Element element) throws ParseException {
+        FitnessFunctionFactor result = getFitnessFactor(element, FrequencyDependentFitnessFunction.class.getName());
+
+        if (result != null)
+            return result;
+
+        FitnessFactorCommon factor = parseFitnessFactor(element);
+
         double shape = -1.0;
 
         for (Object o : element.getChildren()) {
@@ -528,7 +540,13 @@ public class SimulatorParser {
         return new FrequencyDependentFitnessFunction(shape, factor.sites, factor.alphabet);
     }
 
-    private PurifyingFitnessFunction parsePurifyingFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+    private FitnessFunctionFactor parsePurifyingFitnessFunction(Element element) throws ParseException {
+        FitnessFunctionFactor result = getFitnessFactor(element, PurifyingFitnessFunction.class.getName());
+        if (result != null)
+            return result;
+        
+        FitnessFactorCommon factor = parseFitnessFactor(element);
+        
         PurifyingFitnessRank rank = null;
         PurifyingFitnessModel valueModel = null;
         double fluctuateRate = 0;
@@ -565,7 +583,13 @@ public class SimulatorParser {
         return new PurifyingFitnessFunction(rank, valueModel, fluctuateRate, fluctuateFitnessLimit, factor.sites, factor.alphabet);
     }
 
-    private FitnessFunctionFactor parseEmpericalFitnessFunction(Element element, FitnessFactorCommon factor) throws ParseException {
+    private FitnessFunctionFactor parseEmpericalFitnessFunction(Element element) throws ParseException {
+        FitnessFunctionFactor result = getFitnessFactor(element, PurifyingFitnessFunction.class.getName());
+        if (result != null)
+            return result;
+    
+        FitnessFactorCommon factor = parseFitnessFactor(element);
+
         double[] fitnesses = null;
 
         for (Object o:element.getChildren()) {
@@ -590,27 +614,43 @@ public class SimulatorParser {
         return PurifyingFitnessFunction.createEmpiricalFitnessFunction(fitnesses, factor.sites, factor.alphabet);
     }
 
-    /**
-     * @param element
-     * @throws ParseException
-     */
-    private FitnessFactorCommon parseFitnessFactor(Element element) throws ParseException {
+
+    private FitnessFunctionFactor getFitnessFactor(Element element, String classType) throws ParseException {
         String ref = element.getAttributeValue(REF);
+
         if (ref != null) {
             if (!element.getChildren().isEmpty()) {
                 throw new ParseException("Error parsing <" + element.getName() + "> element: must be empty when referenced");
             }
 
-            element = lookupObjectById(ref, element.getName());
-        }
+            try {
+                FitnessFunctionFactor referenced = (FitnessFunctionFactor) lookupObjectById(ref);
 
+                if (!referenced.getClass().getName().equals(classType)) {
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + ref + "' is not a fitness function of the same type.");               
+                }
+
+                return referenced;
+            } catch (ClassCastException e) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + ref + "' is not a fitness function.");
+            }
+
+        } else
+            return null;
+    }
+
+    /**
+     * @param element
+     * @throws ParseException
+     */
+    private FitnessFactorCommon parseFitnessFactor(Element element) throws ParseException {
         for (Object o:element.getChildren()) {
             Element e = (Element) o;
 
             if (e.getName().equals(AMINO_ACIDS)) {
-                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.AMINO_ACIDS, element);
+                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.AMINO_ACIDS);
             } else if (e.getName().equals(NUCLEOTIDES)) {
-                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.NUCLEOTIDES, element);
+                return new FitnessFactorCommon(parseSites(e), SequenceAlphabet.NUCLEOTIDES);
             }
         }
 
