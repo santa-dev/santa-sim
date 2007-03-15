@@ -73,7 +73,7 @@ public class TreeSampler implements Sampler {
 	}
 
 	private String substituteVariables(String name, int generation, int seq) {
-		String result = name.replaceAll("%r", String.valueOf(replicate));
+		String result = name.replaceAll("%r", String.valueOf(replicate+1));
 		result = result.replaceAll("%g", String.valueOf(generation));
 		result = result.replaceAll("%s", String.valueOf(seq));
 		return result;

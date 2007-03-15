@@ -14,7 +14,7 @@ public class StatisticsSampler implements Sampler {
 	}
 
 	public void initialize(int replicate) {
-        String fname = filename.replaceAll("%r", String.valueOf(replicate));
+        String fname = filename.replaceAll("%r", String.valueOf(replicate+1));
         try {
             destination = new PrintStream(fname);
         } catch (FileNotFoundException e) {

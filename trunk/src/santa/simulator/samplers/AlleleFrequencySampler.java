@@ -27,7 +27,7 @@ public class AlleleFrequencySampler implements Sampler {
     }
 
     public void initialize(int replicate) {
-        String fname = fileName.replaceAll("%r", String.valueOf(replicate));
+        String fname = fileName.replaceAll("%r", String.valueOf(replicate+1));
         try {
             destination = new PrintStream(fname);
         } catch (FileNotFoundException e) {
