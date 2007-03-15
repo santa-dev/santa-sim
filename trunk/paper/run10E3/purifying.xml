@@ -333,7 +333,7 @@
         <samplingSchedule>
             <sampler>
                 <atGeneration>2000</atGeneration>
-                <fileName>paper/run10E3/purify_%r.fasta</fileName>
+                <fileName>purify_%r.fasta</fileName>
                 <alignment>
                     <sampleSize>100</sampleSize>
                     <format>FASTA</format>
@@ -342,12 +342,12 @@
             </sampler>
             <sampler>
                 <atFrequency>1</atFrequency>
-                <fileName>paper/run10E3/purify_stats_%r.csv</fileName>
+                <fileName>purify_stats_%r.csv</fileName>
                 <statistics></statistics>
             </sampler>
             <sampler>
                 <atFrequency>1</atFrequency>
-                <fileName>paper/run10E3/purify_s171_%r.csv</fileName>
+                <fileName>purify_s171_%r.csv</fileName>
                 <alleleFrequency>
                       <aminoAcid>171</aminoAcid>
                 </alleleFrequency>
