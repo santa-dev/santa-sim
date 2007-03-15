@@ -1,92 +1,107 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="santa.xsd">
-	<replicates>1</replicates>
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+    <replicates>1</replicates>
 
-	<simulation>
-		<genome>
-			<length>999</length>
-		</genome>
+    <simulation>
+        <genome>
+            <length>999</length>
+        </genome>
 
-		<population>
-			<populationSize>10000</populationSize>
+        <population>
+            <populationSize>10000</populationSize>
 
-			<inoculum>
-				<sequence label="wildtype">
-					GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGAGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGT
-				</sequence>
-			</inoculum>
-		</population>
+            <inoculum>
+                <sequence label="wildtype">
+                    GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGAGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGT
+                </sequence>
+            </inoculum>
+        </population>
 
-		<fitnessFunction>
-			<purifyingFitness>
-				<aminoAcids>1-162,164-333</aminoAcids>
-				<rank>
-					<breakTies>random</breakTies>
-					<sequences>
-						GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGAGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGT
-					</sequences>
+        <fitnessFunction>
+            <purifyingFitness>
+                <aminoAcids>1-162,164-333</aminoAcids>
+                <rank>
+                    <breakTies>random</breakTies>
+                    <sequences>
+                        GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGAGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGT
+                    </sequences>
                 </rank>
-				<fitness>
-                    <minimumFitness>0.1</minimumFitness>
-                    <lowFitness>0.1</lowFitness>
-                    <probableSet>1</probableSet>
-				</fitness>
-			</purifyingFitness>
-			<purifyingFitness>
-				<aminoAcids>163</aminoAcids>
-				<rank>
-					<breakTies>random</breakTies>
-					<order></order>
-				</rank>
-				<fitness>
+                <fitness>
                     <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.1</lowFitness>
                     <probableSet>1</probableSet>
                 </fitness>
-				<fluctuate>
-					<rate>$rate</rate>
-					<fitnessLimit>0</fitnessLimit>
-				</fluctuate>
-			</purifyingFitness>
-		</fitnessFunction>
+            </purifyingFitness>
+            <purifyingFitness>
+                <aminoAcids>163</aminoAcids>
+                <rank>
+                    <breakTies>random</breakTies>
+                    <order></order>
+                </rank>
+                <fitness>
+                    <minimumFitness>0.1</minimumFitness>
+                    <lowFitness>0.1</lowFitness>
+                    <probableSet>1</probableSet>
+                </fitness>
+                <fluctuate>
+                    <rate>$rate</rate>
+                    <fitnessLimit>0</fitnessLimit>
+                </fluctuate>
+            </purifyingFitness>
+        </fitnessFunction>
 
-		<mutator>
-			<nucleotideMutator>
-				<mutationRate>2.5E-5</mutationRate>
-				<transitionBias>2.0</transitionBias>
-			</nucleotideMutator>
-		</mutator>
+        <mutator>
+            <nucleotideMutator>
+                <mutationRate>2.5E-5</mutationRate>
+                <transitionBias>2.0</transitionBias>
+            </nucleotideMutator>
+        </mutator>
 
-		<replicator>
-			<clonalReplicator/>
-		</replicator>
+        <replicator>
+            <recombinantReplicator>
+                <dualInfectionProbability>$dual</dualInfectionProbability>
+                <recombinationProbability>0.001</recombinationProbability>
+            </recombinantReplicator>
 
-		<epoch>
-			<generationCount>1000000</generationCount>
-		</epoch>
+        </replicator>
 
-		<samplingSchedule>
+        <epoch>
+            <generationCount>1000000</generationCount>
+        </epoch>
+
+        <samplingSchedule>
+            <sampler>
+                <atFrequency>1000</atFrequency>
+                <fileName>alignment_%r.nex</fileName>
+                <alignment>
+                    <sampleSize>
+                        100
+                    </sampleSize>
+                    <format>NEXUS</format>
+                    <label>seq_%g_%s</label>
+                </alignment>
+            </sampler>
             <sampler>
                 <atFrequency>1000</atFrequency>
                 <fileName>aa_frequencies.csv</fileName>
                 <alleleFrequency>
-                      <aminoAcids>1-999</aminoAcids>
+                    <aminoAcids>1-333</aminoAcids>
                 </alleleFrequency>
             </sampler>
             <sampler>
                 <atFrequency>1000</atFrequency>
                 <fileName>nt_frequencies.csv</fileName>
                 <alleleFrequency>
-                      <nucleotides>1-999</nucleotides>
+                    <nucleotides>1-999</nucleotides>
                 </alleleFrequency>
             </sampler>
-			<sampler>
-				<atFrequency>1</atFrequency>
-				<fileName>stats.csv</fileName>
-				<statistics></statistics>
-			</sampler>
-		</samplingSchedule>
+            <sampler>
+                <atFrequency>1</atFrequency>
+                <fileName>stats.csv</fileName>
+                <statistics></statistics>
+            </sampler>
+        </samplingSchedule>
 
-	</simulation>
+    </simulation>
 
 </santa>
