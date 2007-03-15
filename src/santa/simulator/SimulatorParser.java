@@ -1251,7 +1251,7 @@ public class SimulatorParser {
 
     private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
 
-        Set<Integer> sites;
+        Set<Integer> sites = null;
         SequenceAlphabet alphabet = null;
 
         for (Object o : element.getChildren()) {
