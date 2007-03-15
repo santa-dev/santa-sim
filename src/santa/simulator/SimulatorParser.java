@@ -1251,16 +1251,16 @@ public class SimulatorParser {
 
     private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
 
-        int site = -1;
+        Set<Integer> sites;
         SequenceAlphabet alphabet = null;
 
         for (Object o : element.getChildren()) {
             Element e1 = (Element)o;
             if (e1.getName().equals(AMINO_ACID) || e1.getName().equals(AMINO_ACIDS)) {
-                Set<Integer> sites = parseSites(e1);
+                sites = parseSites(e1);
                 alphabet = SequenceAlphabet.AMINO_ACIDS;
             } else if (e1.getName().equals(NUCLEOTIDE) || e1.getName().equals(NUCLEOTIDES)) {
-                Set<Integer> sites = parseSites(e1);
+                sites = parseSites(e1);
                 alphabet = SequenceAlphabet.NUCLEOTIDES;
             } else {
                 throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName()
