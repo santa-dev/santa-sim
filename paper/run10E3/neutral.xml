@@ -19,7 +19,7 @@
 
         <fitnessFunction>
             <purifyingFitness id="background">
-                <aminoAcids>3-172</aminoAcids>
+                <aminoAcids>1-172</aminoAcids>
                 <rank id="alignment">
                     <breakTies>random</breakTies>
                     <sequences>
@@ -287,15 +287,11 @@
                         GAAGAGGTAGTAATTAGATCAAAAAACTTCACGGACAATACTAAGACCATAATAGTACAGCTGAATGAAACGGTAGTAATTAATTGTACAAGACCCAACAGACATACAGGAAAAAGTATACGGATGGGAATGGGGAGAGCATGGCATACAACAAGGGAAATAATAGGAGATATAAGAAAAGCATATTGTACCCTTAATGGAACAAATTGGAATAAAACTTTAGAACAGGTAGTTAAAAAATTAAGAGAACAATTTAGGAATAAAACAATAGTCTTTAGTAACTCCTCAGGAGGGGACCTAGAAATTACAATGCACAGTTTTAATTGTGGAGGGGAATTTTTCTACTGTAATACAACACAGCTGATCACACTCCCATGCAGAATAAAACAAATTATAAACAGGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAAAGGACACATTAACTGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTGAGGTCTTCAGACCT					</sequences>
                 </rank>
                 <fitness>
-                    <minimumFitness>0.1</minimumFitness>
-                    <lowFitness>0.9</lowFitness>
+                    <minimumFitness>0.0</minimumFitness>
+                    <lowFitness>1.0</lowFitness>
                     <probableSet>estimated</probableSet>
                 </fitness>
             </purifyingFitness>
-            <exposureDependentFitness id="exposure">
-                <aminoAcids>1-2</aminoAcids>
-                <penalty>0.01</penalty>
-            </exposureDependentFitness>
         </fitnessFunction>
 
         <mutator>
@@ -317,42 +313,41 @@
         <epoch>
         	<name>selection-test</name>
             <generationCount>1001</generationCount>
-	        <fitnessFunction>
-    	        <purifyingFitness ref="background" />
-    	        <exposureDependentFitness ref="exposure" />
-    	        <purifyingFitness>
-    	        	<aminoAcids>171</aminoAcids>
-    	        	<rank>
-    	        		<breakTies>random</breakTies>
-    	        		<order>SR</order>
-    	        	</rank>
-    	        	<fitness>
-    	        		<lowFitness>0.5</lowFitness>
-    	        		<minimumFitness>0.5</minimumFitness>
-    	        		<probableSet>1</probableSet>
-    	        	</fitness>
-    	        </purifyingFitness>
-	        </fitnessFunction>
+            <fitnessFunction>
+                <purifyingFitness ref="background" />
+                <purifyingFitness>
+                    <aminoAcids>171</aminoAcids>
+                    <rank>
+                        <breakTies>random</breakTies>
+                        <order>SR</order>
+                    </rank>
+                    <fitness>
+                        <lowFitness>0.5</lowFitness>
+                        <minimumFitness>0.5</minimumFitness>
+                        <probableSet>1</probableSet>
+                    </fitness>
+                </purifyingFitness>
+            </fitnessFunction>
         </epoch>
 
         <samplingSchedule>
             <sampler>
                 <atGeneration>2000</atGeneration>
-                <fileName>exposure_%r.fasta</fileName>
+                <fileName>neutral_%r.fasta</fileName>
                 <alignment>
                     <sampleSize>100</sampleSize>
                     <format>FASTA</format>
-                    <label>exposure_%g_%s</label>
+                    <label>purify_%g_%s</label>
                 </alignment>
             </sampler>
             <sampler>
                 <atFrequency>1</atFrequency>
-                <fileName>exposure_stats_%r.csv</fileName>
+                <fileName>neutral_stats_%r.csv</fileName>
                 <statistics></statistics>
             </sampler>
             <sampler>
                 <atFrequency>1</atFrequency>
-                <fileName>exposure_s171_%r.csv</fileName>
+                <fileName>neutral_s171_%r.csv</fileName>
                 <alleleFrequency>
                       <aminoAcid>171</aminoAcid>
                 </alleleFrequency>
