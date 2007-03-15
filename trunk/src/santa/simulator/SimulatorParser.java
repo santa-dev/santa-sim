@@ -95,8 +95,6 @@ public class SimulatorParser {
     private final static String CONSENSUS = "consensus";
 
     private final static String ALLELE_FREQUENCY = "alleleFrequency";
-    private static final String AMINO_ACID = "aminoAcid";
-    private static final String NUCLEOTIDE = "nucleotide";
 
     private final static String STATISTICS = "statistics";
 
@@ -1256,10 +1254,10 @@ public class SimulatorParser {
 
         for (Object o : element.getChildren()) {
             Element e1 = (Element)o;
-            if (e1.getName().equals(AMINO_ACID) || e1.getName().equals(AMINO_ACIDS)) {
+            if (e1.getName().equals(AMINO_ACIDS)) {
                 sites = parseSites(e1);
                 alphabet = SequenceAlphabet.AMINO_ACIDS;
-            } else if (e1.getName().equals(NUCLEOTIDE) || e1.getName().equals(NUCLEOTIDES)) {
+            } else if (e1.getName().equals(NUCLEOTIDES)) {
                 sites = parseSites(e1);
                 alphabet = SequenceAlphabet.NUCLEOTIDES;
             } else {
