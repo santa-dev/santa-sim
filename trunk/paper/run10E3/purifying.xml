@@ -1,6 +1,6 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
-    <replicates>1</replicates>
+    <replicates>10</replicates>
 
     <simulation>
         <genome>
@@ -8,7 +8,7 @@
         </genome>
 
         <population>
-            <populationSize>10000</populationSize>
+            <populationSize>1000</populationSize>
 
             <inoculum>
                 <sequence label="wildtype">
@@ -18,9 +18,9 @@
         </population>
 
         <fitnessFunction>
-            <purifyingFitness>
-                <aminoAcids>5-172</aminoAcids>
-                <rank>
+            <purifyingFitness id="background">
+                <aminoAcids>1-172</aminoAcids>
+                <rank id="alignment">
                     <breakTies>random</breakTies>
                     <sequences>
                         >p9c01s003
@@ -292,24 +292,6 @@
                     <probableSet>estimated</probableSet>
                 </fitness>
             </purifyingFitness>
-            <purifyingFitness>
-                <aminoAcids>1-4</aminoAcids>
-                <rank>
-                    <breakTies>random</breakTies>
-                    <sequences>
-                        GAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAATGAATCGGTAGTAATTAATTGTACAAGACCCAACAACAATACAAGAAAAAGTATACATATAGGACCGGGGAGAGCATGGTATACAACAGGAGAAATAATAGGAGATATAAGACAAGCACATTGTAACCTTAGTGAAGCAAATTGGAATAAAGCTTTAGAACAGATAGTTAAAAAATTAAAAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTTAATTGTGGAGGGGAATTTTTCTACTGTGATACAACAAAGCTGATCACACTCCCATGCAGAATAAAACAAATTATAAACAGGTGGCAGGAAGTAGGGAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTGAGGTCTTCAGACCT
-                    </sequences>
-                </rank>
-                <fitness>
-                    <minimumFitness>0.1</minimumFitness>
-                    <lowFitness>0.5</lowFitness>
-                    <probableSet>2</probableSet>
-                </fitness>
-                <fluctuate>
-                    <rate>0.001</rate>
-                    <fitnessLimit>0.5</fitnessLimit>
-                </fluctuate>
-            </purifyingFitness>
         </fitnessFunction>
 
         <mutator>
@@ -324,23 +306,51 @@
         </replicator>
 
         <epoch>
+        	<name>burnin</name>
             <generationCount>2001</generationCount>
+        </epoch>
+
+        <epoch>
+        	<name>selection-test</name>
+            <generationCount>1001</generationCount>
+	        <fitnessFunction>
+    	        <purifyingFitness ref="background" />
+    	        <purifyingFitness>
+    	        	<aminoAcids>171</aminoAcids>
+    	        	<rank>
+    	        		<breakTies>random</breakTies>
+    	        		<order>SR</order>
+    	        	</rank>
+    	        	<fitness>
+    	        		<lowFitness>0.5</lowFitness>
+    	        		<minimumFitness>0.5</minimumFitness>
+    	        		<probableSet>1</probableSet>
+    	        	</fitness>
+    	        </purifyingFitness>
+	        </fitnessFunction>
         </epoch>
 
         <samplingSchedule>
             <sampler>
                 <atGeneration>2000</atGeneration>
-                <fileName>fluctuate_%r.nex</fileName>
+                <fileName>paper/run10E3/purify_%r.fasta</fileName>
                 <alignment>
                     <sampleSize>100</sampleSize>
-                    <format>NEXUS</format>
-                    <label>fluctuate_%g_%s</label>
+                    <format>FASTA</format>
+                    <label>purify_%g_%s</label>
                 </alignment>
             </sampler>
             <sampler>
                 <atFrequency>1</atFrequency>
-                <fileName>fluctuate_%r.csv</fileName>
+                <fileName>paper/run10E3/purify_stats_%r.csv</fileName>
                 <statistics></statistics>
+            </sampler>
+            <sampler>
+                <atFrequency>1</atFrequency>
+                <fileName>paper/run10E3/purify_s171_%r.csv</fileName>
+                <alleleFrequency>
+                      <aminoAcid>171</aminoAcid>
+                </alleleFrequency>
             </sampler>
         </samplingSchedule>
 
