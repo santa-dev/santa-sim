@@ -41,6 +41,8 @@ public class SimulationEpoch {
         final int endGeneration = startGeneration + generationCount;
 
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
+            EventLogger.setEpoch(generation);
+
             boolean fitnessChanged = fitnessFunction.updateGeneration(generation, population);
             
             if (generation == startGeneration) {
