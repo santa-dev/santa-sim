@@ -49,14 +49,22 @@ public class Simulation {
 
         samplingSchedule.initialize(replicate);
 
+        EventLogger.setReplicate(replicate);
+
         logger.finer("Initializing population: " + populationSize + " viruses.");
 
         population.initialize(inoculum);
 
         int generation = 0;
 
+        int epochCount = 0;
+
         for (SimulationEpoch epoch:epochs) {
+            EventLogger.setEpoch(epochCount);
+
             generation = epoch.run(this, logger, generation);
+
+            epochCount++;
         }
         samplingSchedule.cleanUp();
     }
