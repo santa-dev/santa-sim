@@ -1256,19 +1256,11 @@ public class SimulatorParser {
 
         for (Object o : element.getChildren()) {
             Element e1 = (Element)o;
-            if (e1.getName().equals(AMINO_ACID)) {
-                try {
-                    site = parseInteger(e1, 1, Integer.MAX_VALUE);
-                } catch (ParseException pe) {
-                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-                }
+            if (e1.getName().equals(AMINO_ACID) || e1.getName().equals(AMINO_ACIDS)) {
+                Set<Integer> sites = parseSites(e1);
                 alphabet = SequenceAlphabet.AMINO_ACIDS;
-            } else if (e1.getName().equals(NUCLEOTIDE)) {
-                try {
-                    site = parseInteger(e1, 1, Integer.MAX_VALUE);
-                } catch (ParseException pe) {
-                    throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-                }
+            } else if (e1.getName().equals(NUCLEOTIDE) || e1.getName().equals(NUCLEOTIDES)) {
+                Set<Integer> sites = parseSites(e1);
                 alphabet = SequenceAlphabet.NUCLEOTIDES;
             } else {
                 throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName()
@@ -1277,7 +1269,7 @@ public class SimulatorParser {
 
         }
 
-        return new AlleleFrequencySampler(site - 1, alphabet, fileName);
+        return new AlleleFrequencySampler(sites, alphabet, fileName);
     }
 
     private void parseEventLogger(Element element) throws ParseException {
