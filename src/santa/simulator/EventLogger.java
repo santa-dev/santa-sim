@@ -15,7 +15,9 @@ public class EventLogger {
     }
 
     private void _log(String event) {
-        writer.println(replicate + "\t" + epoch + "\t" + generation + "\t" + event);
+        if (writer != null) {
+            writer.println(replicate + "\t" + epoch + "\t" + generation + "\t" + event);
+        }
     }
 
     private void _setWriter(Writer writer) {
