@@ -2,7 +2,7 @@ package santa.simulator.samplers;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.List;
+import java.util.Set;
 
 import santa.simulator.Population;
 import santa.simulator.genomes.AminoAcid;
@@ -16,12 +16,12 @@ import santa.simulator.genomes.SequenceAlphabet;
  */
 public class AlleleFrequencySampler implements Sampler {
 
-    private final List<Integer> sites;
+    private final Set<Integer> sites;
     private PrintStream destination;
     private final SequenceAlphabet alphabet;
     private String fileName;
 
-    public AlleleFrequencySampler(List<Integer> sites, SequenceAlphabet alphabet, String fileName) {
+    public AlleleFrequencySampler(Set<Integer> sites, SequenceAlphabet alphabet, String fileName) {
         this.sites = sites;
         this.alphabet = alphabet;
         this.fileName = fileName;
