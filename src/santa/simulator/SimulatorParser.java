@@ -110,13 +110,25 @@ public class SimulatorParser {
     private static final String ID = "id";
     private static final String REF = "ref";
 
+    /*
+     * Object Cache methods
+     */
+    
     private Map<String, Object> objectIdMap = new HashMap<String, Object>();
 
-    private Object lookupObjectById(String id) throws ParseException {
+    private Object lookupObjectById(String id, Class<? extends Object> expectedType) throws ParseException {
         Object o = objectIdMap.get(id);
         
         if (o == null) {
             throw new ParseException("Referenced object '" + id + "' was not defined.");
+        }
+
+        if (expectedType != null) {
+            try {
+                expectedType.cast(o);
+            } catch (ClassCastException ce) {
+                throw new ParseException("Referenced object '" + id + "' is of the wrong type.");
+            }
         }
         
         return o;
@@ -126,20 +138,39 @@ public class SimulatorParser {
         objectIdMap.put(id, o);
     }
 
-    private Map<String, PurifyingFitnessRank> rankIdMap = new HashMap<String, PurifyingFitnessRank>();
+    /*
+     * Parameters
+     */
+    
+    Map<String, String> parameters = null;
 
-    private PurifyingFitnessRank lookupRankObjectById(String id) throws ParseException {
-        PurifyingFitnessRank rank = rankIdMap.get(id);
-        if (rank == null)
-            throw new ParseException("No <" + RANK + "> previously defined with id '" + id + '"');
-        
-        return rank;
+    public void setParameters(Map<String, String> parameterValueMap) {
+        parameters = parameterValueMap;
+    };
+    
+    private String substituteParameter(String value) throws ParseException {
+        if (parameters == null)
+            return value;
+
+        if (value.length() != 0) {
+            if (value.charAt(0) == '$') {
+                String parameter = value.substring(1);
+                String parameterValue = parameters.get(parameter);
+
+                if (parameterValue == null) {
+                    throw new ParseException("Parameter '" + parameter + "' referenced but not defined.");
+                }
+                
+                return parameterValue;
+            } else
+                return value;
+        } else
+            return value;
     }
 
-    private void storeRankObjectById(String id, PurifyingFitnessRank rank) {
-        rankIdMap.put(id, rank);
-    }
-
+    /*
+     * Parser methods
+     */
 	Simulator parse(Element element) throws ParseException {
 
 		if (!element.getName().equals(SIMULATOR)) {
@@ -310,7 +341,7 @@ public class SimulatorParser {
             Element e = (Element)o;
             if (e.getName().equals(GENERATION_COUNT)) {
                 try {
-                    generationCount = parseInteger(e, 1, Integer.MAX_VALUE);
+                    generationCount = parseInteger(e, 0, Integer.MAX_VALUE);
                 } catch (ParseException pe) {
                     throw new ParseException("Error parsing <" + EPOCH + "> element: " + pe.getMessage());
                 }
@@ -624,7 +655,7 @@ public class SimulatorParser {
             }
 
             try {
-                FitnessFunctionFactor referenced = (FitnessFunctionFactor) lookupObjectById(ref);
+                FitnessFunctionFactor referenced = (FitnessFunctionFactor) lookupObjectById(ref, FitnessFunctionFactor.class);
 
                 if (!referenced.getClass().getName().equals(classType)) {
                     throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + ref + "' is not a fitness function of the same type.");               
@@ -728,7 +759,7 @@ public class SimulatorParser {
             if (!element.getChildren().isEmpty()) {
                 throw new ParseException("Error parsing <" + element.getName() + "> element: must be empty when referenced");
             }
-            return lookupRankObjectById(element.getAttributeValue(REF));
+            return (PurifyingFitnessRank) lookupObjectById(element.getAttributeValue(REF), PurifyingFitnessRank.class);
         }
 
         List<Sequence> sequences = null;
@@ -772,7 +803,7 @@ public class SimulatorParser {
         PurifyingFitnessRank result = new PurifyingFitnessRank(factor.alphabet, sequences, stateOrder, breakTiesRandom);
         
         if (element.getAttributeValue(ID) != null) {
-            storeRankObjectById(element.getAttributeValue(ID), result);
+            storeObjectById(element.getAttributeValue(ID), result);
         }
  
         return result;
@@ -1242,9 +1273,11 @@ public class SimulatorParser {
         }
 
 	private int parseInteger(Element element, int minValue, int maxValue) throws ParseException {
+        String text = substituteParameter(element.getValue());
+        
 		int value;
 		try {
-			value = Integer.parseInt(element.getValue());
+			value = Integer.parseInt(text);
 		} catch (NumberFormatException nfe) {
 			throw new ParseException("content of <" + element.getName() + "> is not an integer");
 		}
@@ -1257,10 +1290,12 @@ public class SimulatorParser {
 		return value;
 	}
 
-	private double parseDouble(Element element, double minValue, double maxValue) throws ParseException {
-		double value;
+    private double parseDouble(Element element, double minValue, double maxValue) throws ParseException {
+        String text = substituteParameter(element.getValue());
+
+        double value;
 		try {
-			value = Double.parseDouble(element.getValue());
+			value = Double.parseDouble(text);
 		} catch (NumberFormatException nfe) {
 			throw new ParseException("content of <" + element.getName() + "> is not a number");
 		}
@@ -1290,5 +1325,5 @@ public class SimulatorParser {
 		public ParseException(Throwable throwable) {
 			super(throwable);
 		}
-	};
+	}
 }
