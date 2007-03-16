@@ -3,6 +3,7 @@ package santa.simulator;
 import org.apache.commons.math.random.RandomDataImpl;
 import org.apache.commons.math.random.RandomData;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -60,6 +61,16 @@ public class Random {
         return randomData.nextUniform(v, v1);
     }
 
+    public static void shuffle(int[] numbers) {
+        int[] permutation = randomData.nextPermutation(numbers.length, numbers.length);
+        
+        int[] numbersCopy = new int[numbers.length];
+        System.arraycopy(numbers, 0, numbersCopy, 0, numbers.length);
+        
+        for (int i = 0; i < numbers.length; ++i) {
+            numbers[i] = numbersCopy[permutation[i]];
+        }
+    }
+    
 	public static RandomData randomData = new RandomDataImpl();
-
 }
