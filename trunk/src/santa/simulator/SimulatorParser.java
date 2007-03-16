@@ -61,7 +61,7 @@ public class SimulatorParser {
 	private final static String PROBABLE_SET_CHEMICAL = "chemical";
 	private final static String PROBABLE_SET_HYDROPATHY = "hydropathy";
 	private final static String PROBABLE_SET_VOLUME = "volume";
-	private final static String PROBABLE_SET_ESTIMATED = "estimated";
+	private final static String PROBABLE_SET_OBSERVED = "observed";
 
 	private static final String RANK = "rank";
 	private final static String SEQUENCES = "sequences";
@@ -819,7 +819,7 @@ public class SimulatorParser {
 				}
 			} else if (e.getName().equals(PROBABLE_SET)) {
 				String v = e.getTextNormalize();
-				if (v.equals(PROBABLE_SET_ESTIMATED)) {
+				if (v.equals(PROBABLE_SET_OBSERVED)) {
 					probableSet = ProbableSetEnum.OBSERVED;
 				} else if (v.equals(PROBABLE_SET_CHEMICAL)) {
 					probableSet = ProbableSetEnum.CLASSES;
@@ -843,7 +843,7 @@ public class SimulatorParser {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
-		if (probableNumber == -1 || probableSet == null) {
+		if (probableSet == null) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + PROBABLE_SET + ">");
 		}
 

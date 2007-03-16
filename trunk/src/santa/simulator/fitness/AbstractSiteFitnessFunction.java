@@ -116,6 +116,10 @@ public abstract class AbstractSiteFitnessFunction extends AbstractFitnessFunctio
             else
                 result += logFitness[mutationSite][newState];
 
+            if (Double.isNaN(result)) {
+                System.err.println("Pnan");
+            }
+            
             return result;
         }
     }
