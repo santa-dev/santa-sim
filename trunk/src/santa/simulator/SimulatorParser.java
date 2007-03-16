@@ -773,7 +773,7 @@ public class SimulatorParser {
 					"FYW"; // 189-228
 
 	enum ProbableSetEnum {
-		CHEMICAL, HYDROPATHY, VOLUME, USER_CLASSES, OBSERVED, NUMBER;
+		CLASSES, OBSERVED, NUMBER;
 	};
 
 	private PurifyingFitnessRank parsePuryfingFitnessRank(Element element, FitnessFactorCommon factor) throws ParseException {
@@ -822,18 +822,21 @@ public class SimulatorParser {
 				if (v.equals(PROBABLE_SET_ESTIMATED)) {
 					probableSet = ProbableSetEnum.OBSERVED;
 				} else if (v.equals(PROBABLE_SET_CHEMICAL)) {
-					probableSet = ProbableSetEnum.CHEMICAL;
-					// probableSetClasses = parse
+					probableSet = ProbableSetEnum.CLASSES;
+					probableSetClasses = parseProbableSetClasses(factor.alphabet, CHEMICAL_CLASSES);
 				} else if (v.equals(PROBABLE_SET_HYDROPATHY)) {
-					probableSet = ProbableSetEnum.HYDROPATHY;
+					probableSet = ProbableSetEnum.CLASSES;
+                    probableSetClasses = parseProbableSetClasses(factor.alphabet, HYDROPATHY_CLASSES);
 				} else if (v.equals(PROBABLE_SET_VOLUME)) {
-					probableSet = ProbableSetEnum.VOLUME;
+					probableSet = ProbableSetEnum.CLASSES;
+                    probableSetClasses = parseProbableSetClasses(factor.alphabet, VOLUME_CLASSES);
 				} else {
 					try {
 						probableNumber = parseInteger(e, 1, factor.alphabet.getStateCount());
 						probableSet = ProbableSetEnum.NUMBER;
 					} catch (ParseException pe) {
-						probableSet = ProbableSetEnum.USER_CLASSES;
+						probableSet = ProbableSetEnum.CLASSES;
+                        probableSetClasses = parseProbableSetClasses(factor.alphabet, v);
 					}
 				}
 			} else if (!e.getName().equals(BREAK_TIES)) {
@@ -848,8 +851,6 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + SEQUENCES + "> or <" + ORDER + ">");
 		}
 
-		probableSet, probableNumber
-
 		PurifyingFitnessRank result = new PurifyingFitnessRank(factor.alphabet, sequences, stateOrder, breakTiesRandom);
 
 		if (element.getAttributeValue(ID) != null) {
@@ -859,7 +860,21 @@ public class SimulatorParser {
 		return result;
 	}
 
-	private List<Sequence> parseAlignment(String text) {
+    private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) {
+        List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
+
+        String[] sets = str.split("|");
+        for (String set : sets) {
+            Set<Byte> stateSet = new HashSet<Byte>();
+            for (int i = 0; i < set.length(); i++) {
+                stateSet.add(alphabet.parse(set.charAt(i)));
+            }
+            classes.add(stateSet);
+        }
+        return classes;
+    }
+
+    private List<Sequence> parseAlignment(String text) {
 		List<Sequence> result = new ArrayList<Sequence>();
 
 		if (text.charAt(0) == '>') {
