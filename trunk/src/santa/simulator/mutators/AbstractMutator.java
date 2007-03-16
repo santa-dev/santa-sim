@@ -70,7 +70,7 @@ public abstract class AbstractMutator implements Mutator {
     }
 
     protected void preCalculateBinomial(int numExperiments, double eventRate) {
-        binomial = new double[(int)(numExperiments * eventRate * 100)];
+        binomial = new double[numExperiments];
 
         BinomialDistribution distr
             = DistributionFactory.newInstance()
