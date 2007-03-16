@@ -13,10 +13,6 @@ public class SimpleGenome extends BaseGenome {
     public SimpleGenome() {
     }
 
-    public SimpleGenome(Sequence sequence) {
-        this.sequence = new SimpleSequence(sequence);
-    }
-
     public void duplicate(SimpleGenome source) {
         this.sequence = new SimpleSequence(source.sequence);
         this.fitnessCache = source.fitnessCache.clone();
@@ -49,6 +45,10 @@ public class SimpleGenome extends BaseGenome {
 
     public byte getNucleotide(int site) {
         return sequence.getNucleotide(site);
+    }
+
+    public void setSequence(Sequence sequence) {
+        this.sequence = new SimpleSequence(sequence);
     }
 
     /**

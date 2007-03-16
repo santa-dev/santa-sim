@@ -69,12 +69,14 @@ public class SimpleGenePool extends BaseGenePool {
         if (unusedGenomes.size() > 0) {
             newGenome = (SimpleGenome)unusedGenomes.removeFirst();
         } else {
-            if (s == null)
-                newGenome = new SimpleGenome();
-            else
-                newGenome = new SimpleGenome(s);
+            newGenome = new SimpleGenome();
             genomes.add(newGenome);
         }
+
+        if (s != null) {
+            newGenome.setSequence(s);
+        }
+
         return newGenome;
     }
 

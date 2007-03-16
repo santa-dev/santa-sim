@@ -5,6 +5,7 @@ import org.apache.commons.math.distribution.BinomialDistribution;
 import org.apache.commons.math.distribution.DistributionFactory;
 import santa.simulator.Random;
 import santa.simulator.Virus;
+import santa.simulator.EventLogger;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.*;
 import santa.simulator.mutators.Mutator;
@@ -50,6 +51,8 @@ public class RecombinantReplicator implements Replicator {
 
             virus.setGenome(genome);
             virus.setParent(parents[0]);
+
+//            EventLogger.log("Recombination: (" + parent1Genome.getLogFitness() + ", " + parent2Genome.getLogFitness() + ") -> " + genome.getLogFitness());
 
         } else {
             // single infection - no recombination...
