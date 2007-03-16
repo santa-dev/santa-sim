@@ -8,7 +8,7 @@
         </genome>
 
         <population>
-            <populationSize>10000</populationSize>
+            <populationSize>1000</populationSize>
 
             <inoculum>
                 <sequence label="wildtype">
@@ -25,11 +25,11 @@
                     <sequences>
                         AGTGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGAGAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAAT
                     </sequences>
+                    <probableSet>1</probableSet>
                 </rank>
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.1</lowFitness>
-                    <probableSet>1</probableSet>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness>
@@ -37,11 +37,11 @@
                 <rank>
                     <breakTies>random</breakTies>
                     <order>VL</order>
+                    <probableSet>2</probableSet>
                 </rank>
                 <fitness>
                     <minimumFitness>0.0</minimumFitness>
                     <lowFitness>0.1</lowFitness>
-                    <probableSet>2</probableSet>
                 </fitness>
                 <fluctuate>
                     <rate>$rate</rate>

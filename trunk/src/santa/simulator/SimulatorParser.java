@@ -850,7 +850,6 @@ public class SimulatorParser {
 		if (sequences == null && stateOrder == null) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + SEQUENCES + "> or <" + ORDER + ">");
 		}
-
 		PurifyingFitnessRank result = new PurifyingFitnessRank(factor.alphabet, sequences, stateOrder, breakTiesRandom);
 
 		if (element.getAttributeValue(ID) != null) {
