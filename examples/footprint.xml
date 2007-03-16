@@ -7,6 +7,8 @@
             <length>999</length>
         </genome>
 
+		<eventLogger />
+
         <population>
             <populationSize>1000</populationSize>
 
