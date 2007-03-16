@@ -24,7 +24,7 @@ public class SimulatorMain {
         if (args.length > 0) {
 
             Map<String, String> parameterValueMap = parseParameters(args);
-            
+
             File file = new File(args[args.length - 1]);
             try {
                 SAXBuilder builder = new SAXBuilder();
@@ -32,7 +32,7 @@ public class SimulatorMain {
 
                 SimulatorParser parser = new SimulatorParser();
                 parser.setParameters(parameterValueMap );
-                
+
                 simulator = parser.parse(doc.getRootElement());
 
             } catch (SimulatorParser.ParseException pe) {
@@ -65,19 +65,19 @@ public class SimulatorMain {
 
         for (int i = 0; i < args.length - 1; ++i) {
             String arg = args[i];
-            
+
             if (arg.charAt(0) != '-') {
                 System.err.println("Do not understand '" + arg + "': should be -arg=value");
                 System.exit(0);
             }
-            
+
             String[] argvalue = arg.substring(1).split("=");
-            
+
             if (argvalue.length != 2) {
                 System.err.println("Do not understand '" + arg + "': should be -arg=value");
                 System.exit(0);
             }
-            
+
             parameterValueMap.put(argvalue[0], argvalue[1]);
         }
 
