@@ -84,6 +84,9 @@ public class FitnessFunction  {
             contrib = f.updateLogFitness(genome, contrib, m);
             cache.factorContributions[i++] = contrib;
             result += contrib;
+            if (Double.isNaN(result)) {
+                System.err.println("Fnan");
+            }
         }
 
         return result;

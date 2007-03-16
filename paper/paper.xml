@@ -1,6 +1,6 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
-    <replicates>10</replicates>
+    <replicates>100</replicates>
 
     <simulation>
         <genome>
@@ -8,7 +8,7 @@
         </genome>
 
         <population>
-            <populationSize>1000</populationSize>
+            <populationSize>$populationsize</populationSize>
 
             <inoculum>
                 <sequence label="wildtype">
@@ -287,11 +287,11 @@
                         GAAGAGGTAGTAATTAGATCTAAAAATTTCACGGACAATACTAAGACCATAATAGTACAGCTGAATGAAACGGTAGTAATTAATTGTACAAGACCCAACAGACATACAGGAAAAAGTATACGGATGGGAATGGGGAGAGCATGGCATACAACAAGGGAAATAATAGGAGATATAAGAAAAGCATATTGTACCCTTAATGGAACAAATTGGAATAAAACTTTAGAACAGGTAGTTAAAAAATTAAGAGAACAATTTAGGAATAAAACAATAGTCTTTAGTAACTCCTCAGGAGGGGACCTAGAAATTACAATGCACAGTTTTAATTGTGGAGGGGAATTTTTCTACTGTAATACAACACAGCTGATCACACTCCCATGCAGAATAAAACAAATTATAAACAGGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAAAGGACACATTAACTGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTGAGGTCTTCAGACCT
                         >p9p9s158
                         GAAGAGGTAGTAATTAGATCAAAAAACTTCACGGACAATACTAAGACCATAATAGTACAGCTGAATGAAACGGTAGTAATTAATTGTACAAGACCCAACAGACATACAGGAAAAAGTATACGGATGGGAATGGGGAGAGCATGGCATACAACAAGGGAAATAATAGGAGATATAAGAAAAGCATATTGTACCCTTAATGGAACAAATTGGAATAAAACTTTAGAACAGGTAGTTAAAAAATTAAGAGAACAATTTAGGAATAAAACAATAGTCTTTAGTAACTCCTCAGGAGGGGACCTAGAAATTACAATGCACAGTTTTAATTGTGGAGGGGAATTTTTCTACTGTAATACAACACAGCTGATCACACTCCCATGCAGAATAAAACAAATTATAAACAGGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAAAGGACACATTAACTGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTGAGGTCTTCAGACCT					</sequences>
+                    <probableSet>observed</probableSet>
                 </rank>
                 <fitness>
                     <minimumFitness>0.0</minimumFitness>
                     <lowFitness>1.0</lowFitness>
-                    <probableSet>estimated</probableSet>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness id="background">
@@ -300,7 +300,6 @@
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.9</lowFitness>
-                    <probableSet>estimated</probableSet>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness id="background5-to-end">
@@ -309,16 +308,13 @@
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
                     <lowFitness>0.9</lowFitness>
-                    <probableSet>estimated</probableSet>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness id="fluctuate">
                 <aminoAcids>1-4</aminoAcids>
                 <rank ref="alignment" />
                 <fitness>
-                    <minimumFitness>0.1</minimumFitness>
-                    <lowFitness>0.5</lowFitness>
-                    <probableSet>2</probableSet>
+                	<values>1.0 0.5 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1</values>
                 </fitness>
                 <fluctuate>
                     <rate>0.01</rate>
@@ -334,11 +330,11 @@
             	<rank>
             		<breakTies>random</breakTies>
             		<order>SR</order>
+            		<probableSet>1</probableSet>
             	</rank>
             	<fitness>
             		<lowFitness>0.5</lowFitness>
             		<minimumFitness>0.5</minimumFitness>
-            		<probableSet>1</probableSet>
             	</fitness>
             </purifyingFitness>
         </fitnessFunction>
@@ -457,7 +453,7 @@
                 <atFrequency>1</atFrequency>
                 <fileName>frequency171_%r.csv</fileName>
                 <alleleFrequency>
-                      <aminoAcid>171</aminoAcid>
+                      <aminoAcids>171</aminoAcids>
                 </alleleFrequency>
             </sampler>
         </samplingSchedule>
