@@ -8,6 +8,7 @@ package santa.simulator.fitness;
 
 import santa.simulator.Population;
 import santa.simulator.Random;
+import santa.simulator.EventLogger;
 import santa.simulator.genomes.*;
 
 import java.util.*;
@@ -73,12 +74,10 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
             while (it.hasNext()) {
                 int site = it.next();
 
-                if (getSites().contains(site)) {
-                    double p = Random.nextUniform(0, 1);
-                    if (p < fluctuateRate) {
-                        changeFitnessAt(site - 1);
-                        changed = true;
-                    }
+                double p = Random.nextUniform(0, 1);
+                if (p < fluctuateRate) {
+                    changeFitnessAt(site - 1);
+                    changed = true;
                 }
             }
         }
@@ -87,23 +86,33 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
     }
 
     private void changeFitnessAt(int i) {
-        List<Double> fs = new ArrayList<Double>();
-        List<Integer> indexes = new ArrayList<Integer>();
+        List<Integer> fittest = new ArrayList<Integer>();
+        List<Integer> lessFit = new ArrayList<Integer>();
 
         for (int j = 0; j < getAlphabet().getStateCount(); ++j) {
             double logfitness = getLogFitness(i, (byte) j);
-            if (logfitness >= fluctuateLogFitnessLimit) {
-                fs.add(logfitness);
-                indexes.add(j);
+            if (logfitness == 0.0) {
+                fittest.add(j);
+            } else if (logfitness + 1E-8 >= fluctuateLogFitnessLimit) {
+                lessFit.add(j);
             }
         }
 
-        Collections.shuffle(fs);
+        if (fittest.size() == 0) {
+            throw new RuntimeException("No fittest states to fluctuate");
+        }
 
-	    Logger.getLogger("santa.fitness").fine("Fluctuated fitness: " + fs);
+        if (lessFit.size() == 0) {
+            throw new RuntimeException("No less fit states to fluctuate");
+        }
 
-        for (int j = 0; j < indexes.size(); ++j)
-            setLogFitness(i, indexes.get(j).byteValue(), fs.get(j));
+        Integer newFittest = lessFit.get(Random.nextInt(0, lessFit.size()));
+        Integer newLessFit = fittest.get(Random.nextInt(0, fittest.size()));
+
+        EventLogger.log("Fluctuated fitness: " + newFittest + " swapping with " + newLessFit);
+
+        setLogFitness(i, newLessFit.byteValue(), getLogFitness(i, newFittest.byteValue()));
+        setLogFitness(i, newFittest.byteValue(), 0.0);
     }
 
     public double updateLogFitness(Genome genome, double logFitness) {
