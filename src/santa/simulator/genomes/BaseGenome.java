@@ -43,9 +43,6 @@ public abstract class BaseGenome implements Genome {
 
     public void setLogFitness(double logFitness) {
         if (logFitness != this.logFitness) {
-            if (Double.isNaN(logFitness)) {
-                System.err.println("NaN");
-            }
             this.logFitness = logFitness;
             fitnessKnown = false;
         }
