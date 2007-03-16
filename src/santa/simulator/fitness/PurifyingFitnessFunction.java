@@ -106,8 +106,15 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
             throw new RuntimeException("No less fit states to fluctuate");
         }
 
-        Integer newFittest = lessFit.get(Random.nextInt(0, lessFit.size()));
-        Integer newLessFit = fittest.get(Random.nextInt(0, fittest.size()));
+        Integer newFittest = lessFit.get(0);
+        if (lessFit.size() > 1) {
+            newFittest = lessFit.get(Random.nextInt(0, lessFit.size() - 1));
+        }
+        
+        Integer newLessFit = fittest.get(0);
+        if (fittest.size() > 1) {
+            fittest.get(Random.nextInt(0, fittest.size() - 1));
+        }
 
         EventLogger.log("Fluctuated fitness: " + newFittest + " swapping with " + newLessFit);
 
