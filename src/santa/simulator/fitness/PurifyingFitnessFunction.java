@@ -6,13 +6,12 @@
  */
 package santa.simulator.fitness;
 
-import java.util.*;
-
 import santa.simulator.Population;
 import santa.simulator.Random;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.genomes.*;
+
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * A Purifying fitness function performs puryfing selection. It is configured by
@@ -23,7 +22,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
     private PurifyingFitnessModel valueModel;
     private double fluctuateRate;
     private double fluctuateLogFitnessLimit;
-    
+
     boolean changed;
 
     public PurifyingFitnessFunction(PurifyingFitnessRank rank,
@@ -51,7 +50,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
             if (sites.contains(i + 1)) {
                 double[] fitnesses = valueModel.getFitnesses(i, rank);
                 byte[] states = rank.getStatesOrder(i);
-                for (int j = 0; j < stateSize; ++j) {                    
+                for (int j = 0; j < stateSize; ++j) {
                     logFitness[i][states[j]] = Math.log(fitnesses[j]);
                 }
             } else {
@@ -83,7 +82,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
                 }
             }
         }
-        
+
         return changed;
     }
 
@@ -100,6 +99,8 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         }
 
         Collections.shuffle(fs);
+
+	    Logger.getLogger("santa.fitness").fine("Fluctuated fitness: " + fs);
 
         for (int j = 0; j < indexes.size(); ++j)
             setLogFitness(i, indexes.get(j).byteValue(), fs.get(j));
@@ -135,7 +136,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         }
         PurifyingFitnessRank rank = new PurifyingFitnessRank(alphabet, states, alphabet.getStateCount());
         PurifyingFitnessValuesModel model = new PurifyingFitnessValuesModel(fitnesses);
-        
+
         return new PurifyingFitnessFunction(rank, model, 0, 0, sites, alphabet);
     }
 }
