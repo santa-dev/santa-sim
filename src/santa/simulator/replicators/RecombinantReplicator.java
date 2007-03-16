@@ -113,7 +113,7 @@ public class RecombinantReplicator implements Replicator {
     }
 
     protected void preCalculateBinomial(int numExperiments, double eventRate) {
-        binomial = new double[(int)(numExperiments * eventRate * 100)];
+        binomial = new double[numExperiments];
 
         BinomialDistribution distr
             = DistributionFactory.newInstance()
