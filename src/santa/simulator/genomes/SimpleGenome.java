@@ -36,6 +36,10 @@ public class SimpleGenome extends BaseGenome {
                 incrementTotalMutationCount();
 
                 if (!potentiallyHasFailed && fitnessFunction.updateLogFitness(this, mutation) == Double.NEGATIVE_INFINITY) {
+                    // If the fitness has changed to -Inf (perhaps because this mutation has induced a stop codon) then
+                    // a future mutation may reverse it if it is in the same codon. However, you can't subtract the
+                    // -Inf so we flag this situation and then recalculate the entire fitness when all the mutations have
+                    // been applied.
                     potentiallyHasFailed = true;
                 }
 
