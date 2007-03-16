@@ -53,7 +53,7 @@ public class AlleleFrequencySampler implements Sampler {
         destination.print(generation);
 
         for (int s:sites) {
-            double[] frequencies = population.getAlleleFrequencies(s, alphabet);
+            double[] frequencies = population.getAlleleFrequencies(s - 1, alphabet);
             for (int i = 0; i < alphabet.getStateCount(); ++i) {
                 destination.print("\t" + frequencies[i]);
             }
