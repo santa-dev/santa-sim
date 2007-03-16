@@ -48,7 +48,7 @@ public class RouletteWheelSelector implements Selector {
             i++;
         } while (i < populationSize);
 
-		Collections.shuffle(Arrays.asList(selectedParents));
+		Random.shuffle(selectedParents);
     }
 
     private final void calculateCumulativeFitness(Virus[] currentGeneration) {
