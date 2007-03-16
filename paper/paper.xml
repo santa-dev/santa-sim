@@ -8,7 +8,7 @@
         </genome>
 
         <population>
-            <populationSize>$populationsize</populationSize>
+            <populationSize>$popsize</populationSize>
 
             <inoculum>
                 <sequence label="wildtype">
@@ -20,6 +20,7 @@
 		<!-- define all factors.
 			 each epoch overrides, so it is never used as a whole-->
         <fitnessFunction>
+
             <purifyingFitness id="observed-neutral">
                 <aminoAcids>1-172</aminoAcids>
                 <rank id="alignment">
@@ -294,6 +295,7 @@
                     <lowFitness>1.0</lowFitness>
                 </fitness>
             </purifyingFitness>
+
             <purifyingFitness id="background">
                 <aminoAcids>1-172</aminoAcids>
                 <rank ref="alignment" />
@@ -302,6 +304,7 @@
                     <lowFitness>0.9</lowFitness>
                 </fitness>
             </purifyingFitness>
+
             <purifyingFitness id="background5-to-end">
                 <aminoAcids>5-172</aminoAcids>
                 <rank ref="alignment" />
@@ -310,6 +313,7 @@
                     <lowFitness>0.9</lowFitness>
                 </fitness>
             </purifyingFitness>
+
             <purifyingFitness id="fluctuate">
                 <aminoAcids>1-4</aminoAcids>
                 <rank ref="alignment" />
@@ -321,10 +325,12 @@
                     <fitnessLimit>0.5</fitnessLimit>
                 </fluctuate>
             </purifyingFitness>
+
             <exposureDependentFitness id="exposure">
                 <aminoAcids>1-2</aminoAcids>
                 <penalty>0.01</penalty>
             </exposureDependentFitness>
+
             <purifyingFitness id="select-171">
             	<aminoAcids>171</aminoAcids>
             	<rank>
@@ -351,7 +357,7 @@
         </replicator>
 
 		<!--
-			Epochs for neutral case 
+			Epochs for neutral case
  		  -->
         <epoch>
         	<name>burnin-neutral</name>
@@ -371,7 +377,7 @@
         </epoch>
 
 		<!--
-			Epochs for purifying case 
+			Epochs for purifying case
  		  -->
         <epoch>
         	<name>burnin-purify</name>
@@ -391,7 +397,7 @@
         </epoch>
 
 		<!--
-			Epochs for fluctuating case 
+			Epochs for fluctuating case
  		  -->
         <epoch>
         	<name>burnin-fluctuate</name>
@@ -413,7 +419,7 @@
         </epoch>
 
 		<!--
-			Epochs for exposure case 
+			Epochs for exposure case
  		  -->
         <epoch>
         	<name>burnin-exposure</name>
