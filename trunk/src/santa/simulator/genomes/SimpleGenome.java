@@ -27,16 +27,26 @@ public class SimpleGenome extends BaseGenome {
      * @param fitnessFunction
      */
     public void applyMutations(SortedSet<Mutation> newMutations, FitnessFunction fitnessFunction) {
+        boolean potentiallyHasFailed = false;
+
         for (Mutation mutation : newMutations) {
             byte oldState = sequence.getNucleotide(mutation.position);
 
             if (mutation.state != oldState) {
                 incrementTotalMutationCount();
 
-                setLogFitness(fitnessFunction.updateLogFitness(this, mutation));
+                if (!potentiallyHasFailed && fitnessFunction.updateLogFitness(this, mutation) == Double.NEGATIVE_INFINITY) {
+                    potentiallyHasFailed = true;
+                }
+
                 sequence.setNucleotide(mutation.position, mutation.state);
             }
         }
+
+        if (potentiallyHasFailed) {
+            fitnessFunction.computeLogFitness(this);
+        }
+
     }
 
     public int getLength() {

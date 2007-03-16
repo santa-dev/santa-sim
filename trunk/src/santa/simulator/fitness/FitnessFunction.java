@@ -89,6 +89,8 @@ public class FitnessFunction  {
             }
         }
 
+        genome.setLogFitness(result);
+
         return result;
     }
 
