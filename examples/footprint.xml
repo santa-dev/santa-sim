@@ -7,8 +7,6 @@
             <length>999</length>
         </genome>
 
-		<eventLogger />
-
         <population>
             <populationSize>1000</populationSize>
 
@@ -21,7 +19,7 @@
 
         <fitnessFunction>
             <purifyingFitness>
-                <aminoAcids>1-162,164-333</aminoAcids>
+                <aminoAcids>1-166,168-333</aminoAcids>
                 <rank>
                     <breakTies>random</breakTies>
                     <sequences>
@@ -31,11 +29,11 @@
                 </rank>
                 <fitness>
                     <minimumFitness>0.1</minimumFitness>
-                    <lowFitness>0.1</lowFitness>
+                    <lowFitness>0.5</lowFitness>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness>
-                <aminoAcids>163</aminoAcids>
+                <aminoAcids>167</aminoAcids>
                 <rank>
                     <breakTies>random</breakTies>
                     <order>VL</order>
@@ -70,6 +68,8 @@
         <epoch>
             <generationCount>1000000</generationCount>
         </epoch>
+
+	    <eventLogger />
 
         <samplingSchedule>
             <sampler>
