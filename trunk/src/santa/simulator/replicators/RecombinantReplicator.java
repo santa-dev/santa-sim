@@ -52,7 +52,7 @@ public class RecombinantReplicator implements Replicator {
             virus.setGenome(genome);
             virus.setParent(parents[0]);
 
-//            EventLogger.log("Recombination: (" + parent1Genome.getLogFitness() + ", " + parent2Genome.getLogFitness() + ") -> " + genome.getLogFitness());
+            EventLogger.log("Recombination: (" + parent1Genome.getLogFitness() + ", " + parent2Genome.getLogFitness() + ") -> " + genome.getLogFitness());
 
         } else {
             // single infection - no recombination...
