@@ -8,7 +8,7 @@ package santa.simulator.fitness;
 
 import santa.simulator.Population;
 
-public abstract class AbstractFitnessFunction implements FitnessFunctionFactor {
+public abstract class AbstractFitnessFactor implements FitnessFactor {
 
     public boolean updateGeneration(int generation, Population population) {
         return false;

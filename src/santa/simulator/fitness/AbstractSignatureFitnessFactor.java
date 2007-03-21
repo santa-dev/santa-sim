@@ -6,14 +6,12 @@
  */
 package santa.simulator.fitness;
 
+import santa.simulator.genomes.*;
+
 import java.util.Arrays;
 import java.util.Set;
 
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.Sequence;
-import santa.simulator.genomes.SequenceAlphabet;
-
-public abstract class AbstractSignatureFitnessFunction implements FitnessFunctionFactor {
+public abstract class AbstractSignatureFitnessFactor implements FitnessFactor {
 
     static protected final class Signature {
             byte state[];
@@ -44,7 +42,7 @@ public abstract class AbstractSignatureFitnessFunction implements FitnessFunctio
     protected final Set<Integer> sites;
     protected final SequenceAlphabet alphabet;
 
-    public AbstractSignatureFitnessFunction(Set<Integer> sites, SequenceAlphabet alphabet) {
+    public AbstractSignatureFitnessFactor(Set<Integer> sites, SequenceAlphabet alphabet) {
         this.sites = sites;
         this.alphabet = alphabet;
     }

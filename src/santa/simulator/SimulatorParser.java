@@ -436,11 +436,11 @@ public class SimulatorParser {
 	}
 
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
-		List<FitnessFunctionFactor> components = new ArrayList<FitnessFunctionFactor>();
+		List<FitnessFactor> components = new ArrayList<FitnessFactor>();
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
-			FitnessFunctionFactor factor = null;
+			FitnessFactor factor = null;
 
 			if (e.getName().equals(NEUTRAL_MODEL_FITNESS_FUNCTION)) {
 				// don't need to add a factor to the product
@@ -481,8 +481,8 @@ public class SimulatorParser {
 		}
 	}
 
-	private FitnessFunctionFactor parseExposureDependentFitnessFunction(Element element) throws ParseException {
-		FitnessFunctionFactor result = getFitnessFactor(element, ExposureDependentFitnessFunction.class.getName());
+	private FitnessFactor parseExposureDependentFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, ExposureDependentFitnessFactor.class.getName());
 
 		if (result != null)
 			return result;
@@ -509,7 +509,7 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + PENALTY + ">");
 		}
 
-		return new ExposureDependentFitnessFunction(penalty, factor.sites, factor.alphabet);
+		return new ExposureDependentFitnessFactor(penalty, factor.sites, factor.alphabet);
 	}
 
 	/**
@@ -517,8 +517,8 @@ public class SimulatorParser {
 	 * @return
 	 * @throws ParseException
 	 */
-	private FitnessFunctionFactor parseAgeDependentFitnessFunction(Element element) throws ParseException {
-		FitnessFunctionFactor result = getFitnessFactor(element, AgeDependentFitnessFunction.class.getName());
+	private FitnessFactor parseAgeDependentFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, AgeDependentFitnessFactor.class.getName());
 
 		if (result != null)
 			return result;
@@ -544,7 +544,7 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + DECLINE_RATE + ">");
 		}
 
-		return new AgeDependentFitnessFunction(declineRate, factor.sites, factor.alphabet);
+		return new AgeDependentFitnessFactor(declineRate, factor.sites, factor.alphabet);
 	}
 
 	/**
@@ -552,8 +552,8 @@ public class SimulatorParser {
 	 * @return
 	 * @throws ParseException
 	 */
-	private FitnessFunctionFactor parseFrequencyDependentFitnessFunction(Element element) throws ParseException {
-		FitnessFunctionFactor result = getFitnessFactor(element, FrequencyDependentFitnessFunction.class.getName());
+	private FitnessFactor parseFrequencyDependentFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, FrequencyDependentFitnessFactor.class.getName());
 
 		if (result != null)
 			return result;
@@ -579,11 +579,11 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + SHAPE + ">");
 		}
 
-		return new FrequencyDependentFitnessFunction(shape, factor.sites, factor.alphabet);
+		return new FrequencyDependentFitnessFactor(shape, factor.sites, factor.alphabet);
 	}
 
-	private FitnessFunctionFactor parsePurifyingFitnessFunction(Element element) throws ParseException {
-		FitnessFunctionFactor result = getFitnessFactor(element, PurifyingFitnessFunction.class.getName());
+	private FitnessFactor parsePurifyingFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, PurifyingFitnessFactor.class.getName());
 		if (result != null)
 			return result;
 
@@ -622,11 +622,11 @@ public class SimulatorParser {
 		if (valueModel == null)
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <fitness>");
 
-		return new PurifyingFitnessFunction(rank, valueModel, fluctuateRate, fluctuateFitnessLimit, factor.sites, factor.alphabet);
+		return new PurifyingFitnessFactor(rank, valueModel, fluctuateRate, fluctuateFitnessLimit, factor.sites, factor.alphabet);
 	}
 
-	private FitnessFunctionFactor parseEmpericalFitnessFunction(Element element) throws ParseException {
-		FitnessFunctionFactor result = getFitnessFactor(element, PurifyingFitnessFunction.class.getName());
+	private FitnessFactor parseEmpericalFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, PurifyingFitnessFactor.class.getName());
 		if (result != null)
 			return result;
 
@@ -653,11 +653,11 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + VALUES + "> element");
 		}
 
-		return PurifyingFitnessFunction.createEmpiricalFitnessFunction(fitnesses, factor.sites, factor.alphabet);
+		return PurifyingFitnessFactor.createEmpiricalFitnessFunction(fitnesses, factor.sites, factor.alphabet);
 	}
 
 
-	private FitnessFunctionFactor getFitnessFactor(Element element, String classType) throws ParseException {
+	private FitnessFactor getFitnessFactor(Element element, String classType) throws ParseException {
 		String ref = element.getAttributeValue(REF);
 
 		if (ref != null) {
@@ -666,7 +666,7 @@ public class SimulatorParser {
 			}
 
 			try {
-				FitnessFunctionFactor referenced = (FitnessFunctionFactor) lookupObjectById(ref, FitnessFunctionFactor.class);
+				FitnessFactor referenced = (FitnessFactor) lookupObjectById(ref, FitnessFactor.class);
 
 				if (!referenced.getClass().getName().equals(classType)) {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: referenced id '" + ref + "' is not a fitness function of the same type.");
