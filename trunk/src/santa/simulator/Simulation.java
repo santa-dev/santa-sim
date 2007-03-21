@@ -3,6 +3,7 @@ package santa.simulator;
 import santa.simulator.genomes.*;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.selectors.Selector;
+import santa.simulator.selectors.RouletteWheelSelector;
 import santa.simulator.phylogeny.Phylogeny;
 
 import java.util.List;
@@ -37,7 +38,6 @@ public class Simulation {
             InoculumType inoculumType,
             GenePool genePool,
             List<SimulationEpoch> epochs,
-            Selector selector,
             SamplingSchedule samplingSchedule) {
 
         this.populationSize = populationSize;
@@ -45,7 +45,8 @@ public class Simulation {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-        this.selector = selector;
+	    
+        this.selector = new RouletteWheelSelector();
 
         // This pre-computes all possible mutation objects as singletons...
         Mutation.initialize();
