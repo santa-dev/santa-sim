@@ -7,12 +7,9 @@ import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
 import santa.simulator.replicators.*;
 import santa.simulator.samplers.*;
-import santa.simulator.selectors.*;
 
+import java.io.*;
 import java.util.*;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @author Andrew Rambaut
@@ -41,14 +38,13 @@ public class SimulatorParser {
 
 	private final static String GENOME_DESCRIPTION = "genome";
 	private final static String GENOME_LENGTH = "length";
+	private final static String FEATURE = "feature";
+	private final static String TYPE = "type";
+	private final static String SITES = "sites";
 
 	private final static String GENE_POOL = "genePool";
 	private final static String SIMPLE_GENE_POOL = "simpleGenePool";
 	private final static String COMPACT_GENE_POOL = "complexGenePool";
-
-	private final static String SELECTOR = "selector";
-	private final static String MONTE_CARLO_SELECTOR = "monteCarloSelector";
-	private final static String ROULETTE_WHEEL_SELECTOR = "rouletteWheelSelector";
 
 	private final static String FITNESS_FUNCTION = "fitnessFunction";
 	private final static String NUCLEOTIDES = "nucleotides";
@@ -271,7 +267,6 @@ public class SimulatorParser {
 				}
 			} else if (!e.getName().equals(GENOME_DESCRIPTION) &&
 					!e.getName().equals(GENE_POOL) &&
-					!e.getName().equals(SELECTOR) &&
 					!e.getName().equals(FITNESS_FUNCTION) &&
 					!e.getName().equals(MUTATOR) &&
 					!e.getName().equals(REPLICATOR) &&
@@ -292,7 +287,6 @@ public class SimulatorParser {
 
 		SamplingSchedule samplingSchedule = null;
 		GenePool genePool = null;
-		Selector selector = null;
 
 		FitnessFunction defaultFitnessFunction = null;
 		Mutator defaultMutator = null;
@@ -302,8 +296,6 @@ public class SimulatorParser {
 			Element e = (Element)o;
 			if (e.getName().equals(GENE_POOL)) {
 				genePool = parseGenePool(e);
-			} else if (e.getName().equals(SELECTOR)) {
-				selector = parseSelector(e);
 			} else if (e.getName().equals(SAMPLING_SCHEDULE)) {
 				samplingSchedule = parseSamplingSchedule(e);
 			} else if (e.getName().equals(EVENT_LOGGER)) {
@@ -322,10 +314,6 @@ public class SimulatorParser {
 
 		if (genePool == null) {
 			genePool = new SimpleGenePool();
-		}
-
-		if (selector == null) {
-			selector = new RouletteWheelSelector();
 		}
 
 		if (defaultFitnessFunction == null)
@@ -352,7 +340,7 @@ public class SimulatorParser {
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
 
-		return new Simulation(populationSize, inoculumType, genePool, epochs, selector, samplingSchedule);
+		return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
 	}
 
 	SimulationEpoch parseSimulationEpoch(Element element,
@@ -400,6 +388,7 @@ public class SimulatorParser {
 	private void parseGenomeDescription(Element element) throws ParseException {
 
 		int genomeLength = -1;
+		List<Feature> features = null;
 		List<Sequence> sequences = null;
 
 		for (Object o : element.getChildren()) {
@@ -410,6 +399,8 @@ public class SimulatorParser {
 				} catch (ParseException pe) {
 					throw new ParseException("Error parsing <" + GENOME_DESCRIPTION + "> element: " + pe.getMessage());
 				}
+			} else if (e.getName().equals(FEATURE)) {
+				features.add(parseParseFeature(e));
 			} else if (e.getName().equals(SEQUENCES)) {
 				sequences = parseAlignment(e.getTextTrim());
 			} else  {
@@ -417,22 +408,73 @@ public class SimulatorParser {
 			}
 		}
 
-		if (genomeLength == -1 && sequences == null) {
-			throw new ParseException("Error parsing <" + element.getName() + "> one of eithr element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
+		if (genomeLength == -1) {
+			throw new ParseException("Error parsing <" + element.getName() + "> the element: <" + GENOME_LENGTH + "> is missing");
 		}
 
-		if (sequences != null) {
-			if (genomeLength != -1) {
-				throw new ParseException("Error parsing <" + element.getName() + "> one of eithr element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
+		GenomeDescription.setDescription(genomeLength, features, sequences);
+
+	}
+
+	private Feature parseParseFeature(Element element) throws ParseException {
+
+		String name = null;
+		Feature.Type type = Feature.Type.NUCLEOTIDE;
+		String sites = null;
+
+		for (Object o : element.getChildren()) {
+			Element e = (Element) o;
+
+			if (e.getName().equals(NAME)) {
+				name = e.getTextNormalize();
+			} else if (e.getName().equals(TYPE)) {
+				if (e.getTextNormalize().equals(AMINO_ACIDS)) {
+					type = Feature.Type.AMINO_ACID;
+				} else if (e.getTextNormalize().equals(NUCLEOTIDES)) {
+					type = Feature.Type.NUCLEOTIDE;
+				} else {
+					throw new ParseException("Error parsing <" + element.getName()
+							+ "> element: <" + e.getName() + "> should be 'nucleotides' or 'aminoAcids'");
+				}
+			} else if (e.getName().equals(SITES)) {
+				sites = e.getTextNormalize();
+			} else {
+				throw new ParseException("Error parsing <" + element.getName()
+						+ "> element: <" + e.getName() + "> is unrecognized");
 			}
-
-			GenomeDescription.setDescription(sequences);
-		} else if (genomeLength != -1) {
-			GenomeDescription.setDescription(genomeLength);
-		} else {
-			throw new ParseException("Error parsing <" + element.getName() + "> one of either element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
 		}
 
+		Feature feature = new Feature(name, type);
+
+		String[] parts = sites.split(",");
+
+		try {
+			for (int i = 0; i < parts.length; ++i) {
+				String part = parts[i].trim();
+
+				if (part.contains("-")) {
+					String[] ranges = part.split("-");
+
+					if (ranges.length != 2) {
+						throw new ParseException("Error parsing <" + element.getName()
+								+ "> element: \"" + part + "\" is not a proper range.");
+					}
+
+					int start = Integer.parseInt(ranges[0]);
+					int end = Integer.parseInt(ranges[1]);
+
+					feature.addFragment(start, end);
+				} else {
+					int site = Integer.parseInt(part);
+					feature.addFragment(site, site);
+				}
+			}
+		} catch (NumberFormatException e) {
+			throw new ParseException("Error parsing <" + element.getName()
+					+ "> element: " + e.getMessage());
+		}
+
+		return feature;
 	}
 
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
@@ -1086,22 +1128,6 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}
 
-	}
-
-	private Selector parseSelector(Element element) throws ParseException {
-
-		if (element.getChildren().size() == 0) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
-		}
-
-		Element e = (Element)element.getChildren().get(0);
-		if (e.getName().equals(MONTE_CARLO_SELECTOR)) {
-			return new MonteCarloSelector();
-		} else if (e.getName().equals(ROULETTE_WHEEL_SELECTOR)) {
-			return new RouletteWheelSelector();
-		} else {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-		}
 	}
 
 	private SamplingSchedule parseSamplingSchedule(Element element) throws ParseException {
