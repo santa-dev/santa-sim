@@ -6,24 +6,18 @@
  */
 package santa.simulator.fitness;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import santa.simulator.Population;
+import santa.simulator.genomes.*;
+
+import java.util.*;
 import java.util.Map.Entry;
 
-import santa.simulator.Population;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.SequenceAlphabet;
-
-public class AgeDependentFitnessFunction extends AbstractSignatureFitnessFunction {
+public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     private Map<Signature, Integer> birthGenerations;
     double declineRate;
     int currentGeneration;
 
-    public AgeDependentFitnessFunction(double declineRate, Set<Integer> sites, SequenceAlphabet alphabet) {
+    public AgeDependentFitnessFactor(double declineRate, Set<Integer> sites, SequenceAlphabet alphabet) {
         super(sites, alphabet);
         this.declineRate = declineRate;
         this.birthGenerations = new HashMap<Signature, Integer>();

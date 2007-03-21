@@ -6,24 +6,18 @@
  */
 package santa.simulator.fitness;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import santa.simulator.Population;
+import santa.simulator.genomes.*;
+
+import java.util.*;
 import java.util.Map.Entry;
 
-import santa.simulator.Population;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.SequenceAlphabet;
-
-public class ExposureDependentFitnessFunction extends AbstractSignatureFitnessFunction {
+public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     private Map<Signature, Double> exposure;
     double penalty;
     int currentGeneration;
 
-    public ExposureDependentFitnessFunction(double penalty, Set<Integer> sites, SequenceAlphabet alphabet) {
+    public ExposureDependentFitnessFactor(double penalty, Set<Integer> sites, SequenceAlphabet alphabet) {
         super(sites, alphabet);
         this.penalty = penalty;
         this.exposure = new HashMap<Signature, Double>();

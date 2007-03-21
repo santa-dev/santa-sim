@@ -12,13 +12,12 @@ import santa.simulator.EventLogger;
 import santa.simulator.genomes.*;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * A Purifying fitness function performs puryfing selection. It is configured by
  * giving it a rank and model for its fitness values.
  */
-public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
+public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
     private PurifyingFitnessRank rank;
     private PurifyingFitnessModel valueModel;
     private double fluctuateRate;
@@ -26,7 +25,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
 
     boolean changed;
 
-    public PurifyingFitnessFunction(PurifyingFitnessRank rank,
+    public PurifyingFitnessFactor(PurifyingFitnessRank rank,
                                     PurifyingFitnessModel valueModel,
                                     double fluctuateRate,
                                     double fluctuateFitnessLimit,
@@ -110,7 +109,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         if (lessFit.size() > 1) {
             newFittest = lessFit.get(Random.nextInt(0, lessFit.size() - 1));
         }
-        
+
         Integer newLessFit = fittest.get(0);
         if (fittest.size() > 1) {
             fittest.get(Random.nextInt(0, fittest.size() - 1));
@@ -145,7 +144,7 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         return fluctuateRate;
     }
 
-    public static PurifyingFitnessFunction createEmpiricalFitnessFunction(double[] fitnesses, Set<Integer> sites, SequenceAlphabet alphabet) {
+    public static PurifyingFitnessFactor createEmpiricalFitnessFunction(double[] fitnesses, Set<Integer> sites, SequenceAlphabet alphabet) {
         List<Byte> states = new ArrayList<Byte>();
         for (byte b = 0; b < alphabet.getStateCount(); b++) {
             states.add(b);
@@ -153,6 +152,6 @@ public class PurifyingFitnessFunction extends AbstractSiteFitnessFunction {
         PurifyingFitnessRank rank = new PurifyingFitnessRank(alphabet, states, alphabet.getStateCount());
         PurifyingFitnessValuesModel model = new PurifyingFitnessValuesModel(fitnesses);
 
-        return new PurifyingFitnessFunction(rank, model, 0, 0, sites, alphabet);
+        return new PurifyingFitnessFactor(rank, model, 0, 0, sites, alphabet);
     }
 }

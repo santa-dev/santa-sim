@@ -8,27 +8,19 @@
  */
 package santa.simulator.fitness;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import santa.simulator.genomes.*;
 
-import santa.simulator.genomes.AminoAcid;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.Sequence;
-import santa.simulator.genomes.SequenceAlphabet;
-import santa.simulator.genomes.SimpleSequence;
+import java.util.*;
 
 /**
  * This is an implementation of FitnessFunction which encapsulates empirical estimates of the
  * fitness effects of different states.
  */
-public abstract class AbstractSiteFitnessFunction extends AbstractFitnessFunction {
+public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 	private Set<Integer> sites;
     private SequenceAlphabet alphabet;
 
-    public AbstractSiteFitnessFunction(Set<Integer> sites, SequenceAlphabet alphabet) {
+    public AbstractSiteFitnessFactor(Set<Integer> sites, SequenceAlphabet alphabet) {
         this.sites = sites;
 
         if (sites == null) {
@@ -115,7 +107,7 @@ public abstract class AbstractSiteFitnessFunction extends AbstractFitnessFunctio
                 result += Double.NEGATIVE_INFINITY;
             else
                 result += logFitness[mutationSite][newState];
-            
+
             return result;
         }
     }

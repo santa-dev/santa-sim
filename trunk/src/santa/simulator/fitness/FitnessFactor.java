@@ -1,11 +1,9 @@
 package santa.simulator.fitness;
 
-import java.util.Set;
-
 import santa.simulator.Population;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.genomes.*;
+
+import java.util.Set;
 
 /**
  * An abstract class defining a general fitness function on a byte-encoded molecular sequence
@@ -13,7 +11,7 @@ import santa.simulator.genomes.SequenceAlphabet;
  * @author Alexei Drummond
  * @author Andrew Rambaut
  */
-public interface FitnessFunctionFactor {
+public interface FitnessFactor {
 
     /**
      * @return Compute the log fitness of the given genome, from scratch.

@@ -6,11 +6,11 @@
  */
 package santa.simulator.fitness;
 
-import java.util.List;
-
 import santa.simulator.Population;
 import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Mutation;
+
+import java.util.List;
 
 /**
  * Computes the fitness as the product of different components.
@@ -19,9 +19,9 @@ import santa.simulator.genomes.Mutation;
  * any Genome, so that factors may decide to recompute or update their individual
  * contribution.
  */
-public class FitnessFunction  {
+public final class FitnessFunction  {
     int generation;
-    private List<FitnessFunctionFactor> factors;
+    private List<FitnessFactor> factors;
 
     /**
      * A cache of calculated fitness contributions, for each factor,
@@ -43,7 +43,7 @@ public class FitnessFunction  {
         }
     }
 
-    public FitnessFunction(List<FitnessFunctionFactor> factors) {
+    public FitnessFunction(List<FitnessFactor> factors) {
         this.factors = factors;
     }
 
@@ -58,7 +58,7 @@ public class FitnessFunction  {
         genome.setFitnessCache(cache);
 
         int i = 0;
-        for (FitnessFunctionFactor f : factors) {
+        for (FitnessFactor f : factors) {
             double contrib = f.computeLogFitness(genome);
             cache.factorContributions[i++] = contrib;
             result += contrib;
@@ -79,7 +79,7 @@ public class FitnessFunction  {
         FitnessGenomeCache cache = genome.getFitnessCache();
 
         int i = 0;
-        for (FitnessFunctionFactor f : factors) {
+        for (FitnessFactor f : factors) {
             double contrib = cache.factorContributions[i];
             contrib = f.updateLogFitness(genome, contrib, m);
             cache.factorContributions[i++] = contrib;
@@ -102,7 +102,7 @@ public class FitnessFunction  {
         double result = 0;
 
         int i = 0;
-        for (FitnessFunctionFactor f : factors) {
+        for (FitnessFactor f : factors) {
             double contrib = cache.factorContributions[i];
             contrib = f.updateLogFitness(genome, contrib);
             cache.factorContributions[i++] = contrib;
@@ -115,7 +115,7 @@ public class FitnessFunction  {
     public boolean updateGeneration(int generation, Population population) {
         boolean changed = false;
 
-        for (FitnessFunctionFactor f : factors) {
+        for (FitnessFactor f : factors) {
             if (f.updateGeneration(generation, population))
                 changed = true;
         }

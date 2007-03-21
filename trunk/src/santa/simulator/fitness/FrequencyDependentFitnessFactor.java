@@ -18,12 +18,12 @@ import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Mutation;
 import santa.simulator.genomes.SequenceAlphabet;
 
-public class FrequencyDependentFitnessFunction extends AbstractSignatureFitnessFunction {
+public class FrequencyDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     private double shape;
     private Map<Signature, Integer> frequencies;
     private double populationSize;
 
-    public FrequencyDependentFitnessFunction(double shape, Set<Integer> sites, SequenceAlphabet alphabet) {
+    public FrequencyDependentFitnessFactor(double shape, Set<Integer> sites, SequenceAlphabet alphabet) {
         super(sites, alphabet);
         this.shape = shape;
         this.frequencies = new HashMap<Signature, Integer>();
