@@ -64,6 +64,33 @@ public abstract class BaseGenome implements Genome {
         this.fitnessCache = fitnessCache;
     }
 
+	public byte[] getNucleotides(Coordinates coords) {
+		byte[] nucleotides = new byte[coords.getLength()];
+		int k = 0;
+		for (int i = 0; i < coords.getFragmentCount(); i++) {
+			int start = coords.getFragmentStart(i);
+			int finish = coords.getFragmentFinish(i);
+			if (start < finish) {
+				for (int j = start; j <= finish; j++) {
+					nucleotides[k] = getNucleotide(j);
+					k++;
+				}
+			} else {
+				for (int j = finish; j >= start; j--) {
+					nucleotides[k] = getNucleotide(j);
+					k++;
+				}
+			}
+		}
+
+		return nucleotides;
+	}
+
+	public byte[] getStates(SequenceAlphabet alphabet, Coordinates coords) {
+		Sequence seq = new SimpleSequence(getNucleotides(coords));
+		return seq.getStates(alphabet);
+	}
+
     // private members
 
     private double logFitness = 0.0;

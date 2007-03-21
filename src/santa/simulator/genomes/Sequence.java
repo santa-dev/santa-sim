@@ -48,15 +48,30 @@ public interface Sequence {
      */
     String getNucleotides();
 
+	/**
+	 * Get an array representation of the nucleotide sequence.
+	 */
+	byte[] getNucleotideStates();
+
     /**
      * Get a String representation of the amino acid sequence.
      */
     String getAminoAcids();
 
+	/**
+	 * Get an array representation of the amino acid sequence.
+	 */
+	byte[] getAminoAcidStates();
+
+	/**
+	 * Get a string representation in the given alphabet.
+	 */
+	String getStateString(SequenceAlphabet alphabet);
+
     /**
-     * Get a String representation in the given alphabet.
+     * Get an array representation in the given alphabet.
      */
-    String getStates(SequenceAlphabet alphabet);
+    byte[] getStates(SequenceAlphabet alphabet);
 
     /**
      * Get a subsequence.

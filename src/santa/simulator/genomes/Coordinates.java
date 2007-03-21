@@ -7,8 +7,7 @@ import java.util.List;
  * @author Andrew Rambaut
  * @version $Id$
  */
-public class Coordinates {
-
+public final class Coordinates {
 
 	public Coordinates() {
 	}
@@ -17,6 +16,14 @@ public class Coordinates {
 		fragments.add(new Fragment(start, finish));
 	}
 
+	public int getLength() {
+		int length = 0;
+		for (Fragment fragment : fragments) {
+			length += Math.abs(fragment.getFinish() - fragment.getStart()) + 1;
+		}
+		return length;
+	}
+	
 	public int getFragmentCount() {
 		return fragments.size();
 	}
