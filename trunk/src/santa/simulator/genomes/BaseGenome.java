@@ -64,7 +64,7 @@ public abstract class BaseGenome implements Genome {
         this.fitnessCache = fitnessCache;
     }
 
-	public byte[] getNucleotides(Coordinates coords) {
+	public byte[] getNucleotides(Feature coords) {
 		byte[] nucleotides = new byte[coords.getLength()];
 		int k = 0;
 		for (int i = 0; i < coords.getFragmentCount(); i++) {
@@ -86,7 +86,7 @@ public abstract class BaseGenome implements Genome {
 		return nucleotides;
 	}
 
-	public byte[] getStates(SequenceAlphabet alphabet, Coordinates coords) {
+	public byte[] getStates(SequenceAlphabet alphabet, Feature coords) {
 		Sequence seq = new SimpleSequence(getNucleotides(coords));
 		return seq.getStates(alphabet);
 	}

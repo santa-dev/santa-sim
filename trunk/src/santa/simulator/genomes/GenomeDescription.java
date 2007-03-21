@@ -13,32 +13,31 @@ public final class GenomeDescription {
 
     private GenomeDescription() { /* private to prohibit instances */ }
 
-	public static void setDescription(List<Sequence> sequences) {
-		if (sequences == null || sequences.size() == 0) {
-		    throw new RuntimeException("GenomeDescription requires some sequences to initialize");
-		}
+	public static void setDescription(int genomeLength,
+	                                  List<Feature> features) {
+	    setDescription(genomeLength, features, null);
+	}
 
+	public static void setDescription(int genomeLength,
+	                                  List<Feature> features,
+	                                  List<Sequence> sequences) {
 	    if (isSet) {
 	        throw new RuntimeException("GenomeDescription can only be set once");
 	    }
 
+		GenomeDescription.genomeLength = genomeLength;
+		GenomeDescription.features = features;
 
-		Sequence firstSequence = sequences.get(0);
-	    GenomeDescription.genomeLength = firstSequence.getLength();
-		GenomeDescription.sequences = new ArrayList<Sequence>(sequences);
+		if (sequences != null && sequences.size() > 0) {
+			Sequence firstSequence = sequences.get(0);
+		    if (firstSequence.getLength() != GenomeDescription.genomeLength) {
+			    throw new IllegalArgumentException("Sequences are not the same length as the genome");
+		    }
+			GenomeDescription.sequences = new ArrayList<Sequence>(sequences);
+		}
 
 	    isSet = true;
 	}
-
-    public static void setDescription(int genomeLength) {
-        if (isSet) {
-            throw new RuntimeException("GenomeDescription can only be set once");
-        }
-
-        GenomeDescription.genomeLength = genomeLength;
-
-        isSet = true;
-    }
 
     public static boolean isSet() {
         return isSet;
@@ -52,6 +51,10 @@ public final class GenomeDescription {
         return genomeLength / alphabet.getTokenSize();
     }
 
+	public static List<Feature> getFeatures() {
+		return features;
+	}
+
 	public static List<Sequence> getSequences() {
 		return sequences;
 	}
@@ -61,6 +64,7 @@ public final class GenomeDescription {
 	}
 
 	private static int genomeLength;
+	private static List<Feature> features = null;
 	private static List<Sequence> sequences = null;
 
     private static boolean isSet = false;
