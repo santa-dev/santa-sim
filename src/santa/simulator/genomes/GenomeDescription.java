@@ -1,5 +1,8 @@
 package santa.simulator.genomes;
 
+import java.util.List;
+import java.util.ArrayList;
+
 
 /**
  * @author Andrew Rambaut
@@ -9,6 +12,23 @@ package santa.simulator.genomes;
 public final class GenomeDescription {
 
     private GenomeDescription() { /* private to prohibit instances */ }
+
+	public static void setDescription(List<Sequence> sequences) {
+		if (sequences == null || sequences.size() == 0) {
+		    throw new RuntimeException("GenomeDescription requires some sequences to initialize");
+		}
+
+	    if (isSet) {
+	        throw new RuntimeException("GenomeDescription can only be set once");
+	    }
+
+
+		Sequence firstSequence = sequences.get(0);
+	    GenomeDescription.genomeLength = firstSequence.getLength();
+		GenomeDescription.sequences = new ArrayList<Sequence>(sequences);
+
+	    isSet = true;
+	}
 
     public static void setDescription(int genomeLength) {
         if (isSet) {
@@ -32,7 +52,12 @@ public final class GenomeDescription {
         return genomeLength / alphabet.getTokenSize();
     }
 
+	public static List<Sequence> getSequences() {
+		return sequences;
+	}
+
     private static int genomeLength;
+	private static List<Sequence> sequences = null;
 
     private static boolean isSet = false;
 
