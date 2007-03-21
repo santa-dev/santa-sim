@@ -7,9 +7,16 @@ import java.util.List;
  * @author Andrew Rambaut
  * @version $Id$
  */
-public final class Coordinates {
+public final class Feature {
 
-	public Coordinates() {
+	public enum Type {
+		NUCLEOTIDE,
+		AMINO_ACID
+	};
+
+	public Feature(String name, Type featureType) {
+		this.name = name;
+		this.featureType = featureType;
 	}
 
 	public void addFragment(int start, int finish) {
@@ -18,12 +25,18 @@ public final class Coordinates {
 
 	public int getLength() {
 		int length = 0;
+
 		for (Fragment fragment : fragments) {
 			length += Math.abs(fragment.getFinish() - fragment.getStart()) + 1;
 		}
+
+		if (featureType == Type.AMINO_ACID) {
+			length /= 3;
+		}
+
 		return length;
 	}
-	
+
 	public int getFragmentCount() {
 		return fragments.size();
 	}
@@ -55,4 +68,7 @@ public final class Coordinates {
 		private final int start;
 		private final int finish;
 	}
+
+	private final String name;
+	private final Type featureType;
 }

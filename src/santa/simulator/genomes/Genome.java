@@ -23,9 +23,9 @@ public interface Genome {
 
     byte getNucleotide(int site);
 
-	byte[] getNucleotides(Coordinates coords);
+	byte[] getNucleotides(Feature coords);
 
-	byte[] getStates(SequenceAlphabet alphabet, Coordinates coords);
+	byte[] getStates(SequenceAlphabet alphabet, Feature coords);
 
     double getLogFitness();
 
