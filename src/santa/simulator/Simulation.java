@@ -6,6 +6,7 @@ import santa.simulator.selectors.Selector;
 import santa.simulator.phylogeny.Phylogeny;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 public class Simulation {
 
     private final int populationSize;
-    private final List<Sequence> inoculum;
+    private final InoculumType inoculumType;
     private final GenePool genePool;
     private final List<SimulationEpoch> epochs;
     private final Selector selector;
@@ -24,16 +25,23 @@ public class Simulation {
 
     private final Population population;
 
+	public enum InoculumType {
+		NONE,
+		CONSENSUS,
+		RANDOM,
+		ALL
+	};
+
     public Simulation (
             int populationSize,
-            List<Sequence> inoculum,
+            InoculumType inoculumType,
             GenePool genePool,
             List<SimulationEpoch> epochs,
             Selector selector,
             SamplingSchedule samplingSchedule) {
 
         this.populationSize = populationSize;
-        this.inoculum = inoculum;
+        this.inoculumType = inoculumType;
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
@@ -53,6 +61,21 @@ public class Simulation {
 
         logger.finer("Initializing population: " + populationSize + " viruses.");
 
+	    List<Sequence> inoculum = new ArrayList<Sequence>();
+	    if (inoculumType == InoculumType.CONSENSUS) {
+		    inoculum.add(GenomeDescription.getConsensus());
+	    } else if (inoculumType == InoculumType.ALL) {
+		    inoculum.addAll(GenomeDescription.getSequences());
+	    } else if (inoculumType == InoculumType.RANDOM) {
+		    List<Sequence> sequences = GenomeDescription.getSequences();
+		    if (sequences.size() == 1) {
+			    inoculum.add(sequences.get(0));
+		    } else {
+		        inoculum.add(sequences.get(Random.nextInt(0, sequences.size() - 1)));
+		    }
+	    } else { // NONE
+		    // do nothing
+	    }
         population.initialize(inoculum);
 
         int generation = 0;

@@ -34,7 +34,10 @@ public class SimulatorParser {
 	private final static String POPULATION = "population";
 	private final static String POPULATION_SIZE = "populationSize";
 	private final static String INOCULUM = "inoculum";
-	private final static String SEQUENCE = "sequence";
+	private final static String INOCULUM_NONE = "none";
+	private final static String INOCULUM_CONSENSUS = "consensus";
+	private final static String INOCULUM_RANDOM = "random";
+	private final static String INOCULUM_ALL = "all";
 
 	private final static String GENOME_DESCRIPTION = "genome";
 	private final static String GENOME_LENGTH = "length";
@@ -220,8 +223,9 @@ public class SimulatorParser {
 
 	Simulation parseSimulation(Element element) throws ParseException {
 
+		Simulation.InoculumType inoculumType = Simulation.InoculumType.NONE;
+
 		int populationSize = -1;
-		List<Sequence> inoculum = null;
 
 		boolean genomeDescription = false;
 		for (Object o : element.getChildren()) {
@@ -249,7 +253,18 @@ public class SimulatorParser {
 							throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
 						}
 					} else if (e1.getName().equals(INOCULUM)) {
-						inoculum = parseInoculum(e1);
+						String v = e1.getTextNormalize();
+						if (v.equals(INOCULUM_NONE)) {
+							inoculumType = Simulation.InoculumType.NONE;
+						} else if (v.equals(INOCULUM_CONSENSUS)) {
+							inoculumType = Simulation.InoculumType.CONSENSUS;
+						} else if (v.equals(INOCULUM_RANDOM)) {
+							inoculumType = Simulation.InoculumType.RANDOM;
+						} else if (v.equals(INOCULUM_ALL)) {
+							inoculumType = Simulation.InoculumType.ALL;
+						} else {
+							// do nothing
+						}
 					} else {
 						throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
 					}
@@ -337,7 +352,7 @@ public class SimulatorParser {
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
 
-		return new Simulation(populationSize, inoculum, genePool, epochs, selector, samplingSchedule);
+		return new Simulation(populationSize, inoculumType, genePool, epochs, selector, samplingSchedule);
 	}
 
 	SimulationEpoch parseSimulationEpoch(Element element,
@@ -382,36 +397,10 @@ public class SimulatorParser {
 		return new SimulationEpoch(name, generationCount, fitnessFunction, mutator, replicator);
 	}
 
-	private List<Sequence> parseInoculum(Element element) throws ParseException {
-		List<Sequence> inoculum = new ArrayList<Sequence>();
-
-		for (Object o : element.getChildren()) {
-			Element e = (Element)o;
-			if (e.getName().equals(SEQUENCE)) {
-				Sequence sequence = parseSequence(e.getTextNormalize());
-				inoculum.add(sequence);
-			} else  {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
-
-		}
-		return inoculum;
-	}
-
-	public Sequence parseSequence(String sequenceString) {
-		int genomeLength = GenomeDescription.getGenomeLength();
-
-		if (sequenceString.length() != genomeLength) {
-			throw new IllegalArgumentException("The initializing sequence string does not match the expected genome length ("
-					+ "got: " + sequenceString.length() + ", expected: " + genomeLength);
-		}
-
-		return new SimpleSequence(sequenceString);
-	}
-
 	private void parseGenomeDescription(Element element) throws ParseException {
 
 		int genomeLength = -1;
+		List<Sequence> sequences = null;
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
@@ -419,19 +408,31 @@ public class SimulatorParser {
 				try {
 					genomeLength = parseInteger(e, 1, Integer.MAX_VALUE);
 				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + SIMULATOR + "> element: " + pe.getMessage());
+					throw new ParseException("Error parsing <" + GENOME_DESCRIPTION + "> element: " + pe.getMessage());
 				}
+			} else if (e.getName().equals(SEQUENCES)) {
+				sequences = parseAlignment(e.getTextTrim());
 			} else  {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
-
 		}
 
-		if (genomeLength == -1) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_LENGTH + "> is missing");
+		if (genomeLength == -1 && sequences == null) {
+			throw new ParseException("Error parsing <" + element.getName() + "> one of eithr element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
 		}
 
-		GenomeDescription.setDescription(genomeLength);
+		if (sequences != null) {
+			if (genomeLength != -1) {
+				throw new ParseException("Error parsing <" + element.getName() + "> one of eithr element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
+			}
+
+			GenomeDescription.setDescription(sequences);
+		} else if (genomeLength != -1) {
+			GenomeDescription.setDescription(genomeLength);
+		} else {
+			throw new ParseException("Error parsing <" + element.getName() + "> one of either element: <" + GENOME_LENGTH + ">  or <" + SEQUENCES + "> is missing");
+		}
+
 	}
 
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
@@ -826,17 +827,17 @@ public class SimulatorParser {
 					probableSetClasses = parseProbableSetClasses(factor.alphabet, CHEMICAL_CLASSES);
 				} else if (v.equals(PROBABLE_SET_HYDROPATHY)) {
 					probableSet = ProbableSetEnum.CLASSES;
-                    probableSetClasses = parseProbableSetClasses(factor.alphabet, HYDROPATHY_CLASSES);
+					probableSetClasses = parseProbableSetClasses(factor.alphabet, HYDROPATHY_CLASSES);
 				} else if (v.equals(PROBABLE_SET_VOLUME)) {
 					probableSet = ProbableSetEnum.CLASSES;
-                    probableSetClasses = parseProbableSetClasses(factor.alphabet, VOLUME_CLASSES);
+					probableSetClasses = parseProbableSetClasses(factor.alphabet, VOLUME_CLASSES);
 				} else {
 					try {
 						probableNumber = parseInteger(e, 1, factor.alphabet.getStateCount());
 						probableSet = ProbableSetEnum.NUMBER;
 					} catch (ParseException pe) {
 						probableSet = ProbableSetEnum.CLASSES;
-                        probableSetClasses = parseProbableSetClasses(factor.alphabet, v);
+						probableSetClasses = parseProbableSetClasses(factor.alphabet, v);
 					}
 				}
 			} else if (!e.getName().equals(BREAK_TIES)) {
@@ -859,21 +860,21 @@ public class SimulatorParser {
 		return result;
 	}
 
-    private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) {
-        List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
+	private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) {
+		List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
 
-        String[] sets = str.split("|");
-        for (String set : sets) {
-            Set<Byte> stateSet = new HashSet<Byte>();
-            for (int i = 0; i < set.length(); i++) {
-                stateSet.add(alphabet.parse(set.charAt(i)));
-            }
-            classes.add(stateSet);
-        }
-        return classes;
-    }
+		String[] sets = str.split("|");
+		for (String set : sets) {
+			Set<Byte> stateSet = new HashSet<Byte>();
+			for (int i = 0; i < set.length(); i++) {
+				stateSet.add(alphabet.parse(set.charAt(i)));
+			}
+			classes.add(stateSet);
+		}
+		return classes;
+	}
 
-    private List<Sequence> parseAlignment(String text) {
+	private List<Sequence> parseAlignment(String text) {
 		List<Sequence> result = new ArrayList<Sequence>();
 
 		if (text.charAt(0) == '>') {
@@ -892,6 +893,17 @@ public class SimulatorParser {
 			}
 		}
 		return result;
+	}
+
+	public Sequence parseSequence(String sequenceString) {
+		int genomeLength = GenomeDescription.getGenomeLength();
+
+		if (sequenceString.length() != genomeLength) {
+			throw new IllegalArgumentException("The initializing sequence string does not match the expected genome length ("
+					+ "got: " + sequenceString.length() + ", expected: " + genomeLength);
+		}
+
+		return new SimpleSequence(sequenceString);
 	}
 
 	/**
