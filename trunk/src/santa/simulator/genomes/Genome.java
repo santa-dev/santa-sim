@@ -23,6 +23,10 @@ public interface Genome {
 
     byte getNucleotide(int site);
 
+	byte[] getNucleotides(Coordinates coords);
+
+	byte[] getStates(SequenceAlphabet alphabet, Coordinates coords);
+
     double getLogFitness();
 
     void setLogFitness(double logFitness);
