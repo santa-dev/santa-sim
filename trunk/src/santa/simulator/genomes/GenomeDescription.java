@@ -56,7 +56,11 @@ public final class GenomeDescription {
 		return sequences;
 	}
 
-    private static int genomeLength;
+	public static Sequence getConsensus() {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+
+	private static int genomeLength;
 	private static List<Sequence> sequences = null;
 
     private static boolean isSet = false;

@@ -41,10 +41,18 @@ public class Population {
 
 		genePool.initialize();
 
-		ancestors = new Genome[inoculum.size()];
-		for (int i = 0; i < ancestors.length; i++) {
-			Sequence sequence = inoculum.get(i);
-			ancestors[i] = genePool.createGenome(sequence);
+		if (inoculum.size() > 0) {
+			// inoculum has sequences
+			ancestors = new Genome[inoculum.size()];
+			for (int i = 0; i < ancestors.length; i++) {
+				Sequence sequence = inoculum.get(i);
+				ancestors[i] = genePool.createGenome(sequence);
+			}
+		} else {
+			// create a default nucleotide sequence
+			ancestors = new Genome[1];
+			Sequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
+			ancestors[0] = genePool.createGenome(sequence);
 		}
 
 		if (ancestors.length > 1) {
