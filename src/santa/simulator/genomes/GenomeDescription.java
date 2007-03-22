@@ -26,7 +26,10 @@ public final class GenomeDescription {
 	    }
 
 		GenomeDescription.genomeLength = genomeLength;
-		GenomeDescription.features = features;
+		Feature genomeFeature = new Feature("genome", Feature.Type.NUCLEOTIDE);
+		genomeFeature.addFragment(0, genomeLength - 1);
+		GenomeDescription.features.add(genomeFeature);
+		GenomeDescription.features.addAll(features);
 
 		if (sequences != null && sequences.size() > 0) {
 			Sequence firstSequence = sequences.get(0);
@@ -64,7 +67,7 @@ public final class GenomeDescription {
 	}
 
 	private static int genomeLength;
-	private static List<Feature> features = null;
+	private static final List<Feature> features = new ArrayList<Feature>();
 	private static List<Sequence> sequences = null;
 
     private static boolean isSet = false;

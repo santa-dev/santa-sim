@@ -762,6 +762,10 @@ public class SimulatorParser {
 			}
 		}
 
+		if (feature == null) {
+			// the first feature is always the complete genome
+			feature = GenomeDescription.getFeatures().get(0);
+		}
 
 		return new FeatureAndSites(feature, sites);
 	}
