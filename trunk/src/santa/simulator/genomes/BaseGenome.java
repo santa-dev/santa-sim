@@ -65,7 +65,7 @@ public abstract class BaseGenome implements Genome {
     }
 
 	public byte[] getNucleotides(Feature feature) {
-		byte[] nucleotides = new byte[feature.getLength()];
+		byte[] nucleotides = new byte[feature.getNucleotideLength()];
 		int k = 0;
 		for (int i = 0; i < feature.getFragmentCount(); i++) {
 			int start = feature.getFragmentStart(i);

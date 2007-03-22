@@ -43,14 +43,12 @@ public class SimulationEpoch {
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
             EventLogger.setEpoch(generation);
 
-            boolean fitnessChanged = fitnessFunction.updateGeneration(generation, population);
+            fitnessFunction.updateGeneration(generation, population);
             
             if (generation == startGeneration) {
                 // adapt to this epoch, and the new generation
-                population.computeFitness(fitnessFunction);
-            } else if (fitnessChanged)
-                // adapt to the new generation
-                population.updateFitness(fitnessFunction);
+                population.updateAllFitnesses(fitnessFunction);
+            }
 
             population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
 

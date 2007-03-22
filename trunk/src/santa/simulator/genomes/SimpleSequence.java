@@ -66,40 +66,6 @@ public final class SimpleSequence implements Sequence {
 		copyNucleotides(0, other, start, start + length);
 	}
 
-	public SimpleSequence(Sequence other, Feature feature) {
-
-		byte[] nucleotides = new byte[feature.getNucleotideLength()];
-		int k = 0;
-		for (int i = 0; i < feature.getFragmentCount(); i++) {
-			int start = feature.getFragmentStart(i);
-			int finish = feature.getFragmentFinish(i);
-			if (start < finish) {
-				for (int j = start; j <= finish; j++) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			} else {
-				for (int j = finish; j >= start; j--) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			}
-		}
-
-		if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
-			states = new byte[feature.getLength()];
-
-			int j = 0;
-			for (int i = 0; i < states.length; i++) {
-				states[i] = STANDARD_GENETIC_CODE[nucleotides[j]][nucleotides[j + 2]][nucleotides[j + 2]];
-				j += 3;
-			}
-		} else {
-			states = nucleotides;
-		}
-
-	}
-
 	public Sequence getSubSequence(int start, int length) {
 		return new SimpleSequence(this, start, length);
 	}

@@ -40,13 +40,14 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
     }
 
     protected void setFitnesses() {
+        int siteCount = getFeature().getLength();
         int stateSize = getAlphabet().getStateCount();
         Set<Integer> sites = getSites();
 
-        double[][] logFitness = new double[GenomeDescription.getGenomeLength(getAlphabet())][stateSize];
+        double[][] logFitness = new double[siteCount][stateSize];
 
         for (int i = 0; i < logFitness.length; ++i) {
-            if (sites.contains(i + 1)) {
+            if (sites.contains(i)) {
                 double[] fitnesses = valueModel.getFitnesses(i, rank);
                 byte[] states = rank.getStatesOrder(i);
                 for (int j = 0; j < stateSize; ++j) {
@@ -54,7 +55,9 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
                 }
             } else {
                 for (int j = 0; j < stateSize; ++j) {
-                    logFitness[i][j] = 0;
+                    // these sites should never be used by this fitness factor so
+                    // setting them to NaN may help show up bugs               
+                    logFitness[i][j] = Double.NaN;
                 }
             }
         }

@@ -35,19 +35,16 @@ public abstract class BaseGenePool implements GenePool {
         return stateFrequencies;
     }
 
-    public int[] getStateFrequencies(int site) {
-        return getStateFrequencies(site, SequenceAlphabet.NUCLEOTIDES);
-    }
-
-    public int[] getStateFrequencies(int site, SequenceAlphabet alphabet) {
-        int[] freqs = new int[alphabet.getStateCount()];
-        int totalfreq = 0;
+    public int[][] getStateFrequencies(Feature feature) {
+        int[][] freqs = new int[feature.getLength()][feature.getAlphabet().getStateCount()];
         for (Genome genome : genomes) {
             int freq = genome.getFrequency();
-            byte state = genome.getSequence().getState(alphabet, site);
-            if (state < alphabet.getStateCount())
-                freqs[state] += freq;
-            totalfreq += freq;
+            byte[] states = genome.getStates(feature);
+            for (int i = 0; i < states.length; i++) {
+                if (states[i] < feature.getAlphabet().getStateCount()) {
+                    freqs[i][states[i]] += freq;
+                }
+            }
         }
 
         return freqs;

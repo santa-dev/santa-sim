@@ -1,13 +1,13 @@
 package santa.simulator.samplers;
 
 import santa.simulator.*;
-import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.Nucleotide;
+import santa.simulator.genomes.*;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrew Rambaut
@@ -15,13 +15,15 @@ import java.util.Map;
  * @version $Id: AlignmentSampler.java,v 1.6 2006/07/18 07:37:47 kdforc0 Exp $
  */
 public class AlignmentSampler implements Sampler {
-	public enum Format {
+    public enum Format {
         FASTA,
-	    NEXUS,
-	    XML
-	};
+        NEXUS,
+        XML
+    };
 
-	private final int sampleSize;
+    private final Feature feature;
+    private final Set<Integer> sites;
+    private final int sampleSize;
     private Format format;
     private String label;
     private String fileName;
@@ -39,7 +41,7 @@ public class AlignmentSampler implements Sampler {
      * @param label       label with possible %g, %s and %t variables
      * @param fileName    name of the file to write the samples
      */
-    public AlignmentSampler(int sampleSize, boolean consensus,
+    public AlignmentSampler(Feature feature, Set<Integer> sites, int sampleSize, boolean consensus,
                             Map<Integer,Integer> schedule, Format format, String label, String fileName) {
         this.format = format;
         this.fileName = fileName;
@@ -50,7 +52,11 @@ public class AlignmentSampler implements Sampler {
             this.label = label;
         }
 
-	    this.sampleSize = sampleSize;
+        this.feature = feature;
+        this.sites = sites;
+        this.fileName = fileName;
+
+        this.sampleSize = sampleSize;
         this.consensus = consensus;
         this.schedule = schedule;
     }
@@ -70,11 +76,15 @@ public class AlignmentSampler implements Sampler {
             destination.println();
             destination.println("BEGIN DATA;");
 
-            int nchar = GenomeDescription.getGenomeLength();
+            int nchar = sites.size();
             int samplesize = computeSampleSize();
 
             destination.println("\tDIMENSIONS NTAX=" + samplesize + " NCHAR=" + nchar + ";");
-            destination.println("\tFORMAT DATATYPE=NUCLEOTIDE GAP=-;");
+            if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
+                destination.println("\tFORMAT DATATYPE=PROTEIN GAP=-;");
+            } else {
+                destination.println("\tFORMAT DATATYPE=NUCLEOTIDE GAP=-;");
+            }
 
             destination.println("\tMATRIX");
         }
@@ -133,7 +143,7 @@ public class AlignmentSampler implements Sampler {
             } else
                 return null;
         }
-	}
+    }
 
     private void writeNexusFormat(int generation, Virus[] sample) {
         if (consensus) {
@@ -147,8 +157,20 @@ public class AlignmentSampler implements Sampler {
                 String l = substituteVariables(label, generation, i);
 
                 destination.print(l + "\t");
-                destination.println(virus.getGenome().getSequence().getNucleotides());
 
+                byte[] states = virus.getGenome().getStates(feature);
+                if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
+                    for (int site : sites) {
+                        destination.print(AminoAcid.asChar(states[site]));
+                    }
+                    destination.println();
+                } else {
+                    for (int site : sites) {
+                        destination.print(Nucleotide.asChar(states[site]));
+                    }
+                    destination.println();
+
+                }
                 i++;
             }
         }
@@ -157,13 +179,20 @@ public class AlignmentSampler implements Sampler {
     private String computeConsensus(Virus[] sample) {
         String result = "";
 
-        for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
-            int freqs[] = new int[4];
+        byte[][] states = new byte[sample.length][];
+        int j = 0;
+        for (Virus virus : sample) {
+            states[j] = virus.getGenome().getStates(feature);
+            j++;
+        }
+
+        int freqs[] = new int[feature.getAlphabet().getStateCount()];
+        for (int site : sites) {
             int maxfreq = 0;
             byte maxS = Nucleotide.A;
 
-            for (Virus virus : sample) {
-                byte s = virus.getGenome().getNucleotide(i);
+            for (int i = 0; i < states.length; i++) {
+                byte s = states[site][i];
                 freqs[s]++;
                 if (freqs[s] > maxfreq) {
                     maxfreq = freqs[s];

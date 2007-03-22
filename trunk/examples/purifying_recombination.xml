@@ -27,7 +27,7 @@
 		        <sites>1-203</sites>
 		        <rank>
 		            <breakTies>random</breakTies>
-		            <probableSet>biochemical</probableSet>
+		            <probableSet>chemical</probableSet>
 		        </rank>
 		        <fitness>
 		            <lowFitness>0.9</lowFitness>

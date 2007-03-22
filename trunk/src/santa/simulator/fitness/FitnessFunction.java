@@ -48,47 +48,43 @@ public final class FitnessFunction  {
         factorsChanged = new boolean[factors.size()];
     }
 
-    public boolean updateGeneration(int generation, Population population) {
-        boolean changed = false;
-
+    public void updateGeneration(int generation, Population population) {
         int i = 0;
         for (FitnessFactor f : factors) {
             factorsChanged[i] = f.updateGeneration(generation, population);
-            if (factorsChanged[i]) {
-                changed = true;
-            }
             i++;
         }
-
-        return changed;
     }
 
-    /**
-     * Return the updated log fitness that the given genome will
-     * have when the given mutation will be applied to it.
-     */
-    public void updateLogFitness(Genome genome, SortedSet<Mutation> mutations) {
-        double result = 0;
-
-        FitnessGenomeCache cache = genome.getFitnessCache();
-
-        int i = 0;
-        for (FitnessFactor factor : factors) {
-            double contrib = cache.factorContributions[i];
-
-            Feature feature = factor.getFeature();
-
-            byte[] sequence = genome.getStates(feature);
-
-            if (factorsChanged[i]) {
-                contrib = factor.computeLogFitness(sequence);
-            } else {
-                // At the moment, there is no optimization here for individual mutations.
+// This site by site update system needs careful thinking about. For the moment,
+// I am simply forcing a recalculation of each fitnessFactor.
 
 
-
-                contrib = factor.computeLogFitness(sequence);
-
+//    /**
+//     * Try to update all the fitness factors with the set of
+//     */
+//    public void updateLogFitness(Genome genome, SortedSet<Mutation> mutations) {
+//        double result = 0;
+//
+//        FitnessGenomeCache cache = genome.getFitnessCache();
+//
+//        int i = 0;
+//        for (FitnessFactor factor : factors) {
+//            double contrib = cache.factorContributions[i];
+//
+//            Feature feature = factor.getFeature();
+//
+//            byte[] sequence = genome.getStates(feature);
+//
+//            if (factorsChanged[i]) {
+//                contrib = factor.computeLogFitness(sequence);
+//            } else {
+//                // At the moment, there is no optimization here for individual mutations.
+//
+//
+//
+//                contrib = factor.computeLogFitness(sequence);
+//
 //                boolean potentiallyHasFailed = false;
 //
 //                for (Mutation m : mutations) {
@@ -111,18 +107,16 @@ public final class FitnessFunction  {
 //                if (potentiallyHasFailed) {
 //                    contrib = factor.computeLogFitness(sequence);
 //                }
-            }
-
-            cache.factorContributions[i] = contrib;
-            result += contrib;
-            i++;
-        }
-
-        genome.setLogFitness(result);
-
-
-
-    }
+//            }
+//
+//            cache.factorContributions[i] = contrib;
+//            result += contrib;
+//            i++;
+//        }
+//
+//        genome.setLogFitness(result);
+//
+//    }
 
     /**
      * Compute and set the fitness of a genome from scratch, and store the cached
@@ -133,7 +127,6 @@ public final class FitnessFunction  {
 
         FitnessGenomeCache cache = new FitnessGenomeCache();
         genome.setFitnessCache(cache);
-
 
         int i = 0;
         for (FitnessFactor f : factors) {
