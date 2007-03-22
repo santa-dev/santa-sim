@@ -6,25 +6,19 @@
  */
 package santa.simulator.fitness;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import santa.simulator.Population;
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.genomes.*;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class FrequencyDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     private double shape;
     private Map<Signature, Integer> frequencies;
     private double populationSize;
 
-    public FrequencyDependentFitnessFactor(double shape, Set<Integer> sites, SequenceAlphabet alphabet) {
-        super(sites, alphabet);
+    public FrequencyDependentFitnessFactor(double shape, Feature feature, Set<Integer> sites) {
+        super(feature, sites);
         this.shape = shape;
         this.frequencies = new HashMap<Signature, Integer>();
     }
