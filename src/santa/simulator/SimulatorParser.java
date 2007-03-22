@@ -747,13 +747,7 @@ public class SimulatorParser {
 
 			if (e.getName().equals(FEATURE)) {
 				String featureName = e.getTextNormalize();
-				List<Feature> features = GenomeDescription.getFeatures();
-				for (Feature f : features) {
-					if (f.getName().equals(featureName)) {
-						feature = f;
-						break;
-					}
-				}
+				feature = GenomeDescription.getFeature(featureName);
 				if (feature == null) {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: referenced feature '" + featureName + "' is not defined.");
 				}
@@ -763,8 +757,8 @@ public class SimulatorParser {
 		}
 
 		if (feature == null) {
-			// the first feature is always the complete genome
-			feature = GenomeDescription.getFeatures().get(0);
+			// there is always the complete genome feature
+			feature = GenomeDescription.getFeature("genome");
 		}
 
 		return new FeatureAndSites(feature, sites);
