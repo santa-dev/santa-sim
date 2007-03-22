@@ -15,7 +15,7 @@ import java.util.SortedSet;
 public interface Genome {
     int getTotalMutationCount();
 
-    void applyMutations(SortedSet<Mutation> newMutations, FitnessFunction fitnessFunction);
+    void applyMutations(SortedSet<Mutation> newMutations);
 
     Sequence getSequence();
 
@@ -23,9 +23,9 @@ public interface Genome {
 
     byte getNucleotide(int site);
 
-	byte[] getNucleotides(Feature coords);
+	byte[] getNucleotides(Feature feature);
 
-	byte[] getStates(SequenceAlphabet alphabet, Feature coords);
+	byte[] getStates(Feature feature);
 
     double getLogFitness();
 

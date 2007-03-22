@@ -57,16 +57,16 @@ public class CompactGenePool extends BaseGenePool {
             }
             newGenome.duplicate(oldGenome);
 
+	        fitnessFunction.updateLogFitness(newGenome, mutations);
+
             newGenome.setFrequency(1);
-            newGenome.applyMutations(mutations, fitnessFunction);
+            newGenome.applyMutations(mutations);
 
             uniqueGenomeCount++;
 
             return newGenome;
         } else {
             genome.setFrequency(genome.getFrequency() + 1);
-            genome.applyMutations(mutations, fitnessFunction);
-
             return genome;
         }
     }

@@ -23,8 +23,8 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
         this.exposure = new HashMap<Signature, Double>();
     }
 
-    public double computeLogFitness(Genome genome) {
-        Signature s = createSignature(genome);
+    public double computeLogFitness(byte[] states) {
+        Signature s = createSignature(states);
         Double e = exposure.get(s);
 
         if (e != null) {
@@ -33,7 +33,7 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
             return 0;
     }
 
-    public boolean updateGeneration(int generation, Population population) {
+	public boolean updateGeneration(int generation, Population population) {
         this.currentGeneration = generation + 1;
 
         List<Genome> genomes = population.getGenePool().getGenomes();
@@ -44,7 +44,8 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
          */
 
         for (Genome genome : genomes) {
-            Signature s = createSignature(genome);
+	        byte[] sequence = genome.getStates(getFeature());
+            Signature s = createSignature(sequence);
             Double e = exposure.get(s);
             double d = (double)genome.getFrequency() / population.getPopulationSize();
 
@@ -69,14 +70,6 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
         }
 
         return true;
-    }
-
-    public double updateLogFitness(Genome genome, double logFitness, Mutation m) {
-        return logFitness;
-    }
-
-    public double updateLogFitness(Genome genome, double logFitness) {
-        return computeLogFitness(genome);
     }
 
     public double getPenalty() {

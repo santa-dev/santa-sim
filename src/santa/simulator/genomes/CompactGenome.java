@@ -3,8 +3,6 @@ package santa.simulator.genomes;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import santa.simulator.fitness.FitnessFunction;
-
 
 /**
  * @author Andrew Rambaut
@@ -88,9 +86,8 @@ public class CompactGenome extends BaseGenome {
      * in positional order. The mutation array for the genome (mutations from the master sequence)
      * must be in positional order.
      * @param newMutations the array of new mutations in positional order
-     * @param fitnessFunction
      */
-    public void applyMutations(SortedSet<Mutation> newMutations, FitnessFunction fitnessFunction) {
+    public void applyMutations(SortedSet<Mutation> newMutations) {
         for (Mutation m : newMutations) {
 
             Mutation current = getMutation(m.position);
@@ -107,8 +104,6 @@ public class CompactGenome extends BaseGenome {
                     mutations.add(m);
             }
         }
-
-        setLogFitness(fitnessFunction.computeLogFitness(this));
     }
 
     void changeMasterSequence(Sequence newMasterSequence) {

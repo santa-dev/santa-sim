@@ -23,8 +23,8 @@ public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
         this.birthGenerations = new HashMap<Signature, Integer>();
     }
 
-    public double computeLogFitness(Genome genome) {
-        Signature s = createSignature(genome);
+	public double computeLogFitness(byte[] states) {
+        Signature s = createSignature(states);
         Integer birthGeneration = birthGenerations.get(s);
 
         if (birthGeneration != null) {
@@ -46,7 +46,8 @@ public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
 
         double sumAges = 0;
         for (Genome genome : genomes) {
-            Signature s = createSignature(genome);
+	        byte[] sequence = genome.getStates(getFeature());
+            Signature s = createSignature(sequence);
             Integer birthGeneration = birthGenerations.get(s);
 
             if (birthGeneration == null) {
@@ -72,14 +73,6 @@ public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
         }
 
         return true;
-    }
-
-    public double updateLogFitness(Genome genome, double logFitness, Mutation m) {
-        return logFitness;
-    }
-
-    public double updateLogFitness(Genome genome, double logFitness) {
-        return computeLogFitness(genome);
     }
 
     public double getDeclineRate() {

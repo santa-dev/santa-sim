@@ -1,9 +1,8 @@
 package santa.simulator.genomes;
 
-import java.util.List;
-
 import santa.simulator.fitness.FitnessFunction;
 
+import java.util.List;
 import java.util.SortedSet;
 
 /**
@@ -37,9 +36,7 @@ public interface GenePool {
 
     int getUnusedGenomeCount();
 
-    void computeFitness(FitnessFunction fitnessFunction);
-    
-    void updateFitness(FitnessFunction fitnessFunction);
+    void updateAllFitnesses(FitnessFunction fitnessFunction);
 
     List<Genome> getGenomes();
 }

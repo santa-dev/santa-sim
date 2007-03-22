@@ -1,8 +1,8 @@
 package santa.simulator.genomes;
 
-import java.util.LinkedList;
-
 import santa.simulator.fitness.FitnessFunction;
+
+import java.util.*;
 
 /**
  * @author Andrew Rambaut
@@ -49,7 +49,7 @@ public abstract class BaseGenePool implements GenePool {
                 freqs[state] += freq;
             totalfreq += freq;
         }
-        
+
         return freqs;
     }
 
@@ -87,15 +87,9 @@ public abstract class BaseGenePool implements GenePool {
         }
     }
 
-    public void computeFitness(FitnessFunction fitnessFunction) {
+    public void updateAllFitnesses(FitnessFunction fitnessFunction) {
         for (Genome genome : genomes) {
             fitnessFunction.computeLogFitness(genome);
-        }
-    }
-    
-    public void updateFitness(FitnessFunction fitnessFunction) {
-        for (Genome genome : genomes) {
-            fitnessFunction.updateLogFitness(genome);
         }
     }
 

@@ -34,8 +34,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		return false;
 	}
 
-	public double computeLogFitness(Genome genome) {
-		Sequence sequence = genome.getSequence();
+	public double computeLogFitness(byte[] sequence) {
 
 		double logFitness = 0.0;
 
@@ -44,12 +43,10 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		while (it.hasNext()) {
 			int site = it.next();
 
-			byte state = sequence.getState(getAlphabet(), site - 1);
-
-			if (state >= getAlphabet().getStateCount())
+			if (sequence[site - 1] >= getAlphabet().getStateCount())
 				logFitness += Double.NEGATIVE_INFINITY;
 			else
-				logFitness += this.logFitness[site - 1][state];
+				logFitness += this.logFitness[site - 1][sequence[site - 1]];
 		}
 
 		return logFitness;
