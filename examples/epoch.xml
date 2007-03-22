@@ -7,51 +7,37 @@
 
             <genome>
                 <length>1302</length>
-            </genome>
+	            <sequences>
+	                CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
+	            </sequences>
+	            <feature>
+		            <name>CDS</name>
+		            <type>aminoAcid</type>
+		            <coordinates>1-1302</coordinates>
+	            </feature>
+           </genome>
 
             <population>
                 <populationSize>10000</populationSize>
-
-                <inoculum>
-                    <sequence label="HXB2">
-                        CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
-                    </sequence>
-                </inoculum>
+	            <inoculum>all</inoculum>
             </population>
-
-            <mutator>
-                <nucleotideMutator>
-                    <mutationRate>2.5E-5</mutationRate>
-                    <rateBias>
-                        0.42 2.49 0.29
-                        1.73 0.23 4.73
-                        6.99 0.20 0.60
-                        1.02 2.56 0.88
-                    </rateBias>
-                </nucleotideMutator>
-            </mutator>
-
-            <replicator>
-                <clonalReplicator/>
-            </replicator>
 
             <fitnessFunction>
                 <purifyingFitness id="background">
-                	<aminoAcids>1-201,203-279,281-434</aminoAcids>
+	                <feature>CDS</feature>
+	                <sites>1-201,203-279,281-434</sites>
                 	<rank>
                 		<breakTies>random</breakTies>
-                		<sequences>
-	               			CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
-               			</sequences>
                         <probableSet>3</probableSet>
                 	</rank>
                 	<fitness>
-                		<minimumFitness>0.1</minimumFitness>
                 		<lowFitness>0.9</lowFitness>
+		                <minimumFitness>0.1</minimumFitness>
                 	</fitness>
                 </purifyingFitness>
                 <empiricalFitness id="RC103">
-                    <aminoAcids>202</aminoAcids>
+	                <feature>CDS</feature>
+	                <sites>202</sites>
                     <!-- REPLICATION CAPACITY 103 -->
                     <values>
                         0.01 <!-- A -->
@@ -77,7 +63,8 @@
                     </values>
                 </empiricalFitness>
                 <empiricalFitness id="RC181">
-                    <aminoAcids>280</aminoAcids>
+	                <feature>CDS</feature>
+	                <sites>280</sites>
                     <!-- REPLICATION CAPACITY 181 -->
                     <values>
                         0.01 <!-- A -->
@@ -104,6 +91,22 @@
                 </empiricalFitness>
             </fitnessFunction>
 
+	        <mutator>
+	            <nucleotideMutator>
+	                <mutationRate>2.5E-5</mutationRate>
+	                <rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+	            </nucleotideMutator>
+	        </mutator>
+
+	        <replicator>
+	            <clonalReplicator/>
+	        </replicator>
+
             <epoch>
                 <name>epoch1</name>
                 <generationCount>1000</generationCount>
@@ -116,9 +119,10 @@
                 <fitnessFunction>
                 	<purifyingFitness ref="background" />
                 	<empiricalFitness ref="RC103" />
-                	<empiricalFitness ref="RC181" />                	
+                	<empiricalFitness ref="RC181" />
                     <empiricalFitness>
-	                     <aminoAcids>202</aminoAcids>
+	                    <feature>CDS</feature>
+	                    <sites>202</sites>
                         <!-- RESISTANCE 103 -->
                         <values>
                             0.01 <!-- A -->
@@ -144,7 +148,8 @@
                         </values>
                     </empiricalFitness>
                     <empiricalFitness>
-	                    <aminoAcids>280</aminoAcids>
+	                    <feature>CDS</feature>
+	                    <sites>280</sites>
                         <!-- RESISTANCE 181 -->
                         <values>
                             0.01 <!-- A -->
@@ -218,14 +223,16 @@
                     <atFrequency>1</atFrequency>
                     <fileName>puri01psE4_freqRT103_%r.csv</fileName>
                     <alleleFrequency>
-                        <aminoAcid>202</aminoAcid>
+	                    <feature>CDS</feature>
+                        <sites>202</sites>
                     </alleleFrequency>
                 </sampler>
                 <sampler>
                     <atFrequency>1</atFrequency>
                     <fileName>puri01psE4_freqRT181_%r.csv</fileName>
                     <alleleFrequency>
-                        <aminoAcid>280</aminoAcid>
+	                    <feature>CDS</feature>
+                        <sites>280</sites>
                     </alleleFrequency>
                 </sampler>
             </samplingSchedule>

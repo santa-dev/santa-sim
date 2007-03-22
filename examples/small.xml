@@ -6,21 +6,20 @@
 
 		<genome>
 			<length>9</length>
+			<sequences>
+				GAAGAAGAG
+			</sequences>
 		</genome>
 
 		<population>
 			<populationSize>100</populationSize>
 
-			<inoculum>
-				<sequence label="virus1gen1000">
-					GAAGAAGAG
-				</sequence>
-			</inoculum>
+			<inoculum>all</inoculum>
 		</population>
 
 		<fitnessFunction>
             <neutralFitness>
-                <nucleotides>1-9</nucleotides>
+                <sites>1-9</sites>
             </neutralFitness>
 		</fitnessFunction>
 

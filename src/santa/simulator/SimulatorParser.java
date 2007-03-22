@@ -40,7 +40,9 @@ public class SimulatorParser {
 	private final static String GENOME_LENGTH = "length";
 	private final static String FEATURE = "feature";
 	private final static String TYPE = "type";
-	private final static String SITES = "sites";
+	private final static String NUCLEOTIDE = "nucleotide";
+	private final static String AMINO_ACID = "aminoAcid";
+	private final static String COORDINATES = "coordinates";
 
 	private final static String GENE_POOL = "genePool";
 	private final static String SIMPLE_GENE_POOL = "simpleGenePool";
@@ -428,15 +430,15 @@ public class SimulatorParser {
 			if (e.getName().equals(NAME)) {
 				name = e.getTextNormalize();
 			} else if (e.getName().equals(TYPE)) {
-				if (e.getTextNormalize().equals(AMINO_ACIDS)) {
+				if (e.getTextNormalize().equals(AMINO_ACID)) {
 					type = Feature.Type.AMINO_ACID;
-				} else if (e.getTextNormalize().equals(NUCLEOTIDES)) {
+				} else if (e.getTextNormalize().equals(NUCLEOTIDE)) {
 					type = Feature.Type.NUCLEOTIDE;
 				} else {
 					throw new ParseException("Error parsing <" + element.getName()
 							+ "> element: <" + e.getName() + "> should be 'nucleotides' or 'aminoAcids'");
 				}
-			} else if (e.getName().equals(SITES)) {
+			} else if (e.getName().equals(COORDINATES)) {
 				sites = e.getTextNormalize();
 			} else {
 				throw new ParseException("Error parsing <" + element.getName()
