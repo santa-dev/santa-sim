@@ -23,8 +23,8 @@ public class FrequencyDependentFitnessFactor extends AbstractSignatureFitnessFac
         this.frequencies = new HashMap<Signature, Integer>();
     }
 
-    public double computeLogFitness(Genome genome) {
-        Signature s = createSignature(genome);
+    public double computeLogFitness(byte[] states) {
+        Signature s = createSignature(states);
         Integer count = frequencies.get(s);
 
         if (count != null) {
@@ -45,7 +45,8 @@ public class FrequencyDependentFitnessFactor extends AbstractSignatureFitnessFac
         List<Genome> genomes = population.getGenePool().getGenomes();
 
         for (Genome genome : genomes) {
-            Signature s = createSignature(genome);
+	        byte[] sequence = genome.getStates(getFeature());
+            Signature s = createSignature(sequence);
             Integer count = frequencies.get(s);
             frequencies.put(s, count == null ? genome.getFrequency() : count + genome.getFrequency());
         }

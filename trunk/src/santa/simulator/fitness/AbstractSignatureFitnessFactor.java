@@ -18,15 +18,15 @@ public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFact
 		super(feature, sites);
 	}
 
-	protected Signature createSignature(Genome genome) {
-		Sequence seq = genome.getSequence();
+	public double getLogFitnessChange(int position, byte oldState, byte newState) {
+		throw new UnsupportedOperationException("getLogFitnessChange should not be called for a SignatureFitnessFactor");
+	}
 
+	protected Signature createSignature(byte[] sequence) {
 		byte state[] = new byte[getSites().size()];
 		int i = 0;
 		for (Integer site : getSites()) {
-			byte b = seq.getState(getAlphabet(), site - 1);
-
-			state[i++] = b;
+			state[i++] = sequence[site - 1];
 		}
 
 		return new Signature(state);

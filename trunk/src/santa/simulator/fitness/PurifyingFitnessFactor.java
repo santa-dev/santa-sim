@@ -122,12 +122,10 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         setLogFitness(i, newFittest.byteValue(), 0.0);
     }
 
-    public double updateLogFitness(Genome genome, double logFitness) {
-        if (changed) {
-            return computeLogFitness(genome);
-        } else
-            return logFitness;
-     }
+	public double getLogFitnessChange(int position, byte oldState, byte newState) {
+		throw new UnsupportedOperationException("getLogFitnessChange should not be called for a SignatureFitnessFactor");
+	}
+
 
     public PurifyingFitnessRank getRank() {
         return rank;

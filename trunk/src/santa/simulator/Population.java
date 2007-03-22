@@ -75,13 +75,8 @@ public class Population {
 		}
 	}
 
-    public void computeFitness(FitnessFunction fitnessFunction) {
-        genePool.computeFitness(fitnessFunction);
-        statisticsKnown = false;
-    }
-
-	public void updateFitness(FitnessFunction fitnessFunction) {
-		genePool.updateFitness(fitnessFunction);
+	public void updateAllFitnesses(FitnessFunction fitnessFunction) {
+		genePool.updateAllFitnesses(fitnessFunction);
 		statisticsKnown = false;
 	}
 

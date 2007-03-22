@@ -8,9 +8,9 @@
  */
 package santa.simulator.genomes;
 
-import java.util.SortedSet;
-
 import santa.simulator.fitness.FitnessFunction;
+
+import java.util.SortedSet;
 
 /**
  * @author rambaut
@@ -49,7 +49,9 @@ public class SimpleGenePool extends BaseGenePool {
             newGenome.duplicate(oldGenome);
 
             newGenome.setFrequency(1);
-            newGenome.applyMutations(mutations, fitnessFunction);
+
+	        fitnessFunction.updateLogFitness(newGenome, mutations);
+            newGenome.applyMutations(mutations);
 
             uniqueGenomeCount++;
 
