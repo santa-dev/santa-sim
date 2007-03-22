@@ -24,9 +24,7 @@ public interface GenePool {
 
     int[][] getStateFrequencies();
 
-    int[] getStateFrequencies(int site);
-
-    int[] getStateFrequencies(int site, SequenceAlphabet alphabet);
+    int[][] getStateFrequencies(Feature feature);
 
     Sequence getConsensusSequence();
 

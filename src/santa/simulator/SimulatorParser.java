@@ -389,7 +389,7 @@ public class SimulatorParser {
 	private void parseGenomeDescription(Element element) throws ParseException {
 
 		int genomeLength = -1;
-		List<Feature> features = null;
+		List<Feature> features = new ArrayList<Feature>();
 		List<Sequence> sequences = null;
 
 		for (Object o : element.getChildren()) {
@@ -401,7 +401,7 @@ public class SimulatorParser {
 					throw new ParseException("Error parsing <" + GENOME_DESCRIPTION + "> element: " + pe.getMessage());
 				}
 			} else if (e.getName().equals(FEATURE)) {
-				features.add(parseParseFeature(e));
+                features.add(parseFeature(e));
 			} else if (e.getName().equals(SEQUENCES)) {
 				sequences = parseAlignment(e.getTextTrim());
 			} else  {
@@ -417,7 +417,7 @@ public class SimulatorParser {
 
 	}
 
-	private Feature parseParseFeature(Element element) throws ParseException {
+	private Feature parseFeature(Element element) throws ParseException {
 
 		String name = null;
 		Feature.Type type = Feature.Type.NUCLEOTIDE;
@@ -464,10 +464,10 @@ public class SimulatorParser {
 					int start = Integer.parseInt(ranges[0]);
 					int end = Integer.parseInt(ranges[1]);
 
-					feature.addFragment(start, end);
+					feature.addFragment(start - 1, end - 1);
 				} else {
 					int site = Integer.parseInt(part);
-					feature.addFragment(site, site);
+					feature.addFragment(site - 1, site - 1);
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -530,7 +530,7 @@ public class SimulatorParser {
 		if (result != null)
 			return result;
 
-		FeatureAndSites factor = parseFeatureSites(element);
+		FeatureAndSites factor = parseFeatureAndSites(element);
 
 		double penalty = 0.001;
 
@@ -566,7 +566,7 @@ public class SimulatorParser {
 		if (result != null)
 			return result;
 
-		FeatureAndSites factor = parseFeatureSites(element);
+		FeatureAndSites factor = parseFeatureAndSites(element);
 
 		double declineRate = -1;
 
@@ -601,7 +601,7 @@ public class SimulatorParser {
 		if (result != null)
 			return result;
 
-		FeatureAndSites factor = parseFeatureSites(element);
+		FeatureAndSites factor = parseFeatureAndSites(element);
 
 		double shape = -1.0;
 
@@ -630,7 +630,7 @@ public class SimulatorParser {
 		if (result != null)
 			return result;
 
-		FeatureAndSites factor = parseFeatureSites(element);
+		FeatureAndSites factor = parseFeatureAndSites(element);
 
 		PurifyingFitnessRank rank = null;
 		PurifyingFitnessModel valueModel = null;
@@ -640,7 +640,7 @@ public class SimulatorParser {
 		for (Object o:element.getChildren()) {
 			Element e = (Element) o;
 			if (e.getName().equals(RANK)) {
-				rank = parsePuryfingFitnessRank(e, factor);
+				rank = parsePurifyingFitnessRank(e, factor);
 			} else if (e.getName().equals(FITNESS)) {
 				valueModel = parsePurifyingFitnessModel(e, factor);
 			} else if (e.getName().equals(FLUCTUATE)) {
@@ -673,7 +673,7 @@ public class SimulatorParser {
 		if (result != null)
 			return result;
 
-		FeatureAndSites factor = parseFeatureSites(element);
+		FeatureAndSites factor = parseFeatureAndSites(element);
 
 		double[] fitnesses = null;
 
@@ -738,7 +738,7 @@ public class SimulatorParser {
 	 * @param element
 	 * @throws ParseException
 	 */
-	private FeatureAndSites parseFeatureSites(Element element) throws ParseException {
+	private FeatureAndSites parseFeatureAndSites(Element element) throws ParseException {
 		Feature feature = null;
 		Set<Integer> sites = null;
 
@@ -761,6 +761,13 @@ public class SimulatorParser {
 			feature = GenomeDescription.getFeature("genome");
 		}
 
+        if (sites == null || sites.size() == 0) {
+            // assume the full length of the feature
+            sites = new TreeSet<Integer>();
+            for (int i = 0; i < feature.getLength(); i++) {
+                sites.add(i);
+            }
+        }
 		return new FeatureAndSites(feature, sites);
 	}
 
@@ -857,7 +864,7 @@ public class SimulatorParser {
 		CLASSES, OBSERVED, NUMBER;
 	};
 
-	private PurifyingFitnessRank parsePuryfingFitnessRank(Element element, FeatureAndSites factor) throws ParseException {
+	private PurifyingFitnessRank parsePurifyingFitnessRank(Element element, FeatureAndSites factor) throws ParseException {
 
 		if (element.getAttribute(REF) != null) {
 			if (!element.getChildren().isEmpty()) {
@@ -954,7 +961,7 @@ public class SimulatorParser {
 	private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) {
 		List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
 
-		String[] sets = str.split("|");
+		String[] sets = str.split("\\|");
 		for (String set : sets) {
 			Set<Byte> stateSet = new HashSet<Byte>();
 			for (int i = 0; i < set.length(); i++) {
@@ -965,35 +972,50 @@ public class SimulatorParser {
 		return classes;
 	}
 
-	private List<Sequence> parseAlignment(String text) {
+	private List<Sequence> parseAlignment(String text) throws ParseException {
 		List<Sequence> result = new ArrayList<Sequence>();
 
-		if (text.charAt(0) == '>') {
+        int firstLength = 0;
+
+        if (text.charAt(0) == '>') {
 			/* FASTA format */
 			String[] seqStrings = text.split("(?m)^\\s*>.*$");
 
 			for (int i = 1; i < seqStrings.length; i++) {
 				seqStrings[i] = seqStrings[i].replaceAll("\\s", "");
-				result.add(parseSequence(seqStrings[i]));
+
+                Sequence seq = parseSequence(seqStrings[i]);
+                if (firstLength > 0) {
+                    if (seq.getLength() != firstLength) {
+                        throw new ParseException("Sequence " + i + " in the alignment is a different length (" + seq.getLength() + ", expecting " + firstLength + ")");
+                    }
+                } else {
+                    firstLength = seq.getLength();
+                }
+                result.add(seq);
 			}
 		} else {
 			/* newline delimited sequences */
 			String[] seqStrings = text.split("\\s+");
-			for (String seqString:seqStrings) {
-				result.add(parseSequence(seqString));
-			}
+            int i = 1;
+            for (String seqString:seqStrings) {
+
+                Sequence seq = parseSequence(seqString);
+                if (firstLength > 0) {
+                    if (seq.getLength() != firstLength) {
+                        throw new ParseException("Sequence " + i + " in the alignment is a different length (" + seq.getLength() + ", expecting " + firstLength + ")");
+                    }
+                } else {
+                    firstLength = seq.getLength();
+                }
+				result.add(seq);
+                i++;
+            }
 		}
 		return result;
 	}
 
 	public Sequence parseSequence(String sequenceString) {
-		int genomeLength = GenomeDescription.getGenomeLength();
-
-		if (sequenceString.length() != genomeLength) {
-			throw new IllegalArgumentException("The initializing sequence string does not match the expected genome length ("
-					+ "got: " + sequenceString.length() + ", expected: " + genomeLength);
-		}
-
 		return new SimpleSequence(sequenceString);
 	}
 
@@ -1039,11 +1061,11 @@ public class SimulatorParser {
 					int end = Integer.parseInt(ranges[1]);
 
 					for (int j = start; j <= end; ++j) {
-						result.add(j);
+						result.add(j - 1);
 					}
 				} else {
 					int site = Integer.parseInt(part);
-					result.add(site);
+					result.add(site - 1);
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -1279,6 +1301,8 @@ public class SimulatorParser {
 
 		AlignmentSampler.Format format = AlignmentSampler.Format.NEXUS;
 
+        FeatureAndSites f = parseFeatureAndSites(element);
+
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
 			if (e1.getName().equals(SAMPLE_SIZE)) {
@@ -1333,7 +1357,7 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: specify only one of <" + SAMPLE_SIZE + "> or <" + SCHEDULE + ">.");
 		}
 
-		return new AlignmentSampler(sampleSize, consensus, schedule, format, label, fileName);
+		return new AlignmentSampler(f.feature, f.sites, sampleSize, consensus, schedule, format, label, fileName);
 	}
 
 	private Sampler parseTreeSampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
@@ -1394,24 +1418,9 @@ public class SimulatorParser {
 
 	private Sampler parseAlleleFrequencySampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
 
-		Set<Integer> sites = null;
-		SequenceAlphabet alphabet = null;
-		String feature = null;
+        FeatureAndSites f = parseFeatureAndSites(element);
 
-		for (Object o : element.getChildren()) {
-			Element e1 = (Element)o;
-			if (e1.getName().equals(FEATURE)) {
-				feature = e1.getTextNormalize();
-			} else if (e1.getName().equals(SITES)) {
-				sites = parseSites(e1);
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName()
-						+ "> is unrecognized");
-			}
-
-		}
-
-		return new AlleleFrequencySampler(sites, alphabet, fileName);
+		return new AlleleFrequencySampler(f.feature, f.sites, fileName);
 	}
 
 	private void parseEventLogger(Element element) throws ParseException {

@@ -24,7 +24,6 @@ public class SimpleGenome extends BaseGenome {
 	 * in positional order. The mutation array for the genome (mutations from the master sequence)
 	 * must be in positional order.
 	 * @param newMutations the array of new mutations in positional order
-	 * @param fitnessFunction
 	 */
 	public void applyMutations(SortedSet<Mutation> newMutations) {
 		for (Mutation mutation : newMutations) {

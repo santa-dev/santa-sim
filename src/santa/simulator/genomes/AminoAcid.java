@@ -72,7 +72,7 @@ public class AminoAcid {
         case 'Y':
             return Y;
         default:
-            throw new RuntimeException("Cannot parse '" + c + "' as a nucelotide (acgt)");
+            throw new RuntimeException("Cannot parse '" + c + "' as an amino acid (A-Y)");
         }
     }
 

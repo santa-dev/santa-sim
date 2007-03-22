@@ -22,11 +22,7 @@ public class PurifyingFitnessRank {
 		rank = new byte[feature.getLength()][alphabet.getStateCount()];
 		probableSetSize = new byte[feature.getLength()];
 
-		List<Sequence> alignment = new ArrayList<Sequence>();
-		for (Sequence genome : GenomeDescription.getSequences()) {
-			Sequence sequence = new SimpleSequence(genome, feature);
-			alignment.add(sequence);
-		}
+		List<byte[]> alignment = getAlignment(feature);
 
 		for (int i = 0; i < feature.getLength(); ++i) {
 			List<HistogramEntry> counts = createHistogram(alphabet, breakTiesRandomly, alignment, null, i);
@@ -82,13 +78,9 @@ public class PurifyingFitnessRank {
 		rank = new byte[siteCount][alphabet.getStateCount()];
 		probableSetSize = new byte[siteCount];
 
-		List<Sequence> alignment = new ArrayList<Sequence>();
-		for (Sequence genome : GenomeDescription.getSequences()) {
-			Sequence sequence = new SimpleSequence(genome, feature);
-			alignment.add(sequence);
-		}
+        List<byte[]> alignment = getAlignment(feature);
 
-		for (int i = 0; i < GenomeDescription.getGenomeLength(alphabet); ++i) {
+		for (int i = 0; i < siteCount; i++) {
 			List<HistogramEntry> counts = createHistogram(alphabet, breakTiesRandomly, alignment, null, i);
 
 			for (Set<Byte> stateClassSet : stateClasses) {
@@ -123,16 +115,12 @@ public class PurifyingFitnessRank {
 		SequenceAlphabet alphabet = feature.getAlphabet();
 		int siteCount = feature.getLength();
 
-		rank = new byte[GenomeDescription.getGenomeLength(alphabet)][alphabet.getStateCount()];
-		this.probableSetSize = new byte[GenomeDescription.getGenomeLength(alphabet)];
+        rank = new byte[siteCount][alphabet.getStateCount()];
+        this.probableSetSize = new byte[siteCount];
 
-		List<Sequence> alignment = new ArrayList<Sequence>();
-		for (Sequence genome : GenomeDescription.getSequences()) {
-			Sequence sequence = new SimpleSequence(genome, feature);
-			alignment.add(sequence);
-		}
+        List<byte[]> alignment = getAlignment(feature);
 
-		for (int i = 0; i < GenomeDescription.getGenomeLength(alphabet); ++i) {
+        for (int i = 0; i < siteCount; i++) {
 			List<HistogramEntry> counts = createHistogram(alphabet, breakTiesRandomly, alignment, null, i);
 
 			for (int j = 0; j < alphabet.getStateCount(); ++j) {
@@ -143,7 +131,20 @@ public class PurifyingFitnessRank {
 		}
 	}
 
-	public byte[] getStatesOrder(int site) {
+    private List<byte[]> getAlignment(Feature feature) {
+
+        List<byte[]> alignment = new ArrayList<byte[]>();
+        for (Sequence genomeSequence : GenomeDescription.getSequences()) {
+            SimpleGenome genome = new SimpleGenome();
+            genome.setSequence(genomeSequence);
+
+            byte[] sequence = genome.getStates(feature);
+            alignment.add(sequence);
+        }
+        return alignment;
+    }
+
+    public byte[] getStatesOrder(int site) {
 		return rank[site];
 	}
 
@@ -163,7 +164,7 @@ public class PurifyingFitnessRank {
 	 * @return an ordering of the states for that site
 	 */
 	private List<HistogramEntry> createHistogram(SequenceAlphabet alphabet, boolean breakTiesRandomly,
-	                                             List<Sequence> alignment, List<Byte> stateOrder, int site) {
+	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) {
 		List<HistogramEntry> counts = new ArrayList<HistogramEntry>();
 
 		for (int i = 0; i < alphabet.getStateCount(); ++i) {
@@ -171,9 +172,8 @@ public class PurifyingFitnessRank {
 		}
 
 		if (alignment != null) {
-			for (Sequence s:alignment) {
-				byte state = s.getState(alphabet, site);
-				++counts.get(state).count;
+			for (byte[] sequence : alignment) {
+				++counts.get(sequence[site]).count;
 			}
 		} else {
 			for (int i = 0; i < stateOrder.size(); ++i) {

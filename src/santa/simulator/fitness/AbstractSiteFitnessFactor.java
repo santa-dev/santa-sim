@@ -38,15 +38,11 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 
 		double logFitness = 0.0;
 
-		Iterator<Integer> it = getSites().iterator();
-
-		while (it.hasNext()) {
-			int site = it.next();
-
-			if (sequence[site - 1] >= getAlphabet().getStateCount())
+		for (int site : getSites()) {
+			if (sequence[site] >= getAlphabet().getStateCount())
 				logFitness += Double.NEGATIVE_INFINITY;
 			else
-				logFitness += this.logFitness[site - 1][sequence[site - 1]];
+				logFitness += this.logFitness[site][sequence[site]];
 		}
 
 		return logFitness;

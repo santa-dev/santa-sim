@@ -8,6 +8,7 @@ import santa.simulator.Population;
 import santa.simulator.genomes.AminoAcid;
 import santa.simulator.genomes.Nucleotide;
 import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.genomes.Feature;
 
 /**
  * @author Andrew Rambaut
@@ -16,32 +17,34 @@ import santa.simulator.genomes.SequenceAlphabet;
  */
 public class AlleleFrequencySampler implements Sampler {
 
+    private final Feature feature;
     private final Set<Integer> sites;
     private PrintStream destination;
-    private final SequenceAlphabet alphabet;
     private String fileName;
 
-    public AlleleFrequencySampler(Set<Integer> sites, SequenceAlphabet alphabet, String fileName) {
+    public AlleleFrequencySampler(Feature feature, Set<Integer> sites, String fileName) {
+        this.feature = feature;
         this.sites = sites;
-        this.alphabet = alphabet;
         this.fileName = fileName;
     }
 
     public void initialize(int replicate) {
+        SequenceAlphabet alphabet = feature.getAlphabet();
+
         String fname = fileName.replaceAll("%r", String.valueOf(replicate+1));
         try {
             destination = new PrintStream(fname);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not open file for writing: " + fname);
         }
-        
+
         destination.print("gen");
         for (int s:sites) {
             for (int i = 0; i < alphabet.getStateCount(); ++i) {
                 if (alphabet == SequenceAlphabet.NUCLEOTIDES) {
-                    destination.print("\t" + s + Nucleotide.asChar((byte) i));
+                    destination.print("\t" + Integer.toString(s + 1) + Nucleotide.asChar((byte) i));
                 } else if (alphabet == SequenceAlphabet.AMINO_ACIDS) {
-                    destination.print("\t" + s + AminoAcid.asChar((byte) i));
+                    destination.print("\t" + Integer.toString(s + 1) + AminoAcid.asChar((byte) i));
                 }
             }
         }
@@ -52,10 +55,11 @@ public class AlleleFrequencySampler implements Sampler {
 
         destination.print(generation);
 
-        for (int s:sites) {
-            double[] frequencies = population.getAlleleFrequencies(s - 1, alphabet);
-            for (int i = 0; i < alphabet.getStateCount(); ++i) {
-                destination.print("\t" + frequencies[i]);
+        double[][] frequencies = population.getAlleleFrequencies(feature, sites);
+
+        for (int i = 0; i < frequencies.length; i++) {
+            for (int j = 0; j < frequencies[i].length; j++) {
+                destination.print("\t" + frequencies[i][j]);
             }
         }
 
