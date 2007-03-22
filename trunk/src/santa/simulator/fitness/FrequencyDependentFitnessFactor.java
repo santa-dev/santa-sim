@@ -67,14 +67,6 @@ public class FrequencyDependentFitnessFactor extends AbstractSignatureFitnessFac
         return true;
     }
 
-    public double updateLogFitness(Genome genome, double logFitness, Mutation m) {
-        return logFitness;
-    }
-
-    public double updateLogFitness(Genome genome, double logFitness) {
-        return computeLogFitness(genome);
-    }
-
     public double getShape() {
         return shape;
     }

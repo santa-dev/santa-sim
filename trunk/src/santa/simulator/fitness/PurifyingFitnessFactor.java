@@ -23,8 +23,6 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
     private double fluctuateRate;
     private double fluctuateLogFitnessLimit;
 
-    boolean changed;
-
     public PurifyingFitnessFactor(PurifyingFitnessRank rank,
                                     PurifyingFitnessModel valueModel,
                                     double fluctuateRate,
@@ -66,7 +64,7 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
 
     @Override
     public boolean updateGeneration(int generation, Population population) {
-        changed = false;
+        boolean changed = false;
 
         if (fluctuateRate != 0) {
             Iterator<Integer> it = getSites().iterator();
@@ -121,11 +119,6 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         setLogFitness(i, newLessFit.byteValue(), getLogFitness(i, newFittest.byteValue()));
         setLogFitness(i, newFittest.byteValue(), 0.0);
     }
-
-	public double getLogFitnessChange(int position, byte oldState, byte newState) {
-		throw new UnsupportedOperationException("getLogFitnessChange should not be called for a SignatureFitnessFactor");
-	}
-
 
     public PurifyingFitnessRank getRank() {
         return rank;

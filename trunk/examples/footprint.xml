@@ -31,7 +31,7 @@
                 </rank>
                 <fitness>
 	                <lowFitness>0.5</lowFitness>
-                    <minimumFitness>0.1</minimumFitness>
+                    <minimumFitness>0.5</minimumFitness>
                 </fitness>
             </purifyingFitness>
             <purifyingFitness>
