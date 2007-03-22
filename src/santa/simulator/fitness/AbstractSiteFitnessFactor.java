@@ -52,62 +52,9 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		return logFitness;
 	}
 
-	public double updateLogFitness(Genome genome, double logFitness, Mutation m) {
-		int mutationSite = m.position / getAlphabet().getTokenSize();
-
-		if (getSites().contains(mutationSite + 1)) {
-			switch (getAlphabet()) {
-				case NUCLEOTIDES:
-					return logFitness + updateNucleotideMutation(genome, m);
-				case AMINO_ACIDS:
-					return logFitness + updateAminoAcidMutation(genome, m, mutationSite);
-			}
-
-			assert(false);
-			return 0;
-		} else
-			return logFitness;
-	}
-
-	private double updateAminoAcidMutation(Genome genome, Mutation m, int mutationSite) {
-		codon.setNucleotide(0, genome.getNucleotide(mutationSite * 3));
-		codon.setNucleotide(1, genome.getNucleotide(mutationSite * 3 + 1));
-		codon.setNucleotide(2, genome.getNucleotide(mutationSite * 3 + 2));
-
-		byte oldState = codon.getAminoAcid(0);
-
-		if (oldState == AminoAcid.STP) {
-			/*
-						 * It could be that we already had a stop codon, but only in case of
-						 * multiple mutations at the same amino acid site, and the first single
-						 * mutation resulted in a stop codon...
-						 *
-						 * To handle that cleanly, we would need to group mutations by amino acid site
-						 * before updating the fitness but that is simply too cumbersome.
-						 * The alternative option is to recompute the whole thing for this rare event,
-						 * which we pursue here.
-						 */
-			return computeLogFitness(genome);
-		} else {
-			double result = -logFitness[mutationSite][codon.getAminoAcid(0)];
-
-			codon.setNucleotide(m.position % 3, m.state);
-
-			byte newState = codon.getAminoAcid(0);
-
-			if (newState == AminoAcid.STP)
-				result += Double.NEGATIVE_INFINITY;
-			else
-				result += logFitness[mutationSite][newState];
-
-			return result;
-		}
-	}
-
-	private double updateNucleotideMutation(Genome genome, Mutation m) {
-		return -logFitness[m.position][genome.getNucleotide(m.position)]
-				+logFitness[m.position][m.state];
-	}
+    public double getLogFitnessChange(int position, byte oldState, byte newState) {
+        return logFitness[position][newState] - logFitness[position][oldState];
+    }
 
 	public double getLogFitness(int i, byte state) {
 		return logFitness[i][state];
@@ -117,6 +64,5 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		logFitness[i][state] = f;
 	}
 
-	private SimpleSequence codon = new SimpleSequence(3);
 	private double[][] logFitness;
 }
