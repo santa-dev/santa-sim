@@ -17,8 +17,8 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
     double penalty;
     int currentGeneration;
 
-    public ExposureDependentFitnessFactor(double penalty, Set<Integer> sites, SequenceAlphabet alphabet) {
-        super(sites, alphabet);
+    public ExposureDependentFitnessFactor(double penalty, Feature feature, Set<Integer> sites) {
+        super(feature, sites);
         this.penalty = penalty;
         this.exposure = new HashMap<Signature, Double>();
     }

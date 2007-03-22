@@ -8,7 +8,6 @@ import java.util.List;
  * @version $Id$
  */
 public final class Feature {
-
 	public enum Type {
 		NUCLEOTIDE,
 		AMINO_ACID
@@ -23,12 +22,23 @@ public final class Feature {
 		fragments.add(new Fragment(start, finish));
 	}
 
-	public int getLength() {
-		int length = 0;
+	public String getName() {
+		return name;
+	}
 
-		for (Fragment fragment : fragments) {
-			length += Math.abs(fragment.getFinish() - fragment.getStart()) + 1;
+	public Type getFeatureType() {
+		return featureType;
+	}
+
+	public SequenceAlphabet getAlphabet() {
+		if (featureType == Type.AMINO_ACID) {
+			return SequenceAlphabet.AMINO_ACIDS;
 		}
+		return SequenceAlphabet.NUCLEOTIDES;
+	}
+
+	public int getLength() {
+		int length = getNucleotideLength();
 
 		if (featureType == Type.AMINO_ACID) {
 			length /= 3;
@@ -37,6 +47,15 @@ public final class Feature {
 		return length;
 	}
 
+	public int getNucleotideLength() {
+		int length = 0;
+
+		for (Fragment fragment : fragments) {
+			length += Math.abs(fragment.getFinish() - fragment.getStart()) + 1;
+		}
+
+		return length;
+	}
 	public int getFragmentCount() {
 		return fragments.size();
 	}

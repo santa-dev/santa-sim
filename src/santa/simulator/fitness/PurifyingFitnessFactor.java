@@ -29,8 +29,9 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
                                     PurifyingFitnessModel valueModel,
                                     double fluctuateRate,
                                     double fluctuateFitnessLimit,
-                                    Set<Integer> sites, SequenceAlphabet alphabet) {
-        super(sites, alphabet);
+                                    Feature feature,
+                                    Set<Integer> sites) {
+        super(feature, sites);
 
         this.rank = rank;
         this.valueModel = valueModel;
@@ -144,14 +145,21 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         return fluctuateRate;
     }
 
-    public static PurifyingFitnessFactor createEmpiricalFitnessFunction(double[] fitnesses, Set<Integer> sites, SequenceAlphabet alphabet) {
+    public static PurifyingFitnessFactor createEmpiricalFitnessFunction(double[] fitnesses, Feature feature, Set<Integer> sites) {
+	    SequenceAlphabet alphabet = SequenceAlphabet.NUCLEOTIDES;
+	    if (feature != null) {
+		    if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
+			    alphabet = SequenceAlphabet.AMINO_ACIDS;
+		    }
+	    }
+
         List<Byte> states = new ArrayList<Byte>();
         for (byte b = 0; b < alphabet.getStateCount(); b++) {
             states.add(b);
         }
-        PurifyingFitnessRank rank = new PurifyingFitnessRank(alphabet, states, alphabet.getStateCount());
+        PurifyingFitnessRank rank = new PurifyingFitnessRank(feature, sites, states, alphabet.getStateCount(), false);
         PurifyingFitnessValuesModel model = new PurifyingFitnessValuesModel(fitnesses);
 
-        return new PurifyingFitnessFactor(rank, model, 0, 0, sites, alphabet);
+        return new PurifyingFitnessFactor(rank, model, 0, 0, feature, sites);
     }
 }

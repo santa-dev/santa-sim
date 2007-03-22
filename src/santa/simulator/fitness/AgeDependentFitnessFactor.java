@@ -17,8 +17,8 @@ public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     double declineRate;
     int currentGeneration;
 
-    public AgeDependentFitnessFactor(double declineRate, Set<Integer> sites, SequenceAlphabet alphabet) {
-        super(sites, alphabet);
+    public AgeDependentFitnessFactor(double declineRate, Feature feature, Set<Integer> sites) {
+        super(feature, sites);
         this.declineRate = declineRate;
         this.birthGenerations = new HashMap<Signature, Integer>();
     }

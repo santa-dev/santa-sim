@@ -11,62 +11,51 @@ import santa.simulator.genomes.*;
 import java.util.Arrays;
 import java.util.Set;
 
-public abstract class AbstractSignatureFitnessFactor implements FitnessFactor {
-
-    static protected final class Signature {
-            byte state[];
-
-            Signature(byte state[]) {
-                this.state = state;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                Signature other = (Signature) o;
-                return Arrays.equals(state, other.state);
-            }
-
-            @Override
-            public int hashCode() {
-                return Arrays.hashCode(state);
-            }
-
-            @Override
-            public String toString() {
-                return Arrays.toString(state);
-            }
+public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFactor {
 
 
-        }
+	public AbstractSignatureFitnessFactor(Feature feature, Set<Integer> sites) {
+		super(feature, sites);
+	}
 
-    protected final Set<Integer> sites;
-    protected final SequenceAlphabet alphabet;
+	protected Signature createSignature(Genome genome) {
+		Sequence seq = genome.getSequence();
 
-    public AbstractSignatureFitnessFactor(Set<Integer> sites, SequenceAlphabet alphabet) {
-        this.sites = sites;
-        this.alphabet = alphabet;
-    }
+		byte state[] = new byte[getSites().size()];
+		int i = 0;
+		for (Integer site : getSites()) {
+			byte b = seq.getState(getAlphabet(), site - 1);
 
-    protected Signature createSignature(Genome genome) {
-        Sequence seq = genome.getSequence();
+			state[i++] = b;
+		}
 
-        byte state[] = new byte[sites.size()];
-        int i = 0;
-        for (Integer site : sites) {
-            byte b = seq.getState(alphabet, site - 1);
+		return new Signature(state);
+	}
 
-            state[i++] = b;
-        }
+	static protected final class Signature {
+		byte state[];
 
-        return new Signature(state);
-    }
+		Signature(byte state[]) {
+			this.state = state;
+		}
 
-    public SequenceAlphabet getAlphabet() {
-        return alphabet;
-    }
+		@Override
+		public boolean equals(Object o) {
+			Signature other = (Signature) o;
+			return Arrays.equals(state, other.state);
+		}
 
-    public Set<Integer> getSites() {
-        return sites;
-    }
+		@Override
+		public int hashCode() {
+			return Arrays.hashCode(state);
+		}
+
+		@Override
+		public String toString() {
+			return Arrays.toString(state);
+		}
+
+
+	}
 
 }
