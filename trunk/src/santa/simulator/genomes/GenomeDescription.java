@@ -58,6 +58,17 @@ public final class GenomeDescription {
 		return features;
 	}
 
+	public static Feature getFeature(String name) {
+
+		for (Feature f : features) {
+			if (f.getName().equals(name)) {
+				return f;
+			}
+		}
+
+		return null;
+	}
+
 	public static List<Sequence> getSequences() {
 		return sequences;
 	}
