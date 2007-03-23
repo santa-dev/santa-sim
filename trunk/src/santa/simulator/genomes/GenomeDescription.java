@@ -1,7 +1,6 @@
 package santa.simulator.genomes;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 
 /**
@@ -11,19 +10,19 @@ import java.util.ArrayList;
  */
 public final class GenomeDescription {
 
-    private GenomeDescription() { /* private to prohibit instances */ }
+	private GenomeDescription() { /* private to prohibit instances */ }
 
 	public static void setDescription(int genomeLength,
 	                                  List<Feature> features) {
-	    setDescription(genomeLength, features, null);
+		setDescription(genomeLength, features, null);
 	}
 
 	public static void setDescription(int genomeLength,
 	                                  List<Feature> features,
 	                                  List<Sequence> sequences) {
-	    if (isSet) {
-	        throw new RuntimeException("GenomeDescription can only be set once");
-	    }
+		if (isSet) {
+			throw new RuntimeException("GenomeDescription can only be set once");
+		}
 
 		GenomeDescription.genomeLength = genomeLength;
 		Feature genomeFeature = new Feature("genome", Feature.Type.NUCLEOTIDE);
@@ -33,26 +32,59 @@ public final class GenomeDescription {
 
 		if (sequences != null && sequences.size() > 0) {
 			Sequence firstSequence = sequences.get(0);
-		    if (firstSequence.getLength() != GenomeDescription.genomeLength) {
-			    throw new IllegalArgumentException("Sequences are not the same length as the genome");
-		    }
+			if (firstSequence.getLength() != GenomeDescription.genomeLength) {
+				throw new IllegalArgumentException("Sequences are not the same length as the genome");
+			}
 			GenomeDescription.sequences = new ArrayList<Sequence>(sequences);
 		}
 
-	    isSet = true;
+		for (Feature feature : features) {
+			int[] featureSiteTable = new int[genomeLength];
+			for (int i = 0; i < genomeLength; i++) {
+				featureSiteTable[i] = -1;
+			}
+			int[] genomeSiteTable = new int[feature.getNucleotideLength()];
+			for (int i = 0; i < genomeSiteTable.length; i++) {
+				genomeSiteTable[i] = -1;
+			}
+
+
+			int k = 0;
+			for (int i = 0; i < feature.getFragmentCount(); i++) {
+				int start = feature.getFragmentStart(i);
+				int finish = feature.getFragmentFinish(i);
+				if (start < finish) {
+					for (int j = start; j <= finish; j++) {
+						featureSiteTable[j] = k;
+						genomeSiteTable[k] = j;
+						k++;
+					}
+				} else {
+					for (int j = finish; j >= start; j--) {
+						featureSiteTable[j] = k;
+						genomeSiteTable[k] = j;
+						k++;
+					}
+				}
+			}
+			featureSiteTables.put(feature, featureSiteTable);
+			genomeSiteTables.put(feature, genomeSiteTable);
+		}
+
+		isSet = true;
 	}
 
-    public static boolean isSet() {
-        return isSet;
-    }
+	public static boolean isSet() {
+		return isSet;
+	}
 
-    public static int getGenomeLength() {
-        return genomeLength;
-    }
+	public static int getGenomeLength() {
+		return genomeLength;
+	}
 
-    public static int getGenomeLength(SequenceAlphabet alphabet) {
-        return genomeLength / alphabet.getTokenSize();
-    }
+	public static int getGenomeLength(SequenceAlphabet alphabet) {
+		return genomeLength / alphabet.getTokenSize();
+	}
 
 	public static List<Feature> getFeatures() {
 		return features;
@@ -69,6 +101,27 @@ public final class GenomeDescription {
 		return null;
 	}
 
+	/**
+	 * returns a table that maps the sites in the genome to the
+	 * nucleotides sites of the specified feature (nucleotide
+	 * sites even if the feature is amino acids).
+	 * @param feature
+	 * @return an array of integers as long as the genome
+	 */
+	public static int[] getFeatureSiteTable(Feature feature) {
+		return featureSiteTables.get(feature);
+	}
+
+	/**
+	 * returns a table that maps the nucloetide sites of the specified
+	 * feature to the sites of the genome.
+	 * @param feature
+	 * @return an array of integers as long as the feature in nucleotides
+	 */
+	public static int[] getGenomeSiteTable(Feature feature) {
+		return featureSiteTables.get(feature);
+	}
+
 	public static List<Sequence> getSequences() {
 		return sequences;
 	}
@@ -77,10 +130,13 @@ public final class GenomeDescription {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
+	private static final Map<Feature, int[]> genomeSiteTables = new HashMap<Feature, int[]>();
+	private static final Map<Feature, int[]> featureSiteTables = new HashMap<Feature, int[]>();
+
 	private static int genomeLength;
 	private static final List<Feature> features = new ArrayList<Feature>();
 	private static List<Sequence> sequences = null;
 
-    private static boolean isSet = false;
+	private static boolean isSet = false;
 
 }

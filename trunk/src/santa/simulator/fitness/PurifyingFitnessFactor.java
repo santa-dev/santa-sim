@@ -55,9 +55,7 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
                 }
             } else {
                 for (int j = 0; j < stateSize; ++j) {
-                    // these sites should never be used by this fitness factor so
-                    // setting them to NaN may help show up bugs               
-                    logFitness[i][j] = Double.NaN;
+                    logFitness[i][j] = 0.0;
                 }
             }
         }

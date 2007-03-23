@@ -50,13 +50,11 @@ public class SimpleGenePool extends BaseGenePool {
 
             newGenome.setFrequency(1);
 
-            // Currently the update mechanism isn't working so we are
-            // recalculating after the mutations have been applied.
-            // fitnessFunction.updateLogFitness(newGenome, mutations);
-   
+            fitnessFunction.updateLogFitness(newGenome, mutations);
+
             newGenome.applyMutations(mutations);
 
-            fitnessFunction.computeLogFitness(newGenome);
+           // fitnessFunction.computeLogFitness(newGenome);
 
             uniqueGenomeCount++;
 

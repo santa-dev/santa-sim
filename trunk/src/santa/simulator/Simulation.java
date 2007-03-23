@@ -45,7 +45,7 @@ public class Simulation {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-	    
+
         this.selector = new RouletteWheelSelector();
 
         // This pre-computes all possible mutation objects as singletons...
@@ -79,7 +79,7 @@ public class Simulation {
 	    }
         population.initialize(inoculum);
 
-        int generation = 0;
+        int generation = 1;
 
         int epochCount = 0;
 

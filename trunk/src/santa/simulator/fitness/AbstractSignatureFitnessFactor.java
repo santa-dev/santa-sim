@@ -18,7 +18,7 @@ public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFact
 		super(feature, sites);
 	}
 
-	public double getLogFitnessChange(int position, byte oldState, byte newState) {
+	public double getLogFitnessChange(StateChange change) {
 		throw new UnsupportedOperationException("getLogFitnessChange should not be called for a SignatureFitnessFactor");
 	}
 

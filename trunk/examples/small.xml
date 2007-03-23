@@ -9,10 +9,15 @@
 			<sequences>
 				GAAGAAGAG
 			</sequences>
+			<feature>
+				<name>CDS</name>
+				<type>aminoAcid</type>
+				<coordinates>1-9</coordinates>
+			</feature>
 		</genome>
 
 		<population>
-			<populationSize>100</populationSize>
+			<populationSize>1000</populationSize>
 
 			<inoculum>all</inoculum>
 		</population>
@@ -21,6 +26,19 @@
             <neutralFitness>
                 <sites>1-9</sites>
             </neutralFitness>
+			<purifyingFitness>
+				<feature>CDS</feature>
+			    <sites>1</sites>
+				<rank>
+					<breakTies>random</breakTies>
+					<probableSet>2</probableSet>
+				</rank>
+				<fitness>
+					<lowFitness>0.1</lowFitness>
+					<minimumFitness>0.1</minimumFitness>
+				</fitness>
+
+			</purifyingFitness>
 		</fitnessFunction>
 
 		<mutator>
@@ -39,6 +57,7 @@
         </epoch>
 
         <samplingSchedule>
+<!--
 			<sampler>
 				<atGeneration>10000</atGeneration>
 				<fileName>trees_%r.tree</fileName>
@@ -48,6 +67,7 @@
 					<label>tip_%g_%s</label>
 				</tree>
 			</sampler>
+-->
 		</samplingSchedule>
 
 	</simulation>

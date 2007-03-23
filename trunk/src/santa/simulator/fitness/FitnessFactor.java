@@ -32,7 +32,7 @@ public interface FitnessFactor {
      * @return Update the log fitness of the given genome which it will have after the given
      *         mutation is applied.
      */
-    double getLogFitnessChange(int position, byte oldState, byte newState);
+    double getLogFitnessChange(StateChange change);
 
 	Feature getFeature();
 
