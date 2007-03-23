@@ -3,6 +3,7 @@ package santa.simulator.genomes;
 import santa.simulator.fitness.FitnessFunction;
 
 import java.util.SortedSet;
+import java.util.List;
 
 /**
  * TODO: add a Gene concept. This will change the interface of:
@@ -26,6 +27,8 @@ public interface Genome {
 	byte[] getNucleotides(Feature feature);
 
 	byte[] getStates(Feature feature);
+
+	List<StateChange> getChanges(Feature feature, SortedSet<Mutation> newMutations);
 
     double getLogFitness();
 

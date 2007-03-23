@@ -6,13 +6,13 @@
  */
 package santa.simulator;
 
-import java.util.logging.Logger;
-
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.SamplingSchedule;
+
+import java.util.logging.Logger;
 
 public class SimulationEpoch {
     private String name;
@@ -37,14 +37,20 @@ public class SimulationEpoch {
         Population population = simulation.getPopulation();
         GenePool genePool = simulation.getGenePool();
         SamplingSchedule samplingSchedule = simulation.getSamplingSchedule();
-        
+
         final int endGeneration = startGeneration + generationCount;
+
+	    System.err.println("Initial population:  fitness = " + population.getMeanFitness() +
+	            ", distance = " + population.getMeanDistance() +
+	            ", max freq = " + population.getMaxFrequency() +
+	            ", genepool size = " + genePool.getUniqueGenomeCount() +
+	            " (" + genePool.getUnusedGenomeCount() + " available)");
 
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
             EventLogger.setEpoch(generation);
 
             fitnessFunction.updateGeneration(generation, population);
-            
+
             if (generation == startGeneration) {
                 // adapt to this epoch, and the new generation
                 population.updateAllFitnesses(fitnessFunction);
@@ -69,12 +75,13 @@ public class SimulationEpoch {
                 } else
                     System.err.println();
             } else {
-                if (false)
+                if (false) {
                     logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
                             ", distance = " + population.getMeanDistance() +
                             ", max freq = " + population.getMaxFrequency() +
                             ", genepool size= " + genePool.getUniqueGenomeCount() +
                             "(" + genePool.getUnusedGenomeCount() + " available)");
+                }
             }
 
             samplingSchedule.doSampling(generation, population);

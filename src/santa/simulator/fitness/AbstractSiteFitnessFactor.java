@@ -48,8 +48,12 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		return logFitness;
 	}
 
-    public double getLogFitnessChange(int position, byte oldState, byte newState) {
-        return logFitness[position][newState] - logFitness[position][oldState];
+    public double getLogFitnessChange(StateChange change) {
+	    // we ignore the sites list here because it is probably cheaper to look
+	    // up in the table and get a zero change than check the site list.
+	    // It does mean the logFitness array should have zeros in sites that
+	    // are not handled by this factor.
+        return logFitness[change.position][change.newState] - logFitness[change.position][change.oldState];
     }
 
 	public double getLogFitness(int i, byte state) {
