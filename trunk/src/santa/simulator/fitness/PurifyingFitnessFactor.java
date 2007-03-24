@@ -153,7 +153,7 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         for (byte b = 0; b < alphabet.getStateCount(); b++) {
             states.add(b);
         }
-        PurifyingFitnessRank rank = new PurifyingFitnessRank(feature, sites, states, alphabet.getStateCount(), false);
+        PurifyingFitnessRank rank = new PurifyingFitnessRank(feature, states, alphabet.getStateCount(), false);
         PurifyingFitnessValuesModel model = new PurifyingFitnessValuesModel(fitnesses);
 
         return new PurifyingFitnessFactor(rank, model, 0, 0, feature, sites);

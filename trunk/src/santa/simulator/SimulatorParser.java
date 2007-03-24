@@ -942,13 +942,13 @@ public class SimulatorParser {
 		PurifyingFitnessRank result;
 
 		if (probableSet == ProbableSetEnum.CLASSES) {
-			result = new PurifyingFitnessRank(factor.feature, factor.sites, probableSetClasses, breakTiesRandom);
+			result = new PurifyingFitnessRank(factor.feature, probableSetClasses, breakTiesRandom);
 		} else if (probableSet == ProbableSetEnum.NUMBER){
-			result = new PurifyingFitnessRank(factor.feature, factor.sites, probableNumber, breakTiesRandom);
+			result = new PurifyingFitnessRank(factor.feature, probableNumber, breakTiesRandom);
 		} else if (probableSet == ProbableSetEnum.OBSERVED) {
-			result = new PurifyingFitnessRank(factor.feature, factor.sites, breakTiesRandom);
+			result = new PurifyingFitnessRank(factor.feature, breakTiesRandom);
 		} else {
-			result = new PurifyingFitnessRank(factor.feature, factor.sites, stateOrder, probableNumber, breakTiesRandom);
+			result = new PurifyingFitnessRank(factor.feature, stateOrder, probableNumber, breakTiesRandom);
 		}
 
 		if (element.getAttributeValue(ID) != null) {

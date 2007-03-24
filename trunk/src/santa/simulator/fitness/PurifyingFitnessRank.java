@@ -10,11 +10,9 @@ public class PurifyingFitnessRank {
 	 * Creates a ranking using the frequencies found in the sequences of the
 	 * GenomeDescription
 	 * @param feature
-	 * @param sites
 	 * @param breakTiesRandomly
 	 */
 	public PurifyingFitnessRank(Feature feature,
-	                            Set<Integer> sites,
 	                            boolean breakTiesRandomly) {
 
 		SequenceAlphabet alphabet = feature.getAlphabet();
@@ -42,7 +40,6 @@ public class PurifyingFitnessRank {
 	 * Creates a ranking based on a specified state order
 	 */
 	public PurifyingFitnessRank(Feature feature,
-	                            Set<Integer> sites,
 	                            List<Byte> stateOrder,
 	                            int probableSetSize,
 	                            boolean breakTiesRandomly) {
@@ -68,7 +65,6 @@ public class PurifyingFitnessRank {
 	}
 
 	public PurifyingFitnessRank(Feature feature,
-	                            Set<Integer> sites,
 	                            List<Set<Byte>> stateClasses,
 	                            boolean breakTiesRandomly) {
 
@@ -108,7 +104,6 @@ public class PurifyingFitnessRank {
 	}
 
 	public PurifyingFitnessRank(Feature feature,
-	                            Set<Integer> sites,
 	                            int probableSetSize,
 	                            boolean breakTiesRandomly) {
 
