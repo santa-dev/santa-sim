@@ -11,7 +11,7 @@
 	        <feature>
 		        <name>CDS</name>
 		        <type>aminoAcid</type>
-		        <coordinates>1-609</coordinates>
+		        <coordinates>1-999</coordinates>
 	        </feature>
         </genome>
 

@@ -42,20 +42,15 @@ public class RecombinantReplicator implements Replicator {
             Sequence recombinantSequence = getRecombinantSequence(parent1Genome, parent2Genome);
 
             Genome genome = genePool.createGenome(recombinantSequence);
-            genome.setLogFitness(fitnessFunction.computeLogFitness(genome));
 
 	        SortedSet<Mutation> mutations = mutator.mutate(genome);
 
 	        genome.setFrequency(1);
 
-            // Currently the update mechanism isn't working so we are
-            // recalculating after the mutations have been applied.
-            // fitnessFunction.updateLogFitness(newGenome, mutations);
+	        genome.applyMutations(mutations);
 
-
-            genome.applyMutations(mutations);
-
-            fitnessFunction.computeLogFitness(genome);
+	        // we can't just update some of the fitness so recompute...
+	        fitnessFunction.computeLogFitness(genome);
 
             virus.setGenome(genome);
             virus.setParent(parents[0]);
