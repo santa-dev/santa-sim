@@ -21,7 +21,7 @@ import java.util.*;
 public final class FitnessFunction  {
 	int generation;
 	private List<FitnessFactor> factors;
-	private boolean[] factorsChanged;
+	private boolean[] recomputeFactor;
 
 	/**
 	 * A cache of calculated fitness contributions, for each factor,
@@ -45,19 +45,19 @@ public final class FitnessFunction  {
 
 	public FitnessFunction(List<FitnessFactor> factors) {
 		this.factors = factors;
-		factorsChanged = new boolean[factors.size()];
+		recomputeFactor = new boolean[factors.size()];
 	}
 
 	public void updateGeneration(int generation, Population population) {
 		int i = 0;
 		for (FitnessFactor f : factors) {
-			factorsChanged[i] = f.updateGeneration(generation, population);
+			recomputeFactor[i] = f.updateGeneration(generation, population);
 			i++;
 		}
 	}
 
 	/**
-	 * Try to update all the fitness factors with the set of
+	 * Update all the fitness factors with the set of mutations
 	 */
 	public void updateLogFitness(Genome genome, SortedSet<Mutation> mutations) {
 		double result = 0;
@@ -68,25 +68,41 @@ public final class FitnessFunction  {
 		for (FitnessFactor factor : factors) {
 			double contrib = cache.factorContributions[i];
 
-			Feature feature = factor.getFeature();
-			int stateCount = feature.getAlphabet().getStateCount();
-
-			if (factorsChanged[i]) {
-				byte[] sequence = genome.getStates(feature);
-				contrib = factor.computeLogFitness(sequence);
-			} else {
+			if (!recomputeFactor[i]) {
+				Feature feature = factor.getFeature();
 				List<StateChange> changes = genome.getChanges(feature, mutations);
 
 				for (StateChange change : changes) {
-					if (change.newState >= stateCount) {
-						// stop codon...
-						contrib =  Double.NEGATIVE_INFINITY;
-						break;
-					} else {
-						double delta = factor.getLogFitnessChange(change);
-						contrib += delta;
-					}
+					double delta = factor.getLogFitnessChange(change);
+					contrib += delta;
 				}
+			}
+
+			cache.factorContributions[i] = contrib;
+			result += contrib;
+			i++;
+		}
+
+		genome.setLogFitness(result);
+
+	}
+
+	/**
+	 * Update all the fitness factors that have to recompute
+	 */
+	public void updateLogFitness(Genome genome) {
+		double result = 0;
+
+		FitnessGenomeCache cache = genome.getFitnessCache();
+
+		int i = 0;
+		for (FitnessFactor factor : factors) {
+			double contrib = cache.factorContributions[i];
+
+			if (recomputeFactor[i]) {
+				Feature feature = factor.getFeature();
+				byte[] sequence = genome.getStates(feature);
+				contrib = factor.computeLogFitness(sequence);
 			}
 
 			cache.factorContributions[i] = contrib;
@@ -102,7 +118,7 @@ public final class FitnessFunction  {
 	 * Compute and set the fitness of a genome from scratch, and store the cached
 	 * values for each factor.
 	 */
-	public double computeLogFitness(Genome genome) {
+	public void computeLogFitness(Genome genome) {
 		double result = 0;
 
 		FitnessGenomeCache cache = new FitnessGenomeCache();
@@ -119,8 +135,6 @@ public final class FitnessFunction  {
 		}
 
 		genome.setLogFitness(result);
-
-		return result;
 	}
 
 }

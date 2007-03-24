@@ -8,9 +8,9 @@
  */
 package santa.simulator.genomes;
 
-import java.util.SortedSet;
-
 import santa.simulator.fitness.FitnessFunction;
+
+import java.util.SortedSet;
 
 /**
  * @author rambaut
@@ -59,13 +59,11 @@ public class CompactGenePool extends BaseGenePool {
 
             newGenome.setFrequency(1);
 
-            // Currently the update mechanism isn't working so we are
-            // recalculating after the mutations have been applied.
-            // fitnessFunction.updateLogFitness(newGenome, mutations);
+	        fitnessFunction.updateLogFitness(newGenome, mutations);
 
-            newGenome.applyMutations(mutations);
+	        newGenome.applyMutations(mutations);
 
-            fitnessFunction.computeLogFitness(newGenome);
+	        fitnessFunction.updateLogFitness(newGenome);
 
             uniqueGenomeCount++;
 

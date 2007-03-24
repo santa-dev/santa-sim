@@ -39,10 +39,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		double logFitness = 0.0;
 
 		for (int site : getSites()) {
-			if (sequence[site] >= getAlphabet().getStateCount())
-				logFitness += Double.NEGATIVE_INFINITY;
-			else
-				logFitness += this.logFitness[site][sequence[site]];
+			logFitness += this.logFitness[site][sequence[site]];
 		}
 
 		return logFitness;

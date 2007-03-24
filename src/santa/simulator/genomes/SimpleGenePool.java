@@ -54,7 +54,7 @@ public class SimpleGenePool extends BaseGenePool {
 
             newGenome.applyMutations(mutations);
 
-           // fitnessFunction.computeLogFitness(newGenome);
+            fitnessFunction.updateLogFitness(newGenome);
 
             uniqueGenomeCount++;
 
