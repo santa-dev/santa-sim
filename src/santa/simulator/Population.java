@@ -128,6 +128,7 @@ public class Population {
     }
 
     protected Virus[] getSample(int sampleSize) {
+        sampleSize = Math.min(sampleSize, populationSize);
         Virus[] viruses = getCurrentGeneration();
         Object[] tmp = Random.nextSample(Arrays.asList(viruses), sampleSize);
         Virus[] sample = new Virus[tmp.length];

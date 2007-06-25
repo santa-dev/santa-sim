@@ -101,6 +101,8 @@ public abstract class BaseGenome implements Genome {
 			// convert the mutations into a list of state changes for the
 			byte oldState = getNucleotide(m.position);
 			changes.add(new StateChange(featureSiteTable[m.position], oldState, m.state));
+            
+            //System.err.println("m: " + m.position + " " + m.state + " -> " + featureSiteTable[m.position] + " " + oldState + " " + m.state);
 		}
 
 		if (feature.getAlphabet() == SequenceAlphabet.AMINO_ACIDS) {
@@ -121,7 +123,9 @@ public abstract class BaseGenome implements Genome {
 						byte newState = AminoAcid.STANDARD_GENETIC_CODE[codon[0]][codon[1]][codon[2]];
 						if (newState != oldState) {
 							// don't include synonymous changes
-							aaChanges.add(new StateChange(aa, oldState, newState));
+							aaChanges.add(new StateChange(lastAA, oldState, newState));
+                            
+                            //System.err.println("aa: " + lastAA + " " + oldState + " " + newState);
 						}
 					}
 
@@ -152,7 +156,9 @@ public abstract class BaseGenome implements Genome {
 				if (newState != oldState) {
 					// don't include synonymous changes
 					aaChanges.add(new StateChange(lastAA, oldState, newState));
-				}
+
+                    //System.err.println("aa: " + lastAA + " " + oldState + " " + newState);
+                }
 			}
 
 			return aaChanges;

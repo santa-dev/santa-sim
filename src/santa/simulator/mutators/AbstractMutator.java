@@ -37,7 +37,8 @@ public abstract class AbstractMutator implements Mutator {
 
             Mutation mutation = Mutation.getMutation(pos, mutate(genome.getNucleotide(pos)));
 
-            mutations.add(mutation);
+            if (mutation.state != genome.getNucleotide(pos))
+                mutations.add(mutation);
         }
 
         return mutations;
