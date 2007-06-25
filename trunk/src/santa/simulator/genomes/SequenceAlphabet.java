@@ -9,10 +9,11 @@ package santa.simulator.genomes;
 import java.util.List;
 
 public enum SequenceAlphabet {
-    NUCLEOTIDES(4, 1),
-    AMINO_ACIDS(20, 3);
+    NUCLEOTIDES("nucleotide", 4, 1),
+    AMINO_ACIDS("amino acid", 20, 3);
 
-    SequenceAlphabet(int stateCount, int tokenSize) {
+    SequenceAlphabet(String name, int stateCount, int tokenSize) {
+        this.name = name;
         this.stateCount = stateCount;
         this.tokenSize = tokenSize;
     }
@@ -36,6 +37,10 @@ public enum SequenceAlphabet {
         }
     }
     
+    private final String name;
     private final int stateCount;
     private final int tokenSize;
+    public String getName() {
+        return name;
+    }
 }

@@ -12,6 +12,7 @@ package santa.simulator.genomes;
  * @author rambaut
  *         Date: Apr 26, 2005
  *         Time: 10:28:35 AM
+ *         
  */
 public class Mutation implements Comparable<Mutation> {
     private Mutation(int position, byte state) {
@@ -19,6 +20,10 @@ public class Mutation implements Comparable<Mutation> {
         this.state = state;
     }
 
+
+    /*
+     * position is 0-based -- koen.
+     */
     public final int position;
     public final byte state;
 

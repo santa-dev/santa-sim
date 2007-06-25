@@ -19,11 +19,6 @@ public interface Sequence {
     int getLength();
 
     /**
-     * Get the amino acid sequence length.
-     */
-    int getAminoAcidsLength();
-
-    /**
      * Get the sequence length for the specified alphabet.
      */
     int getLength(SequenceAlphabet alphabet);
@@ -34,12 +29,11 @@ public interface Sequence {
     byte getNucleotide(int i);
 
     /**
-     * Get the amino acid at amino acid position i (0 .. length()/3 - 1).
-     */
-    byte getAminoAcid(int i);
-
-    /**
-     * Get the state for the given alphabet at the given position.
+     * Get the state for the given alphabet at the given
+     * position (0  ..  length() - 1).
+     *
+     * The position is always the nucleotide position. If the alphabet
+     * is amino acids, then position must be <= length() - 3
      */
     byte getState(SequenceAlphabet alphabet, int i);
 

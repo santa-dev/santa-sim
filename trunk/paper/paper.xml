@@ -2,6 +2,13 @@
        xsi:noNamespaceSchemaLocation="santa.xsd">
     <replicates>100</replicates>
 
+	<!-- Objective
+	
+	 Demonstrate various aspects of the simulator, and show how several traditional measurements
+	 for neutrality and effective population size are misleading in various selection environments.
+
+	 -->
+
     <simulation>
         <genome>
             <length>516</length>
