@@ -294,6 +294,8 @@
         <fitnessFunction>
 
             <purifyingFitness id="observed-neutral">
+            	<!-- fitness function which sets, for each site, all amino acids observed at least once
+            		 in the alignment neutral, and unobserved deleterious -->
             	<feature>CDS</feature>
                 <sites>1-172</sites>
                 <rank id="alignment">
