@@ -61,6 +61,8 @@ public class SimpleGenePool extends BaseGenePool {
             return newGenome;
         } else {
             genome.setFrequency(genome.getFrequency() + 1);
+            
+            fitnessFunction.updateLogFitness(genome);
 
             return genome;
         }
