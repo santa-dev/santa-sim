@@ -26,8 +26,8 @@
 			    <feature>CDS</feature>
 		        <sites>1-203</sites>
 		        <rank>
+		        	<order>chemical</order>
 		            <breakTies>random</breakTies>
-		            <probableSet>chemical</probableSet>
 		        </rank>
 		        <fitness>
 		            <lowFitness>0.9</lowFitness>

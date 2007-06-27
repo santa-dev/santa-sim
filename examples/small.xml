@@ -30,8 +30,9 @@
 				<feature>CDS</feature>
 			    <sites>1</sites>
 				<rank>
-					<breakTies>random</breakTies>
+					<order>observed</order>
 					<probableSet>2</probableSet>
+					<breakTies>random</breakTies>
 				</rank>
 				<fitness>
 					<lowFitness>0.1</lowFitness>

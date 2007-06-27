@@ -838,7 +838,7 @@ public class SimulatorParser {
 	}
 
 	public final static String CHEMICAL_CLASSES =
-			"VIL|"+ // Aliphatic
+			"AVIL|"+ // Aliphatic
 					"F|"+ // Phenylalanine
 					"CM|"+ // Sulphur
 					"G|"+ //Glycine
@@ -846,7 +846,7 @@ public class SimulatorParser {
 					"W|"+ // Tryptophan
 					"Y|"+ // Tyrosine
 					"P|"+   // Proline
-					"D|"+    // Acidic
+					"DE|"+    // Acidic
 					"NQ|"+    // Amide
 					"HKR";    // Basic
 
@@ -931,7 +931,6 @@ public class SimulatorParser {
                     }
                 }
 			} else if (e.getName().equals(PROBABLE_SET)) {
-				String v = e.getTextNormalize();
 			    probableNumber = parseInteger(e, 1, alphabet.getStateCount());
 			} else if (!e.getName().equals(BREAK_TIES)) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
@@ -963,17 +962,28 @@ public class SimulatorParser {
 		return result;
 	}
 
-	private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) {
+	private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) throws ParseException {
+        Set<Byte> completeCheck = new HashSet<Byte>();
 		List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
 
 		String[] sets = str.split("\\|");
 		for (String set : sets) {
 			Set<Byte> stateSet = new HashSet<Byte>();
 			for (int i = 0; i < set.length(); i++) {
-				stateSet.add(alphabet.parse(set.charAt(i)));
+				byte symbol = alphabet.parse(set.charAt(i));
+                stateSet.add(symbol);
+                if (completeCheck.contains(symbol)) {
+                    throw new ParseException("symbol '" + set.charAt(i) + "' occurs more than once in classes '" + str + "'");
+                }
+                completeCheck.add(symbol);
 			}
 			classes.add(stateSet);
 		}
+        
+        if (completeCheck.size() != alphabet.getStateCount()) {
+            throw new ParseException("classes are not complete: '" + str + "'");
+        }
+        
 		return classes;
 	}
 
