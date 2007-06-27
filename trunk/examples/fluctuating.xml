@@ -26,8 +26,8 @@
 				<feature>CDS</feature>
 				<sites>6-203</sites>
 				<rank>
+					<order>observed</order>
 					<breakTies>random</breakTies>
-                    <probableSet>20</probableSet>
                 </rank>
 				<fitness>
 					<values>1 0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1</values>
@@ -37,8 +37,8 @@
 				<feature>CDS</feature>
 				<sites>1-5</sites>
 				<rank>
-					<breakTies>random</breakTies>
-                    <probableSet>20</probableSet>
+					<order>observed</order>
+ 					<breakTies>random</breakTies>
 				</rank>
 				<fitness>
 					<values>1 0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1</values>

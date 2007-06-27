@@ -26,8 +26,8 @@
 	            <feature>CDS</feature>
                 <sites>1-166,168-333</sites>
                 <rank>
+                	<order>observed</order>
                     <breakTies>random</breakTies>
-                    <probableSet>1</probableSet>
                 </rank>
                 <fitness>
 	                <lowFitness>0.5</lowFitness>
@@ -38,9 +38,8 @@
 	            <feature>CDS</feature>
                 <sites>167</sites>
                 <rank>
-                    <breakTies>random</breakTies>
                     <order>VL</order>
-                    <probableSet>2</probableSet>
+                    <breakTies>random</breakTies>
                 </rank>
                 <fitness>
 	                <lowFitness>0.1</lowFitness>
