@@ -275,7 +275,7 @@ public class Population {
     }
 
     public double[][] getAlleleFrequencies(Feature feature, Set<Integer> sites) {
-        int[][] freqs = genePool.getStateFrequencies(feature);
+        int[][] freqs = genePool.getStateFrequencies(feature, sites);
         double[][] normalizedFreqs = new double[sites.size()][freqs[0].length];
         int i = 0;
         for (int site : sites) {

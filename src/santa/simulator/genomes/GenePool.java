@@ -3,6 +3,7 @@ package santa.simulator.genomes;
 import santa.simulator.fitness.FitnessFunction;
 
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 /**
@@ -24,7 +25,7 @@ public interface GenePool {
 
     int[][] getStateFrequencies();
 
-    int[][] getStateFrequencies(Feature feature);
+    int[][] getStateFrequencies(Feature feature, Set<Integer> sites);
 
     Sequence getConsensusSequence();
 
