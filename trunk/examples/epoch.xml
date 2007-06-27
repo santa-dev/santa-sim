@@ -27,8 +27,9 @@
 	                <feature>CDS</feature>
 	                <sites>1-201,203-279,281-434</sites>
                 	<rank>
-                		<breakTies>random</breakTies>
+                		<order>observed</order>
                         <probableSet>3</probableSet>
+                		<breakTies>random</breakTies>
                 	</rank>
                 	<fitness>
                 		<lowFitness>0.9</lowFitness>

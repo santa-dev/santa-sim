@@ -57,18 +57,20 @@ public class SimulatorParser {
 	private final static String VALUES = "values";
 	private static final String LOW_FITNESS = "lowFitness";
 	private final static String MINIMUM_FITNESS = "minimumFitness";
-	private static final String PROBABLE_SET = "probableSet";
-	private final static String PROBABLE_SET_CHEMICAL = "chemical";
-	private final static String PROBABLE_SET_HYDROPATHY = "hydropathy";
-	private final static String PROBABLE_SET_VOLUME = "volume";
-	private final static String PROBABLE_SET_OBSERVED = "observed";
 
-	private static final String RANK = "rank";
+    private static final String RANK = "rank";
+
+    private final static String ORDER = "order";
+	private final static String ORDER_CHEMICAL = "chemical";
+	private final static String ORDER_HYDROPATHY = "hydropathy";
+	private final static String ORDER_VOLUME = "volume";
+    private final static String ORDER_OBSERVED_FREQUENCY = "observed";
+    private static final String PROBABLE_SET = "probableSet";
+
 	private final static String SEQUENCES = "sequences";
 	private static final String BREAK_TIES = "breakTies";
 	private final static String BREAK_TIES_RANDOM = "random";
 	private final static String BREAK_TIES_ORDERED = "ordered";
-	private final static String ORDER = "order";
 	private final static String FLUCTUATE = "fluctuate";
 	private final static String FLUCTUATE_FITNESS_LIMIT = "fitnessLimit";
 	private final static String FLUCTUATE_RATE = "rate";
@@ -860,8 +862,8 @@ public class SimulatorParser {
 					"MILKR|"+ // 162-174
 					"FYW"; // 189-228
 
-	enum ProbableSetEnum {
-		CLASSES, OBSERVED, NUMBER;
+	enum OrderEnum {
+		CLASSES, OBSERVED, STATES;
 	};
 
 	private PurifyingFitnessRank parsePurifyingFitnessRank(Element element, FeatureAndSites factor) throws ParseException {
@@ -882,8 +884,8 @@ public class SimulatorParser {
 
 		List<Byte> stateOrder = null;
 		int probableNumber = -1;
-		ProbableSetEnum probableSet = null;
-		List<Set<Byte>> probableSetClasses = null;
+		OrderEnum order = null;
+		List<Set<Byte>> orderSetClasses = null;
 		boolean breakTiesRandom;
 
 		Element breakTiesElement = element.getChild(BREAK_TIES);
@@ -902,53 +904,56 @@ public class SimulatorParser {
 			Element e = (Element) o;
 
 			if (e.getName().equals(ORDER)) {
-				String orderString = e.getTextNormalize();
+				String v = e.getTextNormalize();
 
-				stateOrder = new ArrayList<Byte>();
+                if (v.equals(ORDER_OBSERVED_FREQUENCY)) {
+                    order = OrderEnum.OBSERVED;
+                } else if (v.equals(ORDER_CHEMICAL)) {
+                    order = OrderEnum.CLASSES;
+                    orderSetClasses = parseProbableSetClasses(alphabet, CHEMICAL_CLASSES);
+                } else if (v.equals(ORDER_HYDROPATHY)) {
+                    order = OrderEnum.CLASSES;
+                    orderSetClasses = parseProbableSetClasses(alphabet, HYDROPATHY_CLASSES);
+                } else if (v.equals(ORDER_VOLUME)) {
+                    order = OrderEnum.CLASSES;
+                    orderSetClasses = parseProbableSetClasses(alphabet, VOLUME_CLASSES);
+                } else {
+                    if (v.contains("|")) {
+                        order = OrderEnum.CLASSES;
+                        orderSetClasses = parseProbableSetClasses(alphabet, v);
+                    } else {
+                        order = OrderEnum.STATES;
+                        stateOrder = new ArrayList<Byte>();
 
-				for (int i = 0; i < orderString.length(); ++i) {
-					stateOrder.add(alphabet.parse(orderString.charAt(i)));
-				}
+                        for (int i = 0; i < v.length(); ++i) {
+                            stateOrder.add(alphabet.parse(v.charAt(i)));
+                        }
+                    }
+                }
 			} else if (e.getName().equals(PROBABLE_SET)) {
 				String v = e.getTextNormalize();
-				if (v.equals(PROBABLE_SET_OBSERVED)) {
-					probableSet = ProbableSetEnum.OBSERVED;
-				} else if (v.equals(PROBABLE_SET_CHEMICAL)) {
-					probableSet = ProbableSetEnum.CLASSES;
-					probableSetClasses = parseProbableSetClasses(alphabet, CHEMICAL_CLASSES);
-				} else if (v.equals(PROBABLE_SET_HYDROPATHY)) {
-					probableSet = ProbableSetEnum.CLASSES;
-					probableSetClasses = parseProbableSetClasses(alphabet, HYDROPATHY_CLASSES);
-				} else if (v.equals(PROBABLE_SET_VOLUME)) {
-					probableSet = ProbableSetEnum.CLASSES;
-					probableSetClasses = parseProbableSetClasses(alphabet, VOLUME_CLASSES);
-				} else {
-					try {
-						probableNumber = parseInteger(e, 1, alphabet.getStateCount());
-						probableSet = ProbableSetEnum.NUMBER;
-					} catch (ParseException pe) {
-						probableSet = ProbableSetEnum.CLASSES;
-						probableSetClasses = parseProbableSetClasses(alphabet, v);
-					}
-				}
+			    probableNumber = parseInteger(e, 1, alphabet.getStateCount());
 			} else if (!e.getName().equals(BREAK_TIES)) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
-		if (probableSet == null) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + PROBABLE_SET + ">");
+
+        if (order == null) {
+			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + ORDER + ">");
 		}
 
-		PurifyingFitnessRank result;
+		PurifyingFitnessRank result = null;
 
-		if (probableSet == ProbableSetEnum.CLASSES) {
-			result = new PurifyingFitnessRank(factor.feature, probableSetClasses, breakTiesRandom);
-		} else if (probableSet == ProbableSetEnum.NUMBER){
-			result = new PurifyingFitnessRank(factor.feature, probableNumber, breakTiesRandom);
-		} else if (probableSet == ProbableSetEnum.OBSERVED) {
-			result = new PurifyingFitnessRank(factor.feature, breakTiesRandom);
-		} else {
+        switch (order) {
+        case CLASSES:
+            result = new PurifyingFitnessRank(factor.feature, orderSetClasses, breakTiesRandom, probableNumber);
+            break;
+        case STATES:          
 			result = new PurifyingFitnessRank(factor.feature, stateOrder, probableNumber, breakTiesRandom);
+            break;
+        case OBSERVED:
+			result = new PurifyingFitnessRank(factor.feature, probableNumber, breakTiesRandom);
+            break;
 		}
 
 		if (element.getAttributeValue(ID) != null) {

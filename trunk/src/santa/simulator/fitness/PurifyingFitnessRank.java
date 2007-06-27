@@ -4,40 +4,26 @@ import santa.simulator.genomes.*;
 
 import java.util.*;
 
+/**
+ * Specifies a ranking of the 20 amino acids (or 4 bases), and defines the size
+ * of a probable set.
+ * 
+ * The rank may be derived from frequencies found in the sequences of the GenomeDescription,
+ * possibly using chemical properties, or simply specified.
+ * 
+ * Different configuration options:
+ *   <rank>
+ *      <breakTies>random|ordered</breakTies>
+ *      <order>observed|XYZ|chemical|hydropathy|volume</order>
+ *      <probableSet>x</probableSet> <!-- optional -->
+ *   </rank>
+ */
 public class PurifyingFitnessRank {
 
 	/**
-	 * Creates a ranking using the frequencies found in the sequences of the
-	 * GenomeDescription
-	 * @param feature
-	 * @param breakTiesRandomly
-	 */
-	public PurifyingFitnessRank(Feature feature,
-	                            boolean breakTiesRandomly) {
-
-		SequenceAlphabet alphabet = feature.getAlphabet();
-
-		rank = new byte[feature.getLength()][alphabet.getStateCount()];
-		probableSetSize = new byte[feature.getLength()];
-
-		List<byte[]> alignment = getAlignment(feature);
-
-		for (int i = 0; i < feature.getLength(); ++i) {
-			List<HistogramEntry> counts = createHistogram(alphabet, breakTiesRandomly, alignment, null, i);
-
-			for (int j = 0; j < alphabet.getStateCount(); ++j) {
-				rank[i][j] = counts.get(j).state;
-			}
-
-			probableSetSize[i] = 0;
-			for (int j = 0; j < counts.size(); ++j)
-				if (counts.get(j).count != 0)
-					probableSetSize[i] = (byte)(j+1);
-		}
-	}
-
-	/**
-	 * Creates a ranking based on a specified state order
+	 * Creates a ranking:
+     *   - based on a specified state order
+     *   - based on a specified probable set size
 	 */
 	public PurifyingFitnessRank(Feature feature,
 	                            List<Byte> stateOrder,
@@ -48,31 +34,44 @@ public class PurifyingFitnessRank {
 		int siteCount = feature.getLength();
 
 		if (probableSetSize < 1) {
-			probableSetSize = alphabet.getStateCount();
+			probableSetSize = stateOrder.size();
 		}
-		rank = new byte[siteCount][alphabet.getStateCount()];
+        rank = new byte[siteCount][alphabet.getStateCount()];
 		this.probableSetSize = new byte[siteCount];
 
 		for (int i = 0; i < siteCount; ++i) {
 			List<HistogramEntry> counts = createHistogram(alphabet, breakTiesRandomly, null, stateOrder, i);
 
-			for (int j = 0; j < alphabet.getStateCount(); ++j) {
-				rank[i][j] = counts.get(j).state;
+            for (int j = 0; j < stateOrder.size(); ++j) {
+                rank[i][j] = stateOrder.get(j);
+            }
+            
+			for (int j = stateOrder.size(); j < alphabet.getStateCount(); ++j) {
+                if (!stateOrder.contains(counts.get(j).state))
+                    rank[i][j] = counts.get(j).state;
 			}
 
 			this.probableSetSize[i] = (byte)probableSetSize;
 		}
 	}
 
+    /**
+     * Creates a ranking based on a partition of the alphabet into several classes
+     *   - a probable class is chosen as the class with the most frequent amino acid
+     *   - a probable set size is the size of the class
+     *   - the amino acids in both the probable set, and the non-probable set, or ranked
+     *     based on frequency.
+     */
 	public PurifyingFitnessRank(Feature feature,
 	                            List<Set<Byte>> stateClasses,
-	                            boolean breakTiesRandomly) {
+                                boolean breakTiesRandomly,
+                                int probableSetSize) {
 
 		SequenceAlphabet alphabet = feature.getAlphabet();
 		int siteCount = feature.getLength();
 
 		rank = new byte[siteCount][alphabet.getStateCount()];
-		probableSetSize = new byte[siteCount];
+		this.probableSetSize = new byte[siteCount];
 
         List<byte[]> alignment = getAlignment(feature);
 
@@ -81,11 +80,11 @@ public class PurifyingFitnessRank {
 
 			for (Set<Byte> stateClassSet : stateClasses) {
 				if (stateClassSet.contains(counts.get(0).state)) {
-					probableSetSize[i] = (byte)stateClassSet.size();
+					this.probableSetSize[i] = (byte)stateClassSet.size();
 
 					rank[i][0] = counts.get(0).state;
 					int u = 1;
-					int v = probableSetSize[i];
+					int v = this.probableSetSize[i];
 					for (int j = 1; j < alphabet.getStateCount(); j++) {
 						if (stateClassSet.contains(counts.get(j).state)) {
 							rank[i][u] = counts.get(j).state;
@@ -96,6 +95,9 @@ public class PurifyingFitnessRank {
 						}
 					}
 
+                    if (probableSetSize != -1)
+                        this.probableSetSize[i] = (byte) probableSetSize;
+                    
 					break;
 				}
 			}
@@ -103,6 +105,11 @@ public class PurifyingFitnessRank {
 		}
 	}
 
+    /**
+     * Creates a ranking:
+     *  - using the frequencies found in the sequences of the GenomeDescription.
+     *  - with probable set size given
+     */
 	public PurifyingFitnessRank(Feature feature,
 	                            int probableSetSize,
 	                            boolean breakTiesRandomly) {
@@ -122,7 +129,14 @@ public class PurifyingFitnessRank {
 				rank[i][j] = counts.get(j).state;
 			}
 
-			this.probableSetSize[i] = (byte)probableSetSize;
+            if (probableSetSize != -1) {
+                this.probableSetSize[i] = (byte)probableSetSize;
+            } else {
+                this.probableSetSize[i] = 0;
+                for (int j = 0; j < counts.size(); ++j)
+                    if (counts.get(j).count != 0)
+                        this.probableSetSize[i] = (byte)(j+1);
+            }
 		}
 	}
 

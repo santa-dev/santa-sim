@@ -40,12 +40,6 @@ public class SimulationEpoch {
 
         final int endGeneration = startGeneration + generationCount;
 
-	    System.err.println("Initial population:  fitness = " + population.getMeanFitness() +
-	            ", distance = " + population.getMeanDistance() +
-	            ", max freq = " + population.getMaxFrequency() +
-	            ", genepool size = " + genePool.getUniqueGenomeCount() +
-	            " (" + genePool.getUnusedGenomeCount() + " available)");
-
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
             EventLogger.setEpoch(generation);
 
@@ -54,6 +48,12 @@ public class SimulationEpoch {
             if (generation == startGeneration) {
                 // adapt to this epoch, and the new generation
                 population.updateAllFitnesses(fitnessFunction);
+                
+                System.err.println("Initial population:  fitness = " + population.getMeanFitness() +
+                        ", distance = " + population.getMeanDistance() +
+                        ", max freq = " + population.getMaxFrequency() +
+                        ", genepool size = " + genePool.getUniqueGenomeCount() +
+                        " (" + genePool.getUnusedGenomeCount() + " available)");                
             }
 
             population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
