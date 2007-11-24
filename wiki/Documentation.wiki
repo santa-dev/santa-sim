@@ -121,7 +121,7 @@ The overall format of a configuration file is like this:
 </santa>
 }}}
 
-== Genome description (<genome>) ==
+== Genome description: <genome> ==
 
 The genome description specifies the length and organization of the genome in different features. A feature corresponds to an open reading frame, and specifies either a nucleotide or transcribed amino acid sequence.
 
@@ -158,11 +158,11 @@ CCTCGGGTCACTCCTTGGCGAC
 </genome>
 }}}
 
-=== Genome length (<length>) ===
+=== Genome length: <length> ===
 
 The genome length, as a number of nucleotides.
 
-=== Genome feature (<feature>) ===
+=== Genome feature: <feature> ===
 
 A genome feature has three properties:
  * *<name>* A unique feature name.
@@ -171,11 +171,11 @@ A genome feature has three properties:
 
 By default, a nucleotide feature 'genome' is created, which represents the entire genome.
 
-=== Sequence or sequence alignment (<sequences>) ===
+=== Sequence or sequence alignment: <sequences> ===
 
 One or multiple full-genome sequences may be given, either in FASTA or _plain_ format. In the plain format, sequences are separated by a new-line.
 
-== Initial population (<population>) ==
+== Initial population: <population> ==
 
 The initial population is described by a population size and a way to create its genomes. Note that currently, the population size is kept constant throughout the entire simulation.
 
@@ -187,11 +187,11 @@ An example of a population block:
 </population>
 }}}
 
-=== Population size (<populationSize>) ===
+=== Population size: <populationSize> ===
 
 The number of individuals in the population. Simulation speed is roughly _N_ log _N_ to the population size _N_. *TODO: check this!*
 
-=== Inoculum (<inoculum>) ===
+=== Inoculum: <inoculum> ===
 
 Defines how the genomes for all individuals in the initial population are initialized. The <inoculum> block is optional and 'none' is the default value.
 
@@ -201,11 +201,11 @@ Possible values are:
  * *consensus*: initialize the genome of all individuals to the consensus sequence for the sequences provided in the <sequences> block within the <genome> description.
  * *random*: initialize the genome of all individuals to the same sequence, randomly  chosen from the sequences provided in the <sequences> block within the <genome> description.
 
-== Fitness function (<fitnessFunction>) ==
+== Fitness function: <fitnessFunction> ==
 
 This block defines a fitness function. The fitness function may be described as one or more factors, which are multiplied to obtain the fitness for a single individual.
 
-The simplest fitnessFunction is empty, and defines a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
+An empty <fitnessFunction> block defines a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
 
 Each factor may apply to all or some sites within a genome feature.
 
@@ -246,6 +246,6 @@ This may be overridden by:
  * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, 'genome' is assumed.
  * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
 
-=== Purifying fitness function (<purifyingFitness>) ===
+=== Purifying fitness function: <purifyingFitness> ===
 
 This fitness function defines a purifying selection.
