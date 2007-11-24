@@ -187,7 +187,42 @@ An example of a population block:
 
 === Population size (<populationSize>) ===
 
-The number of individuals in the population. Simulation speed is roughly _N_log_N_ (?) to the population size _N_.
+The number of individuals in the population. Simulation speed is roughly _N_log_N_ to the population size _N_. *TODO: check this!*
 
 === Inoculum (<inoculum>) ===
 
+Defines how the genomes for all individuals in the initial population are initialized. The <inoculum> block is optional and 'none' is the default value.
+
+Possible values are:
+ * *none*: initialize the genome of all individuals to a default nucleotide sequence which is poly-adenine ('AAA...')
+ * *all*: initialize the genome of each individual by sampling, with replacement, from all sequences provided in the <sequences> block within the <genome> description.
+ * *consensus*: initialize the genome of all individuals to the consensus sequence for the sequences provided in the <sequences> block within the <genome> description.
+ * *random*: initialize the genome of all individuals to the same sequence, randomly  chosen from the sequences provided in the <sequences> block within the <genome> description.
+
+== Fitness function (<fitnessFunction>) ==
+
+This block defines a fitness function. The fitness function may be described as one or more factors, which are multiplied to obtain the fitness for a single individual.
+
+The simplest fitnessFunction is empty, and defines a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
+
+Each factor may apply to all or some sites within a genome feature.
+
+An example of a fitness function block is:
+
+{{{
+<fitnessFunction>
+    <purifyingFitness>
+        <feature>ABC protein</feature>
+        <sites>1-166,168-333</sites>
+        <rank>
+       	    <order>observed</order>
+            <breakTies>random</breakTies>
+        </rank>
+        <fitness>
+	    <lowFitness>0.5</lowFitness>
+            <minimumFitness>0.5</minimumFitness>
+        </fitness>
+    </purifyingFitness>
+    
+</fitnessFunction>
+}}}
