@@ -4,16 +4,20 @@
 
 This is an internal page used to keep track of things to be done to get a first release out.
 
+= Name =
+
+We need a good name (*Beth*, *Andrew*, *Koen*)
+
 = Code =
 
- * Update schema (Andrew?)
- * Phylogeny sampling (Andrew)
- * Package, license, INSTALL.txt, README.txt, ... (Koen)
- * Examples (Koen)
+ * Update schema (*Andrew?*)
+ * Phylogeny sampling (*Andrew*)
+ * Package, license, INSTALL.txt, README.txt, ... (*Koen*)
+ * Examples (*Koen*)
 
 = Documentation =
 
-List of things we may not forget to document (Koen)
+List of things we may not forget to document (*Koen*)
 
  * Parameters
  * Replicates
@@ -24,3 +28,8 @@ List of things we may not forget to document (Koen)
  * Complicated purifying fitness function
  * Format of sequence alignments (FASTA or plain)
  * Variables in samplers (%g, %r, %s)
+
+= Manuscript =
+
+ * *Koen* is updating the Introduction, Implementation & Methods section to reflect the current features.
+ * Waiting for simulations and results until the phylogeny is implemented.
