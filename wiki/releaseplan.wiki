@@ -1,0 +1,26 @@
+#summary TODO list for a beta release
+
+= Introduction =
+
+This is an internal page used to keep track of things to be done to get a first release out.
+
+= Code =
+
+ * Update schema [Andrew?]
+ * Phylogeny sampling [Andrew]
+ * Package, license, INSTALL.txt, README.txt, ... [Koen]
+ * Examples [Koen]
+
+= Documentation =
+
+List of things we may not forget to document [Koen]
+
+ * Parameters
+ * Replicates
+ * Genome description (length, features, 'example' sequences)
+ * Sampling schedule, event logger, and default (mutator, replicator & fitness function)
+ * Epochs which may override any of (mutator, replicator & fitness function)
+ * Fitness factor id's and ref's, and why ?
+ * Complicated purifying fitness function
+ * Format of sequence alignments (FASTA or plain)
+ * Variables in samplers (%g, %r, %s)
