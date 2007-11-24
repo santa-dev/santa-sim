@@ -46,123 +46,115 @@ java -jar .../santa.jar -generations=10000 -selection=0.1 config.xml
 
 = Configuration XML File =
 
-The basic format of a configuration file is like this:
+All properties of a simulation, including definition of the initial population, fitness functions, replication and mutation operators, and sampling information, is defined a single XML file.
+
+== Overall format ==
+
+The overall format of a configuration file is like this:
 
 {{{
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
 
-    <!--
-      How many times should the simulation be run ?
-
-      Optional (default = 1)
-      -->
+    <!-- How many times should the simulation be run ?
+         Optional (default = 1) -->
     <replicates>100</replicates>
 
-    <!--
-      The configuration for a single simulation run
-      -->
     <simulation>
-
-        <!--
-          Description of the genome: properties, example sequences, and features
-          -->
+        <!-- Description of the genome: properties, example sequences, and features -->
         <genome>
             ...
         </genome>
 
-        <!--
-          Definition of the initial population
-          -->
+        <!-- Definition of the initial population -->
         <population>
             ...
         </population>
 
-        <!--
-          Description of the (default) fitness function
-          -->
+        <!-- Description of the (default) fitness function -->
         <fitnessFunction>
             ...
         </fitnessFunction>
 
-        <!--
-          Description of the (default) replicator
-          -->
+        <!-- Description of the (default) replicator -->
         <replicator>
             ...
         </replicator>
 
-        <!--
-          Description of the (default) mutator
-          -->
+        <!-- Description of the (default) mutator -->
         <mutator>
             ...
         </mutator>
 
-        <!--
-          Definition of a first epoch
-          -->
+        <!-- Definition of a first epoch -->
         <epoch>
-            <!--
-              A name for the epoch (used only to display simulator progress)
-              -->
+            <!-- A name for the epoch (used only to display simulator progress) -->
             <name>epoch 1</name>
 
-            <!--
-              Duration of the epoch in number of generations
-              -->
+            <!-- Duration of the epoch in number of generations -->
             <generations>1000</generations>
 
-            <!--
-              Optionally, override the default fitness function, replicator, or mutator
-              -->
+            <!-- Optionally, override the default fitness function, replicator, or mutator -->
             <fitnessFunction>
-                 ....
+                 ...
             </fitnessFunction>
 
             <replicator>
-                 ....
+                 ...
             </replicator>
 
             <mutator>
-                 ....
+                 ...
             </mutator>
         </epoch>
 
-        <!--
-          Definition of a second, ... epoch
-          -->
+        <!-- Optionally, additional epochs... -->
         <epoch>
             ...
         </epoch>
 
+        <!-- Define when and how information must be sampled from the simulation -->
+        <samplingSchedule>
+            ...
+        </samplingSchedule>
     </simulation>
-
 </santa>
 }}}
 
-{{{
-              <!--
-               Nucleotide length of the genome
-               -->
-              <length>21</length>
+== Genome description (<genome>) ==
 
-              <!--
-               One or multiple sequences.
-               These sequences may be used:
-                - creating an initial population, and for
-                - configuring purifying selection to reflect observed states
-               -->
-	      <sequences>
+The genome description specifies the length and organization of the genome in different features. A feature corresponds to an open reading frame, and specifies either a nucleotide or transcribed amino acid sequence.
+
+The organization of the genome in features allows to later define different modes of selection that act on different parts of the genome.
+
+In addition, a single sequence or sequence alignment may be specified in the genome block, which may be used to seed the initial population (if configured so in the <population> block), or to configure a purifying selection to reflect observed states (if configured so in a <purifyingFitness> block).
+
+An example of a genome block:
+
+{{{
+<genome>
+    <!-- Nucleotide length of the genome -->
+    <length>21</length>
+
+    <!-- One or more features -->
+    <feature>
+       <name>ABC protein</name>
+       <type>aminoAcid</type>
+       <coordinates>1-21</coordinates>
+    </feature>
+
+    <feature>
+       <name>nucs</name>
+       <type>nucleotide</type>
+       <coordinates>1-10</coordinates>
+    </feature>
+
+    <!-- A single sequence, or a sequence alignment (optional). -->
+    <sequences>
 >seq1
 CCTCAGGTCACTCTTTGGCAAC
 >seq2
 CCTCGGGTCACTCCTTGGCGAC
-	      </sequences>
-	      <feature>
-		   <name>CDS</name>
-		   <type>aminoAcid</type>
-		   <coordinates>1-1302</coordinates>
-	      </feature>
-         </genome>
+    </sequences>
+</genome>
 }}}
