@@ -187,7 +187,7 @@ An example of a population block:
 
 === Population size (<populationSize>) ===
 
-The number of individuals in the population. Simulation speed is roughly _N_log_N_ to the population size _N_. *TODO: check this!*
+The number of individuals in the population. Simulation speed is roughly _N_ log _N_ to the population size _N_. *TODO: check this!*
 
 === Inoculum (<inoculum>) ===
 
@@ -207,13 +207,15 @@ The simplest fitnessFunction is empty, and defines a neutral fitness function: t
 
 Each factor may apply to all or some sites within a genome feature.
 
-An example of a fitness function block is:
+An example of a fitness function block (with two factors) is:
 
 {{{
 <fitnessFunction>
+
+    <!-- purifying fitness on all amino acids in ABC protein, except for the 4th -->    
     <purifyingFitness>
         <feature>ABC protein</feature>
-        <sites>1-166,168-333</sites>
+        <sites>1-3,5-7</sites>
         <rank>
        	    <order>observed</order>
             <breakTies>random</breakTies>
@@ -223,6 +225,11 @@ An example of a fitness function block is:
             <minimumFitness>0.5</minimumFitness>
         </fitness>
     </purifyingFitness>
-    
+
+    <!-- age dependent fitness on alleles corresponding to the entire DE protein -->    
+    <ageDependentFitness>
+	<feature>DE protein</feature>
+	<declineRate>0.005</declineRate>
+    </ageDependentFitness>
 </fitnessFunction>
 }}}
