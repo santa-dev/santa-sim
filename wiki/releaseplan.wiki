@@ -17,7 +17,7 @@ We need a good name (*Beth*, *Andrew*, *Koen*)
 
 = Documentation =
 
-List of things we may not forget to document (*Koen*)
+List of things we may not forget to document in the on-line reference manual (*Koen*)
 
  * Parameters
  * Replicates
