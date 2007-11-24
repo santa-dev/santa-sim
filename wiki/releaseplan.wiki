@@ -31,5 +31,5 @@ List of things we may not forget to document (*Koen*)
 
 = Manuscript =
 
- * *Koen* is updating the Introduction, Implementation & Methods section to reflect the current features.
+ * *Koen* is updating the Introduction, Implementation & Methods section to reflect the current features (OK).
  * Waiting for simulations and results until the phylogeny is implemented.
