@@ -133,23 +133,22 @@ An example of a genome block:
 
 {{{
 <genome>
-    <!-- Nucleotide length of the genome -->
     <length>21</length>
 
-    <!-- One or more features -->
+    <!-- protein from a forward ORF that spans the entire genome -->
     <feature>
        <name>ABC protein</name>
        <type>aminoAcid</type>
        <coordinates>1-21</coordinates>
     </feature>
 
-    <feature>
-       <name>nucs</name>
-       <type>nucleotide</type>
-       <coordinates>1-10</coordinates>
+    <!-- protein from a backward ORF spanning sites 11 to 19 --> 
+    <feature>    
+       <name>DE protein</name>
+       <type>aminoAcid</type>
+       <coordinates>19-11</coordinates>
     </feature>
 
-    <!-- A single sequence, or a sequence alignment (optional). -->
     <sequences>
 >seq1
 CCTCAGGTCACTCTTTGGCAAC
@@ -158,3 +157,37 @@ CCTCGGGTCACTCCTTGGCGAC
     </sequences>
 </genome>
 }}}
+
+=== Genome length (<length>) ===
+
+The genome length, as a number of nucleotides.
+
+=== Genome feature (<feature>) ===
+
+A genome feature has three properties:
+ * *<name>* A unique feature name.
+ * *<type>* Must be 'nucleotide' or 'aminoAcid'. This is used to define if a fitness factor acts on nucleotides or amino acids. Note that for aminoAcid, the length of the feature needs to be a multiple of 3.
+ * *<coordinates>* Defines how the feature is created from nucleotides in the genome. The format is a comma-separated list of fragments. Each fragment is defined by a single nucleotide site, or a range (begin-end). A range where begin is larger than end is read in the opposite direction. 
+
+=== Sequence or sequence alignment (<sequences>) ===
+
+One or multiple full-genome sequences may be given, either in FASTA or _plain_ format. In the plain format, sequences are separated by a new-line.
+
+== Initial population (<population>) ==
+
+The initial population is described by a population size and a way to create its genomes. Note that currently, the population size is kept constant throughout the entire simulation.
+
+An example of a population block:
+{{{
+<population>
+    <populationSize>10000</populationSize>
+    <inoculum>all</inoculum>
+</population>
+}}}
+
+=== Population size (<populationSize>) ===
+
+The number of individuals in the population. Simulation speed is roughly _N_log_N_ (?) to the population size _N_.
+
+=== Inoculum (<inoculum>) ===
+
