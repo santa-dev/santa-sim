@@ -4,4 +4,34 @@
 
 = Invocation =
 
+== Windows platforms ==
+
+The simplest way to run a simulation configured in config.xml is to invoke the following command from the DOS prompt, from within the directory where your config.xml file is located:
+
+`java -jar c:\path\to\santa.jar config.xml`
+
+Replace `c:\path\to\santa.jar` with the path where you extracted the santa.jar file.
+
+In some cases it may be necessary to configure the JVM to use more memory:
+
+`java -Xmx512M -jar c:\path\to\santa.jar config.xml`
+
+== UNIX, MacOS X, or Linux ==
+
+Change directory to where your config.xml file is located, and invoke using:
+
+`$ java -jar /path/to/santa.jar config.xml`
+
+Replace `/path/to/santa.jar` with the path where you extracted the santa.jar file.
+
+In some cases it may be necessary to configure the JVM to use more memory:
+
+`$ java -Xmx512M -jar /path/to/santa.jar config.xml`
+
+== Command-line options ==
+
+You can bind values to parameters used in your config file. For example to bind the value '10000' to parameter 'generations', and '0.1' to parameter 'selection' use:
+
+`java -jar .../santa.jar -generations=10000 -selection=0.1 config.xml`
+
 = Configuration XML File =
