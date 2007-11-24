@@ -52,9 +52,117 @@ The basic format of a configuration file is like this:
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
 
-    <!-- Optional: how many times should the simulation be run ? -->
+    <!--
+      How many times should the simulation be run ?
+
+      Optional (default = 1)
+      -->
     <replicates>100</replicates>
 
+    <!--
+      The configuration for a single simulation run
+      -->
+    <simulation>
+
+        <!--
+          Description of the genome: properties, example sequences, and features
+          -->
+        <genome>
+            ...
+        </genome>
+
+        <!--
+          Definition of the initial population
+          -->
+        <population>
+            ...
+        </population>
+
+        <!--
+          Description of the (default) fitness function
+          -->
+        <fitnessFunction>
+            ...
+        </fitnessFunction>
+
+        <!--
+          Description of the (default) replicator
+          -->
+        <replicator>
+            ...
+        </replicator>
+
+        <!--
+          Description of the (default) mutator
+          -->
+        <mutator>
+            ...
+        </mutator>
+
+        <!--
+          Definition of a first epoch
+          -->
+        <epoch>
+            <!--
+              A name for the epoch (used only to display simulator progress)
+              -->
+            <name>epoch 1</name>
+
+            <!--
+              Duration of the epoch in number of generations
+              -->
+            <generations>1000</generations>
+
+            <!--
+              Optionally, override the default fitness function, replicator, or mutator
+              -->
+            <fitnessFunction>
+                 ....
+            </fitnessFunction>
+
+            <replicator>
+                 ....
+            </replicator>
+
+            <mutator>
+                 ....
+            </mutator>
+        </epoch>
+
+        <!--
+          Definition of a second, ... epoch
+          -->
+        <epoch>
+            ...
+        </epoch>
+
+    </simulation>
 
 </santa>
+}}}
+
+{{{
+              <!--
+               Nucleotide length of the genome
+               -->
+              <length>21</length>
+
+              <!--
+               One or multiple sequences.
+               These sequences may be used:
+                - creating an initial population, and for
+                - configuring purifying selection to reflect observed states
+               -->
+	      <sequences>
+>seq1
+CCTCAGGTCACTCTTTGGCAAC
+>seq2
+CCTCGGGTCACTCCTTGGCGAC
+	      </sequences>
+	      <feature>
+		   <name>CDS</name>
+		   <type>aminoAcid</type>
+		   <coordinates>1-1302</coordinates>
+	      </feature>
+         </genome>
 }}}
