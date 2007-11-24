@@ -248,4 +248,21 @@ This may be overridden by:
 
 === Purifying fitness function: <purifyingFitness> ===
 
-This fitness function defines a purifying selection.
+This fitness function defines a purifying selection, which acts on each site individually.     
+
+For each site, the different possible states (4 nucleotides or 20 amino acids) are ordered according to a <rank> definition. This ordering ranks the states from the fittest to most deleterious state. Subsequently, all but the fittest states are assigned a negative selection coefficient, according to a <fitness> definition.
+
+Optionally, following a random process, the selection coefficients for a fit and less fit state is swapped, creating a fitness function which drives a non-stationary positive selection.
+
+*<rank>*
+
+ * <order>: how the states should be ordered:
+   Possible values are:
+   * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
+   * *chemical*, *hydropathy* or *volume*, or a custom partition: states are ordered so that the states in the partition which contains the most frequent state in the <sequences> alignment defined in the <genome> description preceed the other states. A custom partition of the states is defined by listing them separated by '|'. 
+
+ * <breakTies>: if two states should be given the same rank, is the tie broken randomly ('random') or should the state order be used ('ordered').
+
+*<fitness>*
+
+*<fluctuate>*
