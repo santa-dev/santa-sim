@@ -256,13 +256,29 @@ Optionally, following a random process, the selection coefficients for a fit and
 
 *<rank>*
 
+Within the rank, it is specified how the possible states at each site are ordered from most fit to most deleterious, and defines a set of _probable_ states.
+
  * <order>: how the states should be ordered:
    Possible values are:
    * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
-   * *chemical*, *hydropathy* or *volume*, or a custom partition: states are ordered so that the states in the partition which contains the most frequent state in the <sequences> alignment defined in the <genome> description preceed the other states. A custom partition of the states is defined by listing them separated by '|'. 
+   * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
+   * *hydropathy*: idem but using a partition based on hydrophathy: IVLFCMAW|GTSYPH|DEKNQR.
+   * *volume*: idem but using a partition based on volume: GAS|CDPNT|EVQH|MILKR|FYW
+   * A custom partition of the states, which is defined by listing them separated by '|' (like the partitions defined above).
 
- * <breakTies>: if two states should be given the same rank, is the tie broken randomly ('random') or should the state order be used ('ordered').
+ * <breakTies>: configure whether ties should be broken randomly ('random') or should the state order be used ('ordered') when two states would be given the same rank.
+
+ * <probableSet>: when defining <fitness> as a piece-wise linear model in terms of <lowFitness> and <minimumFitness>, only the _probable_ states are not assigned the minimum fitness.
+
+   Unless the amount of probable states are overridden here, it is defined, for each site, based on the order used: when order is _observed_, only the states with frequency non-zero frequency are _probable_; when order is based on a partition, only those states in the set with the most frequent state are _probable_.
 
 *<fitness>*
 
+Fitness values are assigned to the ranked states, either by specifying a list of fitness values or based on a piece wise linear model:
+
+ * <values>: A list of 4 (for a nucleotide feature) or 20 values (for an amino acid feature), separated by spaces.
+
+ * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
+
 *<fluctuate>*
+
