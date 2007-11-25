@@ -472,7 +472,7 @@ same nucleotide or amino acid sequence at the selected sites.
 The frequency dependent fitness function assigns a fitness to an
 individual based on the frequency of the allele in the population, and
 assigns a lower fitness to alleles that occur more frequently, using
-the formula: f = 1 - _p_^_shape_^, where p is the frequency (between 0 and
+the formula: f = 1 - _p_ _^shape^_, where p is the frequency (between 0 and
 1) of the allele in the population, and _shape_ a parameter that
 controls how severe more frequent alleles are punished.
 
@@ -488,7 +488,10 @@ An example of a frequency dependent fitness function:
 The fitness function is controlled by a single parameter:
 
  * *<shape>*: a positive number indicating how severe more frequent
-    alleles are punished: 1 for linear, 2 for quandratic, ...
+    alleles are punished: e.g. 0.5 for square root function, 1 for
+    linear, 2 for quandratic, ... (*TODO show figure relating
+    prevalence to fitness for different values of the shape parameter
+    *).
 
 === Age dependent fitness function: <ageDependentFitness> ===
 
