@@ -550,6 +550,7 @@ nucleotide site) that recombination occurs, switching between these
 two template genomes.
 
 An example of a recombinant replicator:
+
 {{{
 <replicator>
     <recombinantReplicator>
@@ -559,10 +560,25 @@ An example of a recombinant replicator:
 </replicator>
 }}}
 
+The parameters are:
+
  * *<dualInfectionProbability>* : the probability that a child genome should be derived from two parent genomes, using the recombination process, instead of being derived from a single parent genome using clonal replication.
  * *<recombinationProbability>* : the probability per site that a recombination event happens while copying the genome.
 
 == The mutation operator: <mutator> ==
+
+The mutation operator describes the probability that mistakes are made
+while creating a new genome.
+
+=== The nucleotide mutation operator: <nucleotideMutator> ===
+
+The nucleotide mutation operator describes the mutation process as a
+Poisson process that acts on individual sites. A mutation bias may be
+specified either by specifying a bias for transitions versus
+transversions, or by specifying the relative rate for all 12 possible
+mutations.
+
+An example of a nucleotide mutation operator:
 
 {{{
 <mutator>
@@ -572,6 +588,12 @@ An example of a recombinant replicator:
     </nucleotideMutator>
 </mutator>
 }}}
+
+The parameters are:
+
+* *<mutationRate>*: the probability for a mutation to occur (per site and per generation)
+* *<transitionBias>*: a relative preference for transitions versus transversions
+* *<rates>*: a white-space separated list of 12 relative rates: A->C A->G A->, CtoA, CtoG, CtoT, GtoA, GtoC, GtoT, TtoA 
 
 == Getting simulation results: <samplingSchedule> ==
 
