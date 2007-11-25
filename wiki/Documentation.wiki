@@ -127,9 +127,9 @@ The genome description specifies the length and organization of the genome in di
 
 The organization of the genome in features allows to later define different modes of selection that act on different parts of the genome.
 
-In addition, a single sequence or sequence alignment may be specified in the genome block, which may be used to seed the initial population (if configured so in the <population> block), or to configure a purifying selection to reflect observed states (if configured so in a <purifyingFitness> block).
+In addition, a single sequence or sequence alignment may be specified in the genome definition, which may be used to seed the initial population (if configured so in the <population> definition), or to configure a purifying selection to reflect observed states (if configured so in a <purifyingFitness> definition).
 
-An example of a genome block:
+An example of a genome definition:
 
 {{{
 <genome>
@@ -179,7 +179,7 @@ One or multiple full-genome sequences may be given, either in FASTA or _plain_ f
 
 The initial population is described by a population size and a way to create its genomes. Note that currently, the population size is kept constant throughout the entire simulation.
 
-An example of a population block:
+An example of a population definition:
 {{{
 <population>
     <populationSize>10000</populationSize>
@@ -193,23 +193,23 @@ The number of individuals in the population. Simulation speed is roughly _N_ log
 
 === Inoculum: <inoculum> ===
 
-Defines how the genomes for all individuals in the initial population are initialized. The <inoculum> block is optional and 'none' is the default value.
+Defines how the genomes for all individuals in the initial population are initialized. The <inoculum> definition is optional and 'none' is the default value.
 
 Possible values are:
  * *none*: initialize the genome of all individuals to a default nucleotide sequence which is poly-adenine ('AAA...')
- * *all*: initialize the genome of each individual by sampling, with replacement, from all sequences provided in the <sequences> block within the <genome> description.
- * *consensus*: initialize the genome of all individuals to the consensus sequence for the sequences provided in the <sequences> block within the <genome> description.
- * *random*: initialize the genome of all individuals to the same sequence, randomly  chosen from the sequences provided in the <sequences> block within the <genome> description.
+ * *all*: initialize the genome of each individual by sampling, with replacement, from all sequences provided in the <sequences> within the <genome> description.
+ * *consensus*: initialize the genome of all individuals to the consensus sequence for the sequences provided in the <sequences> within the <genome> description.
+ * *random*: initialize the genome of all individuals to the same sequence, randomly  chosen from the sequences provided in the <sequences> within the <genome> description.
 
 == Fitness function: <fitnessFunction> ==
 
-This block defines a fitness function. The fitness function may be described as one or more factors, which are multiplied to obtain the fitness for a single individual.
+This defines a fitness function. The fitness function is provided as one or more factors, each acting on certain genomic nucleotide or amino acid features, which are multiplied to compute the fitness for a single individual.
 
-An empty <fitnessFunction> block defines a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
+An empty <fitnessFunction> definition corresponds to a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
 
-Each factor may apply to all or some sites within a genome feature.
+Each factor applies to a selection of sites within a single genome feature.
 
-An example of a fitness function block (with two factors) is:
+An example of a fitness function block (with two factors):
 
 {{{
 <fitnessFunction>
@@ -254,7 +254,7 @@ For each site, the different possible states (4 nucleotides or 20 amino acids) a
 
 Optionally, following a random process, the selection coefficients for a fit and less fit state is swapped, creating a fitness function which drives a non-stationary positive selection.
 
-An example of a fitness function block (with two factors) is:
+An example of a purifying fitness function block:
 
 {{{
 <purifyingFitness>
@@ -271,7 +271,7 @@ An example of a fitness function block (with two factors) is:
 </purifyingFitness>
 }}}
 
-*<rank>*
+==== <rank> ====
 
 Within the rank, it is specified how the possible states at each site are ordered from most fit to most deleterious, and defines a set of _probable_ states.
 
@@ -289,7 +289,7 @@ Within the rank, it is specified how the possible states at each site are ordere
 
    Unless the amount of probable states are overridden here, it is defined, for each site, based on the order used: when order is _observed_, only the states with frequency non-zero frequency are _probable_; when order is based on a partition, only those states in the set with the most frequent state are _probable_.
 
-*<fitness>*
+==== <fitness> ====
 
 Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
 
@@ -297,6 +297,8 @@ Fitness values are assigned to the ranked states, either by specifying a list of
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
-*<fluctuate>*
+==== <fluctuate> ====
+
+
 
 
