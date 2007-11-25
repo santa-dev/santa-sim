@@ -659,7 +659,7 @@ population at a given generation. It has the following properties:
 === Sampling statistics: <statistics> ===
 
 The statistics sampler dumps some common population genetic statistics:
- * *mean\_diversity*: 
+ * *mean`_`diversity*: 
 
 === Sampling allele frequencies: <alleleFrequency> ===
 
