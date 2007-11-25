@@ -6,7 +6,9 @@
 
 == Windows platforms ==
 
-The simplest way to run a simulation configured in config.xml is to invoke the following command from the DOS prompt, from within the directory where your config.xml file is located:
+The simplest way to run a simulation configured in config.xml is to
+invoke the following command from the DOS prompt, from within the
+directory where your config.xml file is located:
 
 {{{
 java -jar c:\path\to\santa.jar config.xml
@@ -38,7 +40,9 @@ $ java -Xmx512M -jar /path/to/santa.jar config.xml
 
 == Command-line options ==
 
-You can bind values to parameters used in your config file. For example to bind the value '10000' to parameter 'generations', and '0.1' to parameter 'selection' use:
+You can bind values to parameters used in your config file. For
+example to bind the value '10000' to parameter 'generations', and
+'0.1' to parameter 'selection' use:
 
 {{{
 java -jar .../santa.jar -generations=10000 -selection=0.1 config.xml
@@ -46,7 +50,9 @@ java -jar .../santa.jar -generations=10000 -selection=0.1 config.xml
 
 = Configuration XML File =
 
-All properties of a simulation, including definition of the initial population, fitness functions, replication and mutation operators, and sampling information, is defined a single XML file.
+All properties of a simulation, including definition of the initial
+population, fitness functions, replication and mutation operators, and
+sampling information, is defined a single XML file.
 
 == Overall format ==
 
@@ -123,11 +129,20 @@ The overall format of a configuration file is like this:
 
 == Genome description: <genome> ==
 
-The genome description specifies the length and organization of the genome in different features. A feature corresponds to an open reading frame, and specifies either a nucleotide or transcribed amino acid sequence.
+The genome description specifies the length and organization of the
+genome in different features. A feature corresponds to an open reading
+frame, and specifies either a nucleotide or transcribed amino acid
+sequence.
 
-The organization of the genome in features allows to later define different modes of selection that act on different parts of the genome.
+The organization of the genome in features allows to later define
+different modes of selection that act on different parts of the
+genome.
 
-In addition, a single sequence or sequence alignment may be specified in the genome definition, which may be used to seed the initial population (if configured so in the <population> definition), or to configure a purifying selection to reflect observed states (if configured so in a <purifyingFitness> definition).
+In addition, a single sequence or sequence alignment may be specified
+in the genome definition, which may be used to seed the initial
+population (if configured so in the <population> definition), or to
+configure a purifying selection to reflect observed states (if
+configured so in a <purifyingFitness> definition).
 
 An example of a genome definition:
 
@@ -166,18 +181,31 @@ The genome length, as a number of nucleotides.
 
 A genome feature has three properties:
  * *<name>* A unique feature name.
- * *<type>* Must be 'nucleotide' or 'aminoAcid'. This is used to define if a fitness factor acts on nucleotides or amino acids. Note that for aminoAcid, the length of the feature needs to be a multiple of 3.
- * *<coordinates>* Defines how the feature is created from nucleotides in the genome. The format is a comma-separated list of fragments. Each fragment is defined by a single nucleotide site, or a range (begin-end). A range where begin is larger than end is read in the opposite direction. 
+
+ * *<type>* Must be 'nucleotide' or 'aminoAcid'. This is used to
+    define if a fitness factor acts on nucleotides or amino
+    acids. Note that for aminoAcid, the length of the feature needs to
+    be a multiple of 3.
+
+ * *<coordinates>* Defines how the feature is created from nucleotides
+    in the genome. The format is a comma-separated list of
+    fragments. Each fragment is defined by a single nucleotide site,
+    or a range (begin-end). A range where begin is larger than end is
+    read in the opposite direction.
 
 By default, a nucleotide feature _genome_ is created, which represents the entire genome.
 
 === Sequence or sequence alignment: <sequences> ===
 
-One or multiple full-genome sequences may be given, either in FASTA or _plain_ format. In the plain format, sequences are separated by a new-line.
+One or multiple full-genome sequences may be given, either in FASTA or
+_plain_ format. In the plain format, sequences are separated by a
+new-line.
 
 == Initial population: <population> ==
 
-The initial population is described by a population size and a way to create its genomes. Note that currently, the population size is kept constant throughout the entire simulation.
+The initial population is described by a population size and a way to
+create its genomes. Note that currently, the population size is kept
+constant throughout the entire simulation.
 
 An example of a population definition:
 {{{
@@ -189,11 +217,14 @@ An example of a population definition:
 
 === Population size: <populationSize> ===
 
-The number of individuals in the population. Simulation speed is roughly _N_ log _N_ to the population size _N_. *TODO: check this!*
+The number of individuals in the population. Simulation speed is
+roughly _N_ log _N_ to the population size _N_. *TODO: check this!*
 
 === Inoculum: <inoculum> ===
 
-Defines how the genomes for all individuals in the initial population are initialized. The <inoculum> definition is optional and 'none' is the default value.
+Defines how the genomes for all individuals in the initial population
+are initialized. The <inoculum> definition is optional and 'none' is
+the default value.
 
 Possible values are:
  * *none*: initialize the genome of all individuals to a default nucleotide sequence which is poly-adenine ('AAA...')
@@ -203,9 +234,14 @@ Possible values are:
 
 == Fitness function: <fitnessFunction> ==
 
-This defines a fitness function. The fitness function is provided as one or more factors, each acting on certain genomic nucleotide or amino acid features, which are multiplied to compute the fitness for a single individual.
+This defines a fitness function. The fitness function is provided as
+one or more factors, each acting on certain genomic nucleotide or
+amino acid features, which are multiplied to compute the fitness for a
+single individual.
 
-An empty <fitnessFunction> definition corresponds to a neutral fitness function: the fitness of all individuals is the same, regardless of their genome sequence.
+An empty <fitnessFunction> definition corresponds to a neutral fitness
+function: the fitness of all individuals is the same, regardless of
+their genome sequence.
 
 Each factor applies to a selection of sites within a single genome feature.
 
@@ -239,7 +275,9 @@ An example of a fitness function block (with two factors):
 
 === Feature and sites ===
 
-Each factor is applied to a selection of sites in a genome feature. By default, this feature is the _genome_ feature (nucleotides of the entire genome), and the sites are all sites in the feature.
+Each factor is applied to a selection of sites in a genome feature. By
+default, this feature is the _genome_ feature (nucleotides of the
+entire genome), and the sites are all sites in the feature.
 
 This may be overridden by:
 
@@ -250,7 +288,9 @@ This may be overridden by:
 
 This fitness function defines the fitness for each state, and acts on each site individually.
 
-All that is needed to define an empirical fitness function is a list of fitness values for each of the possible states (20 for an amino acid feature, 4 for a nucleotide feature).
+All that is needed to define an empirical fitness function is a list
+of fitness values for each of the possible states (20 for an amino
+acid feature, 4 for a nucleotide feature).
 
 An example of an empirical fitness function:
 
@@ -291,13 +331,26 @@ To define an empirical fitness function, you need to define:
 
 === Purifying fitness function: <purifyingFitness> ===
 
-This fitness function defines a purifying selection, which acts on each site individually.
+This fitness function defines a purifying selection, which acts on
+each site individually.
 
-For each site, it assigns a fitness to the different states, between 1 and 0, where '1' corresponds to the most fit state, and '0' to a lethal state. The definition is modular: you need to define a way to rank the states from most to least fit, and separately define a way to assign the fitness values to this rank. To reflect that some states are completely lethal, the ranking also defines a _probable_ set of states. 
+For each site, it assigns a fitness to the different states, between 1
+and 0, where '1' corresponds to the most fit state, and '0' to a
+lethal state. The definition is modular: you need to define a way to
+rank the states from most to least fit, and separately define a way to
+assign the fitness values to this rank. To reflect that some states
+are completely lethal, the ranking also defines a _probable_ set of
+states.
 
-For each site, the different possible states (4 nucleotides or 20 amino acids) are ordered according to a <rank> definition and these states are then assigned a fitness, according to a <fitness> definition.
+For each site, the different possible states (4 nucleotides or 20
+amino acids) are ordered according to a <rank> definition and these
+states are then assigned a fitness, according to a <fitness>
+definition.
 
-Optionally, in a <fluctuate> block, you may define a process which, at random time points, makes another state the most fit. In this way, the purifying fitness function may be used to cause a non-stationary positive selection.
+Optionally, in a <fluctuate> block, you may define a process which, at
+random time points, makes another state the most fit. In this way, the
+purifying fitness function may be used to cause a non-stationary
+positive selection.
 
 An example of a purifying fitness function block:
 
@@ -318,7 +371,9 @@ An example of a purifying fitness function block:
 
 ==== States ranked from most fit to most deleterious: <rank> ====
 
-Within the rank, it is specified how the possible states at each site are ordered from most fit to most deleterious, and defines a set of _probable_ states.
+Within the rank, it is specified how the possible states at each site
+are ordered from most fit to most deleterious, and defines a set of
+_probable_ states.
 
  * <order>: how the states should be ordered:
    Possible values are:
@@ -333,23 +388,37 @@ Within the rank, it is specified how the possible states at each site are ordere
 
  * <probableSet>: when defining <fitness> as a piece-wise linear model in terms of <lowFitness> and <minimumFitness>, only the _probable_ states are not assigned the minimum fitness.
 
-   Unless the amount of probable states are overridden here, it is defined, for each site, based on the order used: when order is _observed_, only the states with frequency non-zero frequency are _probable_; when order is based on a partition, only those states in the set with the most frequent state are _probable_.
+   Unless the amount of probable states are overridden here, it is
+   defined, for each site, based on the order used: when order is
+   _observed_, only the states with frequency non-zero frequency are
+   _probable_; when order is based on a partition, only those states
+   in the set with the most frequent state are _probable_.
 
 ==== Fitness values assigned to states: <fitness> ====
 
-Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
+Fitness values are assigned to the ranked states, either by specifying
+a list of fitness values (with <values>) or based on a piece wise
+linear model (with <lowFitness> and <minimumFitness>):
 
- * <values>: A decreasing list of relative fitness vlaues (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by white-space (space or new-lines). The most fit should be assigned a value of 1.
+ * <values>: A decreasing list of relative fitness vlaues (4 for a
+   nucleotide feature or 20 for an amino acid feature), all between 0
+   and 1, separated by white-space (space or new-lines). The most fit
+   should be assigned a value of 1.
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
 ==== Creating a non-stationary positive selection: <fluctuate> ====
 
-A purifying fitness function can be transformed into a non-stationary positive selection, by making, at random times, another state the most fit state (i.e. the state with fitness '1'). This process is controlled by two parameters:
+A purifying fitness function can be transformed into a non-stationary
+positive selection, by making, at random times, another state the most
+fit state (i.e. the state with fitness '1'). This process is
+controlled by two parameters:
 
  * <rate>: The rate of a Bernouilli process, which is the probability to fluctuate, per site, per generation.
 
- * <fitnessLimit>: Only consider states with at least this fitness to become the new fittest state (default value is 0, allowing any state to become the new fittest state).
+ * <fitnessLimit>: Only consider states with at least this fitness to
+   become the new fittest state (default value is 0, allowing any
+   state to become the new fittest state).
 
 === Frequency dependent fitness function: <frequencyDependentFitness> ===
 
