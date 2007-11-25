@@ -285,6 +285,10 @@ An example of an empirical fitness function:
 </empiricalFitness>
 }}}
 
+An empirical fitness function requires you to define the values:
+
+ * <values>: A list of fitness values (4 for a nucleotide feature or 20 for an amino acid feature), separated by white-space (space or new-lines), which corresponds to the states in alphabetical order.
+
 === Purifying fitness function: <purifyingFitness> ===
 
 This fitness function defines a purifying selection, which acts on each site individually.
@@ -335,7 +339,7 @@ Within the rank, it is specified how the possible states at each site are ordere
 
 Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
 
- * <values>: A decreasing list of relative fitness vlaues (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by spaces. The most fit should be assigned a value of 1.
+ * <values>: A decreasing list of relative fitness vlaues (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by white-space (space or new-lines). The most fit should be assigned a value of 1.
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
