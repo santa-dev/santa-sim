@@ -169,7 +169,7 @@ A genome feature has three properties:
  * *<type>* Must be 'nucleotide' or 'aminoAcid'. This is used to define if a fitness factor acts on nucleotides or amino acids. Note that for aminoAcid, the length of the feature needs to be a multiple of 3.
  * *<coordinates>* Defines how the feature is created from nucleotides in the genome. The format is a comma-separated list of fragments. Each fragment is defined by a single nucleotide site, or a range (begin-end). A range where begin is larger than end is read in the opposite direction. 
 
-By default, a nucleotide feature 'genome' is created, which represents the entire genome.
+By default, a nucleotide feature _genome_ is created, which represents the entire genome.
 
 === Sequence or sequence alignment: <sequences> ===
 
@@ -239,11 +239,11 @@ An example of a fitness function block (with two factors):
 
 === Feature and sites ===
 
-Each factor is applied to a selection of sites in a genome feature. By default, this feature is the 'genome' feature (nucleotides of the entire genome), and the sites are all sites in the feature.
+Each factor is applied to a selection of sites in a genome feature. By default, this feature is the _genome_ feature (nucleotides of the entire genome), and the sites are all sites in the feature.
 
 This may be overridden by:
 
- * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, 'genome' is assumed.
+ * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, _genome_ is assumed.
  * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
 
 === Purifying fitness function: <purifyingFitness> ===
@@ -271,7 +271,7 @@ An example of a purifying fitness function block:
 </purifyingFitness>
 }}}
 
-==== <rank> ====
+==== States ranked from most fit to most deleterious: <rank> ====
 
 Within the rank, it is specified how the possible states at each site are ordered from most fit to most deleterious, and defines a set of _probable_ states.
 
@@ -289,7 +289,7 @@ Within the rank, it is specified how the possible states at each site are ordere
 
    Unless the amount of probable states are overridden here, it is defined, for each site, based on the order used: when order is _observed_, only the states with frequency non-zero frequency are _probable_; when order is based on a partition, only those states in the set with the most frequent state are _probable_.
 
-==== <fitness> ====
+==== Fitness values assigned to states: <fitness> ====
 
 Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
 
@@ -297,7 +297,7 @@ Fitness values are assigned to the ranked states, either by specifying a list of
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
-==== <fluctuate> ====
+==== Creating a non-stationary positive selection: <fluctuate> ====
 
 
 
