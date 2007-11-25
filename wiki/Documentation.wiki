@@ -758,9 +758,9 @@ For example:
 ...
 
     <fitnessFunction>
-        <purifyingFitness id="observed-neutral">
         <!-- fitness function which sets, for each site, all amino acids observed at least once
              in the alignment neutral, and unobserved deleterious -->
+        <purifyingFitness id="observed-neutral">
             <feature>protein ABC</feature>
             <rank id="alignment">
                 <order>observed</order>
@@ -809,3 +809,19 @@ The attributes _id_ and _ref_ may be used for the following objects:
 
 === Using run-time parameters ===
 
+The configuration file supports the use of parameters, for which
+values may be defined at run time. This may be done for all numberic
+configuration parameters. Parameters must start with a '$' sign.
+
+For example, the following population block allows you to specify the
+actualy population size as a run-time parameter, and would be useful
+to study the effect of population size on the simulation, by running
+the simulator with different values for the parameter
+_populationSize_.
+
+{{{
+<population>
+    <populationSize>$populationSize</populationSize>
+    <inoculum>all</inoculum>
+</population>
+}}}
