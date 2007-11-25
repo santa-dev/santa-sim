@@ -246,13 +246,54 @@ This may be overridden by:
  * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, _genome_ is assumed.
  * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
 
+=== Emperical fitness function: <empiricalFitness> ===
+
+This fitness function defines the fitness for each state, and acts on each site individually.
+
+All that is needed to define an empirical fitness function is a list of fitness values for each of the possible states (20 for an amino acid feature, 4 for a nucleotide feature).
+
+An example of an empirical fitness function:
+
+{{{
+<empiricalFitness>
+    <feature>ABC protein</feature>
+    <sites>4</sites>
+
+    <!-- assign fitness 1 to K, 0.85 to N, and 0.01 to all other amino acids -->
+    <values>
+      0.01 <!-- A -->
+      0.01 <!-- C -->
+      0.01 <!-- D -->
+      0.01 <!-- E -->
+      0.01 <!-- F-->
+      0.01 <!-- G -->
+      0.01 <!-- H -->
+      0.01 <!-- I -->
+      1    <!-- K -->
+      0.01 <!-- L -->
+      0.01 <!-- M -->
+      0.85 <!-- N -->
+      0.01 <!-- P -->
+      0.01 <!-- Q -->
+      0.01 <!-- R -->
+      0.01 <!-- S -->
+      0.01 <!-- T -->
+      0.01 <!-- V -->
+      0.01 <!-- W -->
+      0.01 <!-- Y -->
+    </values>
+</empiricalFitness>
+}}}
+
 === Purifying fitness function: <purifyingFitness> ===
 
-This fitness function defines a purifying selection, which acts on each site individually.     
+This fitness function defines a purifying selection, which acts on each site individually.
 
-For each site, the different possible states (4 nucleotides or 20 amino acids) are ordered according to a <rank> definition. This ordering ranks the states from the fittest to most deleterious state. Subsequently, all but the fittest states are assigned a negative selection coefficient, according to a <fitness> definition.
+For each site, it assigns a fitness to the different states, between 1 and 0, where '1' corresponds to the most fit state, and '0' to a lethal state. The definition is modular: you need to define a way to rank the states from most to least fit, and separately define a way to assign the fitness values to this rank. To reflect that some states are completely lethal, the ranking also defines a _probable_ set of states. 
 
-Optionally, following a random process, the selection coefficients for a fit and less fit state is swapped, creating a fitness function which drives a non-stationary positive selection.
+For each site, the different possible states (4 nucleotides or 20 amino acids) are ordered according to a <rank> definition and these states are then assigned a fitness, according to a <fitness> definition.
+
+Optionally, in a <fluctuate> block, you may define a process which, at random time points, makes another state the most fit. In this way, the purifying fitness function may be used to cause a non-stationary positive selection.
 
 An example of a purifying fitness function block:
 
@@ -278,10 +319,11 @@ Within the rank, it is specified how the possible states at each site are ordere
  * <order>: how the states should be ordered:
    Possible values are:
    * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
-   * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
+   * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (in no particular order, and separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
    * *hydropathy*: idem but using a partition based on hydrophathy: IVLFCMAW|GTSYPH|DEKNQR.
    * *volume*: idem but using a partition based on volume: GAS|CDPNT|EVQH|MILKR|FYW
    * A custom partition of the states, which is defined by listing them separated by '|' (like the partitions defined above).
+   * A custom order of _probable_ states, which is defined by listing the _probable_ states from most fit to least fit. (e.g. `QDNTP`) 
 
  * <breakTies>: configure whether ties should be broken randomly ('random') or should the state order be used ('ordered') when two states would be given the same rank.
 
@@ -293,12 +335,21 @@ Within the rank, it is specified how the possible states at each site are ordere
 
 Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
 
- * <values>: A list of 4 (for a nucleotide feature) or 20 relative fitness values (for an amino acid feature), all between 0 and 1, separated by spaces.
+ * <values>: A decreasing list of relative fitness vlaues (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by spaces. The most fit should be assigned a value of 1.
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
 ==== Creating a non-stationary positive selection: <fluctuate> ====
 
+A purifying fitness function can be transformed into a non-stationary positive selection, by making, at random times, another state the most fit state (i.e. the state with fitness '1'). This process is controlled by two parameters:
 
+ * <rate>: The rate of a Bernouilli process, which is the probability to fluctuate, per site, per generation.
 
+ * <fitnessLimit>: Only consider states with at least this fitness to become the new fittest state (default value is 0, allowing any state to become the new fittest state).
+
+=== Frequency dependent fitness function: <frequencyDependentFitness> ===
+
+=== Age dependent fitness function: <ageDependentFitness> ===
+
+=== Exposure dependent fitness function: <exposureDependentFitness> ===
 
