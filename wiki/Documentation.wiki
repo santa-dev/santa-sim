@@ -621,6 +621,7 @@ Example of an epoch:
         </ageDependentFitness>
     </fitnessFunction>
 </epoch>
+}}}
 
 Specific properties of an epoch are:
 
