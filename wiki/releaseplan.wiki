@@ -15,20 +15,6 @@ We need a good name (*Beth*, *Andrew*, *Koen*)
  * Package, license, INSTALL.txt, README.txt, ... (*Koen*)
  * Examples (*Koen*)
 
-= Documentation =
-
-List of things we may not forget to document in the on-line reference manual (*Koen*)
-
- * Parameters
- * Replicates
- * Genome description (length, features, 'example' sequences)
- * Sampling schedule, event logger, and default (mutator, replicator & fitness function)
- * Epochs which may override any of (mutator, replicator & fitness function)
- * Fitness factor id's and ref's, and why ?
- * Complicated purifying fitness function
- * Format of sequence alignments (FASTA or plain)
- * Variables in samplers (%g, %r, %s)
-
 = Manuscript =
 
  * *Koen* is updating the Introduction, Implementation & Methods section to reflect the current features (OK).
