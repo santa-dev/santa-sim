@@ -593,8 +593,76 @@ The parameters are:
 
  * *<mutationRate>*: the probability for a mutation to occur (per site and per generation)
  * *<transitionBias>*: a relative preference for transitions versus transversions
- * *<rates>*: a white-space separated list of 12 relative rates: A->C A->G A->T C->A C->G C->T G->A G->C G->T T->A T->C T->G
+ * *<rates>*: instead of specifying a transition bias, you can provide a white-space separated list of all 12 relative rates: A->C A->G A->T C->A C->G C->T G->A G->C G->T T->A T->C T->G
 
 == Getting simulation results: <samplingSchedule> ==
+
+The sampling schedule lists one or more _samplers_, which each extract
+a particular type of information from the simulation, and dumps it to
+a file.
+
+An example of a sampling schedule which defines three samplers:
+{{{
+<samplingSchedule>
+
+    <!-- Sample 100 sequences from the population, every 1000 generations,
+         in NEXUS format. -->
+    <sampler>
+        <atFrequency>1000</atFrequency>
+        <fileName>alignment_%r.nex</fileName>
+        <alignment>
+            <sampleSize>100</sampleSize>
+            <format>NEXUS</format>
+            <label>seq_%g_%s</label>
+        </alignment>
+    </sampler>
+
+    <!-- Sample the frequency of all 20 states at two amino acid sites,
+         every 1000 generations. -->
+    <sampler>
+        <atFrequency>1000</atFrequency>
+        <fileName>aa_frequencies.csv</fileName>
+        <alleleFrequency>
+	     <feature>protein AB</feature>
+             <sites>1,2</sites>
+        </alleleFrequency>
+    </sampler>
+
+    <!-- Sample population statistics, every generation --> 
+    <sampler>
+        <atFrequency>1</atFrequency>
+        <fileName>stats.csv</fileName>
+        <statistics />
+    </sampler>
+</samplingSchedule>
+}}}
+
+The following properties are common for every sampler:
+
+ * *<atFrequency>*: define the sampler to run at a certain frequency, every so many generations
+ * *<atGeneration>*: define the sampler to run once at a specific generation
+ * *<fileName>*: dumps its result in a given filename. The special string '%r' will be replaced with the current replicate, to avoid that each replicate writes in the same value, each time erasing the results of the previous run.
+
+=== Sampling alignments: <alignment> ===
+
+The alignment sampler samples whole genome alignments from the
+population at a given generation. It has the following properties:
+
+ * *<sampleSize>*: the amount of genomes to be sampled
+ * *<format>*: the format in which the alignments need to be stored:
+   * *NEXUS*: NEXUS format
+   * *FASTA*: FASTA format
+   * *XML*: a custom XML format
+ * *<label>*: the label for each sequence. The special strings '%r', '%g', and '%s' are substituted with respectively the replicate index, the generation number, and the index of the sequence within the sample.
+ * *<consensus>* (*true* or *false*): whether a consensus sequence should be synthesized and stored, rather than the full alignment (false by default).
+
+=== Sampling statistics: <statistics> ===
+
+The statistics sampler dumps some common population genetic statistics:
+ * *mean\_diversity*: 
+
+=== Sampling allele frequencies: <alleleFrequency> ===
+
+=== Sampling genealogies: <tree> ===
 
 == Reusing previously defined objects ==
