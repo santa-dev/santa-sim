@@ -508,7 +508,70 @@ The fitness function is controlled by a single parameter:
 
 == The replication operator: <replicator> ==
 
+The replicator defines how a child genome is created given one or more
+parent genomes.
+
+Two different replication operators are available. A clonal replicator
+copies the genome from a single parent. A recombinant replicator
+considers that occasionally a child genome is derived from two
+parents, where the child genome sequence is created by copying the
+genome of one or the other parent, switching between these two genomes
+at random sites. In both cases, occasional mistakes during the copying
+are modelled by the mutation operator <mutator>.
+
+=== Clonal replication: <cloncalReplicator> ===
+
+The clonal replicator simply copies the genome of a single parent. It
+has no parameters that need to be defined.
+
+An example of a clonal replicator:
+
+{{{
+<replicator>
+    <cloncalReplicator />
+</replicator>
+}}}
+
+=== Recombinant replication: <recombinantReplicator> ===
+
+The recombinant replicator considers that occasionally a child genome
+is derived from two parents, where the child genome sequence is
+created by copying the genome of one or the other parent, switching
+between these two genomes at random sites.
+
+The operator is configured using two parameters. The first parameter
+(<dualInfectionProbability>) defines the probability that
+recombination takes place, and its name is based on the replication
+model of HIV where recombination can only occur when a single cell was
+infected simultaneously by two different virions, in this way
+packaging two different genomes in a single virion. The second
+parameter (<recombinationProbability>) defines the probability (per
+nucleotide site) that recombination occurs, switching between these
+two template genomes.
+
+An example of a recombinant replicator:
+{{{
+<replicator>
+    <recombinantReplicator>
+        <dualInfectionProbability>0.05</dualInfectionProbability>
+	<recombinationProbability>0.001</recombinationProbability>
+    </recombinantReplicator>
+</replicator>
+}}}
+
+ * *<dualInfectionProbability>* : the probability that a child genome should be derived from two parent genomes, using the recombination process, instead of being derived from a single parent genome using clonal replication.
+ * *<recombinationProbability>* : the probability per site that a recombination event happens while copying the genome.
+
 == The mutation operator: <mutator> ==
+
+{{{
+<mutator>
+    <nucleotideMutator>
+        <mutationRate>1.0E-4</mutationRate>
+        <transitionBias>2.0</transitionBias>
+    </nucleotideMutator>
+</mutator>
+}}}
 
 == Getting simulation results: <samplingSchedule> ==
 
