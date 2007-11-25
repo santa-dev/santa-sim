@@ -374,8 +374,7 @@ Within the rank, it is specified how the possible states at each site
 are ordered from most fit to most deleterious, and defines a set of
 _probable_ states.
 
- * *<order>*: how the states should be ordered:
-   Possible values are:
+ * *<order>*: how the states should be ordered. Possible values are:
    * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
    * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (in no particular order, and separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
    * *hydropathy*: idem but using a partition based on hydrophathy: IVLFCMAW|GTSYPH|DEKNQR.
