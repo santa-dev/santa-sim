@@ -285,7 +285,7 @@ An example of an empirical fitness function:
 </empiricalFitness>
 }}}
 
-An empirical fitness function requires you to define the values:
+To define an empirical fitness function, you need to define:
 
  * <values>: A list of fitness values (4 for a nucleotide feature or 20 for an amino acid feature), separated by white-space (space or new-lines), which corresponds to the states in alphabetical order.
 
@@ -352,6 +352,9 @@ A purifying fitness function can be transformed into a non-stationary positive s
  * <fitnessLimit>: Only consider states with at least this fitness to become the new fittest state (default value is 0, allowing any state to become the new fittest state).
 
 === Frequency dependent fitness function: <frequencyDependentFitness> ===
+
+This fitness function assigns a fitness for the selected features
+sites, which depends on the frequency of the allele defined by the
 
 === Age dependent fitness function: <ageDependentFitness> ===
 
