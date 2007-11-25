@@ -437,8 +437,7 @@ The fitness function is controlled by a single parameter:
 
  * *<shape>*: a positive number indicating how severe more frequent alleles are punished: e.g. 0.5 for square root function, 1 for linear, 2 for quandratic, ...
 
-*TODO: show figure relating prevalence to fitness for different values
- of the shape parameter.*
+*TODO: show figure relating prevalence to fitness for different values of the shape parameter.*
 
 === Age dependent fitness function: <ageDependentFitness> ===
 
@@ -469,8 +468,7 @@ The fitness function is controlled by a single parameter:
 
  * *<declineRate>*: a positive number indicating how severe older alleles are punished in terms of fitness.
 
-*TODO: show figure relating age to fitness for different values
- of the declineRate parameter.*
+*TODO: show figure relating age to fitness for different values of the declineRate parameter.*
 
 === Exposure dependent fitness function: <exposureDependentFitness> ===
 
@@ -506,8 +504,7 @@ The fitness function is controlled by a single parameter:
 
  * *<penalty>*: a positive number indicating how severe more exposed alleles are punished in terms of fitness.
 
-*TODO: show figure relating exposure to fitness for different values
- of the penalty parameter.*
+*TODO: show figure relating exposure to fitness for different values of the penalty parameter.*
 
 == The replication operator: <replicator> ==
 
