@@ -419,9 +419,10 @@ same nucleotide or amino acid sequence at the selected sites.
 The frequency dependent fitness function assigns a fitness to an
 individual based on the frequency of the allele in the population, and
 assigns a lower fitness to alleles that occur more frequently, using
-the formula: f = 1 - _p_ _^shape^_, where p is the frequency (between 0 and
-1) of the allele in the population, and _shape_ a parameter that
-controls how severe more frequent alleles are punished.
+the formula: f = 1 - _p_ _^shape^_, where p is the frequency (between
+0 and 1) of the allele in the population, and _shape_ a parameter that
+controls how severe more frequent alleles are punished in terms of
+fitness.
 
 An example of a frequency dependent fitness function:
 
@@ -434,9 +435,24 @@ An example of a frequency dependent fitness function:
 
 The fitness function is controlled by a single parameter:
 
- * *<shape>*: a positive number indicating how severe more frequent alleles are punished: e.g. 0.5 for square root function, 1 for linear, 2 for quandratic, ... (*TODO show figure relating prevalence to fitness for different values of the shape parameter *).
+ * *<shape>*: a positive number indicating how severe more frequent alleles are punished: e.g. 0.5 for square root function, 1 for linear, 2 for quandratic, ...
+   (*TODO: show figure relating prevalence to fitness for different values of the shape parameter*).
 
 === Age dependent fitness function: <ageDependentFitness> ===
+
+This fitness function (as well as the frequency and exposure dependent
+fitness functions), considers unique _alleles_ formed by the selected
+feature sites. Individuals have a same allele if they have exactly the
+same nucleotide or amino acid sequence at the selected sites.
+
+The frequency dependent fitness function assigns a fitness to an
+individual based on the age of the allele in the population (since it
+last appeared), and assigns a lower fitness to alleles that have been
+continuously present in the population for a longer time, using the
+formula: f = _e_ _^-declineRate a^_, where a is the age (in number of
+generations) of the allele in the population, and _declineRate_ a
+parameter that controls how severe older alleles are punished in terms
+of fitness.
 
 === Exposure dependent fitness function: <exposureDependentFitness> ===
 
