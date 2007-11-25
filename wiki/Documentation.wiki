@@ -254,6 +254,23 @@ For each site, the different possible states (4 nucleotides or 20 amino acids) a
 
 Optionally, following a random process, the selection coefficients for a fit and less fit state is swapped, creating a fitness function which drives a non-stationary positive selection.
 
+An example of a fitness function block (with two factors) is:
+
+{{{
+<purifyingFitness>
+    <feature>ABC protein</feature>
+    <sites>1-3,5-7</sites>
+    <rank>
+        <order>chemical</order>
+        <breakTies>ordered</breakTies>
+    </rank>
+    <fitness>
+	<lowFitness>0.5</lowFitness>
+        <minimumFitness>0.1</minimumFitness>
+    </fitness>
+</purifyingFitness>
+}}}
+
 *<rank>*
 
 Within the rank, it is specified how the possible states at each site are ordered from most fit to most deleterious, and defines a set of _probable_ states.
