@@ -659,10 +659,35 @@ population at a given generation. It has the following properties:
 === Sampling statistics: <statistics> ===
 
 The statistics sampler dumps some common population genetic statistics:
- * *mean`_`diversity*: 
+ * *mean`_`diversity*: mean nucleotide sequence diversity (estimated from a sample of 10 random sequences)
+ * *max`_`diversity*: maximum nucleotide sequence diversity (estimated from a sample of 10 random sequences)
+ * *min`_`fitness*: fitness of individual with lowest fitness
+ * *mean`_`fitness*: mean fitness of population
+ * *max`_`fitness*: fitness of individual with highest fitness
+ * *max`_`frequency*: frequency of most common genome in the population 
+ * *mean`_`distance*: mean sequence distance of population from initial population (ignoring mutation saturation, thus an overestimate)
+
+The statistics sampler does not require any configuration.
 
 === Sampling allele frequencies: <alleleFrequency> ===
 
+This sampler will output the frequency of each possible state at each
+given site in a nucleotide or amino acid feature. 
+
+By default, the feature is the _genome_ feature (nucleotides of the
+entire genome), and the sites are all sites in the feature.
+
+This may be overridden by:
+
+ * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, _genome_ is assumed.
+
+ * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
+
 === Sampling genealogies: <tree> ===
 
+*TODO*
+
 == Reusing previously defined objects ==
+
+ * <rank>
+ * <fitnessFunction> factor
