@@ -563,6 +563,7 @@ An example of a recombinant replicator:
 The parameters are:
 
  * *<dualInfectionProbability>* : the probability that a child genome should be derived from two parent genomes, using the recombination process, instead of being derived from a single parent genome using clonal replication.
+
  * *<recombinationProbability>* : the probability per site that a recombination event happens while copying the genome.
 
 == The mutation operator: <mutator> ==
@@ -592,7 +593,9 @@ An example of a nucleotide mutation operator:
 The parameters are:
 
  * *<mutationRate>*: the probability for a mutation to occur (per site and per generation)
+
  * *<transitionBias>*: a relative preference for transitions versus transversions
+
  * *<rates>*: instead of specifying a transition bias, you can provide a white-space separated list of all 12 relative rates: A->C A->G A->T C->A C->G C->T G->A G->C G->T T->A T->C T->G
 
 == A simulation epoch: <epoch> ==
@@ -626,6 +629,7 @@ Example of an epoch:
 Specific properties of an epoch are:
 
  * *<name>*: an epoch name (useful for tracking simulation progress)
+
  * *<generations>*: the duration of the epoch in number of generations
 
 == Getting simulation results: <samplingSchedule> ==
@@ -673,7 +677,9 @@ An example of a sampling schedule which defines three samplers:
 The following properties are common for every sampler:
 
  * *<atFrequency>*: define the sampler to run at a certain frequency, every so many generations
+
  * *<atGeneration>*: define the sampler to run once at a specific generation
+
  * *<fileName>*: dumps its result in a given filename. The special string '%r' will be replaced with the current replicate, to avoid that each replicate writes in the same value, each time erasing the results of the previous run.
 
 === Sampling alignments: <alignment> ===
@@ -682,11 +688,14 @@ The alignment sampler samples whole genome alignments from the
 population at a given generation. It has the following properties:
 
  * *<sampleSize>*: the amount of genomes to be sampled
+
  * *<format>*: the format in which the alignments need to be stored:
    * *NEXUS*: NEXUS format
    * *FASTA*: FASTA format
    * *XML*: a custom XML format
+
  * *<label>*: the label for each sequence. The special strings '%r', '%g', and '%s' are substituted with respectively the replicate index, the generation number, and the index of the sequence within the sample.
+
  * *<consensus>* (*true* or *false*): whether a consensus sequence should be synthesized and stored, rather than the full alignment (false by default).
 
 === Sampling statistics: <statistics> ===
@@ -795,6 +804,7 @@ For example:
 
 The attributes _id_ and _ref_ may be used for the following objects: 
  * <rank>
+
  * any <fitnessFunction> factor
 
 === Using run-time parameters ===
