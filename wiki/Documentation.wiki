@@ -193,7 +193,8 @@ A genome feature has three properties:
     or a range (begin-end). A range where begin is larger than end is
     read in the opposite direction.
 
-By default, a nucleotide feature _genome_ is created, which represents the entire genome.
+By default, a nucleotide feature _genome_ is created, which represents
+the entire genome.
 
 === Sequence or sequence alignment: <sequences> ===
 
@@ -227,10 +228,21 @@ are initialized. The <inoculum> definition is optional and 'none' is
 the default value.
 
 Possible values are:
- * *none*: initialize the genome of all individuals to a default nucleotide sequence which is poly-adenine ('AAA...')
- * *all*: initialize the genome of each individual by sampling, with replacement, from all sequences provided in the <sequences> within the <genome> description.
- * *consensus*: initialize the genome of all individuals to the consensus sequence for the sequences provided in the <sequences> within the <genome> description.
- * *random*: initialize the genome of all individuals to the same sequence, randomly  chosen from the sequences provided in the <sequences> within the <genome> description.
+
+ * *none*: initialize the genome of all individuals to a default
+    nucleotide sequence which is poly-adenine ('AAA...')
+
+ * *all*: initialize the genome of each individual by sampling, with
+    replacement, from all sequences provided in the <sequences> within
+    the <genome> description.
+
+ * *consensus*: initialize the genome of all individuals to the
+    consensus sequence for the sequences provided in the <sequences>
+    within the <genome> description.
+
+ * *random*: initialize the genome of all individuals to the same
+    sequence, randomly chosen from the sequences provided in the
+    <sequences> within the <genome> description.
 
 == Fitness function: <fitnessFunction> ==
 
@@ -281,8 +293,13 @@ entire genome), and the sites are all sites in the feature.
 
 This may be overridden by:
 
- * *<feature>*: the name of one of the defined features in the <genome> description. If omitted, _genome_ is assumed.
- * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
+ * *<feature>*: the name of one of the defined features in the
+    <genome> description. If omitted, _genome_ is assumed.
+
+ * *<sites>*: A comma separated list of single sites or site ranges
+    within the feature. Note that if the feature is an amino acid
+    feature, this refers to amino acid sites, while if the feature is
+    a nucleotide feature, this refers to nucleotide sites.
 
 === Emperical fitness function: <empiricalFitness> ===
 
@@ -327,7 +344,9 @@ An example of an empirical fitness function:
 
 To define an empirical fitness function, you need to define:
 
- * <values>: A list of fitness values (4 for a nucleotide feature or 20 for an amino acid feature), separated by white-space (space or new-lines), which corresponds to the states in alphabetical order.
+ * *<values>*: A list of fitness values (4 for a nucleotide feature or
+    20 for an amino acid feature), separated by white-space (space or
+    new-lines), which corresponds to the states in alphabetical order.
 
 === Purifying fitness function: <purifyingFitness> ===
 
@@ -375,18 +394,39 @@ Within the rank, it is specified how the possible states at each site
 are ordered from most fit to most deleterious, and defines a set of
 _probable_ states.
 
- * <order>: how the states should be ordered:
+ * *<order>*: how the states should be ordered:
    Possible values are:
-   * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
-   * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (in no particular order, and separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
-   * *hydropathy*: idem but using a partition based on hydrophathy: IVLFCMAW|GTSYPH|DEKNQR.
-   * *volume*: idem but using a partition based on volume: GAS|CDPNT|EVQH|MILKR|FYW
-   * A custom partition of the states, which is defined by listing them separated by '|' (like the partitions defined above).
-   * A custom order of _probable_ states, which is defined by listing the _probable_ states from most fit to least fit. (e.g. `QDNTP`) 
 
- * <breakTies>: configure whether ties should be broken randomly ('random') or should the state order be used ('ordered') when two states would be given the same rank.
+   * *observed*: states are ordered by their frequency in the
+      <sequences> alignment defined in the <genome> description, by
+      decreasing frequency.
 
- * <probableSet>: when defining <fitness> as a piece-wise linear model in terms of <lowFitness> and <minimumFitness>, only the _probable_ states are not assigned the minimum fitness.
+   * *chemical*: amino acids are ordered so that the amino acids in
+      the set with chemical properties similar to the most frequent
+      amino acid in the <sequences> alignment defined in the <genome>
+      description, are ranked before the other states. The sets (in no
+      particular order, and separated by |) are:
+      AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
+
+   * *hydropathy*: idem but using a partition based on hydrophathy:
+      IVLFCMAW|GTSYPH|DEKNQR.
+
+   * *volume*: idem but using a partition based on volume:
+      GAS|CDPNT|EVQH|MILKR|FYW
+
+   * A custom partition of the states, which is defined by listing
+     them separated by '|' (like the partitions defined above).
+
+   * A custom order of _probable_ states, which is defined by listing
+     the _probable_ states from most fit to least fit. (e.g. `QDNTP`)
+
+ * *<breakTies>*: configure whether ties should be broken randomly
+   ('random') or should the state order be used ('ordered') when two
+   states would be given the same rank.
+
+ * *<probableSet>*: when defining <fitness> as a piece-wise linear model
+   in terms of <lowFitness> and <minimumFitness>, only the _probable_
+   states are not assigned the minimum fitness.
 
    Unless the amount of probable states are overridden here, it is
    defined, for each site, based on the order used: when order is
@@ -400,12 +440,13 @@ Fitness values are assigned to the ranked states, either by specifying
 a list of fitness values (with <values>) or based on a piece wise
 linear model (with <lowFitness> and <minimumFitness>):
 
- * <values>: A decreasing list of relative fitness vlaues (4 for a
+ * *<values>*: A decreasing list of relative fitness vlaues (4 for a
    nucleotide feature or 20 for an amino acid feature), all between 0
    and 1, separated by white-space (space or new-lines). The most fit
    should be assigned a value of 1.
 
- * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
+ * *<lowFitness>* and *<minimumFitness>*: Defines a piece wise linear
+   model as in the figure below (*TODO*).
 
 ==== Creating a non-stationary positive selection: <fluctuate> ====
 
@@ -414,16 +455,40 @@ positive selection, by making, at random times, another state the most
 fit state (i.e. the state with fitness '1'). This process is
 controlled by two parameters:
 
- * <rate>: The rate of a Bernouilli process, which is the probability to fluctuate, per site, per generation.
+ * *<rate>*: The rate of a Bernouilli process, which is the
+    probability to fluctuate, per site, per generation.
 
- * <fitnessLimit>: Only consider states with at least this fitness to
-   become the new fittest state (default value is 0, allowing any
+ * *<fitnessLimit>*: Only consider states with at least this fitness
+   to become the new fittest state (default value is 0, allowing any
    state to become the new fittest state).
 
 === Frequency dependent fitness function: <frequencyDependentFitness> ===
 
-This fitness function assigns a fitness for the selected features
-sites, which depends on the frequency of the allele defined by the
+This fitness function (as well as the age and exposure dependent
+fitness functions), considers unique _alleles_ formed by the selected
+feature sites. Individuals have a same allele if they have exactly the
+same nucleotide or amino acid sequence at the selected sites.
+
+The frequency dependent fitness function assigns a fitness to an
+individual based on the frequency of the allele in the population, and
+assigns a lower fitness to alleles that occur more frequently, using
+the formula: f = 1 - p^shape^, where p is the frequency (between 0 and
+1) of the allele in the population, and _shape_ a parameter that
+controls how severe more frequent alleles are punished.
+
+An example of a frequency dependent fitness function:
+
+{{{
+<frequencyDependentFitness>
+    <feature>DE protein</feature>
+    <shape>0.5</shape>
+</frequencyDependentFitness>
+}}}
+
+The fitness function is controlled by a single parameter:
+
+ * *<shape>*: a positive number indicating how severe more frequent
+    alleles are punished: 1 for linear, 2 for quandratic, ...
 
 === Age dependent fitness function: <ageDependentFitness> ===
 
