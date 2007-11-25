@@ -595,6 +595,38 @@ The parameters are:
  * *<transitionBias>*: a relative preference for transitions versus transversions
  * *<rates>*: instead of specifying a transition bias, you can provide a white-space separated list of all 12 relative rates: A->C A->G A->T C->A C->G C->T G->A G->C G->T T->A T->C T->G
 
+== A simulation epoch: <epoch> ==
+
+A simulation consists of one or more epochs, which are simulated
+sequentially, and which allow the population to experience
+consecutively different selection environments, or have different
+replication properties.
+
+An epoch has a fixed duration (in number of generations), and
+inherits, unless overriden, the default fitness function and
+replication and mutation operators.
+
+Example of an epoch:
+
+{{{
+<epoch>
+    <name>Epoch with age dependent fitness function</name>
+    <generations>1000</generations>
+
+    <!-- override the default fitness function -->
+    <fitnessFunction>
+        <ageDependentFitness>
+            <feature>DE protein</feature>
+            <declineRate>0.005</declineRate>
+        </ageDependentFitness>
+    </fitnessFunction>
+</epoch>
+
+Specific properties of an epoch are:
+
+ * *<name>*: an epoch name (useful for tracking simulation progress)
+ * *<generations>*: the duration of the epoch in number of generations
+
 == Getting simulation results: <samplingSchedule> ==
 
 The sampling schedule lists one or more _samplers_, which each extract
@@ -687,7 +719,82 @@ This may be overridden by:
 
 *TODO*
 
-== Reusing previously defined objects ==
+== Advanced configuration file features ==
 
+=== Reusing previously defined objects ===
+
+Especially when using multiple epochs, in some cases it is necessary
+to keep a particular factor in the fitness function, while changing
+other factors.
+
+While this could be achieved, in principle, by copying the definition
+of the factor, this is not only error-prone but also resets any state
+present in the object. For example, an age dependent or exposure
+dependent frequency function keeps track of allele frequency changes
+through time, and ideally this shouldn't be disturbed when entering a
+new epoch. Likewise, a purifying fitness function may be initialized
+using a random tie breaker, and you may want to keep this same
+initialization throughout all your epochs.
+
+Therefore, there is a way to attach an _id_ to some of the objects
+with state or random initialization, and later refer to these.
+
+For example:
+
+{{{
+
+<simulation>
+
+...
+
+    <fitnessFunction>
+        <purifyingFitness id="observed-neutral">
+        <!-- fitness function which sets, for each site, all amino acids observed at least once
+             in the alignment neutral, and unobserved deleterious -->
+            <feature>protein ABC</feature>
+            <rank id="alignment">
+                <order>observed</order>
+                <breakTies>random</breakTies>
+            </rank>
+            <fitness>
+                <minimumFitness>0.0</minimumFitness>
+                <lowFitness>1.0</lowFitness>
+            </fitness>
+        </purifyingFitness>
+    </fitnessFunction>
+
+    <epoch>
+        <name>neutral</name>
+        <generationCount>1000</generationCount>
+
+        <fitnessFunction>
+            <purifyingFitness ref="observed-neutral" />
+        </fitnessFunction>
+    </epoch>
+
+    <epoch>
+       	<name>neutral + selection</name>
+        <generationCount>1000</generationCount>
+
+        <fitnessFunction>
+       	    <purifyingFitness ref="observed-neutral" />
+
+            <!-- Add a fitness function which results in positive selection
+                 at one site -->
+            <empiricalFitness>
+                ...
+            </empiricalFitness>
+	</fitnessFunction>
+    </epoch>
+
+    ...
+
+</simulation>
+}}}
+
+The attributes _id_ and _ref_ may be used for the following objects: 
  * <rank>
- * <fitnessFunction> factor
+ * any <fitnessFunction> factor
+
+=== Using run-time parameters ===
+
