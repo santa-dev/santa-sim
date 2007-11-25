@@ -224,7 +224,7 @@ An example of a fitness function block (with two factors) is:
         </rank>
         <fitness>
 	    <lowFitness>0.5</lowFitness>
-            <minimumFitness>0.5</minimumFitness>
+            <minimumFitness>0.1</minimumFitness>
         </fitness>
     </purifyingFitness>
 
@@ -274,11 +274,12 @@ Within the rank, it is specified how the possible states at each site are ordere
 
 *<fitness>*
 
-Fitness values are assigned to the ranked states, either by specifying a list of fitness values or based on a piece wise linear model:
+Fitness values are assigned to the ranked states, either by specifying a list of fitness values (with <values>) or based on a piece wise linear model (with <lowFitness> and <minimumFitness>):
 
- * <values>: A list of 4 (for a nucleotide feature) or 20 values (for an amino acid feature), separated by spaces.
+ * <values>: A list of 4 (for a nucleotide feature) or 20 relative fitness values (for an amino acid feature), all between 0 and 1, separated by spaces.
 
  * <lowFitness> and <minimumFitness>: Defines a piece wise linear model as in the figure below (*TODO*).
 
 *<fluctuate>*
+
 
