@@ -116,7 +116,7 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
 
         Integer newLessFit = fittest.get(0);
         if (fittest.size() > 1) {
-            fittest.get(Random.nextInt(0, fittest.size() - 1));
+            newLessFit = fittest.get(Random.nextInt(0, fittest.size() - 1));
         }
 
         EventLogger.log("Fluctuated fitness: " + newFittest + " swapping with " + newLessFit);

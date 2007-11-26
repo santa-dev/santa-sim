@@ -120,13 +120,13 @@ public class SimulatorParser {
 	private static final String REF = "ref";
 
 	/*
-		 * Object Cache methods
-		 */
-
+	 * Object Cache methods
+	 */
 	private Map<String, Object> objectIdMap = new HashMap<String, Object>();
 
 	private Object lookupObjectById(String id, Class<? extends Object> expectedType) throws ParseException {
-		Object o = objectIdMap.get(id);
+		
+        Object o = objectIdMap.get(id);
 
 		if (o == null) {
 			throw new ParseException("Referenced object '" + id + "' was not defined.");
@@ -148,9 +148,8 @@ public class SimulatorParser {
 	}
 
 	/*
-		 * Parameters
-		 */
-
+	 * Parameters
+	 */
 	Map<String, String> parameters = null;
 
 	public void setParameters(Map<String, String> parameterValueMap) {
@@ -178,8 +177,8 @@ public class SimulatorParser {
 	}
 
 	/*
-		 * Parser methods
-		 */
+	 * Parser methods
+	 */
 	Simulator parse(Element element) throws ParseException {
 
 		if (!element.getName().equals(SIMULATOR)) {
@@ -201,7 +200,6 @@ public class SimulatorParser {
 		if (replicateCount == -1) {
 			throw new ParseException("Error parsing <" + SIMULATOR + "> element: <" + REPLICATE_COUNT + "> is missing");
 		}
-
 
 		Simulator simulator = null;
 		for (Object o : element.getChildren()) {
@@ -473,7 +471,7 @@ public class SimulatorParser {
 				}
 			}
 		} catch (NumberFormatException e) {
-			throw new ParseException("Error parsing <" + element.getName()
+			throw new ParseException("Syntax error parsing <" + element.getName()
 					+ "> element: " + e.getMessage());
 		}
 
@@ -753,15 +751,23 @@ public class SimulatorParser {
 				if (feature == null) {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: referenced feature '" + featureName + "' is not defined.");
 				}
-			} else if (e.getName().equals(SITES)) {
-				sites = parseSites(e);
+			} else if (!e.getName().equals(SITES)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
 
-		if (feature == null) {
+        if (feature == null) {
 			// there is always the complete genome feature
 			feature = GenomeDescription.getFeature("genome");
 		}
+
+        for (Object o:element.getChildren()) {
+            Element e = (Element) o;
+
+            if (e.getName().equals(SITES)) {
+                sites = parseSites(e, feature);
+            }
+        }
 
         if (sites == null || sites.size() == 0) {
             // assume the full length of the feature
@@ -825,8 +831,6 @@ public class SimulatorParser {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting either a <" + VALUES
 					+ "> element, or <" + MINIMUM_FITNESS + ">, <" + LOW_FITNESS + "> elements");
 		}
-
-
 		if (lowFitness == -1) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + LOW_FITNESS + ">");
 		}
@@ -947,7 +951,7 @@ public class SimulatorParser {
         case CLASSES:
             result = new PurifyingFitnessRank(factor.feature, orderSetClasses, breakTiesRandom, probableNumber);
             break;
-        case STATES:          
+        case STATES:
 			result = new PurifyingFitnessRank(factor.feature, stateOrder, probableNumber, breakTiesRandom);
             break;
         case OBSERVED:
@@ -1054,7 +1058,7 @@ public class SimulatorParser {
 		return numbers;
 	}
 
-	private Set<Integer> parseSites(Element element) throws ParseException {
+	private Set<Integer> parseSites(Element element, Feature feature) throws ParseException {
 		Set<Integer> result = new TreeSet<Integer>();
 
 		String sites = element.getTextNormalize();
@@ -1076,11 +1080,11 @@ public class SimulatorParser {
 					int end = Integer.parseInt(ranges[1]);
 
 					for (int j = start; j <= end; ++j) {
-						result.add(j - 1);
+						addSite(result, j, feature);
 					}
 				} else {
 					int site = Integer.parseInt(part);
-					result.add(site - 1);
+					addSite(result, site, feature);
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -1090,6 +1094,16 @@ public class SimulatorParser {
 
 		return result;
 	}
+
+    private void addSite(Set<Integer> result, int j, Feature feature) throws ParseException {
+        if (j <= 0 || j >= feature.getLength()) {
+            throw new ParseException("Error parsing <" + SITES + ">: "
+                    + j + " is out the valid range (1 - " + feature.getLength() + ") for feature '"
+                    + feature.getName() + "'");
+        }
+
+        result.add(j - 1);
+    }
 
 	private Mutator parseMutator(Element element) throws ParseException {
 		if (element.getChildren().size() == 0) {
@@ -1356,7 +1370,7 @@ public class SimulatorParser {
 				if (booleanText.equalsIgnoreCase("TRUE")) {
 					consensus = true;
 				} else if (booleanText.equalsIgnoreCase("FALSE")) {
-					consensus = true;
+					consensus = false;
 				} else {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + CONSENSUS + "> value " + booleanText + " is unrecognized");
 				}
