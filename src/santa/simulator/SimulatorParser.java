@@ -1,6 +1,8 @@
 package santa.simulator;
 
 import org.jdom.Element;
+import org.jdom.Attribute;
+import org.jdom.DataConversionException;
 import santa.simulator.fitness.*;
 import santa.simulator.genomes.*;
 import santa.simulator.mutators.Mutator;
@@ -116,6 +118,8 @@ public class SimulatorParser {
 	private final static String DUAL_INFECTION_PROBABILITY = "dualInfectionProbability";
 	private final static String RECOMBINATION_PROBABILITY = "recombinationProbability";
 
+    private static final String BETA_DISTIBUTED = "betaDistributed";
+
 	private static final String ID = "id";
 	private static final String REF = "ref";
 
@@ -124,7 +128,7 @@ public class SimulatorParser {
 	 */
 	private Map<String, Object> objectIdMap = new HashMap<String, Object>();
 
-	private Object lookupObjectById(String id, Class<? extends Object> expectedType) throws ParseException {
+    private Object lookupObjectById(String id, Class<? extends Object> expectedType) throws ParseException {
 		
         Object o = objectIdMap.get(id);
 
@@ -651,11 +655,11 @@ public class SimulatorParser {
 					} else if (e2.getName().equals(FLUCTUATE_RATE)) {
 						fluctuateRate = parseDouble(e2, 0, 1);
 					} else {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e2.getName() + "> is unrecognized");
+                        throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e2.getName() + "> is unrecognized");
 					}
 				}
 			} else if (!e.getName().equals(FEATURE) && !e.getName().equals(SITES)) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
 
@@ -752,7 +756,9 @@ public class SimulatorParser {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: referenced feature '" + featureName + "' is not defined.");
 				}
 			} else if (!e.getName().equals(SITES)) {
-                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                // ignore other elements
+
+                //throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
 
@@ -793,7 +799,26 @@ public class SimulatorParser {
 		for (Object o:element.getChildren()) {
 			Element e = (Element) o;
 
-			if (e.getName().equals(VALUES)) {
+            if (e.getName().equals(BETA_DISTIBUTED)) {
+
+                // Carrasco et al (2007)  J Virology 81:12979-12984
+                double a = 1.151;
+                double b = 1.709;
+                double pLethal = 0.4;
+
+                int alphabetSize = alphabet.getStateCount();
+                int sites = factor.sites.size();
+
+                Element aChild = e.getChild("a");
+                a = Double.parseDouble(aChild.getText());
+                Element bChild = e.getChild("b");
+                b = Double.parseDouble(bChild.getText());
+                Element pChild = e.getChild("pLethal");
+                pLethal = Double.parseDouble(pChild.getText());
+
+                return new BetaDistributedPurifyingFitnessModel(a,b, pLethal, alphabetSize, sites);
+            }
+            else if (e.getName().equals(VALUES)) {
 				double[] fitnesses;
 				try {
 					fitnesses = parseNumberList(e);
@@ -1079,7 +1104,7 @@ public class SimulatorParser {
 					int start = Integer.parseInt(ranges[0]);
 					int end = Integer.parseInt(ranges[1]);
 
-					for (int j = start; j <= end; ++j) {
+					for (int j = start; j <= end; j++) {
 						addSite(result, j, feature);
 					}
 				} else {
@@ -1096,7 +1121,7 @@ public class SimulatorParser {
 	}
 
     private void addSite(Set<Integer> result, int j, Feature feature) throws ParseException {
-        if (j <= 0 || j >= feature.getLength()) {
+        if (j <= 0 || j > feature.getLength()) {
             throw new ParseException("Error parsing <" + SITES + ">: "
                     + j + " is out the valid range (1 - " + feature.getLength() + ") for feature '"
                     + feature.getName() + "'");
