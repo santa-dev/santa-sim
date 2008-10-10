@@ -36,6 +36,7 @@ public class SimulatorMain {
                 simulator = parser.parse(doc.getRootElement());
 
             } catch (SimulatorParser.ParseException pe) {
+                pe.printStackTrace();
                 System.err.println(pe.getMessage());
                 System.exit(1);
             } catch (JDOMException jde) {

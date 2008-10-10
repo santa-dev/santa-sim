@@ -1,0 +1,83 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+
+    <replicates>1</replicates>
+
+    <simulation>
+        <genome>
+            <length>609</length>
+            <sequences>
+                GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+            </sequences>
+            <feature>
+                <name>CDS</name>
+                <type>aminoAcid</type>
+                <coordinates>1-609</coordinates>
+            </feature>
+        </genome>
+
+        <population>
+            <populationSize>10000</populationSize>
+
+            <inoculum>all</inoculum>
+        </population>
+
+        <fitnessFunction>
+            <purifyingFitness>
+                <feature>CDS</feature>
+                <sites>1-203</sites>
+                <rank>
+                    <order>chemical</order>
+                    <breakTies>random</breakTies>
+                </rank>
+                <fitness>
+                    <betaDistributed>
+                        <a>1.151</a>
+                        <b>1.709</b>
+                        <pLethal>0.4</pLethal>
+                    </betaDistributed>
+                </fitness>
+            </purifyingFitness>
+        </fitnessFunction>
+
+        <mutator>
+            <nucleotideMutator>
+                <mutationRate>1.0E-4</mutationRate>
+                <transitionBias>2.0</transitionBias>
+            </nucleotideMutator>
+        </mutator>
+
+        <replicator>
+            <clonalReplicator/>
+        </replicator>
+
+        <epoch>
+            <generationCount>2001</generationCount>
+        </epoch>
+
+        <samplingSchedule>
+            <sampler>
+                <atFrequency>100</atFrequency>
+                <fileName>purify_%r.nex</fileName>
+                <alignment>
+                    <schedule>
+                        <!-- generation count -->
+                        200 10
+                        400 10
+                        600 10
+                        800 10
+                        1000 10
+                    </schedule>
+                    <format>NEXUS</format>
+                    <label>purifyBeta_%g_%s</label>
+                </alignment>
+            </sampler>
+            <sampler>
+                <atFrequency>10</atFrequency>
+                <fileName>purifyingBeta_%r.csv</fileName>
+                <statistics></statistics>
+            </sampler>
+        </samplingSchedule>
+    </simulation>
+
+</santa>

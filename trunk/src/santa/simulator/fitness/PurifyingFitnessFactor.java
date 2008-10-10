@@ -18,6 +18,7 @@ import java.util.*;
  * giving it a rank and model for its fitness values.
  */
 public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
+
     private PurifyingFitnessRank rank;
     private PurifyingFitnessModel valueModel;
     private double fluctuateRate;
