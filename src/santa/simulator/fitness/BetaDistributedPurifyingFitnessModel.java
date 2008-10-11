@@ -33,7 +33,8 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
         for (int i = 0; i < sites; i++) {
 
             ArrayList<Double> f = new ArrayList<Double>(alphabetSize);
-            for (int j = 0; j < alphabetSize; j++) {
+            f.add(1.0);
+            for (int j = 1; j < alphabetSize; j++) {
 
                 if (Math.random() < pLethal) {
                     f.add(0.0);
