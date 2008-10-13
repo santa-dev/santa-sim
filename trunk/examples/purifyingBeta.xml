@@ -1,7 +1,7 @@
 <santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="santa.xsd">
 
-    <replicates>1</replicates>
+    <replicates>10</replicates>
 
     <simulation>
         <genome>
