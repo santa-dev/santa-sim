@@ -118,9 +118,7 @@ public class RecombinantReplicator implements Replicator {
     protected void preCalculateBinomial(int numExperiments, double eventRate) {
         binomial = new double[numExperiments];
 
-        BinomialDistribution distr
-            = DistributionFactory.newInstance()
-              .createBinomialDistribution(numExperiments, eventRate);
+        BinomialDistribution distr = new BinomialDistributionImpl(numExperiments, eventRate);
 
         for (int j = 0; j < binomial.length; ++j) {
             try {

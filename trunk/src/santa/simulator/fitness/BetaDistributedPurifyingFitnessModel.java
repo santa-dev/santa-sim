@@ -1,9 +1,11 @@
 package santa.simulator.fitness;
 
-import JSci.maths.statistics.BetaDistribution;
-
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.BetaDistribution;
+import org.apache.commons.math.distribution.BetaDistributionImpl;
 
 /**
  * A distribution of fitness effects motivated by
@@ -28,7 +30,8 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
 
         fitnesses = new double[sites][alphabetSize];
 
-        beta = new BetaDistribution(a, b);
+        beta = new BetaDistributionImpl(a, b);
+        
 
         for (int i = 0; i < sites; i++) {
 
@@ -39,7 +42,11 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
                 if (Math.random() < pLethal) {
                     f.add(0.0);
                 } else {
-                    f.add(beta.inverse(Math.random()));
+                    try {
+						f.add(beta.inverseCumulativeProbability(Math.random()));
+					} catch (MathException e) {
+						e.printStackTrace();
+					}                    
                 }
             }
             Collections.sort(f);

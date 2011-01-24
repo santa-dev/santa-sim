@@ -1,12 +1,16 @@
 package santa.simulator.mutators;
 
-import santa.simulator.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.BinomialDistribution;
-import org.apache.commons.math.distribution.DistributionFactory;
-import santa.simulator.genomes.*;
+import org.apache.commons.math.distribution.BinomialDistributionImpl;
 
-import java.util.*;
+import santa.simulator.Random;
+import santa.simulator.genomes.Genome;
+import santa.simulator.genomes.GenomeDescription;
+import santa.simulator.genomes.Mutation;
 
 /**
  * @author Andrew Rambaut
@@ -73,9 +77,7 @@ public abstract class AbstractMutator implements Mutator {
     protected void preCalculateBinomial(int numExperiments, double eventRate) {
         binomial = new double[numExperiments];
 
-        BinomialDistribution distr
-            = DistributionFactory.newInstance()
-              .createBinomialDistribution(numExperiments, eventRate);
+        BinomialDistribution distr = new BinomialDistributionImpl(numExperiments, eventRate);
 
         for (int j = 0; j < binomial.length; ++j) {
             try {
