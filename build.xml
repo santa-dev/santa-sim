@@ -1,6 +1,6 @@
 <project name="SANTA" default="dist" basedir=".">
     <description>
-    Build file for TreeStat
+    build file for santa-sim
     </description>
     <!-- set global properties for this build -->
     <property name="src" location="src"/>
@@ -19,17 +19,11 @@
         <mkdir dir="${dist}"/>
         <mkdir dir="${lib}"/>
     </target>
-
-<!--
-    <target name="copyLibs" depends="init">
-        <copy file="../JEBL/dist/jebl.jar" tofile="${lib}/jebl.jar"/>
-    </target>
--->
-
+	
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
         <javac source="1.5" srcdir="${src}" destdir="${build}"
-            classpath="${lib}/commons-math-1.2.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar:${lib}/jsci-core.jar:${lib}/jsci-sci.jar">
+            classpath="${lib}/commons-math-2.1.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
             <include name="santa/**"/>
         </javac>
     </target>
