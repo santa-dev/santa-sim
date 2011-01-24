@@ -49,7 +49,7 @@ public class Mutations {
      * are stored as Integer objects. They can be iterated over and used with getMutation.
      * @return the set of positions
      */
-    public Set getPositionSet() {
+    public Set<Integer> getPositionSet() {
         return mutationMap.keySet();
     }
 

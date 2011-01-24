@@ -40,7 +40,7 @@ public class Random {
         return randomData.nextPoisson(v);
     }
 
-    public static Object[] nextSample(Collection collection, int i) {
+    public static Object[] nextSample(Collection<?> collection, int i) {
         return randomData.nextSample(collection, i);
     }
 

@@ -277,12 +277,10 @@ public class Population {
     public double[][] getAlleleFrequencies(Feature feature, Set<Integer> sites) {
         int[][] freqs = genePool.getStateFrequencies(feature, sites);
         double[][] normalizedFreqs = new double[sites.size()][freqs[0].length];
-        int i = 0;
-        for (int site : sites) {
+        for (int i = 0; i < sites.size(); i++) {
             for (int j = 0; j < freqs[i].length; j++) {
                 normalizedFreqs[i][j] = freqs[i][j] / (double)populationSize;
             }
-            i++;
         }
         return normalizedFreqs;
     }

@@ -75,13 +75,11 @@ public class SimulationEpoch {
                 } else
                     System.err.println();
             } else {
-                if (false) {
-                    logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
-                            ", distance = " + population.getMeanDistance() +
-                            ", max freq = " + population.getMaxFrequency() +
-                            ", genepool size= " + genePool.getUniqueGenomeCount() +
-                            "(" + genePool.getUnusedGenomeCount() + " available)");
-                }
+            	logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
+            			", distance = " + population.getMeanDistance() +
+            			", max freq = " + population.getMaxFrequency() +
+            			", genepool size= " + genePool.getUniqueGenomeCount() +
+            			"(" + genePool.getUnusedGenomeCount() + " available)");                
             }
 
             samplingSchedule.doSampling(generation, population);

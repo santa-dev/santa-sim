@@ -39,7 +39,7 @@ public class RecombinantReplicator implements Replicator {
 
     public void replicate(Virus virus, Virus[] parents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
-        if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability) {
+        if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
 
             Genome parent1Genome = parents[0].getGenome();
