@@ -1,17 +1,23 @@
 package santa.simulator.replicators;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.BinomialDistribution;
-import org.apache.commons.math.distribution.DistributionFactory;
-import santa.simulator.Random;
-import santa.simulator.Virus;
-import santa.simulator.EventLogger;
-import santa.simulator.fitness.FitnessFunction;
-import santa.simulator.genomes.*;
-import santa.simulator.mutators.Mutator;
-
 import java.util.Arrays;
 import java.util.SortedSet;
+
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.BinomialDistribution;
+import org.apache.commons.math.distribution.BinomialDistributionImpl;
+
+import santa.simulator.EventLogger;
+import santa.simulator.Random;
+import santa.simulator.Virus;
+import santa.simulator.fitness.FitnessFunction;
+import santa.simulator.genomes.GenePool;
+import santa.simulator.genomes.Genome;
+import santa.simulator.genomes.GenomeDescription;
+import santa.simulator.genomes.Mutation;
+import santa.simulator.genomes.Sequence;
+import santa.simulator.genomes.SimpleSequence;
+import santa.simulator.mutators.Mutator;
 
 /**
  * @author rambaut

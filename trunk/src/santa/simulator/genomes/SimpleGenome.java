@@ -1,7 +1,5 @@
 package santa.simulator.genomes;
 
-import santa.simulator.fitness.FitnessFunction;
-
 import java.util.SortedSet;
 
 

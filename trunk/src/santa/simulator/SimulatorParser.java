@@ -1,17 +1,49 @@
 package santa.simulator;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.jdom.Element;
-import org.jdom.Attribute;
-import org.jdom.DataConversionException;
-import santa.simulator.fitness.*;
-import santa.simulator.genomes.*;
+
+import santa.simulator.fitness.AgeDependentFitnessFactor;
+import santa.simulator.fitness.BetaDistributedPurifyingFitnessModel;
+import santa.simulator.fitness.ExposureDependentFitnessFactor;
+import santa.simulator.fitness.FitnessFactor;
+import santa.simulator.fitness.FitnessFunction;
+import santa.simulator.fitness.FrequencyDependentFitnessFactor;
+import santa.simulator.fitness.PurifyingFitnessFactor;
+import santa.simulator.fitness.PurifyingFitnessModel;
+import santa.simulator.fitness.PurifyingFitnessPiecewiseLinearModel;
+import santa.simulator.fitness.PurifyingFitnessRank;
+import santa.simulator.fitness.PurifyingFitnessValuesModel;
+import santa.simulator.genomes.CompactGenePool;
+import santa.simulator.genomes.Feature;
+import santa.simulator.genomes.GenePool;
+import santa.simulator.genomes.GenomeDescription;
+import santa.simulator.genomes.Sequence;
+import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.genomes.SimpleGenePool;
+import santa.simulator.genomes.SimpleSequence;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
-import santa.simulator.replicators.*;
-import santa.simulator.samplers.*;
-
-import java.io.*;
-import java.util.*;
+import santa.simulator.replicators.ClonalReplicator;
+import santa.simulator.replicators.RecombinantReplicator;
+import santa.simulator.replicators.Replicator;
+import santa.simulator.samplers.AlignmentSampler;
+import santa.simulator.samplers.AlleleFrequencySampler;
+import santa.simulator.samplers.Sampler;
+import santa.simulator.samplers.SamplingSchedule;
+import santa.simulator.samplers.StatisticsSampler;
+import santa.simulator.samplers.TreeSampler;
 
 /**
  * @author Andrew Rambaut

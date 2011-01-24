@@ -6,7 +6,6 @@
  */
 package santa.simulator.genomes;
 
-import java.util.List;
 
 public enum SequenceAlphabet {
     NUCLEOTIDES("nucleotide", 4, 1),
