@@ -1,10 +1,9 @@
 package santa.simulator;
 
-import org.apache.commons.math.random.RandomDataImpl;
-import org.apache.commons.math.random.RandomData;
-
-import java.util.Arrays;
 import java.util.Collection;
+
+import org.apache.commons.math.random.RandomData;
+import org.apache.commons.math.random.RandomDataImpl;
 
 /**
  * @author Andrew Rambaut
