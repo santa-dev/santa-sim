@@ -100,7 +100,9 @@ public abstract class BaseGenome implements Genome {
 		for (Mutation m : mutations) {
 			// convert the mutations into a list of state changes for the
 			byte oldState = getNucleotide(m.position);
-			changes.add(new StateChange(featureSiteTable[m.position], oldState, m.state));
+			StateChange c = new StateChange(featureSiteTable[m.position], oldState, m.state);
+			if(c.position >= 0) //-1 => mutation outside of feature
+				changes.add(c);
             
             //System.err.println("m: " + m.position + " " + m.state + " -> " + featureSiteTable[m.position] + " " + oldState + " " + m.state);
 		}
