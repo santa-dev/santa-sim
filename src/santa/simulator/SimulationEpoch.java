@@ -9,6 +9,7 @@ package santa.simulator;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.mutators.Mutator;
+import santa.simulator.population.Population;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.SamplingSchedule;
 

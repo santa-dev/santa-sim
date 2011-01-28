@@ -35,11 +35,11 @@ public class Phylogeny {
 		mrca = extantLineages[0];
 	}
 
-	public void addGeneration(int generation, int[] selectedParents) {
+	public void addGeneration(int generation, List<Integer> selectedParents) {
 		for (int i = 0; i < populationSize; i++) {
 			Lineage child = createLineage();
 
-			child.parent = extantLineages[selectedParents[i]];
+			child.parent = extantLineages[selectedParents.get(i)];
 			if (child.parent != null) {
 				child.parent.childCount ++;
 			}

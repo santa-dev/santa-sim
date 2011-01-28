@@ -1,6 +1,6 @@
 package santa.simulator.samplers;
 
-import santa.simulator.Population;
+import santa.simulator.population.Population;
 
 import java.util.ArrayList;
 import java.util.List;

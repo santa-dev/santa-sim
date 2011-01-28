@@ -4,8 +4,8 @@ import jebl.evolution.io.*;
 import jebl.evolution.taxa.Taxon;
 import jebl.evolution.trees.RootedTree;
 import jebl.evolution.trees.Tree;
-import santa.simulator.Population;
 import santa.simulator.Random;
+import santa.simulator.population.Population;
 
 import java.io.*;
 import java.util.*;

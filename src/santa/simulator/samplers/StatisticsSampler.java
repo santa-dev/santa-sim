@@ -3,12 +3,13 @@ package santa.simulator.samplers;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-import santa.simulator.Population;
+import santa.simulator.population.Population;
 
 public class StatisticsSampler implements Sampler {
 	private PrintStream destination;
     private String filename;
-
+    private String separator = ",";
+    
 	public StatisticsSampler(String filename) {
         this.filename = filename;
 	}
@@ -21,19 +22,29 @@ public class StatisticsSampler implements Sampler {
             throw new RuntimeException("Could not open file for writing: " + fname);
         }
 
-        destination.println("generation\tmean_diversity\tmax_diversity\tmin_fitness\tmean_fitness\tmax_fitness\tmax_frequency\tmean_distance");
+        destination.println("generation" + separator
+        		+"population_size" + separator
+        		+"mean_diversity" + separator
+        		+"max_diversity" + separator
+        		+"min_fitness" + separator
+        		+"mean_fitness" + separator
+        		+"max_fitness" + separator
+        		+"max_frequency" + separator
+        		+"mean_distance");
 	}
 
 	public void sample(int generation, Population population) {
-        population.estimateDiversity(10);
+		
+        population.estimateDiversity((population.getCurrentGeneration().size()/100)+1);
 
-		destination.println(generation + "\t"
-                + population.getMeanDiversity() + "\t"
-                + population.getMaxDiversity() + "\t"
-				+ population.getMinFitness() + "\t"
-				+ population.getMeanFitness() + "\t"
-				+ population.getMaxFitness() + "\t"
-				+ population.getMaxFrequency() + "\t"
+		destination.println(generation + separator
+				+ population.getCurrentGeneration().size() + separator
+                + population.getMeanDiversity() + separator
+                + population.getMaxDiversity() + separator
+				+ population.getMinFitness() + separator
+				+ population.getMeanFitness() + separator
+				+ population.getMaxFitness() + separator
+				+ population.getMaxFrequency() + separator
 				+ population.getMeanDistance());
 	}
 

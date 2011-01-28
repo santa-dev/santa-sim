@@ -1,5 +1,7 @@
 package santa.simulator;
 
+import santa.simulator.population.Population;
+
 /**
  * @author Andrew Rambaut
  * @version $Id: StoppingCriterion.java,v 1.2 2006/02/17 15:28:07 kdforc0 Exp $

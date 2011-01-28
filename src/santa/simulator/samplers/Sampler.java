@@ -1,6 +1,6 @@
 package santa.simulator.samplers;
 
-import santa.simulator.Population;
+import santa.simulator.population.Population;
 
 /**
  * @author Andrew Rambaut
