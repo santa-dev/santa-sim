@@ -1,7 +1,7 @@
 package santa.simulator.fitness;
 
-import santa.simulator.Population;
 import santa.simulator.genomes.*;
+import santa.simulator.population.Population;
 
 import java.util.Set;
 

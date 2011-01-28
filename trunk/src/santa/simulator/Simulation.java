@@ -1,14 +1,19 @@
 package santa.simulator;
 
-import santa.simulator.genomes.*;
-import santa.simulator.samplers.SamplingSchedule;
-import santa.simulator.selectors.Selector;
-import santa.simulator.selectors.RouletteWheelSelector;
-import santa.simulator.phylogeny.Phylogeny;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+
+import santa.simulator.genomes.GenePool;
+import santa.simulator.genomes.GenomeDescription;
+import santa.simulator.genomes.Mutation;
+import santa.simulator.genomes.Sequence;
+import santa.simulator.phylogeny.Phylogeny;
+import santa.simulator.population.DynamicPopulation;
+import santa.simulator.population.Population;
+import santa.simulator.samplers.SamplingSchedule;
+import santa.simulator.selectors.DynamicSelector;
+import santa.simulator.selectors.Selector;
 
 /**
  * @author Andrew Rambaut
@@ -46,12 +51,12 @@ public class Simulation {
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
 
-        this.selector = new RouletteWheelSelector();
+        this.selector = new DynamicSelector();
 
         // This pre-computes all possible mutation objects as singletons...
         Mutation.initialize();
 
-        population = new Population(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+        population = new DynamicPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
 
     public void run(int replicate, Logger logger) {
@@ -77,7 +82,7 @@ public class Simulation {
 	    } else { // NONE
 		    // do nothing
 	    }
-        population.initialize(inoculum);
+        population.initialize(inoculum, populationSize);
 
         int generation = 1;
 

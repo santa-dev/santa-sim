@@ -8,6 +8,8 @@
  */
 package santa.simulator.selectors;
 
+import java.util.List;
+
 import santa.simulator.Virus;
 import santa.simulator.Random;
 
@@ -29,11 +31,11 @@ public class MonteCarloSelector implements Selector {
 		System.err.println("Koen thinks the MonteCarloSelector is not sampling correctly.");
 	}
 
-	public void selectParents(Virus[] currentGeneration, int[] selectedParents) {
+	public void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int sampleSize) {
 
-		double maxLogFitness = currentGeneration[0].getLogFitness();
-		for (int i = 1; i < currentGeneration.length; i++) {
-			double f = currentGeneration[i].getLogFitness();
+		double maxLogFitness = currentGeneration.get(0).getLogFitness();
+		for (int i = 1; i < currentGeneration.size(); i++) {
+			double f = currentGeneration.get(i).getLogFitness();
 			if (f > maxLogFitness) {
 				maxLogFitness = f;
 			}
@@ -45,18 +47,18 @@ public class MonteCarloSelector implements Selector {
 			throw new RuntimeException("Population crashed! No viable children.");
 		}
 
-		for (int i = 0; i < selectedParents.length; i++) {
+		for (int i = 0; i < sampleSize; i++) {
 			int selected = -1;
 			do {
-				int currentVirus = Random.nextInt(0, currentGeneration.length - 1);
+				int currentVirus = Random.nextInt(0, currentGeneration.size() - 1);
 
 				double r = Math.log(Random.nextUniform(0.0, maxFitness));
-				if (r < currentGeneration[currentVirus].getLogFitness()) {
+				if (r < currentGeneration.get(currentVirus).getLogFitness()) {
 					selected = currentVirus;
 				}
 			} while (selected < 0);
 
-			selectedParents[i] = selected;
+			selectedParents.add(selected);
 		}
 	}
 

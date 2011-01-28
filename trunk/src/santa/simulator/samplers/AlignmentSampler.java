@@ -1,13 +1,17 @@
 package santa.simulator.samplers;
 
-import santa.simulator.*;
-import santa.simulator.genomes.*;
-
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import santa.simulator.Random;
+import santa.simulator.Virus;
+import santa.simulator.genomes.AminoAcid;
+import santa.simulator.genomes.Feature;
+import santa.simulator.genomes.Nucleotide;
+import santa.simulator.population.Population;
 
 /**
  * @author Andrew Rambaut
@@ -127,16 +131,16 @@ public class AlignmentSampler implements Sampler {
 
     protected Virus[] getSample(int generation, Population population) {
         if (schedule == null) {
-            Virus[] viruses = population.getCurrentGeneration();
-            Object[] tmp = Random.nextSample(Arrays.asList(viruses), sampleSize);
+            List<Virus> viruses = population.getCurrentGeneration();
+            Object[] tmp = Random.nextSample(viruses, sampleSize);
             Virus[] sample = new Virus[tmp.length];
             System.arraycopy(tmp, 0, sample, 0, tmp.length);
             return sample;
         } else {
             if (schedule.containsKey(generation)) {
                 int count = schedule.get(generation);
-                Virus[] viruses = population.getCurrentGeneration();
-                Object[] tmp = Random.nextSample(Arrays.asList(viruses), count);
+                List<Virus> viruses = population.getCurrentGeneration();
+                Object[] tmp = Random.nextSample(viruses, count);
                 Virus[] sample = new Virus[tmp.length];
                 System.arraycopy(tmp, 0, sample, 0, tmp.length);
                 return sample;

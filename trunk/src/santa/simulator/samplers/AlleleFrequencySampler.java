@@ -4,11 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Set;
 
-import santa.simulator.Population;
 import santa.simulator.genomes.AminoAcid;
 import santa.simulator.genomes.Nucleotide;
 import santa.simulator.genomes.SequenceAlphabet;
 import santa.simulator.genomes.Feature;
+import santa.simulator.population.Population;
 
 /**
  * @author Andrew Rambaut

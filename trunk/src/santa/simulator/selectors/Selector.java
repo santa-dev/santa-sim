@@ -1,5 +1,7 @@
 package santa.simulator.selectors;
 
+import java.util.List;
+
 import santa.simulator.Virus;
 
 /**
@@ -13,6 +15,6 @@ import santa.simulator.Virus;
  */
 public interface Selector {
 
-	void selectParents(Virus[] currentGeneration, int[] selectedParents);
+	void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int sampleSize);
 
 }

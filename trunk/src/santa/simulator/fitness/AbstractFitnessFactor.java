@@ -6,9 +6,9 @@
  */
 package santa.simulator.fitness;
 
-import santa.simulator.Population;
 import santa.simulator.genomes.Feature;
 import santa.simulator.genomes.SequenceAlphabet;
+import santa.simulator.population.Population;
 
 import java.util.Set;
 
