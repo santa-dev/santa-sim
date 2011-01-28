@@ -92,6 +92,7 @@
                 <xs:element ref="empiricalFitness"/>
                 <xs:element ref="ageDependentFitness"/>
                 <xs:element ref="exposureDependentFitness"/>
+                <xs:element ref="populationSizeDependentFitness"/>
                 <xs:element ref="frequencyDependentFitness"/>
                 <xs:element ref="neutralFitness"/>
             </xs:choice>
@@ -181,6 +182,16 @@
         </xs:complexType>
     </xs:element>
 
+<xs:element name="populationSizeDependentFitness">
+        <xs:complexType>
+            <xs:sequence minOccurs="0">
+                <xs:group ref="feature-sites"/>
+                <xs:element name="declineRate" type="xs:string"/>
+                <xs:element name="maxPopulationSize" type="xs:string"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="idable"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="exposureDependentFitness">
         <xs:complexType>
             <xs:sequence minOccurs="0">
