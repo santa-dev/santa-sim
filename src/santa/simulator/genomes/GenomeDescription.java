@@ -119,7 +119,7 @@ public final class GenomeDescription {
 	 * @return an array of integers as long as the feature in nucleotides
 	 */
 	public static int[] getGenomeSiteTable(Feature feature) {
-		return featureSiteTables.get(feature);
+		return genomeSiteTables.get(feature);
 	}
 
 	public static List<Sequence> getSequences() {
