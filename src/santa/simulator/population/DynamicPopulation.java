@@ -9,7 +9,7 @@ import santa.simulator.selectors.Selector;
 
 public class DynamicPopulation extends Population {
 	
-	public DynamicPopulation(int populationSize, GenePool genePool, Selector selector, Phylogeny phylogeny) {
+	public DynamicPopulation(GenePool genePool, Selector selector, Phylogeny phylogeny) {
 		super(genePool, selector, phylogeny);		
 	}
 	

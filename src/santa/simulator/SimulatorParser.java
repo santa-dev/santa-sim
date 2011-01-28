@@ -20,6 +20,7 @@ import santa.simulator.fitness.ExposureDependentFitnessFactor;
 import santa.simulator.fitness.FitnessFactor;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.fitness.FrequencyDependentFitnessFactor;
+import santa.simulator.fitness.PopulationSizeDependentFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessModel;
 import santa.simulator.fitness.PurifyingFitnessPiecewiseLinearModel;
@@ -115,7 +116,9 @@ public class SimulatorParser {
 	private final static String DECLINE_RATE = "declineRate";
 	private final static String EXPOSURE_DEPENDENT_FITNESS_FUNCTION = "exposureDependentFitness";
 	private final static String PENALTY = "penalty";
-	private static final Object EMPERICAL_FITNESS_FUNCTION = "empiricalFitness";
+	private final static String EMPERICAL_FITNESS_FUNCTION = "empiricalFitness";
+	private final static String POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION = "populationSizeDependentFitness";
+	private final static String MAX_POP_SIZE = "maxPopulationSize";
 
 	private final static String MUTATOR = "mutator";
 	private final static String REPLICATOR = "replicator";
@@ -533,6 +536,8 @@ public class SimulatorParser {
 				factor = parseAgeDependentFitnessFunction(e);
 			} else if (e.getName().equals(EXPOSURE_DEPENDENT_FITNESS_FUNCTION)) {
 				factor = parseExposureDependentFitnessFunction(e);
+			} else if (e.getName().equals(POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION)) {
+				factor = parsePopulationSizeDependentFitnessFunction(e);
 			} else {
 				throw new ParseException("Error parsing <" + element.getName()
 						+ "> element: <" + e.getName() + "> is unrecognized");
@@ -624,6 +629,43 @@ public class SimulatorParser {
 		}
 
 		return new AgeDependentFitnessFactor(declineRate, factor.feature, factor.sites);
+	}
+	
+	private FitnessFactor parsePopulationSizeDependentFitnessFunction(Element element) throws ParseException {
+		FitnessFactor result = getFitnessFactor(element, PopulationSizeDependentFitnessFactor.class.getName());
+
+		if (result != null)
+			return result;
+
+		FeatureAndSites factor = parseFeatureAndSites(element);
+
+		double declineRate = -1;
+		double maxPopSize = -1;
+		
+		for (Object o : element.getChildren()) {
+			Element e = (Element)o;
+			if (e.getName().equals(DECLINE_RATE)) {
+				try {
+					declineRate = parseDouble(e, 0, Double.MAX_VALUE);
+				} catch (ParseException pe) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+				}
+			} else if(e.getName().equals(MAX_POP_SIZE)) {
+				try {
+					maxPopSize = parseDouble(e, 0, Double.MAX_VALUE);
+				} catch (ParseException pe) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+				}
+			}else if (!e.getName().equals(FEATURE) && !e.getName().equals(SITES)) {
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+			}
+		}
+
+		if (declineRate < 0 || maxPopSize < 0) {
+			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting <" + DECLINE_RATE + ">");
+		}
+
+		return new PopulationSizeDependentFitnessFactor((int) maxPopSize, declineRate, factor.feature, factor.sites);
 	}
 
 	/**

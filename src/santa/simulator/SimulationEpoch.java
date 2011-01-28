@@ -58,7 +58,10 @@ public class SimulationEpoch {
             }
 
             population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
-
+            if(population.getCurrentGeneration().size() == 0) {
+            	return generation;
+            }
+            
             if (generation % 100 == 0) {
                 if (population.getPhylogeny() != null)
                     population.getPhylogeny().pruneDeadLineages();

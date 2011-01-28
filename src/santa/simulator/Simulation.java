@@ -56,7 +56,7 @@ public class Simulation {
         // This pre-computes all possible mutation objects as singletons...
         Mutation.initialize();
 
-        population = new DynamicPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
 
     public void run(int replicate, Logger logger) {
@@ -92,7 +92,10 @@ public class Simulation {
             EventLogger.setEpoch(epochCount);
 
             generation = epoch.run(this, logger, generation);
-
+            if(population.getCurrentGeneration().size() == 0) {
+            	System.err.println("Population crashed after "+generation+" generations.");
+            	return;
+            }
             epochCount++;
         }
         samplingSchedule.cleanUp();
