@@ -17,6 +17,7 @@ import santa.simulator.population.Population;
  * @author Andrew Rambaut
  * @author Alexei Drummond
  * @version $Id: AlignmentSampler.java,v 1.6 2006/07/18 07:37:47 kdforc0 Exp $
+ * Eddited by Abbas Jariani Sep 2013
  */
 public class AlignmentSampler implements Sampler {
     public enum Format {
@@ -27,7 +28,8 @@ public class AlignmentSampler implements Sampler {
 
     private final Feature feature;
     private final Set<Integer> sites;
-    private final int sampleSize;
+    //Abbas: final modifier was removed from sampleSize
+    private int sampleSize;
     private Format format;
     private String label;
     private String fileName;
@@ -59,13 +61,13 @@ public class AlignmentSampler implements Sampler {
         this.feature = feature;
         this.sites = sites;
         this.fileName = fileName;
-
         this.sampleSize = sampleSize;
         this.consensus = consensus;
         this.schedule = schedule;
     }
 
     public void initialize(int replicate) {
+
         this.replicate = replicate;
         String fName = substituteVariables(fileName, 0, 0);
 
@@ -130,8 +132,20 @@ public class AlignmentSampler implements Sampler {
     }
 
     protected Virus[] getSample(int generation, Population population) {
-        if (schedule == null) {
+
+        /**
+         * Abbas: if the population size is smaller than sampleSize we get error
+         * so the following minimum is applied
+         * also final modifier was removed from sampleSize
+         */
+    	if (schedule == null) {
             List<Virus> viruses = population.getCurrentGeneration();
+            if (sampleSize>viruses.size())
+            {
+            	System.out.println("warning: sampleSize of alignmentSampler was shrinked because of small population size to "+ viruses.size());
+            }	
+        	sampleSize = Math.min(sampleSize,viruses.size());
+
             Object[] tmp = Random.nextSample(viruses, sampleSize);
             Virus[] sample = new Virus[tmp.length];
             System.arraycopy(tmp, 0, sample, 0, tmp.length);
