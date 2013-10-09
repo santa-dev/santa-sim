@@ -52,7 +52,7 @@ import santa.simulator.samplers.TreeSampler;
  * @version $Id: SimulatorParser.java,v 1.19 2006/07/19 14:35:32 kdforc0 Exp $
  */
 public class SimulatorParser {
-
+	
 	private final static String SIMULATOR = "santa";
 
 	private final static String REPLICATE_COUNT = "replicates";
@@ -65,12 +65,16 @@ public class SimulatorParser {
 
 	private final static String POPULATION = "population";
 	private final static String POPULATION_SIZE = "populationSize";
+	private final static String POPULATION_TYPE = "populationType";
+	private final static String STATIC_POPULATION = "staticPopulation";
+	private final static String DYNAMIC_POPULATION = "dynamicPopulation";
 	private final static String INOCULUM = "inoculum";
 	private final static String INOCULUM_NONE = "none";
 	private final static String INOCULUM_CONSENSUS = "consensus";
 	private final static String INOCULUM_RANDOM = "random";
 	private final static String INOCULUM_ALL = "all";
 
+	
 	private final static String GENOME_DESCRIPTION = "genome";
 	private final static String GENOME_LENGTH = "length";
 	private final static String FEATURE = "feature";
@@ -218,6 +222,7 @@ public class SimulatorParser {
 	/*
 	 * Parser methods
 	 */
+
 	Simulator parse(Element element) throws ParseException {
 
 		if (!element.getName().equals(SIMULATOR)) {
@@ -257,6 +262,7 @@ public class SimulatorParser {
 		return simulator;
 	}
 
+	//Default populationType is dynamicPopulation but in the xml file static population could be selected
 	Simulation parseSimulation(Element element) throws ParseException {
 
 		Simulation.InoculumType inoculumType = Simulation.InoculumType.NONE;
@@ -312,11 +318,13 @@ public class SimulatorParser {
 					!e.getName().equals(REPLICATOR) &&
 					!e.getName().equals(SAMPLING_SCHEDULE) &&
 					!e.getName().equals(EVENT_LOGGER) &&
-					!e.getName().equals(EPOCH)) {
+					!e.getName().equals(EPOCH) &&
+					!e.getName().equals(POPULATION_TYPE)) {
 				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
-
+		
+		
 		if (populationSize == -1) {
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + POPULATION_SIZE + "> is missing");
 		}
@@ -331,7 +339,9 @@ public class SimulatorParser {
 		FitnessFunction defaultFitnessFunction = null;
 		Mutator defaultMutator = null;
 		Replicator defaultReplicator = null;
-
+		
+		String populationType = null;
+		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(GENE_POOL)) {
@@ -346,7 +356,10 @@ public class SimulatorParser {
 				defaultMutator = parseMutator(e);
 			} else if (e.getName().equals(REPLICATOR)) {
 				defaultReplicator = parseReplicator(e);
+			} else if (e.getName().equals(POPULATION_TYPE)){
+				populationType = (String) e.getTextNormalize();
 			}
+			
 		}
 
 		if (samplingSchedule == null)
@@ -364,7 +377,14 @@ public class SimulatorParser {
 
 		if (defaultReplicator == null)
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + REPLICATOR + "> is missing");
-
+		
+		if (populationType == null)
+			populationType = DYNAMIC_POPULATION;
+	//	if (populationType.equals((String)STATIC_POPULATION))
+		//	System.out.println(populationType+" "+STATIC_POPULATION+"!");
+		if ( (populationType.equals(DYNAMIC_POPULATION)) && (populationType.equals(STATIC_POPULATION)))
+				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + POPULATION_TYPE + "> is unrecognized!!"+populationType+STATIC_POPULATION);
+		
 		List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
 
 		for (Object o : element.getChildren()) {
@@ -379,8 +399,12 @@ public class SimulatorParser {
 
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
-
-		return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
+		System.out.println(populationType);
+		
+		if (populationType.equals(STATIC_POPULATION))
+			return new  Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
+		else
+			return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
 	}
 
 	SimulationEpoch parseSimulationEpoch(Element element,
@@ -1347,7 +1371,8 @@ public class SimulatorParser {
 
 		return samplingSchedule;
 	}
-
+	
+	
 	private void parseSampler(Element element, SamplingSchedule samplingSchedule) throws ParseException {
 
 		int frequency = -1;
