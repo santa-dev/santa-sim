@@ -11,9 +11,11 @@ import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.population.DynamicPopulation;
 import santa.simulator.population.Population;
+import santa.simulator.population.StaticPopulation;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.selectors.DynamicSelector;
 import santa.simulator.selectors.Selector;
+import santa.simulator.selectors.SimpleRouletteWheelSelector;
 
 /**
  * @author Andrew Rambaut
@@ -37,7 +39,8 @@ public class Simulation {
 		RANDOM,
 		ALL
 	};
-
+	
+	//Default constructor (dynamic)
     public Simulation (
             int populationSize,
             InoculumType inoculumType,
@@ -50,7 +53,6 @@ public class Simulation {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-
         this.selector = new DynamicSelector();
 
         // This pre-computes all possible mutation objects as singletons...
@@ -58,7 +60,30 @@ public class Simulation {
 
         population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
+ 
+    //Constructor for static population
+    public Simulation (
+    		int populationSize,
+    		InoculumType inoculumType,
+            GenePool genePool,
+            List<SimulationEpoch> epochs,
+            SamplingSchedule samplingSchedule,
+            String populationType){
+	
+    	this.populationSize = populationSize;
+        this.inoculumType = inoculumType;
+        this.epochs = epochs;
+        this.samplingSchedule = samplingSchedule;
+        this.genePool = genePool;
+        this.selector = new SimpleRouletteWheelSelector();
 
+        // This pre-computes all possible mutation objects as singletons...
+        Mutation.initialize();
+
+        population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+
+    }
+    
     public void run(int replicate, Logger logger) {
 
         samplingSchedule.initialize(replicate);
