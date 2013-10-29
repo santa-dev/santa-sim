@@ -17,6 +17,9 @@ public final class GenomeDescription {
 		setDescription(genomeLength, features, null);
 	}
 
+	public static void setHotSpots(List<RecombinationHotSpot> recombinationHotSpots){
+		GenomeDescription.recombinationHotSpots = recombinationHotSpots;		
+	}
 	public static void setDescription(int genomeLength,
 	                                  List<Feature> features,
 	                                  List<Sequence> sequences) {
@@ -125,6 +128,10 @@ public final class GenomeDescription {
 	public static List<Sequence> getSequences() {
 		return sequences;
 	}
+	
+	public static List<RecombinationHotSpot> getHotSpots(){
+		return recombinationHotSpots;
+	}		
 
 	public static Sequence getConsensus() {
 		throw new UnsupportedOperationException("Not implemented yet");
@@ -138,5 +145,6 @@ public final class GenomeDescription {
 	private static List<Sequence> sequences = null;
 
 	private static boolean isSet = false;
-
+	private static List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();
+	
 }

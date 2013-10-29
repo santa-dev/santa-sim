@@ -34,10 +34,11 @@ import santa.simulator.genomes.Sequence;
 import santa.simulator.genomes.SequenceAlphabet;
 import santa.simulator.genomes.SimpleGenePool;
 import santa.simulator.genomes.SimpleSequence;
+import santa.simulator.genomes.RecombinationHotSpot;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
 import santa.simulator.replicators.ClonalReplicator;
-import santa.simulator.replicators.RecombinantReplicator;
+import santa.simulator.replicators.RecombinantReplicatorWithHotSpots;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.AlignmentSampler;
 import santa.simulator.samplers.AlleleFrequencySampler;
@@ -68,6 +69,11 @@ public class SimulatorParser {
 	private final static String POPULATION_TYPE = "populationType";
 	private final static String STATIC_POPULATION = "staticPopulation";
 	private final static String DYNAMIC_POPULATION = "dynamicPopulation";
+	
+	private final static String RECOMBINATION_HOTSPOTS = "recombinationHotSpots";
+	private final static String RECOMBINATION_HOTSPOT = "recombinationHotSpot";
+	private final static String BOOST_FACTOR = "boostFactor";
+	
 	private final static String INOCULUM = "inoculum";
 	private final static String INOCULUM_NONE = "none";
 	private final static String INOCULUM_CONSENSUS = "consensus";
@@ -319,7 +325,8 @@ public class SimulatorParser {
 					!e.getName().equals(SAMPLING_SCHEDULE) &&
 					!e.getName().equals(EVENT_LOGGER) &&
 					!e.getName().equals(EPOCH) &&
-					!e.getName().equals(POPULATION_TYPE)) {
+					!e.getName().equals(POPULATION_TYPE) &&
+					!e.getName().equals(RECOMBINATION_HOTSPOTS)) {
 				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
@@ -332,7 +339,7 @@ public class SimulatorParser {
 		if (!GenomeDescription.isSet()) {
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + GENOME_DESCRIPTION + "> is missing");
 		}
-
+		
 		SamplingSchedule samplingSchedule = null;
 		GenePool genePool = null;
 
@@ -341,6 +348,8 @@ public class SimulatorParser {
 		Replicator defaultReplicator = null;
 		
 		String populationType = null;
+
+		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
 		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
@@ -354,12 +363,15 @@ public class SimulatorParser {
 				defaultFitnessFunction = parseFitnessFunction(e);
 			} else if (e.getName().equals(MUTATOR)) {
 				defaultMutator = parseMutator(e);
-			} else if (e.getName().equals(REPLICATOR)) {
-				defaultReplicator = parseReplicator(e);
+			} else if (e.getName().equals(RECOMBINATION_HOTSPOTS)){
+				recombinationHotSpots = parseRecombinationHotSpots(e);
+				GenomeDescription.setHotSpots(recombinationHotSpots);
 			} else if (e.getName().equals(POPULATION_TYPE)){
 				populationType = (String) e.getTextNormalize();
-			}
-			
+			} else if (e.getName().equals(REPLICATOR)) {
+				defaultReplicator = parseReplicator(e);
+			} 
+						
 		}
 
 		if (samplingSchedule == null)
@@ -380,13 +392,11 @@ public class SimulatorParser {
 		
 		if (populationType == null)
 			populationType = DYNAMIC_POPULATION;
-	//	if (populationType.equals((String)STATIC_POPULATION))
-		//	System.out.println(populationType+" "+STATIC_POPULATION+"!");
 		if ( (populationType.equals(DYNAMIC_POPULATION)) && (populationType.equals(STATIC_POPULATION)))
 				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + POPULATION_TYPE + "> is unrecognized!!"+populationType+STATIC_POPULATION);
 		
 		List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
-
+		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(EPOCH)) {
@@ -406,7 +416,7 @@ public class SimulatorParser {
 		else
 			return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
 	}
-
+	
 	SimulationEpoch parseSimulationEpoch(Element element,
 	                                     FitnessFunction fitnessFunction, Mutator mutator,
 	                                     Replicator replicator) throws ParseException {
@@ -541,6 +551,34 @@ public class SimulatorParser {
 		return feature;
 	}
 
+	
+	private RecombinationHotSpot parseRecombinationHotSpot(Element element) throws ParseException{		
+		RecombinationHotSpot hotspot = null;
+		double factor = 0;
+		FeatureAndSites segment = parseFeatureAndSites(element);
+		for (Object o : element.getChildren()){
+			Element e = (Element) o;
+			if (e.getName().equals(BOOST_FACTOR)){
+				factor =  parseDouble(e, 0, Double.MAX_VALUE);
+			}
+		}
+		hotspot = new RecombinationHotSpot(segment.sites,factor);
+		return hotspot;
+	}
+	
+	private List<RecombinationHotSpot> parseRecombinationHotSpots(Element element) throws ParseException{
+		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
+		for (Object o : element.getChildren()){
+			Element e = (Element) o;
+			RecombinationHotSpot segment = null;			
+			if (e.getName().equals(RECOMBINATION_HOTSPOT)){
+				segment = parseRecombinationHotSpot(e);
+				recombinationHotSpots.add(segment);
+			}
+		}
+		return recombinationHotSpots;		
+	}
+	
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
 		List<FitnessFactor> components = new ArrayList<FitnessFactor>();
 
@@ -1318,7 +1356,6 @@ public class SimulatorParser {
 				}
 
 			}
-
 			if (dualInfectionProbability < 0.0) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
 			}
@@ -1326,8 +1363,8 @@ public class SimulatorParser {
 			if (recombinationProbability < 0.0) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
 			}
-
-			return new RecombinantReplicator(dualInfectionProbability, recombinationProbability);
+	        
+			return new RecombinantReplicatorWithHotSpots(dualInfectionProbability, recombinationProbability);
 		} else  {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}
@@ -1355,10 +1392,6 @@ public class SimulatorParser {
 
 	private SamplingSchedule parseSamplingSchedule(Element element) throws ParseException {
 		SamplingSchedule samplingSchedule = new SamplingSchedule();
-
-//		if (element.getChildren().size() == 0) {
-//			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
-//		}
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;

@@ -24,7 +24,7 @@ public class Simulator {
     private double usedMemory() {
         Runtime rt = Runtime.getRuntime();
         return (rt.totalMemory() - rt.freeMemory()) / (1024*1024);
-    }
+    }    
 
     public void run() {
 
@@ -46,7 +46,7 @@ public class Simulator {
 
             Logger.getLogger("santa.simulator.memory").finest("Memory used = " + usedMemory() + "MB");
 
-        }
+        }   
 
         long time = System.currentTimeMillis() - startTime;
         Logger.getLogger("santa.simulator").finest("Time taken: " + time + " ms");
