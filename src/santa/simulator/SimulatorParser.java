@@ -392,9 +392,6 @@ public class SimulatorParser {
 		
 		if (populationType == null)
 			populationType = DYNAMIC_POPULATION;
-		if ( (populationType.equals(DYNAMIC_POPULATION)) && (populationType.equals(STATIC_POPULATION)))
-				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + POPULATION_TYPE + "> is unrecognized!!"+populationType+STATIC_POPULATION);
-		
 		List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
 		
 		for (Object o : element.getChildren()) {
@@ -409,12 +406,13 @@ public class SimulatorParser {
 
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
-		System.out.println(populationType);
 		
 		if (populationType.equals(STATIC_POPULATION))
 			return new  Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
-		else
+		else if (populationType.equals(DYNAMIC_POPULATION))
 			return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
+		else throw new ParseException("unrecognized populatioin type. should be either staticPopulation or dynamicPopulation.");
+		
 	}
 	
 	SimulationEpoch parseSimulationEpoch(Element element,
