@@ -49,9 +49,10 @@ public abstract class Population {
 
     public void initialize(List<Sequence> inoculum, int initialPopulationSize) {
         Genome[] ancestors;
-
+        
         genePool.initialize();
-
+        currentGeneration.clear();
+        lastGeneration.clear();
         if (inoculum.size() > 0) {
             // inoculum has sequences
             ancestors = new Genome[inoculum.size()];
@@ -115,11 +116,11 @@ public abstract class Population {
         for (Virus v : lastGeneration) {
             genePool.killGenome(v.getGenome());
         }
-
+///////////////////////////////////
         if (phylogeny != null) {
             phylogeny.addGeneration(generation, selectedParents);
         }
-
+///////////////////////////////
         statisticsKnown = false;
     }
 
