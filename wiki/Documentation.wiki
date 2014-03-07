@@ -490,7 +490,7 @@ The fitness function is controlled by a single parameter:
 
  * *<declineRate>*: a positive number indicating how severe older alleles are punished in terms of fitness.
 
-https://santa-sim.googlecode.com/svn/wiki/agedependent_fitness.png
+https://santa-sim.googlecode.com/svn/wiki/age%20dependent%20fitness%202.png
 
 === Exposure dependent fitness function: <exposureDependentFitness> ===
 
