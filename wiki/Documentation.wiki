@@ -2,7 +2,21 @@
 
 = Installation =
 
-*TODO*
+You will need the software Subversion (svn) to get the source code. Subversion is available at the following link:
+
+http://subversion.apache.org/packages
+
+After wards you can get the source code:
+
+svn checkout http://santa-sim.googlecode.com/svn/trunk/ santa-sim
+
+You will need ant to build the project. If you do not have ant on your machine you can get it at:
+
+http://ant.apache.org/bindownload.cgi
+
+In order to build the project change the directory to location of the file build.xml and run the command:
+
+ant
 
 = Invocation =
 
