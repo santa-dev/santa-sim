@@ -22,6 +22,8 @@ In order to build the project change the directory to location of the file build
 ant
 }}}
 
+A directory called dist will be created which contains the file santa.jar
+
 = Invocation =
 
 == Windows platforms ==
