@@ -448,7 +448,7 @@ fitness functions), considers unique _alleles_ formed by the selected
 feature sites. Individuals have a same allele if they have exactly the
 same nucleotide or amino acid sequence at the selected sites.
 
-The frequency dependent fitness function assigns a fitness to an
+The age dependent fitness function assigns a fitness to an
 individual based on the age of the allele in the population (since it
 last appeared), and assigns a lower fitness to alleles that have been
 continuously present in the population for a longer time, using the
