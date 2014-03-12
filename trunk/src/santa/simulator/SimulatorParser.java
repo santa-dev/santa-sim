@@ -39,6 +39,7 @@ import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
 import santa.simulator.replicators.ClonalReplicator;
 import santa.simulator.replicators.RecombinantReplicatorWithHotSpots;
+import santa.simulator.replicators.RecombinantReplicator;
 import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.AlignmentSampler;
 import santa.simulator.samplers.AlleleFrequencySampler;
@@ -160,6 +161,8 @@ public class SimulatorParser {
 
 	private final static String CLONAL_REPLICATOR = "clonalReplicator";
 	private final static String RECOMBINANT_REPLICATOR = "recombinantReplicator";
+	private final static String RECOMBINANT_REPLICATOR_WITH_HOTSPOTS = "recombinantReplicatorWithHotspots";
+
 	private final static String DUAL_INFECTION_PROBABILITY = "dualInfectionProbability";
 	private final static String RECOMBINATION_PROBABILITY = "recombinationProbability";
 
@@ -1331,7 +1334,7 @@ public class SimulatorParser {
 		Element e = (Element)element.getChildren().get(0);
 		if (e.getName().equals(CLONAL_REPLICATOR)) {
 			return new ClonalReplicator();
-		} else if (e.getName().equals(RECOMBINANT_REPLICATOR)) {
+		} else if (e.getName().equals(RECOMBINANT_REPLICATOR_WITH_HOTSPOTS)) {
 			double dualInfectionProbability = -1.0;
 			double recombinationProbability = -1.0;
 
@@ -1363,7 +1366,44 @@ public class SimulatorParser {
 			}
 	        
 			return new RecombinantReplicatorWithHotSpots(dualInfectionProbability, recombinationProbability);
-		} else  {
+		} 
+		
+		else if (e.getName().equals(RECOMBINANT_REPLICATOR)) {
+			double dualInfectionProbability = -1.0;
+			double recombinationProbability = -1.0;
+
+			for (Object o : e.getChildren()) {
+				Element e1 = (Element)o;
+				if (e1.getName().equals(DUAL_INFECTION_PROBABILITY)) {
+					try {
+						dualInfectionProbability = parseDouble(e1, 0.0, 1.0);
+					} catch (ParseException pe) {
+						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+					}
+				} else if (e1.getName().equals(RECOMBINATION_PROBABILITY)) {
+					try {
+						recombinationProbability = parseDouble(e1, 0.0, 1.0);
+					} catch (ParseException pe) {
+						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+					}
+				} else {
+					throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+				}
+
+			}
+			if (dualInfectionProbability < 0.0) {
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
+			}
+
+			if (recombinationProbability < 0.0) {
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
+			}
+	        
+			return new RecombinantReplicator(dualInfectionProbability, recombinationProbability);
+		} 
+		
+		
+			else  {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}
 

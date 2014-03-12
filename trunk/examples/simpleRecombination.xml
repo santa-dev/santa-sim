@@ -1,0 +1,145 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+
+        <replicates>1</replicates>
+
+        <simulation>
+
+            <genome>
+                <length>1302</length>
+	            <sequences>
+	                CCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGC
+	            </sequences>
+	            <feature>
+		            <name>CDS</name>
+		            <type>aminoAcid</type>
+		            <coordinates>1-1302</coordinates>
+	            </feature>
+           </genome>
+
+            <population>
+                <populationSize>1000</populationSize>
+	            <inoculum>all</inoculum>
+            </population>
+		
+		<populationType>staticPopulation</populationType>
+
+
+	
+
+            <fitnessFunction>
+                <purifyingFitness id="background">
+	                <feature>CDS</feature>
+	                <sites>1-201,203-279,281-434</sites>
+                	<rank>
+                		<order>observed</order>
+                        <probableSet>3</probableSet>
+                		<breakTies>random</breakTies>
+                	</rank>
+                	<fitness>
+                		<lowFitness>0.9</lowFitness>
+		                <minimumFitness>0.1</minimumFitness>
+                	</fitness>
+                </purifyingFitness>
+                <empiricalFitness id="RC103">
+	                <feature>CDS</feature>
+	                <sites>202</sites>
+                    <!-- REPLICATION CAPACITY 103 -->
+                    <values>
+                        0.01 <!-- A -->
+                        0.01 <!-- C -->
+                        0.01 <!-- D -->
+                        0.01 <!-- E -->
+                        0.01 <!-- F-->
+                        0.01 <!-- G -->
+                        0.01 <!-- H -->
+                        0.01 <!-- I -->
+                        1    <!-- K -->
+                        0.01 <!-- L -->
+                        0.01 <!-- M -->
+                        0.85 <!-- N -->
+                        0.01 <!-- P -->
+                        0.01 <!-- Q -->
+                        0.01 <!-- R -->
+                        0.01 <!-- S -->
+                        0.01 <!-- T -->
+                        0.01 <!-- V -->
+                        0.01 <!-- W -->
+                        0.01 <!-- Y -->
+                    </values>
+                </empiricalFitness>
+                <empiricalFitness id="RC181">
+	                <feature>CDS</feature>
+	                <sites>280</sites>
+                    <!-- REPLICATION CAPACITY 181 -->
+                    <values>
+                        0.01 <!-- A -->
+                        0.70 <!-- C -->
+                        0.01 <!-- D -->
+                        0.01 <!-- E -->
+                        0.01 <!-- F-->
+                        0.01 <!-- G -->
+                        0.01 <!-- H -->
+                        0.01 <!-- I -->
+                        0.01 <!-- K -->
+                        0.01 <!-- L -->
+                        0.01 <!-- M -->
+                        0.01 <!-- N -->
+                        0.01 <!-- P -->
+                        0.01 <!-- Q -->
+                        0.01 <!-- R -->
+                        0.01 <!-- S -->
+                        0.01 <!-- T -->
+                        0.01 <!-- V -->
+                        0.01 <!-- W -->
+                        1 <!-- Y -->
+                    </values>
+                </empiricalFitness>
+            </fitnessFunction>
+
+	        <mutator>
+	            <nucleotideMutator>
+	                <mutationRate>2.5E-5</mutationRate>
+	                <rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+	            </nucleotideMutator>
+	        </mutator>
+
+	        <replicator>
+	            <recombinantReplicator>
+			<dualInfectionProbability>0.05</dualInfectionProbability>
+			<recombinationProbability>0.001</recombinationProbability>
+		</recombinantReplicator>
+	        </replicator>
+
+            <epoch>
+                <name>epoch1</name>
+                <generationCount>500</generationCount>
+            </epoch>
+
+           
+            <samplingSchedule>
+
+                <sampler>
+                    <atFrequency>1</atFrequency>
+                    <fileName>puri01psE4_freqRT103.csv</fileName>
+                    <alleleFrequency>
+	                    <feature>CDS</feature>
+                        <sites>202</sites>
+                    </alleleFrequency>
+                </sampler>
+                <sampler>
+                    <atFrequency>1</atFrequency>
+                    <fileName>puri01psE4_freqRT181.csv</fileName>
+                    <alleleFrequency>
+	                    <feature>CDS</feature>
+                        <sites>280</sites>
+                    </alleleFrequency>
+                </sampler>
+            </samplingSchedule>
+        </simulation>
+</santa>
