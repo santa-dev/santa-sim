@@ -22,7 +22,7 @@
 	
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac source="1.5" srcdir="${src}" destdir="${build}"
+        <javac target="1.5" source="1.5" srcdir="${src}" destdir="${build}"
             classpath="${lib}/commons-math-2.1.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
             <include name="santa/**"/>
         </javac>
