@@ -125,10 +125,10 @@
 	        </mutator>
 
 	        <replicator>
-	            <recombinantReplicator>
+	            <recombinantReplicatorWithHotspots>
 			<dualInfectionProbability>0.05</dualInfectionProbability>
 			<recombinationProbability>0.001</recombinationProbability>
-		</recombinantReplicator>
+		</recombinantReplicatorWithHotspots>
 	        </replicator>
 
             <epoch>
