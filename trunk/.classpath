@@ -5,6 +5,5 @@
 	<classpathentry kind="lib" path="lib/commons-math-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/jebl-0.3.jar"/>
-	<classpathentry kind="lib" path="lib/opencsv-2.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
