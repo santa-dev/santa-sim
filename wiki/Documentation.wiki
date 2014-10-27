@@ -1,4 +1,4 @@
-#summary Documentation
+cl#summary Documentation
 
 = Installation =
 
@@ -541,7 +541,7 @@ genome of one or the other parent, switching between these two genomes
 at random sites. In both cases, occasional mistakes during the copying
 are modelled by the mutation operator <mutator>.
 
-=== Clonal replication: <cloncalReplicator> ===
+=== Clonal replication: <clonalReplicator> ===
 
 The clonal replicator simply copies the genome of a single parent. It
 has no parameters that need to be defined.
@@ -550,7 +550,7 @@ An example of a clonal replicator:
 
 {{{
 <replicator>
-    <cloncalReplicator />
+    <clonalReplicator />
 </replicator>
 }}}
 
