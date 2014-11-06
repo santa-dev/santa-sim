@@ -393,8 +393,10 @@ public class SimulatorParser {
 		if (defaultReplicator == null)
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + REPLICATOR + "> is missing");
 		
-		if (populationType == null)
-			populationType = DYNAMIC_POPULATION;
+		if (populationType == null) {
+			populationType = STATIC_POPULATION;
+        }
+
 		List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
 		
 		for (Object o : element.getChildren()) {
