@@ -1,4 +1,4 @@
-cl#summary Documentation
+#summary Documentation
 
 = Installation =
 
@@ -305,7 +305,7 @@ This may be overridden by:
 
  * *<sites>*: A comma separated list of single sites or site ranges within the feature. Note that if the feature is an amino acid feature, this refers to amino acid sites, while if the feature is a nucleotide feature, this refers to nucleotide sites.
 
-=== Emperical fitness function: <empiricalFitness> ===
+=== Empirical fitness function: <empiricalFitness> ===
 
 This fitness function defines the fitness for each state, and acts on each site individually.
 
@@ -399,7 +399,7 @@ _probable_ states.
  * *<order>*: how the states should be ordered. Possible values are:
    * *observed*: states are ordered by their frequency in the <sequences> alignment defined in the <genome> description, by decreasing frequency.
    * *chemical*: amino acids are ordered so that the amino acids in the set with chemical properties similar to the most frequent amino acid in the <sequences> alignment defined in the <genome> description, are ranked before the other states. The sets (in no particular order, and separated by |) are: AVIL|F|CM|G|ST|W|Y|P|DE|NQ|HKR.
-   * *hydropathy*: idem but using a partition based on hydrophathy: IVLFCMAW|GTSYPH|DEKNQR.
+   * *hydropathy*: idem but using a partition based on hydropathy: IVLFCMAW|GTSYPH|DEKNQR.
    * *volume*: idem but using a partition based on volume: GAS|CDPNT|EVQH|MILKR|FYW
    * A custom partition of the states, which is defined by listing them separated by '|' (like the partitions defined above).
    * A custom order of _probable_ states, which is defined by listing the _probable_ states from most fit to least fit. (e.g. `QDNTP`)
@@ -416,7 +416,7 @@ Fitness values are assigned to the ranked states, either by specifying
 a list of fitness values (with <values>) or based on a piece wise
 linear model (with <lowFitness> and <minimumFitness>):
 
- * *<values>*: A decreasing list of relative fitness vlaues (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by white-space (space or new-lines). The most fit should be assigned a value of 1.
+ * *<values>*: A decreasing list of relative fitness values (4 for a nucleotide feature or 20 for an amino acid feature), all between 0 and 1, separated by white-space (space or new-lines). The most fit should be assigned a value of 1.
 
  * *<lowFitness>* and *<minimumFitness>*: Defines a piece wise linear model as in the figure below (*TODO*).
 
@@ -457,7 +457,7 @@ An example of a frequency dependent fitness function:
 
 The fitness function is controlled by a single parameter:
 
- * *<shape>*: a positive number indicating how severe more frequent alleles are punished: e.g. 0.5 for square root function, 1 for linear, 2 for quandratic, ...
+ * *<shape>*: a positive number indicating how severe more frequent alleles are punished: e.g. 0.5 for square root function, 1 for linear, 2 for quadratic, ...
 
 https://santa-sim.googlecode.com/svn/wiki/frequency%20dependent%20fitness.png
 
@@ -749,6 +749,46 @@ This may be overridden by:
 
 === Sampling genealogies: <tree> ===
 
+In addition to sampling sequences, the genealogies that gave rise to
+those samples may also be sampled.  For example, the following configuration
+will sample a NEXUS format tree with 10 named sequences at the leaves.
+
+{{{
+    <sampler>
+        <atFrequency>100</atFrequency>
+        <fileName>santa_out.trees</fileName>
+        <tree>
+   	    <sampleSize>10</sampleSize>
+   	    <format>NEXUS</format>
+   	    <label>sequence_%s</label>
+        </tree>
+    </sampler>
+}}}
+
+ * *<sampleSize>*: number of leaves in the sampled trees.
+
+ * *<format>*: format of the genealogy trees to be produced:
+   * *NEXUS*: NEXUS format
+   * *NEWICK*: NEWICK format
+
+
+ * *<format>*: labels associated with the leaves of each tree.   
+ As with `<label>` elements in alignment samplers,  the strings '%r', '%g', and '%s' are substituted with respectively the replicate index, the generation number, and the index of the sequence within the sample. The format provided here must provide unique names across all sampled taxa, but should provide consistent names across samples.  For example, a value of `name` would not work because all taxa would have the same name.  `sequence_%s_%g` also would not work because the taxon names would change across samples.   A value of `sequence_%s` satisfies all requirements and works well.   An incorrect value here results in a Java exception thrown from deep in the `jebl.jar` library.
+
+
+
+Although the exact interaction between `<sampler>` blocks
+is not clear, experience indicates that a sampler with a
+`<tree>`  element must be preceded by an
+sampler with an `<alignment>` element.   The value of 
+`<sampleSize>` in the tree sampler must be less than or equal to 
+the `<sampleSize>` value in the alignment sampler.  `<alignment>`  and `<tree>` elements
+may not coexist in a single  `<sampler>` block; if they do, the first one
+will silently take precedence.
+Syntactic errors
+may result in a silently truncated tree file.
+
+
 *TODO*
 
 == Advanced configuration file features ==
@@ -832,11 +872,11 @@ The attributes _id_ and _ref_ may be used for the following objects:
 === Using run-time parameters ===
 
 The configuration file supports the use of parameters, for which
-values may be defined at run time. This may be done for all numberic
+values may be defined at run time. This may be done for all numeric
 configuration parameters. Parameters must start with a '$' sign.
 
 For example, the following population block allows you to specify the
-actualy population size as a run-time parameter, and would be useful
+actual population size as a run-time parameter, and would be useful
 to study the effect of population size on the simulation, by running
 the simulator with different values for the parameter
 _populationSize_.
