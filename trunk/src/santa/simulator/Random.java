@@ -71,5 +71,9 @@ public class Random {
         }
     }
     
+    public static void setSeed(long seed) {
+    	((RandomDataImpl) randomData).reSeed(seed);
+    }
+    
 	public static RandomData randomData = new RandomDataImpl();
 }

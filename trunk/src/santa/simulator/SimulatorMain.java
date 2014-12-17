@@ -47,8 +47,11 @@ public class SimulatorMain {
                 System.exit(1);
             }
 
-			// @todo - it would be good to be able to report the RNG seed here and set it
-
+			// A special parameter 'seed' is used to set the RNG seed.
+            if (parameterValueMap.containsKey("seed")) {
+            	Random.setSeed(Long.parseLong(parameterValueMap.get("seed"), 10));
+            }
+            
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
 	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
 
