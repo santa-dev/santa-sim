@@ -24,15 +24,13 @@ public class Phylogeny {
 		availableLineages.addAll(lineages);
 		lineages.clear();
 
+		mrca = createLineage();
+		mrca.parent = null;
+		mrca.generation = 0;
+		mrca.childCount = 0;
 		for (int i = 0; i < populationSize; i++) {
-			Lineage child = createLineage();
-
-			extantLineages[i] = child;
-			child.parent = null;
-			child.generation = 0;
-			child.childCount = 0;
+			extantLineages[i] = mrca;
 		}
-		mrca = extantLineages[0];
 	}
 
 	public void addGeneration(int generation, List<Integer> selectedParents) {
@@ -119,6 +117,47 @@ public class Phylogeny {
 		}
 	}
 
+	/*
+	 * Coalesce the lineages into a tree.
+	 *
+	 * Imagine a tree with leaves at the bottom and the root at
+	 * the top.  We start out knowing only a list of leaves and
+	 * want to populate the internal nodes of the tree with a
+	 * branching structure that reflects the lineage of the
+	 * leaves.
+	 *
+	 * In this routine, the leaves of the tree are instances of
+	 * 'Lineage', which forms a linked list pointing to parent lineage
+	 * objects, one per generation.  Each lineage element in the list
+	 * list holds a 'count' of the number of leaves that are reachable
+	 * from that object.  While traversing the linked list of lineage
+	 * objects, the count changes at each point where two or more
+	 * branches coalesce into one.  Each lineage also contains a
+	 * 'generation' that indcates in which generation the lineage was
+	 * created.
+	 *
+	 * At all times, leaves descended
+	 * from the same immediate common ancestor will reference the same
+	 * lineage object representing that branch point.  This invarianet
+	 * is maintianed as the list of leaves is changed during tree
+	 * construction.  
+	 * 
+	 * To construct the tree, we move up the tree toward the root,
+	 * creating internal nodes in the tree and coalescing identical
+	 * lineages as we go.  To start, choose the leftmost lineage with
+	 * the highest generation number.  Collect all other leaves
+	 * referencing the same lineage; these are siblings.  Create an
+	 * internal node with the siblings as children.  Replace the
+	 * siblings with a single leaf that references the next branch
+	 * point up the lineage.  Repeat until there is only one remaining
+	 * lineage and the tree has been constructed.
+	 * 
+	 * If the leaves are processed in decreasing
+	 * generation order, the result will be a tree with a single
+	 * MRCA.  Previous versions of this code processed the leaves
+	 * left-to-right regardless of generation, and that is
+	 * guarranteed to fail in some cases.
+	 */
 	public RootedTree reconstructPhylogeny(int[] sample, List<Taxon> taxa) {
 
 		SimpleRootedTree tree = new SimpleRootedTree();
@@ -161,53 +200,60 @@ public class Phylogeny {
 		int lineageCount = sample.length;
 		List<Node> children = new ArrayList<Node>();
 		while (lineageCount > 1) {
+
+			// find the left-most, maximum generation lineage.
 			int i = 0;
-			while (i < lineageCount) {
-				children.clear();
-
-				// find matches
-				int j = i + 1;
-				while (j < lineageCount) {
-					if (lineages[i] == lineages[j]) {
-						children.add(nodes[j]);
-
-						// move the lineage/node from the end of the arrays
-						lineages[j] = lineages[lineageCount - 1];
-						lineages[lineageCount - 1] = null;
-						nodes[j] = nodes[lineageCount - 1];
-						lineageCount --;
-					} else {
-						j++;
-					}
-				}
-
-				// if node i matched anything then create an internal node
-				if (children.size() > 0) {
-					children.add(nodes[i]);
-					Node node = tree.createInternalNode(children);
-					tree.setHeight(node, tipGeneration - lineages[i].generation);
-					nodes[i] = node;
-
-					if (lineageCount > 1) {
-						// we still have lineages to coalesce
-
-						int currentCount = lineages[i].count;
-						lineages[i] = lineages[i].parent;
-						// find the next shared node for this lineage - this is found when
-						// the count increases by one
-						while (lineages[i] != null && lineages[i].count == currentCount) {
-							lineages[i] = lineages[i].parent;
-						}
-						if (lineages[i] == null) {
-							// the phylogeny has not fully coalesced.
-							return null;
-						}
-					}
-				} else {
-					i++;
+			int maxgen = 0;
+			for (int ii = 0; ii < lineageCount; ii++) {
+				if (maxgen < lineages[ii].generation) {
+					maxgen = lineages[ii].generation;
+					i = ii;
 				}
 			}
-		}
+
+			// must have one or more lineages to the right or we won't have anything to coalesce.
+			assert i < lineageCount-1;
+			
+			// find siblings
+			children.clear();
+			int j = i + 1;
+			while (j < lineageCount) {
+				if (lineages[i] == lineages[j]) {
+					children.add(nodes[j]);
+
+					// move the lineage/node from the end of the arrays
+					lineages[j] = lineages[lineageCount - 1];
+					lineages[lineageCount - 1] = null;
+					nodes[j] = nodes[lineageCount - 1];
+					lineageCount --;
+				} else {
+					j++;
+				}
+			}
+
+			// expect to coalesce at least two lineages each time through this loop
+			assert children.size() > 0;
+
+			children.add(nodes[i]);
+			Node node = tree.createInternalNode(children);
+			tree.setHeight(node, tipGeneration - lineages[i].generation);
+			nodes[i] = node;
+
+			if (lineageCount > 1) {
+				// we still have lineages to coalesce
+
+				int currentCount = lineages[i].count;
+				while (lineages[i].parent != null) {
+					lineages[i] = lineages[i].parent;
+					if (lineages[i].count != currentCount) {
+						break;
+					}
+				}
+
+				// sanity check - should never happen
+				assert lineages[i] != null;
+			}
+		} // end-while
 
 		return tree;
 	}
