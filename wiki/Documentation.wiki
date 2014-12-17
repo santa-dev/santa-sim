@@ -750,8 +750,17 @@ This may be overridden by:
 === Sampling genealogies: <tree> ===
 
 In addition to sampling sequences, the genealogies that gave rise to
-those samples may also be sampled.  For example, the following configuration
-will sample a NEXUS format tree with 10 named sequences at the leaves.
+those samples may also be sampled.  For example, the configuration below
+produces a NEXUS format ancestral tree for 10 random viruses selected
+from the population every 100 generations.
+
+As with the `<alignment>` sampler, a random subset of viruses is
+selected from the population 
+each time the sampler is run.  It is possible to get a complete
+picture of the branching process if the tree sample size matches the
+population size.  The resulting trees may be viewed with
+[http://tree.bio.ed.ac.uk/software/figtree/ figtree] or
+other tree visualization software.
 
 {{{
     <sampler>
@@ -771,22 +780,9 @@ will sample a NEXUS format tree with 10 named sequences at the leaves.
    * *NEXUS*: NEXUS format
    * *NEWICK*: NEWICK format
 
-
  * *<format>*: labels associated with the leaves of each tree.   
  As with `<label>` elements in alignment samplers,  the strings '%r', '%g', and '%s' are substituted with respectively the replicate index, the generation number, and the index of the sequence within the sample. The format provided here must provide unique names across all sampled taxa, but should provide consistent names across samples.  For example, a value of `name` would not work because all taxa would have the same name.  `sequence_%s_%g` also would not work because the taxon names would change across samples.   A value of `sequence_%s` satisfies all requirements and works well.   An incorrect value here results in a Java exception thrown from deep in the `jebl.jar` library.
 
-
-
-Although the exact interaction between `<sampler>` blocks
-is not clear, experience indicates that a sampler with a
-`<tree>`  element must be preceded by an
-sampler with an `<alignment>` element.   The value of 
-`<sampleSize>` in the tree sampler must be less than or equal to 
-the `<sampleSize>` value in the alignment sampler.  `<alignment>`  and `<tree>` elements
-may not coexist in a single  `<sampler>` block; if they do, the first one
-will silently take precedence.
-Syntactic errors
-may result in a silently truncated tree file.
 
 
 *TODO*
