@@ -311,7 +311,9 @@ This fitness function defines the fitness for each state, and acts on each site 
 
 All that is needed to define an empirical fitness function is a list
 of fitness values for each of the possible states (20 for an amino
-acid feature, 4 for a nucleotide feature).
+acid feature, 4 for a nucleotide feature).   When working with an
+amino acid feature, a stop codon (TAA, TAG, or TGA) always has
+a fitness of -infinity.
 
 An example of an empirical fitness function:
 
