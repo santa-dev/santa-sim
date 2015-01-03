@@ -28,8 +28,7 @@ public interface FitnessFactor {
 	double computeLogFitness(byte[] states);
 
     /**
-     * @param logFitness Current log fitness contribution
-     * @return Update the log fitness of the given genome which it will have after the given
+	 * @return Update the log fitness of the given genome which it will have after the given
      *         mutation is applied.
      */
     double getLogFitnessChange(StateChange change);

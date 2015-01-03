@@ -12,11 +12,13 @@ import java.util.*;
  * possibly using chemical properties, or simply specified.
  * 
  * Different configuration options:
+ * {@code
  *   <rank>
  *      <breakTies>random|ordered</breakTies>
  *      <order>observed|XYZ|chemical|hydropathy|volume</order>
  *      <probableSet>x</probableSet> <!-- optional -->
  *   </rank>
+ * }
  */
 public class PurifyingFitnessRank {
 
@@ -32,7 +34,6 @@ public class PurifyingFitnessRank {
 
 		SequenceAlphabet alphabet = feature.getAlphabet();
 		int siteCount = feature.getLength();
-
 		if (probableSetSize < 1) {
 			probableSetSize = stateOrder.size();
 		}

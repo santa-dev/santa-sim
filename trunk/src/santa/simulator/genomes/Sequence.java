@@ -33,7 +33,7 @@ public interface Sequence {
      * position (0  ..  length() - 1).
      *
      * The position is always the nucleotide position. If the alphabet
-     * is amino acids, then position must be <= length() - 3
+     * is amino acids, then position must be &lt;= length() - 3
      */
     byte getState(SequenceAlphabet alphabet, int i);
 
