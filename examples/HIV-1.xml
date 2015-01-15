@@ -11,7 +11,8 @@
 			<feature>
 				<name>PR</name>
 				<type>aminoAcid</type>
-				<coordinates>2253-2550</coordinates>
+				<!-- Ensure feature is exactly 99 codons long -->
+				<coordinates>2253-2549</coordinates>
 			</feature>
 			<feature>
 				<name>RT</name>

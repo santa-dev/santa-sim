@@ -46,6 +46,15 @@ public final class GenomeDescription {
 			for (int i = 0; i < genomeLength; i++) {
 				featureSiteTable[i] = -1;
 			}
+			if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
+				int featureLength = feature.getNucleotideLength();
+				if ((featureLength % 3) != 0) {
+					// to avoid an ArrayIndexOutOfBoundsException
+					// in SimpleGenome(BaseGenome).getChanges(), ensure that the total length
+					// of AminoAcid features is an even multiple of 3 nucleotides.
+					throw new IllegalArgumentException("Total length of AminoAcid feature \"" + feature.getName() + "\" must be an even number of codons long (currently " + String.format("%.1f", featureLength/3.0) + " codons as specified).");
+				}
+			}
 			int[] genomeSiteTable = new int[feature.getNucleotideLength()];
 			for (int i = 0; i < genomeSiteTable.length; i++) {
 				genomeSiteTable[i] = -1;
