@@ -1,4 +1,6 @@
 # santa-sim
+SANTA simulates the evolution of a population of gene sequences forwards through time. It models the underlying biological processes as discrete components; replication (including recombination), mutation, fitness and selection
+
 SANTA Overview
 
 Population, individuals and genomes
