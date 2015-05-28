@@ -2,8 +2,7 @@ package santa.simulator;
 
 import java.util.Collection;
 
-import org.apache.commons.math.random.RandomData;
-import org.apache.commons.math.random.RandomDataImpl;
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 /**
  * @author Andrew Rambaut
@@ -72,8 +71,8 @@ public class Random {
     }
     
     public static void setSeed(long seed) {
-    	((RandomDataImpl) randomData).reSeed(seed);
+    	((RandomDataGenerator) randomData).reSeed(seed);
     }
     
-	public static RandomData randomData = new RandomDataImpl();
+	public static RandomDataGenerator randomData = new RandomDataGenerator();
 }

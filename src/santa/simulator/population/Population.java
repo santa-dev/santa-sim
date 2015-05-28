@@ -148,8 +148,10 @@ public abstract class Population {
         int count = 0;
         for (int i = 0; i < sample.length; ++i) {
             for (int j = i+1; j < sample.length; ++j) {
-                double d = computeDistance(sample[i], sample[j]);
-
+				// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
+				// for now just comment this out - revisit later - csw
+                // double d = computeDistance(sample[i], sample[j]);
+            	double d = 1.0;
                 if (d > maxDiversity)
                     maxDiversity = d;
                 meanDiversity += d;

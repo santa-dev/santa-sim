@@ -55,9 +55,6 @@ public class Simulation {
         this.genePool = genePool;
         this.selector = new DynamicSelector();
 
-        // This pre-computes all possible mutation objects as singletons...
-        Mutation.initialize();
-
         population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
  
@@ -76,9 +73,6 @@ public class Simulation {
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
         this.selector = new SimpleRouletteWheelSelector();
-
-        // This pre-computes all possible mutation objects as singletons...
-        Mutation.initialize();
 
         population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
 

@@ -1,6 +1,14 @@
 package santa.simulator.mutators;
 
+import java.util.SortedSet;
+
 import santa.simulator.Random;
+import santa.simulator.IndelModel;
+import santa.simulator.genomes.Genome;
+import santa.simulator.genomes.Mutation;
+import santa.simulator.genomes.Insertion;
+import santa.simulator.genomes.Deletion;
+import santa.simulator.genomes.SimpleSequence;
 
 /**
  * @author Andrew Rambaut
@@ -14,11 +22,14 @@ public class NucleotideMutator extends AbstractMutator {
      * @param mutationRate mutation rate per nucleotide site
      * @param transitionBias probability of a transition
      */
-    public NucleotideMutator(double mutationRate, double transitionBias, double[] rateBiases) {
+    public NucleotideMutator(double mutationRate, double transitionBias, double[] rateBiases,  double insertProb, double deleteProb, IndelModel indelModel) {
 
         super(mutationRate);
 
         this.rateBiases = rateBiases;
+		this.indelModel = indelModel;
+		this.insertProb = insertProb;
+		this.deleteProb = deleteProb;
 
         if (rateBiases != null) {
             ti = 0;
@@ -99,8 +110,55 @@ public class NucleotideMutator extends AbstractMutator {
         }
     }
 
+
+	@Override public SortedSet<Mutation> mutate(Genome genome) {
+		SortedSet<Mutation> mutations = super.mutate(genome);
+
+		// total probability space, { insertion, deletion, neither }
+		// probability of getting an insertion *or* deletion.
+		double indelProb = insertProb + deleteProb;
+
+		// sample from uniform distribution over total probability.
+		double r = santa.simulator.Random.nextUniform(0.0, 2.0);
+
+		
+		if (r < indelProb) {
+			// Doing an indel....
+			if (r < insertProb) {	// Insertion!
+				int pos = Random.nextInt(0, genome.getLength());	// start position
+				int count = indelModel.nextLength();				// insertion length
+
+				if (count != 0) {
+					// what is it filled with?
+					// generate a random sequence of the appropriate length
+					// See Issue #2 - https://github.com/matsengrp/santa-sim/issues/2
+					byte states[] = new byte[count];
+					for (int i = 0; i < count; i++) {
+						states[i] = (byte) Random.nextInt(0,  3);
+					}
+					SimpleSequence seq = new SimpleSequence(states);
+					mutations.add(new Insertion(pos, seq));
+				}
+			} else {	// Deletion!
+				int pos = 0;	// start position
+				if (genome.getLength() > 1)
+					pos = Random.nextInt(0, genome.getLength() - 1);
+
+				int count = indelModel.nextLength(); // deletion length
+				if (count != 0)
+					mutations.add(new Deletion(pos, count));
+			}
+		}
+		return mutations;
+    }
+
+	
+
     private final double ti, tv;
     private double[] rateBiases;
     private double[][] rateBiasMatrix;
+    private IndelModel indelModel;
+    private double insertProb;
+	private double deleteProb;
 
 }

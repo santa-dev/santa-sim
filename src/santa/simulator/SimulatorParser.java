@@ -47,6 +47,7 @@ import santa.simulator.samplers.Sampler;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
+import santa.simulator.IndelModel;
 
 /**
  * @author Andrew Rambaut
@@ -158,6 +159,11 @@ public class SimulatorParser {
 	private final static String MUTATION_RATE = "mutationRate";
 	private final static String TRANSITION_BIAS = "transitionBias";
 	private final static String RATE_BIAS = "rateBias";
+	private final static String MODEL = "model";
+	private final static String INDEL_MODEL = "indelmodel";
+	private final static String INDEL_PROB = "indelprob";
+	private final static String INSERT_PROB = "insertprob";
+	private final static String DELETE_PROB = "deleteprob";
 
 	private final static String CLONAL_REPLICATOR = "clonalReplicator";
 	private final static String RECOMBINANT_REPLICATOR = "recombinantReplicator";
@@ -356,25 +362,25 @@ public class SimulatorParser {
 		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
-			if (e.getName().equals(GENE_POOL)) {
+			String name = e.getName();
+			if (name.equals(GENE_POOL)) {
 				genePool = parseGenePool(e);
-			} else if (e.getName().equals(SAMPLING_SCHEDULE)) {
+			} else if (name.equals(SAMPLING_SCHEDULE)) {
 				samplingSchedule = parseSamplingSchedule(e);
-			} else if (e.getName().equals(EVENT_LOGGER)) {
+			} else if (name.equals(EVENT_LOGGER)) {
 				parseEventLogger(e);
-			} else if (e.getName().equals(FITNESS_FUNCTION)) {
+			} else if (name.equals(FITNESS_FUNCTION)) {
 				defaultFitnessFunction = parseFitnessFunction(e);
-			} else if (e.getName().equals(MUTATOR)) {
+			} else if (name.equals(MUTATOR)) {
 				defaultMutator = parseMutator(e);
-			} else if (e.getName().equals(RECOMBINATION_HOTSPOTS)){
+			} else if (name.equals(RECOMBINATION_HOTSPOTS)){
 				recombinationHotSpots = parseRecombinationHotSpots(e);
 				GenomeDescription.setHotSpots(recombinationHotSpots);
-			} else if (e.getName().equals(POPULATION_TYPE)){
+			} else if (name.equals(POPULATION_TYPE)){
 				populationType = (String) e.getTextNormalize();
-			} else if (e.getName().equals(REPLICATOR)) {
+			} else if (name.equals(REPLICATOR)) {
 				defaultReplicator = parseReplicator(e);
 			} 
-						
 		}
 
 		if (samplingSchedule == null)
@@ -1207,7 +1213,7 @@ public class SimulatorParser {
 	 * @return the number list
 	 * @throws ParseException
 	 */
-	private double[] parseNumberList(Element element) throws ParseException {
+	public static double[] parseNumberList(Element element) throws ParseException {
 		String text = element.getTextNormalize();
 		String[] values = text.split("\\s*,\\s*|\\s+");
 		double[] numbers = new double[values.length];
@@ -1276,56 +1282,112 @@ public class SimulatorParser {
 
 		Element e = (Element)element.getChildren().get(0);
 
+
 		if (e.getName().equals(NUCLEOTIDE_MUTATOR)) {
 			double mutationRate = -1.0;
 			double transitionBias = -1.0;
 			double rateBiases[] = null;
+			IndelModel indelModel = null;
+			double insertProb = -1.0;
+			double deleteProb = -1.0;
 
-			for (Object o : e.getChildren()) {
-				Element e1 = (Element)o;
-				if (e1.getName().equals(MUTATION_RATE)) {
+			try {
+				for (Object o : e.getChildren()) {
+					Element e1 = (Element)o;
 					try {
-						mutationRate = parseDouble(e1, 0.0, Double.MAX_VALUE);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else if (e1.getName().equals(TRANSITION_BIAS)) {
-					try {
-						transitionBias = parseDouble(e1, 0.0, Double.MAX_VALUE);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else if (e1.getName().equals(RATE_BIAS)) {
-					try {
-						rateBiases = parseNumberList(e1);
-						if (rateBiases.length != 12) {
-							throw new ParseException("expected 12 rate biases, got " + rateBiases.length);
+						// this should really be a switch statement if we could use a modern java implementation...
+						if (e1.getName().equals(MUTATION_RATE)) {
+							mutationRate = parseDouble(e1, 0.0, Double.MAX_VALUE);
+						} else if (e1.getName().equals(TRANSITION_BIAS)) {
+							transitionBias = parseDouble(e1, 0.0, Double.MAX_VALUE);
+						} else if (e1.getName().equals(RATE_BIAS)) {
+							rateBiases = parseNumberList(e1);
+							if (rateBiases.length != 12) {
+								throw new ParseException("expected 12 rate biases, got " + rateBiases.length);
+							}
+						} else if (e1.getName().equals(INSERT_PROB)) {
+							// http://abacus.gene.ucl.ac.uk/software/indelible/manual/model.shtml#[indelmodel]
+							if (insertProb != -1.0) {
+								throw new ParseException("insertion probability is already set - see previous <" + INSERT_PROB + "> or <" + INDEL_PROB + ">.");
+							}
+							insertProb = parseDouble(e1, 0.0, 1.0);
+						} else if (e1.getName().equals(DELETE_PROB)) {
+							if (deleteProb != -1.0) {
+								throw new ParseException("deletion probability already set - see previous <" + DELETE_PROB + "> or <" + INDEL_PROB + ">.");
+							}
+							deleteProb = parseDouble(e1, 0.0, 1.0);
+						} else if (e1.getName().equals(INDEL_PROB)) {
+							if (insertProb != -1.0 || deleteProb != -1.0) {
+								throw new ParseException("insertion or deletion probability already set - see previous <" + DELETE_PROB + ">, <" + INSERT_PROB + ">, or <" + INDEL_PROB + ">.");
+							}
+							insertProb = parseDouble(e1, 0.0, 1.0);
+							deleteProb = insertProb;
+						} else if (e1.getName().equals(INDEL_MODEL)) {
+							indelModel = parseIndelModel(e1);
+						} else {
+							throw new ParseException("element is unrecognized");
 						}
-
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+						
+					} catch(ParseException pe) {
+						throw new ParseException("element: <" + e1.getName() + ">: " + pe.getMessage());
 					}
-				} else {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
 				}
 
+				if (mutationRate < 0.0) {
+					throw new ParseException("<" + MUTATION_RATE + "> is missing");
+				}
+
+				if (transitionBias != -1 && rateBiases != null) {
+					throw new ParseException("specify either <" + TRANSITION_BIAS + "> or <" + RATE_BIAS + ">, but not both.");
+				}
+
+				// insert and delete probability default to 0 if left unspecificed.
+				if (insertProb < 0) insertProb = 0;
+				if (deleteProb < 0) deleteProb = 0;
+				  
+			
+			} catch (ParseException pe) {
+				throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
 			}
 
-			if (mutationRate < 0.0) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + MUTATION_RATE + "> is missing");
-			}
-
-			if (transitionBias != -1 && rateBiases != null) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: " +
-						"specify not both of <" + TRANSITION_BIAS + "> and <" + RATE_BIAS + ">.");
-			}
-
-			return new NucleotideMutator(mutationRate, transitionBias, rateBiases);
+			return new NucleotideMutator(mutationRate, transitionBias, rateBiases, insertProb, deleteProb, indelModel);
 		} else {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 		}
-
+			
 	}
+
+
+	private IndelModel parseIndelModel(Element element) throws ParseException {
+		String modelName = null;
+		IndelModel m = null;
+
+		modelName = element.getAttributeValue(MODEL);
+		if (modelName.equalsIgnoreCase("NB")) {
+			// Parse Negative binomial model
+			double insertParams[] = SimulatorParser.parseNumberList(element);
+			if (insertParams.length != 2) {
+				throw new ParseException("expected 2 insertion process parameters, got " + insertParams.length);
+			}
+			double q = insertParams[0];
+			int r = (int) insertParams[1];
+			if (q <= 0 || q > 1.0) {
+				throw new ParseException("Negative-binomial distribution, expected first parameter to be between (0, 1.0], got " + q);
+			}
+			if (r <= 0 || r != insertParams[1]) {
+				throw new ParseException("Negative-binomial distribution, expected second parameter to be a positive integer, got " + insertParams[1]);
+			}
+			m = new NegBinIndelModel(r, q);
+		} else if (modelName.equalsIgnoreCase("zipfian")) {
+			// m = ZifIndelModel.fromXML(element);
+		} else if (modelName.equalsIgnoreCase("lavalette")) {
+			// m = LavIndelModel.fromXML(element);
+		} else {
+			throw new ParseException("Error parsing <" + element.getName() + "> element: Unrecognized indel model specification");
+		}
+		return(m);
+	}
+
 
 	private Replicator parseReplicator(Element element) throws ParseException {
 

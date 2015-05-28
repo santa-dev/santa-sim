@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.ArrayList;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.BinomialDistribution;
-import org.apache.commons.math.distribution.BinomialDistributionImpl;
+import org.apache.commons.math3.exception.OutOfRangeException;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
 import santa.simulator.Virus;
@@ -213,11 +212,11 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     }
 	protected void preCalculateBinomial(int numExperiments, double eventRate) {
 	        binomial = new double[numExperiments];
-	        BinomialDistribution distr = new BinomialDistributionImpl(numExperiments, eventRate);
+	        BinomialDistribution distr = new BinomialDistribution(numExperiments, eventRate);
 	        for (int j = 0; j < binomial.length; ++j) {
 	            try {
 	                binomial[j] = distr.cumulativeProbability(j);
-	            } catch (MathException e) {
+	            } catch (OutOfRangeException e) {
 	                throw new RuntimeException(e);
 	            }
 	        }

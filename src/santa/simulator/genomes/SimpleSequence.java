@@ -6,6 +6,8 @@
  */
 package santa.simulator.genomes;
 
+import java.util.Arrays;
+
 /**
  * @author kdforc0
  *
@@ -63,7 +65,7 @@ public final class SimpleSequence implements Sequence {
 	public SimpleSequence(SimpleSequence other, int start, int length) {
 		states = new byte[length];
 
-		copyNucleotides(0, other, start, start + length);
+		copyNucleotides(0, other, start, length);
 	}
 
 	public Sequence getSubSequence(int start, int length) {
@@ -96,8 +98,8 @@ public final class SimpleSequence implements Sequence {
 	}
 
 	protected void copyNucleotides(int start, SimpleSequence source,
-	                               int sourceStart, int sourceStop) {
-		System.arraycopy(source.states, sourceStart, states, start, sourceStop - sourceStart);
+	                               int sourceStart, int sourceCount) {
+		System.arraycopy(source.states, sourceStart, states, start, sourceCount);
 	}
 
 	protected void copyNucleotides(int start, Sequence source,
@@ -105,6 +107,32 @@ public final class SimpleSequence implements Sequence {
 		for (int i = 0; i < sourceStop - sourceStart; ++i) {
 			setNucleotide(start + i, source.getNucleotide(sourceStart + i));
 		}
+	}
+	
+	public boolean deleteSubSequence(int pos, int count) {
+		assert (states.length % 3) == 0;
+		assert (count % 3) == 0;
+
+		byte newstates[] = new byte[states.length - count];
+		System.arraycopy(states, 0, newstates, 0, pos);
+		System.arraycopy(states, pos+count, newstates, pos, states.length-pos-count);
+		states = newstates;
+		assert (states.length % 3) == 0;
+
+		return(true);
+	}
+	
+	public boolean insertSequence(int start, SimpleSequence source) {
+		// allocate more space and copy the old contents
+		assert (states.length % 3) == 0;
+		assert (source.getLength() % 3) == 0;
+
+		byte newstates[] = Arrays.copyOf(states, states.length + source.getLength());
+		System.arraycopy(source.states, 0, newstates, start, source.getLength());
+		System.arraycopy(states, start, newstates, start+source.getLength(), states.length-start);
+		states = newstates;
+		assert (states.length % 3) == 0;
+		return(true);
 	}
 
 	/* (non-Javadoc)

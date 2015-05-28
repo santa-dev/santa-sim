@@ -83,6 +83,10 @@ public final class FitnessFunction  {
 			i++;
 		}
 
+		// if the genome has shrunk below a single codon, it has -inf fitness.
+	    if (genome.getLength() < 3) 
+			result = Double.NEGATIVE_INFINITY;
+
 		genome.setLogFitness(result);
 
 	}
@@ -109,6 +113,11 @@ public final class FitnessFunction  {
 			result += contrib;
 			i++;
 		}
+
+		// if the genome has shrunk below a single codon, it has -inf fitness.
+	    if (genome.getLength() < 3) 
+			result = Double.NEGATIVE_INFINITY;
+
 
 		genome.setLogFitness(result);
 

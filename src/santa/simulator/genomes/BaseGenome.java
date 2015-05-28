@@ -169,8 +169,7 @@ public abstract class BaseGenome implements Genome {
 			return changes;
 		}
 	}
-
-
+	
 
 	// private members
 

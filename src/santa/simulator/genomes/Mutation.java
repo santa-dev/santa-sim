@@ -8,41 +8,35 @@
  */
 package santa.simulator.genomes;
 
+import santa.simulator.genomes.Genome;
+
 /**
  * @author rambaut
  *         Date: Apr 26, 2005
  *         Time: 10:28:35 AM
  *         
  */
-public class Mutation implements Comparable<Mutation> {
+public class Mutation  implements Comparable<Mutation>  {
+    protected Mutation() { state = 0; }
+
     private Mutation(int position, byte state) {
         this.position = position;
         this.state = state;
     }
 
-
     /*
      * position is 0-based -- koen.
      */
-    public final int position;
+    public int position;
     public final byte state;
 
     public static Mutation getMutation(int position, byte state) {
-        return mutations[position][state];
+        return new Mutation(position, state);
     }
 
-    private static Mutation[][] mutations = null;
-
-    public static void initialize() {
-
-        mutations = new Mutation[GenomeDescription.getGenomeLength()][];
-        for (int i = 0; i < GenomeDescription.getGenomeLength(); i++) {
-            mutations[i] = new Mutation[4];
-            for (byte j = 0; j < 4; j++) {
-                mutations[i][j] = new Mutation(i, j);
-            }
-        }
-    }
+	public boolean apply(Genome genome) {
+		return(genome.substitute(position, state));
+	}
 
     public int compareTo(Mutation other) {
         return other.position - position;
