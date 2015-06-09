@@ -2,13 +2,10 @@
 package santa.simulator;
 
 import org.jdom.Element;
-import santa.simulator.SimulatorParser;
 import santa.simulator.SimulatorParser.ParseException;
 
 public abstract class IndelModel {
 	private final static String MODEL = "model";
-	private double insertRate = -1.0;
-	private double deleteRate = -1.0;
 
 	/**
 	 * Parse an indel model from XML.   Returns null if indel model could not be determined.

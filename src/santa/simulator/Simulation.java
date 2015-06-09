@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.Mutation;
 import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.population.DynamicPopulation;
