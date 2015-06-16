@@ -1,8 +1,9 @@
+
 package santa.simulator.genomes;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
-
+import santa.simulator.NotImplementedException;
 
 /**
  * @author Andrew Rambaut
@@ -159,7 +160,6 @@ public class CompactGenome extends BaseGenome {
 		throw new NotImplementedException();
 	}
 
-
     // private members
     private SortedSet<Mutation> mutations = null;
 
@@ -174,10 +174,4 @@ public class CompactGenome extends BaseGenome {
 
     private static Sequence masterSequence = null;
     
-    public class NotImplementedException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-
-        public NotImplementedException(){}
-    }
 }

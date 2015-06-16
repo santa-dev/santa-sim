@@ -8,6 +8,7 @@ import org.apache.commons.math3.distribution.BinomialDistribution;
 
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
+import santa.simulator.NotImplementedException;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
@@ -28,8 +29,6 @@ public class RecombinantReplicator implements Replicator {
     public RecombinantReplicator(double dualInfectionProbability, double recombinationProbability) {
         this.dualInfectionProbability = dualInfectionProbability;
         this.recombinationProbability = recombinationProbability;
-
-        preCalculateBinomial(GenomeDescription.getGenomeLength() - 1, recombinationProbability);
     }
 
 	public int getParentCount() {
@@ -38,6 +37,14 @@ public class RecombinantReplicator implements Replicator {
 
     public void replicate(Virus virus, Virus[] parents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
+		if (true) {
+			// need to generate a new genome descrioption for the recombinate genome that may be a different length than either parent.
+			// It is likely that creating a new binomial RNG for each recombination will be too slow.  Need to find a way to cache and reuse the RNG.
+
+			throw new NotImplementedException();
+		}
+
+		
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
 
@@ -79,12 +86,14 @@ public class RecombinantReplicator implements Replicator {
     private Sequence getRecombinantSequence(Genome parent1Genome, Genome parent2Genome) {
 
         // First draw the number of break points
-        int n = binomialDeviate();
+		int length = Math.min(parent1Genome.getLength() - 1, parent2Genome.getLength() - 1);
+		BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
+        int n = binomialDeviate.sample();
         int[] breakPoints = new int[n];
 
         // Then draw the positions
         for (int i = 0; i < breakPoints.length; i++) {
-            breakPoints[i] = Random.nextInt(1, parent1Genome.getLength() - 1);
+            breakPoints[i] = Random.nextInt(1, length);
         }
         Arrays.sort(breakPoints);
 
@@ -110,31 +119,6 @@ public class RecombinantReplicator implements Replicator {
         return recombinantSequence;
     }
 
-    protected int binomialDeviate() {
-        double r = santa.simulator.Random.nextUniform(0.0, 1.0);
-        for (int j = 0; j < binomial.length; j++) {
-            if (r < binomial[j]) {
-                return j;
-            }
-        }
-        return binomial.length;
-    }
-
-    protected void preCalculateBinomial(int numExperiments, double eventRate) {
-        binomial = new double[numExperiments];
-
-        BinomialDistribution distr = new BinomialDistribution(numExperiments, eventRate);
-
-        for (int j = 0; j < binomial.length; ++j) {
-            try {
-                binomial[j] = distr.cumulativeProbability(j);
-            } catch (OutOfRangeException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     private final double dualInfectionProbability;
     private final double recombinationProbability;
-    private double[] binomial;
 }

@@ -51,5 +51,7 @@ public interface Genome {
 	boolean delete(int position, int count);
 
 	boolean insert(int position, SimpleSequence seq);
-	
+
+    int binomialDeviate(double mutationRate);
+
 }

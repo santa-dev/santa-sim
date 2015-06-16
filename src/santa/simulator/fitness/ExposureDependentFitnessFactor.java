@@ -12,6 +12,17 @@ import santa.simulator.population.Population;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * The exposure dependent fitness function assigns a fitness to an
+ * individual based on how much the allele has been exposed in the
+ * population (since it last appeared), and assigns a lower
+ * fitness to alleles that have been present for a longer time in
+ * a higher prevalence in the population for a longer time, using
+ * the formula: f = e^-(penalty*E), where E is the integrated
+ * prevalence of the allele over time since its last appearance,
+ * and penalty a parameter that controls how severe past exposure
+ * is punished in terms of fitness.
+ **/
 public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFactor {
     private Map<Signature, Double> exposure;
     double penalty;
@@ -33,6 +44,14 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
             return 0;
     }
 
+
+    /**
+	 * Invoked once per generation to update prevelance integral for each allele.
+	 * @param generation
+	 * @param population
+	 *
+	 * @return  TRUE if fitness cache is invalidated, FALSE otherwise.
+	 **/
 	public boolean updateGeneration(int generation, Population population) {
         this.currentGeneration = generation + 1;
 
@@ -54,8 +73,9 @@ public class ExposureDependentFitnessFactor extends AbstractSignatureFitnessFact
             } else {
                 if (e > 0) {
                     exposure.put(s, -e - d);
-                } else
+                } else {
                     exposure.put(s, e - d);
+				}
             }
         }
 

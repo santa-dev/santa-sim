@@ -13,6 +13,7 @@ public abstract class BaseGenome implements Genome {
 
 	public BaseGenome() {
 		this.fitnessCache = null;
+		this.descriptor = GenomeDescription.root;
 	}
 
 	public int getTotalMutationCount() {
@@ -93,22 +94,40 @@ public abstract class BaseGenome implements Genome {
 		return seq.getStates(feature.getAlphabet());
 	}
 
+
+
+	/**
+	 * Compute feature-specific, mutation-induced changes.
+	 * 
+	 * Each change is a nucleotide pair (previous and current)
+	 * along with a position. If the feature uses the AMINO_ACID
+	 * alphabet, then the changes will be amino acids instead of
+	 * nucleotides.
+	 *
+	 * These changes will be used to compute a change in fitness value (rather than recomputing the fitness from scratch).
+	 * In fact, only subclasses of AbstractSiteFitnessFactor (which is only PurifyingFitness today) actually do anything with this information.
+	 * Other fitness functions ignore the data computed here.  
+	 *
+	 * @param feature Feature object over which the changes should be computed.
+	 * @param mutations set of mutations that are inducing changes.
+	 * @return list of <StateChange> objects
+	 **/
 	public List<StateChange> getChanges(Feature feature, SortedSet<Mutation> mutations) {
 		List<StateChange> changes = new ArrayList<StateChange>();
-		int[] featureSiteTable = GenomeDescription.getFeatureSiteTable(feature);
 
+		feature = descriptor.getFeature(feature.getName());
+		assert(feature != null);
+		
+		/* should pass in changes to this routine so we don't compute these multiple times. */
+		int[] featureSiteTable = descriptor.getFeatureSiteTable(feature);
 		for (Mutation m : mutations) {
-			// convert the mutations into a list of state changes for the
-			byte oldState = getNucleotide(m.position);
-			StateChange c = new StateChange(featureSiteTable[m.position], oldState, m.state);
-			if(c.position >= 0) //-1 => mutation outside of feature
-				changes.add(c);
-            
-            //System.err.println("m: " + m.position + " " + m.state + " -> " + featureSiteTable[m.position] + " " + oldState + " " + m.state);
+			List<StateChange> c = m.getChanges(this, featureSiteTable);
+			changes.addAll(c);
 		}
 
+
 		if (feature.getAlphabet() == SequenceAlphabet.AMINO_ACIDS) {
-			int[] genomeSiteTable = GenomeDescription.getGenomeSiteTable(feature);
+			int[] genomeSiteTable = descriptor.getGenomeSiteTable(feature);
 			byte[] codon = new byte[3];
 			int lastAA = -1;
 			byte oldState = -1;
@@ -169,8 +188,19 @@ public abstract class BaseGenome implements Genome {
 			return changes;
 		}
 	}
-	
 
+
+	public int binomialDeviate(double mutationRate) {
+		return descriptor.binomialDeviate(mutationRate);
+	}
+	
+	/**
+	 * reference to an indel that forms one node in a tree of indel mutations.
+	 * The tree can be navigated toward the root by getting the parent of the indel Node.
+	 * The tree cannot be navigated toward the leaves.
+	 */
+	protected GenomeDescription descriptor;
+	
 	// private members
 
 	private double logFitness = 0.0;

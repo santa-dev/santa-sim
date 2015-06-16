@@ -2,6 +2,8 @@ package	 santa.simulator.genomes;
 
 import java.util.Collections;
 import java.util.Set;
+import santa.simulator.NotImplementedException;
+
 /**
  * @author abbas
  * @version $Id$
@@ -12,12 +14,16 @@ public class RecombinationHotSpot {
 			
 			throw new RuntimeException("RecombinationHotSpot size is not equal to two.");
 		}
-		for (Integer i : segment){
-			if (i > GenomeDescription.getGenomeLength())
-				throw new RuntimeException("Hotspot boundaries out of genome length.");
-		}		
+		// commenting out for now.  since making genomedescription a nomal class with instances,
+		// it is not clear what to do here....
+		if (true)
+			throw new NotImplementedException();
+		// for (Integer i : segment){
+		// 	if (i > GenomeDescription.getGenomeLength())
+		// 		throw new RuntimeException("Hotspot boundaries out of genome length.");
+		// }		
 		if (factor < 0){	
-			throw new RuntimeException("Illegal (negative) boost factor value for hot spot.");
+			throw new RuntimeException();
 		}
 		this.probBoost = factor;
 		this.hotSegment = segment;

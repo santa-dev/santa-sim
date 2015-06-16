@@ -3,12 +3,8 @@ package santa.simulator.mutators;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.math3.distribution.BinomialDistribution;
-
 import santa.simulator.Random;
 import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.GenomeDescription;
-//import santa.simulator.genomes.AbstractMutation;
 import santa.simulator.genomes.Mutation;
 
 /**
@@ -19,7 +15,6 @@ public abstract class AbstractMutator implements Mutator {
 
     public AbstractMutator(double mutationRate) {
         this.mutationRate = mutationRate;
-		this.mutationDist = new BinomialDistribution(GenomeDescription.getGenomeLength(), mutationRate);
     }
 
     public SortedSet<Mutation> mutate(Genome genome) {
@@ -28,7 +23,7 @@ public abstract class AbstractMutator implements Mutator {
         // iterate. This would avoid the sort at the end.
         SortedSet<Mutation> mutations = new TreeSet<Mutation>();
         
-        int mutationCount = binomialDeviate();
+        int mutationCount = genome.binomialDeviate(mutationRate);
 
         // We expect only a few mutations per genome. Therefore, simply check
         // by looping over the already generated mutations to avoid duplicates hits.
@@ -47,12 +42,6 @@ public abstract class AbstractMutator implements Mutator {
         return mutations;
     }
 
-    protected int binomialDeviate() {
-		int j = 0;
-		j = mutationDist.sample();
-        return j;
-    }
-
 
     /**
      * Returns a new state given an existing state.
@@ -62,5 +51,4 @@ public abstract class AbstractMutator implements Mutator {
     public abstract byte mutate(byte state);
 
     protected final double mutationRate;
-    private BinomialDistribution mutationDist;
 }

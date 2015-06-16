@@ -6,6 +6,7 @@ import santa.simulator.Random;
 import santa.simulator.IndelModel;
 import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Mutation;
+import santa.simulator.genomes.Indel;
 import santa.simulator.genomes.Insertion;
 import santa.simulator.genomes.Deletion;
 import santa.simulator.genomes.SimpleSequence;
@@ -128,6 +129,7 @@ public class NucleotideMutator extends AbstractMutator {
 				int pos = Random.nextInt(0, genome.getLength());	// start position
 				int count = indelModel.nextLength();				// insertion length
 
+				System.err.println("insert: @" + pos + " on len " + genome.getLength());
 				if (count != 0) {
 					// what is it filled with?
 					// generate a random sequence of the appropriate length
@@ -145,8 +147,9 @@ public class NucleotideMutator extends AbstractMutator {
 					pos = Random.nextInt(0, genome.getLength() - 1);
 
 				int count = indelModel.nextLength(); // deletion length
-				if (count != 0)
+				if (count != 0) {
 					mutations.add(new Deletion(pos, count));
+				}
 			}
 		}
 		return mutations;

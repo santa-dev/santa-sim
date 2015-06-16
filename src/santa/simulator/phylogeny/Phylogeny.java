@@ -138,7 +138,7 @@ public class Phylogeny {
 	 *
 	 * At all times, leaves descended
 	 * from the same immediate common ancestor will reference the same
-	 * lineage object representing that branch point.  This invarianet
+	 * lineage object representing that branch point.  This invariant
 	 * is maintianed as the list of leaves is changed during tree
 	 * construction.  
 	 * 

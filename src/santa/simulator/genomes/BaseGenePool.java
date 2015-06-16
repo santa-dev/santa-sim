@@ -3,6 +3,7 @@ package santa.simulator.genomes;
 import santa.simulator.fitness.FitnessFunction;
 
 import java.util.*;
+import santa.simulator.NotImplementedException;
 
 /**
  * @author Andrew Rambaut
@@ -20,7 +21,13 @@ public abstract class BaseGenePool implements GenePool {
     }
 
     public BaseGenePool() {
-        stateFrequencies = new int[GenomeDescription.getGenomeLength()][4];
+		System.err.println("Creating BaseGenePool: Needs attention.");
+        // stateFrequencies = new int[GenomeDescription.getGenomeLength()][4];
+
+		// this is not correct.
+		// We cannot use a fixed-size array to represent the state frequencies.
+		// what do we use the state frequencies for anyway?
+        stateFrequencies = new int[10][4];
     }
 
     public void initialize() {
@@ -36,6 +43,13 @@ public abstract class BaseGenePool implements GenePool {
     }
 
     public int[][] getStateFrequencies(Feature feature, Set<Integer> sites) {
+		// no, this won't work at all.
+		// The feature and sites list that is passed is relevant to a single genome descriptor.
+		// We can't apply the feature and sites to all the genomes in a pool b/c they might be of different lengths.
+		if (true) {
+			throw new NotImplementedException();
+		}
+		
         int[][] freqs = new int[sites.size()][feature.getAlphabet().getStateCount()];
         for (Genome genome : genomes) {
             int freq = genome.getFrequency();
@@ -53,21 +67,24 @@ public abstract class BaseGenePool implements GenePool {
     }
 
     public Sequence getConsensusSequence() {
-        calculateStateFrequencies();
-        SimpleSequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
+		
+		throw new NotImplementedException();
 
-        for (int i = 0; i < GenomeDescription.getGenomeLength(); i++) {
-            sequence.setNucleotide(i, Nucleotide.A);
-            int freq = stateFrequencies[i][Nucleotide.A];
-            for (byte j = 1; j < 4; j++) {
-                if (freq < stateFrequencies[i][j]) {
-                    freq = stateFrequencies[i][j];
-                    sequence.setNucleotide(i, j);
-                }
-            }
-        }
+        // calculateStateFrequencies();
+        // SimpleSequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
 
-        return sequence;
+        // for (int i = 0; i < GenomeDescription.getGenomeLength(); i++) {
+        //     sequence.setNucleotide(i, Nucleotide.A);
+        //     int freq = stateFrequencies[i][Nucleotide.A];
+        //     for (byte j = 1; j < 4; j++) {
+        //         if (freq < stateFrequencies[i][j]) {
+        //             freq = stateFrequencies[i][j];
+        //             sequence.setNucleotide(i, j);
+        //         }
+        //     }
+        // }
+
+        // return sequence;
     }
 
     private void calculateStateFrequencies() {

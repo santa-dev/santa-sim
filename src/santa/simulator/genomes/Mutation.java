@@ -8,7 +8,14 @@
  */
 package santa.simulator.genomes;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import santa.simulator.genomes.Genome;
+import santa.simulator.genomes.StateChange;
+
+import org.apache.commons.lang3.Range;
+
 
 /**
  * @author rambaut
@@ -37,6 +44,8 @@ public class Mutation  implements Comparable<Mutation>  {
 	public boolean apply(Genome genome) {
 		return(genome.substitute(position, state));
 	}
+	
+	public Range<Integer> apply(Range<Integer> r) { return(r); }
 
     public int compareTo(Mutation other) {
         return other.position - position;
@@ -45,4 +54,19 @@ public class Mutation  implements Comparable<Mutation>  {
     public boolean equals(Object other) {
         return ((Mutation) other).position == position;
     }
+
+
+	/**
+	 * create a list of nucleotides changed by this mutation.
+	 */
+	public List<StateChange> getChanges(Genome genome, int[] featureSiteTable) {
+		List<StateChange> l = new ArrayList<StateChange>();
+		if (featureSiteTable[this.position] != -1) {
+			byte oldState = genome.getNucleotide(this.position);
+			StateChange c = new StateChange(featureSiteTable[this.position], oldState, this.state);
+			l.add(c);
+		}
+		return (l);
+	}
+
 }

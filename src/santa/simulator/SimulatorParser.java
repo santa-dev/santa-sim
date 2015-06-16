@@ -896,7 +896,7 @@ public class SimulatorParser {
 
 			if (e.getName().equals(FEATURE)) {
 				String featureName = e.getTextNormalize();
-				feature = GenomeDescription.getFeature(featureName);
+				feature = GenomeDescription.root.getFeature(featureName);
 				if (feature == null) {
 					throw new ParseException("Error parsing <" + element.getName() + "> element: referenced feature '" + featureName + "' is not defined.");
 				}
@@ -909,7 +909,7 @@ public class SimulatorParser {
 
         if (feature == null) {
 			// there is always the complete genome feature
-			feature = GenomeDescription.getFeature("genome");
+			feature = GenomeDescription.root.getFeature("genome");
 		}
 
         for (Object o:element.getChildren()) {

@@ -56,22 +56,16 @@ AGCTCCTCTGGAAAGGTGAAGGGGCAGTAGTAATACAAGATAATAGTGACATAAAAGTAGTGCCAAGAAG
 AAAAGCAAAGATCATTAGGGATTATGGAAAACAGATGGCAGGTGATGATTGTGTGGCAAGTAGACAGGAT
 GAGGATTAG
       </sequences>
-			<!-- <feature> -->
-			<!-- 	<name>PR</name> -->
-			<!-- 	<type>aminoAcid</type> -->
-			<!-- 	<coordinates>2253-2549</coordinates> -->
-			<!-- </feature> -->
-			<!-- <feature> -->
-			<!-- 	<name>RT</name> -->
-			<!-- 	<type>aminoAcid</type> -->
-			<!-- 	<coordinates>2550-4229</coordinates> -->
-			<!-- </feature> -->
-			<!-- <feature> -->
-			<!-- 	<name>IN</name> -->
-			<!-- 	<type>aminoAcid</type> -->
-			<!-- 	<coordinates>4230-5096</coordinates> -->
-			<!-- </feature> -->
-	  
+      <feature>
+	<name>PR</name>
+	<type>aminoAcid</type>
+	<coordinates>27-116</coordinates>
+      </feature>
+      <feature>
+	<name>CDS</name>
+	<type>aminoAcid</type>
+	<coordinates>1-609</coordinates>
+      </feature>
     </genome>
 
     <population>
@@ -81,7 +75,18 @@ GAGGATTAG
     <populationType>staticPopulation</populationType>
 
     <fitnessFunction>
-      <!-- No fitness function - fitness == 1 by default -->
+      <populationSizeDependentFitness>
+      	<feature>PR</feature>
+      	<sites>1-30</sites>
+      	<declineRate>0.005</declineRate>
+      	<maxPopulationSize>50000</maxPopulationSize>
+      </populationSizeDependentFitness>
+      <exposureDependentFitness>
+	<feature>CDS</feature>
+	<sites>1-5</sites>
+	<penalty>0.01</penalty>
+      </exposureDependentFitness>
+
     </fitnessFunction>
 
     <!-- mutations occur as an independent process after replication, in this -->
@@ -127,6 +132,15 @@ GAGGATTAG
     </epoch>
     
     <samplingSchedule>
+      <!-- <sampler> -->
+      <!-- 	<atGeneration>50</atGeneration> -->
+      <!-- 	<fileName>trees_%r.tree</fileName> -->
+      <!-- 	<tree> -->
+      <!-- 	  <sampleSize>5</sampleSize> -->
+      <!-- 	  <format>NEXUS</format> -->
+      <!-- 	  <label>tip_%g_%s</label> -->
+      <!-- 	</tree> -->
+      <!-- </sampler> -->
       <sampler>
 	<atFrequency>100</atFrequency>	
 	<fileName>sequences_%r.fa</fileName>

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import santa.simulator.NotImplementedException;
 import santa.simulator.Random;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
@@ -61,10 +62,12 @@ public abstract class Population {
                 ancestors[i] = genePool.createGenome(sequence);
             }
         } else {
+			throw new NotImplementedException();
+
             // create a default nucleotide sequence
-            ancestors = new Genome[1];
-            Sequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
-            ancestors[0] = genePool.createGenome(sequence);
+            // ancestors = new Genome[1];
+            // Sequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
+            // ancestors[0] = genePool.createGenome(sequence);
         }
 
         if (ancestors.length > 1) {
@@ -148,10 +151,7 @@ public abstract class Population {
         int count = 0;
         for (int i = 0; i < sample.length; ++i) {
             for (int j = i+1; j < sample.length; ++j) {
-				// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
-				// for now just comment this out - revisit later - csw
-                // double d = computeDistance(sample[i], sample[j]);
-            	double d = 1.0;
+                double d = computeDistance(sample[i], sample[j]);
                 if (d > maxDiversity)
                     maxDiversity = d;
                 meanDiversity += d;
@@ -171,10 +171,16 @@ public abstract class Population {
 
         int distance = 0;
 
-        for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
-            if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
-                ++distance;
-        }
+		// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
+		// We can theoretically reconstruct an accurate pairwise alignment for any two related sequences.
+		// we'll have to implenent that later.  for now just comment this out - revisit later - csw
+		if (true) {
+			return(1.0);
+		}
+        // for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
+        //     if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
+        //         ++distance;
+        // }
 
         return distance;
     }

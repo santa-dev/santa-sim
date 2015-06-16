@@ -120,7 +120,6 @@ public final class FitnessFunction  {
 
 
 		genome.setLogFitness(result);
-
 	}
 
 	/**

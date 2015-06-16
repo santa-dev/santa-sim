@@ -22,8 +22,10 @@
 	
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac source="1.6" srcdir="${src}" destdir="${build}"
-               classpath="${lib}/commons-math3-3.4.1/commons-math3-3.4.1.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
+	<!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
+        <javac srcdir="${src}" destdir="${build}"
+	       includeantruntime="false"
+               classpath="${lib}/commons-math3-3.4.1/commons-math3-3.4.1.jar:${lib}/commons-lang3-3.4/commons-lang3-3.4.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
 	  <compilerarg value="-Xlint:deprecation" />
 	  
           <include name="santa/**"/>

@@ -9,6 +9,7 @@ import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
+import santa.simulator.NotImplementedException;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
@@ -34,7 +35,6 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
         this.dualInfectionProbability = dualInfectionProbability;
         this.recombinationProbability = recombinationProbability;
         this.recombinationHotSpots = GenomeDescription.getHotSpots();
-        preCalculateBinomial(GenomeDescription.getGenomeLength() - 1, recombinationProbability);
     }
 
 	public int getParentCount() {
@@ -44,6 +44,16 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 	@Override
 	public void replicate(Virus virus, Virus[] parents, Mutator mutator,
 			FitnessFunction fitnessFunction, GenePool genePool) {
+
+		if (true) {
+			// need to generate a new genome descrioption for the recombinate genome that may be a different length than either parent.
+			// It is likely that creating a new binomial RNG for each recombination will be too slow.  Need to find a way to cache and reuse the RNG.
+
+			throw new NotImplementedException();
+		}
+
+
+		
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
             Genome parent1Genome = parents[0].getGenome();
@@ -70,7 +80,8 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 	//Logic: relative probability of having break point in a (hot) segment = (length of hot segment) * (probability boost factor) / (genome length)
 	//Then we normalize relative probabilities so they sum up to unity.
     private Sequence getRecombinantSequence(Genome parent1Genome, Genome parent2Genome) {
-        int[] breakPoints = getBreakPoints();
+		int length = Math.min(parent1Genome.getLength() - 1, parent2Genome.getLength() - 1);
+        int[] breakPoints = getBreakPoints(length);
         int lastBreakPoint = 0;
         int currentGenome = 0;
 	    SimpleSequence recombinantSequence = new SimpleSequence(parent1Genome.getSequence());
@@ -87,15 +98,17 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
         return recombinantSequence;    
     }
 	
-    private int[] getBreakPoints(){
-        int n = binomialDeviate();
+    private int[] getBreakPoints(int length) {
+		
+		BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
+        int n = binomialDeviate.sample();
         int[] breakPoints = new int[n];
     	int nHotSegments = recombinationHotSpots.size();
         //Array containing start and end positions of hot segments
         int[] startPoints = new int[nHotSegments+1];
         int[] endPoints = new int[nHotSegments+1];
-        startPoints[nHotSegments] = GenomeDescription.getGenomeLength()-1;
-        endPoints[nHotSegments] = GenomeDescription.getGenomeLength()-1;
+        startPoints[nHotSegments] = length;
+        endPoints[nHotSegments] = length;
         for (int i = 0; i< nHotSegments;i++){
         	startPoints[i] = recombinationHotSpots.get(i).startPosition;
         	endPoints[i] = recombinationHotSpots.get(i).endPosition;
@@ -106,7 +119,7 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     	if (startPoints[0] == 0){
     		nonHotSegmentsCount -= 1;
     	}
-    	if (endPoints[nHotSegments-1] == GenomeDescription.getGenomeLength()-1){
+    	if (endPoints[nHotSegments-1] == length) {
     		nonHotSegmentsCount -= 1;
     	}
     	//Assigning length to non-hot segments:
@@ -122,15 +135,15 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     		nonHotStartPoints[0] = endPoints[0] + 1;
     		nonHotEndPoints[0] = startPoints[1] -1 ;
     	}
-    	if (endPoints[nHotSegments-1] != GenomeDescription.getGenomeLength()-1){
+    	if (endPoints[nHotSegments-1] != length) {
     		nonHotStartPoints[nonHotSegmentsCount-1] = endPoints[nHotSegments-1]+1;
-    		nonHotEndPoints[nonHotSegmentsCount-1] = GenomeDescription.getGenomeLength()-1;
+    		nonHotEndPoints[nonHotSegmentsCount-1] = length;
     	}
     	else {
     		nonHotStartPoints[nonHotSegmentsCount-1] = endPoints[nHotSegments-2]+1;
     		nonHotEndPoints[nonHotSegmentsCount-1] = startPoints[nHotSegments-1]-1;
     	}
-    	for (int i = 1; i < nonHotSegmentsCount-1; i++){
+    	for (int i = 1; i < nonHotSegmentsCount-1; i++) {
     		nonHotStartPoints[i] = endPoints[nextHotSegmentIndex]+1;
     			nonHotEndPoints[i] = startPoints[nextHotSegmentIndex+1]-1;
     		if (nextHotSegmentIndex < nonHotSegmentsCount -1)
@@ -145,16 +158,16 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
         Integer segmentLength;
         double relativeProbabilitiesSum = 0;
         double boostFactor;    	
-        for (int i = 0 ; i < nHotSegments ; i++ ){
+        for (int i = 0 ; i < nHotSegments ; i++ ) {
         	segmentLength =  recombinationHotSpots.get(i).endPosition -recombinationHotSpots.get(i).startPosition+1;        	
         	overallHotSegmentsLength += segmentLength;
         	boostFactor = recombinationHotSpots.get(i).probBoost;
-        	segmentRelativeProbabilities[i] = segmentLength * boostFactor / GenomeDescription.getGenomeLength() ;
+        	segmentRelativeProbabilities[i] = segmentLength * boostFactor /length ;
         	relativeProbabilitiesSum += segmentRelativeProbabilities[i]; 
         }
-        for (int i =0 ; i< overallSegmentsCount- nHotSegments ; i++){
+        for (int i =0 ; i< overallSegmentsCount- nHotSegments ; i++) {
         	segmentLength = nonHotEndPoints[i] - nonHotStartPoints[i] + 1;
-        	segmentRelativeProbabilities[i+nHotSegments] =  (double)segmentLength / (double)GenomeDescription.getGenomeLength() ;
+        	segmentRelativeProbabilities[i+nHotSegments] =  (double)segmentLength / (double)length ;
         	relativeProbabilitiesSum += segmentRelativeProbabilities[i+nHotSegments];
     	}
         int[] nBreakPointsPerSegment = new int[overallSegmentsCount];
@@ -163,10 +176,10 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     	for (int i = 0 ; i < overallSegmentsCount ; i++ ){
     		segmentProbabilities[i] = segmentRelativeProbabilities[i] / relativeProbabilitiesSum;
     		
-    		if(i == 0){
+    		if(i == 0) {
     			cumulativeSegmentProbabilities[i] = segmentProbabilities[i]; 
     		}
-    		else{
+    		else {
     			cumulativeSegmentProbabilities[i] = cumulativeSegmentProbabilities[i-1] + segmentProbabilities[i]; 
     		}
 			nBreakPointsPerSegment[i] = 0;
@@ -174,16 +187,16 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     	double r;
     	boolean set;
     	int sumNBreakPoints = 0;
-    	for(int i = 0 ; i < n ; i++){
+    	for(int i = 0 ; i < n ; i++) {
     		r = santa.simulator.Random.nextUniform(0.0, 1.0);
     		set = false;
-    		for(int j = 0; j< overallSegmentsCount; j++){
-    			if ((r < cumulativeSegmentProbabilities[j]) && set == false){
+    		for(int j = 0; j< overallSegmentsCount; j++) {
+    			if ((r < cumulativeSegmentProbabilities[j]) && set == false) {
         			nBreakPointsPerSegment[j] +=1;
         			sumNBreakPoints += 1;
         			set = true;
     			}
-    			else{
+    			else {
     				//Do nothing, be cool
     			}	
     		}
@@ -193,15 +206,15 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
     	}
     	//Now assigning breakpoints within each hot segment:
     	int breakPointIndex = 0;
-    	for (int i = 0; i < nHotSegments ; i++){
+    	for (int i = 0; i < nHotSegments ; i++) {
     		
-    		for (int j = 0; j< nBreakPointsPerSegment[i]; j++){
+    		for (int j = 0; j< nBreakPointsPerSegment[i]; j++) {
     			breakPoints[breakPointIndex] = Random.nextSecureInt(recombinationHotSpots.get(i).startPosition, recombinationHotSpots.get(i).endPosition);
     			breakPointIndex += 1;
     		}
     	}
-    	for (int i = 0; i < nonHotSegmentsCount ; i++){
-    		for(int j = 0; j<nBreakPointsPerSegment[i+nHotSegments];j++){
+    	for (int i = 0; i < nonHotSegmentsCount ; i++) {
+    		for(int j = 0; j<nBreakPointsPerSegment[i+nHotSegments];j++) {
     			breakPoints[breakPointIndex] = Random.nextInt(nonHotStartPoints[i], nonHotEndPoints[i]);
     			breakPointIndex += 1;
     		}
@@ -210,28 +223,8 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
         
         return breakPoints;
     }
-	protected void preCalculateBinomial(int numExperiments, double eventRate) {
-	        binomial = new double[numExperiments];
-	        BinomialDistribution distr = new BinomialDistribution(numExperiments, eventRate);
-	        for (int j = 0; j < binomial.length; ++j) {
-	            try {
-	                binomial[j] = distr.cumulativeProbability(j);
-	            } catch (OutOfRangeException e) {
-	                throw new RuntimeException(e);
-	            }
-	        }
-	    }
-    protected int binomialDeviate() {
-        double r = santa.simulator.Random.nextUniform(0.0, 1.0);
-        for (int j = 0; j < binomial.length; j++) {
-            if (r < binomial[j]) {
-                return j;
-            }
-        }
-        return binomial.length;
-    }
+	
     private final double dualInfectionProbability;
     private final double recombinationProbability;
-    private double[] binomial;
     private List<RecombinationHotSpot> recombinationHotSpots= new ArrayList<RecombinationHotSpot>();
 }
