@@ -28,13 +28,19 @@ public class Insertion extends Indel {
     }
 
 	public Range<Integer> apply(Range<Integer> fragment) {
-		int len = seq.getLength();
+		int count = seq.getLength();
+		Range<Integer> ins = Range.between(position, position+count-1);
 
-		if (fragment.isAfter(position)) {
-			fragment =  Range.between(fragment.getMinimum() + len, fragment.getMaximum() + len);
-		} else if (fragment.contains(position)) {
-			fragment =  Range.between(fragment.getMinimum(), fragment.getMaximum() + len);
+
+		if (ins.getMinimum() <= fragment.getMinimum()) 
+			// insert is fully left of fragment
+			// fragment moves right
+			fragment = Range.between(fragment.getMinimum() + count, fragment.getMaximum() + count);
+		else if (ins.getMinimum() <= fragment.getMaximum()) {
+			// insert occurs inside feature
+			fragment = Range.between(fragment.getMinimum(), fragment.getMaximum() + count);
 		}
+		/// otherwise insertion is fully to the right of fragment and fragment is unaffected.
 		return (fragment);
 	}
 
@@ -42,16 +48,32 @@ public class Insertion extends Indel {
 		return(genome.insert(position, seq));
 	}
 
+	public int length() {
+		return seq.getLength();
+	}
 
 	/**
-	 * create a list of nucleotides changed by this mutation.
+	 * Get a list of nucleotide changes relative to a particular feature.
+	 *
+	 * Each change element will have a feature-relative position, an old nucleotide state, and a new nucleotide state.   
+	 * Insertion is the creation of new nucleotides that have no ancestor so the old nucleotide value is always '-'.
+	 *
+	 * 'featureSiteTable' maps from genomic coordinates to feature-relative
+	 * coordinates.  That is, featureSiteTable[200] = 0 if the feature begins
+	 * at genomic position 0.  'featureSiteTable' spans the entire genome and holds a
+	 * feature-relative position where the feature is defined, and -1 elsewhere.
+
+	 * @param genome: the genome object which is changing.
+	 * @param featureSiteTable: map from genomeic coordinates to feature coordinates.
 	 */
 	public List<StateChange> getChanges(Genome genome, int[] featureSiteTable) {
 		List<StateChange> scl = new ArrayList<StateChange>();
 		int fp;
+
+		assert(genome.getLength() == featureSiteTable.length);
 		
 		int p = this.position;
-		for (int i = 0; i < seq.getLength(); i++) {
+		for (int i = 0; i < seq.getLength() && p < featureSiteTable.length; i++) {
 			byte oldState = genome.getNucleotide(p);
 			fp = featureSiteTable[p];
 			if (fp >= 0) {

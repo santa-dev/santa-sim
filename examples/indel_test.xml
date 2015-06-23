@@ -75,17 +75,29 @@ GAGGATTAG
     <populationType>staticPopulation</populationType>
 
     <fitnessFunction>
-      <populationSizeDependentFitness>
-      	<feature>PR</feature>
-      	<sites>1-30</sites>
-      	<declineRate>0.005</declineRate>
-      	<maxPopulationSize>50000</maxPopulationSize>
-      </populationSizeDependentFitness>
-      <exposureDependentFitness>
+      <purifyingFitness>
 	<feature>CDS</feature>
-	<sites>1-5</sites>
-	<penalty>0.01</penalty>
-      </exposureDependentFitness>
+        <sites>1-203</sites>
+        <rank>
+          <order>chemical</order>
+          <breakTies>random</breakTies>
+        </rank>
+        <fitness>
+          <lowFitness>0.9</lowFitness>
+	  <minimumFitness>0.1</minimumFitness>
+        </fitness>
+      </purifyingFitness>
+      <!-- <populationSizeDependentFitness> -->
+      <!-- 	<feature>PR</feature> -->
+      <!-- 	<sites>1-30</sites> -->
+      <!-- 	<declineRate>0.005</declineRate> -->
+      <!-- 	<maxPopulationSize>50000</maxPopulationSize> -->
+      <!-- </populationSizeDependentFitness> -->
+      <!-- <exposureDependentFitness> -->
+      <!-- 	<feature>CDS</feature> -->
+      <!-- 	<sites>1-5</sites> -->
+      <!-- 	<penalty>0.01</penalty> -->
+      <!-- </exposureDependentFitness> -->
 
     </fitnessFunction>
 

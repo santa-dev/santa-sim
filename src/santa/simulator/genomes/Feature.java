@@ -18,6 +18,23 @@ public final class Feature {
 		this.featureType = featureType;
 	}
 
+	/** 
+	 * copy constructor.   Clone a feature and apply an indel.
+	 * It is possible the indel will have no effect on the feature in which
+	 * case the cloned feature will have identical values as the original.
+	 *
+	 * @param: f: fragment to be cloned.
+	 * @param position: non-negative position where indel whould begin
+	 * @param count: positive/negative count of positions to be inserted/deleted.
+	 */
+	public Feature(Feature f, int position, int count) {
+		this.name = f.name;
+		this.featureType = f.featureType;
+		for (Fragment fr: f.fragments) {
+			fragments.add(new Fragment(fr, position, count));
+		}
+	}
+
 	public void addFragment(int start, int finish) {
 		fragments.add(new Fragment(start, finish));
 	}
@@ -76,6 +93,40 @@ public final class Feature {
 			this.finish = finish;
 		}
 
+
+		/** 
+		 * copy constructor.   Clone a fragment and apply an indel.
+		 * It is possible the indel will have no effect on the fragment in which
+		 * case the cloned fragment will have identical values as the original.
+		 *
+		 * @param: f: fragment to be cloned.
+		 * @param position: non-negative position where indel whould begin
+		 * @param count: positive/negative count of positions to be inserted/deleted.
+		 */
+		public Fragment(Fragment f, int position, int count) {
+			if (position < f.start) {
+				// delete: count < 0
+				// insert: count > 0
+				this.finish = Math.max(position, f.finish + count);
+				if (count < 0) {
+					// delete: count < 0
+					count = -Math.min(-count, f.start-position);
+				} 
+				this.start = f.start + count;
+			}
+			else if (position <= f.finish) {
+				this.start = f.start;
+				if (count < 0) {
+					// delete: count < 0
+					count = -Math.min(-count, f.finish-position);
+				}
+				this.finish = f.finish + count;
+			} else {
+				this.start = f.start;
+				this.finish = f.finish;
+			}
+		}
+		
 		public int getStart() {
 			return start;
 		}
@@ -84,6 +135,7 @@ public final class Feature {
 			return finish;
 		}
 
+		
 		private final int start;
 		private final int finish;
 	}

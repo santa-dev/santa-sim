@@ -129,7 +129,6 @@ public class NucleotideMutator extends AbstractMutator {
 				int pos = Random.nextInt(0, genome.getLength());	// start position
 				int count = indelModel.nextLength();				// insertion length
 
-				System.err.println("insert: @" + pos + " on len " + genome.getLength());
 				if (count != 0) {
 					// what is it filled with?
 					// generate a random sequence of the appropriate length
@@ -139,6 +138,7 @@ public class NucleotideMutator extends AbstractMutator {
 						states[i] = (byte) Random.nextInt(0,  3);
 					}
 					SimpleSequence seq = new SimpleSequence(states);
+					System.err.println("insert: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Insertion(pos, seq));
 				}
 			} else {	// Deletion!
@@ -148,6 +148,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 				int count = indelModel.nextLength(); // deletion length
 				if (count != 0) {
+					System.err.println("delete: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Deletion(pos, count));
 				}
 			}

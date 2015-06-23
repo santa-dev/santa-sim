@@ -105,7 +105,7 @@ public abstract class BaseGenome implements Genome {
 	 * nucleotides.
 	 *
 	 * These changes will be used to compute a change in fitness value (rather than recomputing the fitness from scratch).
-	 * In fact, only subclasses of AbstractSiteFitnessFactor (which is only PurifyingFitness today) actually do anything with this information.
+	 * In reality, only subclasses of AbstractSiteFitnessFactor (which is only PurifyingFitness today) actually do anything with this information.
 	 * Other fitness functions ignore the data computed here.  
 	 *
 	 * @param feature Feature object over which the changes should be computed.
@@ -115,17 +115,26 @@ public abstract class BaseGenome implements Genome {
 	public List<StateChange> getChanges(Feature feature, SortedSet<Mutation> mutations) {
 		List<StateChange> changes = new ArrayList<StateChange>();
 
+		assert(descriptor.getGenomeLength() == getLength());
+			
+		// Note that Mutation objects are positioned by nucleotide relevant to the start of the genome.
+		// Change objects also have a position, but the units depend upon the alphabet of the feature.
+		// 
+		
 		feature = descriptor.getFeature(feature.getName());
 		assert(feature != null);
 		
-		/* should pass in changes to this routine so we don't compute these multiple times. */
+		// Convert mutations from genome-relative coordinates to feature-relative coordinates.
+		// Mutations that do not affect a feature are silently dropped.
 		int[] featureSiteTable = descriptor.getFeatureSiteTable(feature);
 		for (Mutation m : mutations) {
 			List<StateChange> c = m.getChanges(this, featureSiteTable);
 			changes.addAll(c);
 		}
 
-
+		// At this point 'changes' are positioned at nucleotides relative to the start of the feature.
+		// For AMINO_ACID features, convert nucleotide positions to AA positions, and convert the states from nucleotides to
+		// AA states.
 		if (feature.getAlphabet() == SequenceAlphabet.AMINO_ACIDS) {
 			int[] genomeSiteTable = descriptor.getGenomeSiteTable(feature);
 			byte[] codon = new byte[3];
@@ -150,6 +159,16 @@ public abstract class BaseGenome implements Genome {
 						}
 					}
 
+					// We don't want to access beyond the end of genomeSiteTable, but we do want
+					// to allow amino acid feature coordinates to terminate between codons.  Here
+					// we skip the partial codons that appear at the end of AMINO_ACID features.
+					// Doing so avoids IndexOutOfRange exceptions while supporting feature
+					// boundaries that are temporarily pushed out-of-frame by indels.
+					if (genomeSiteTable.length <= (aa * 3 + 2)) {
+						System.err.println(feature.getName() + ": skipping last codon " + aa + " [" + (aa * 3) + " - " + (aa * 3 + 2) + "]");
+						continue;
+					}
+					
 					// and get on with a new one
 					codon[0] = getNucleotide(genomeSiteTable[aa * 3]);
 					codon[1] = getNucleotide(genomeSiteTable[aa * 3 + 1]);
@@ -195,9 +214,12 @@ public abstract class BaseGenome implements Genome {
 	}
 	
 	/**
-	 * reference to an indel that forms one node in a tree of indel mutations.
-	 * The tree can be navigated toward the root by getting the parent of the indel Node.
-	 * The tree cannot be navigated toward the leaves.
+	 * Reference to an GenomeDescription.  It is through the
+	 * decription that one can obtain Feature coordinates and SiteMaps
+	 * that are updated for the indel lineage.  GenomeDescription
+	 * instances are linked together in a tree, but that hierarchy is
+	 * not exposed.  In fact I haven't yet found a need to explore the
+	 * tree structure but it is there in anticipation of being useful.
 	 */
 	protected GenomeDescription descriptor;
 	

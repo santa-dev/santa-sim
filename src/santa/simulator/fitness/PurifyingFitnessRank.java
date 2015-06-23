@@ -170,8 +170,28 @@ public class PurifyingFitnessRank {
 	// PRIVATE STUFF
 
 	/**
+	 * Count abundance of symbols at a single site in a multiple alignment.
+	 *
+	 * 'alphabet' references a NUCLEOTIDES or AMINO_ACIDS
+	 * alphabet.  Assuming NUCLEOTIDES, this routine would calculate
+	 * the abundance of each nucleotide at all sites in a multiple
+	 * alignment.
+	 *
+	 * The multiple alignment is usually taken from the initial
+	 * population seed as specified in the config file.  It is not
+	 * unusual for there to be only a single sequence in the
+	 * alignment.
+	 * 
+	 * The abundances calculated here are used to shape a probability
+	 * distribution affecting the fitness of various substitutions at
+	 * each site.
+	 *
+	 * @param alphabet: NUCLEOTIDES or AMINO_ACIDS alphabet.
+	 * @param breakTiesRandomly:  when TRUE, abundance ties will be randomly ordered in the results, otherwise according to order of states in alphabet. 
+	 * @param alignment: multiple sequence alignment
+	 * @param stateOrder: order of states to report back; relevant only  if 'alignment' is null.
 	 * @param site: 0-based site in the sequence
-	 * @return an ordering of the states for that site
+	 * @return list of histogram elements in decreasing order of abundance.
 	 */
 	private List<HistogramEntry> createHistogram(SequenceAlphabet alphabet, boolean breakTiesRandomly,
 	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) {

@@ -39,7 +39,10 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		double logFitness = 0.0;
 
 		for (int site : getSites()) {
-			logFitness += this.logFitness[site][sequence[site]];
+			// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
+			try {
+				logFitness += this.logFitness[site][sequence[site]];
+			} catch(IndexOutOfBoundsException e) { /* ignore */ }
 		}
 
 		return logFitness;
@@ -50,11 +53,27 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 	    // up in the table and get a zero change than check the site list.
 	    // It does mean the logFitness array should have zeros in sites that
 	    // are not handled by this factor.
-        return logFitness[change.position][change.newState] - logFitness[change.position][change.oldState];
+		//
+		// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
+		double fit;
+		try {
+			fit = logFitness[change.position][change.newState] - logFitness[change.position][change.oldState];
+		} catch(IndexOutOfBoundsException e) {
+			fit = 0; // neutral fitness
+		}
+		return fit;
+
     }
 
 	public double getLogFitness(int i, byte state) {
-		return logFitness[i][state];
+		// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
+		double fit;
+		try {
+			fit = logFitness[i][state];
+		} catch(IndexOutOfBoundsException e) {
+			fit = 0; // neutral fitness
+		}
+		return fit;
 	}
 
 	protected void setLogFitness(int i, byte state, double f) {

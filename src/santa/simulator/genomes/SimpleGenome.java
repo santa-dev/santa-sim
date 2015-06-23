@@ -57,7 +57,10 @@ public class SimpleGenome extends BaseGenome {
 	public void duplicate(SimpleGenome source) {
 		this.sequence = new SimpleSequence(source.sequence);
 		this.fitnessCache = source.fitnessCache.clone();
+		this.descriptor = source.descriptor;
 		setLogFitness(source.getLogFitness());
+		assert(this.descriptor.getGenomeLength() == this.sequence.getLength());
+
 	}
 
 	public int getLength() {
@@ -92,35 +95,39 @@ public class SimpleGenome extends BaseGenome {
 	@Override 
 	public void applyMutations(SortedSet<Mutation> newMutations) {
 		GenomeDescription gd = null;
-		
+
+		assert(descriptor.getGenomeLength() == getLength());
+
 		for (Mutation m : newMutations) {
 			int l = getLength();
 			if (m.apply(this)) {
 
-				// If the genome length changes, the genomedescription object mut be updated.  We
-				// keep genome descriptions in a tree so we can trace the evolutionary history of
+				// If the genome length changes, a new, updated GenomeDescription object must be created.  The 
+				// genome description objects are linked together in a tree so we can trace the evolutionary history of
 				// indel events for a genome.
 				int nl = getLength();
 				if (l != nl) {
 					if (gd == null) {
-						gd = new GenomeDescription(descriptor, m);
+						gd = new GenomeDescription(descriptor, m.position, m.length());
 						descriptor = gd;
+						assert(descriptor.getGenomeLength() == getLength());
 					}
 				}
+				assert(descriptor.getGenomeLength() == getLength());
 				incrementTotalMutationCount();
 			}
 		}
+		assert(descriptor.getGenomeLength() == sequence.getLength());
 	}
 
 
 	/**
 	 * Substitution mutation effector function.  Substitute one
-	 * nucleotide at a single site for another.  Substitution will be
-	 * ignored if position is not within bounds of genome.
+	 * nucleotide at a single site for another.  
 	 *
-	 * @param position integer position relataive to beginning of genome where the substitution should be made.
-	 * @param state new nucleotie at site.  Coded as integer 0-3 = {A,C,G,T}
-	 * @return boolean indication whether state was changed at designated site.
+	 * @param position   integer position relative to beginning of genome where the substitution should be made.
+	 * @param state      new nucleotie at site.  Coded as integer 0-3 = {A,C,G,T}
+	 * @return boolean   indication whether state was changed at designated site.
 	 **/
 	public boolean substitute(int position, byte state) {
 		assert(state >= 0 && state <= 3);
@@ -138,45 +145,34 @@ public class SimpleGenome extends BaseGenome {
 	 * Deletion mutation effector function.  Deletes nucleotides at
 	 * designated position relative to start of genome.  If there are
 	 * not `count` elements beyond `position`, remove what is
-	 * available.  Can only delete on integral codon boundary, and
-	 * integral codon lengths.
+	 * available.  
+	 *
 	 * @param position non-negative integer position of first nucletide to be deleted.
 	 * @param count number of nucleotides to be deleted.
 	 * @return boolean indication of success
 	 **/
 	public boolean delete(int position, int count) {
-		// restrict indel lengths to multiples of 3 (count % 3) == 0.
-		// See Issue #8 - https://github.com/matsengrp/santa-sim/issues/8
 		assert(count >= 0);
 		assert(position >=0 && position < sequence.getLength());
 		count = Math.min(count, sequence.getLength()-position);
-		boolean status = false;
-		if ((count % 3) == 0) {
-			status = sequence.deleteSubSequence(position, count);
-		}
-		return(status);
+		return sequence.deleteSubSequence(position, count);
 
   	}
 
 
 	/**
 	 * Insertion mutation effector function.  Inserts nucleotides at
-	 * designated position relative to start of genome.  Can only
-	 * insert integral codon lengths on integral codon boundary.
+	 * designated position relative to start of genome.  
+	 * [ may not be trye: Can only
+	 *   insert integral codon lengths on integral codon boundary.]
+	 *
 	 * @param position non-negative integer position at which insertion begins.
 	 * @param seq nucleotides to be inserted.
 	 * @return boolean indication of success
 	 **/
 	public boolean insert(int position, SimpleSequence seq) {
-		// restrict indel lengths to multiples of 3 (count % 3) == 0.
-		// See Issue #8 - https://github.com/matsengrp/santa-sim/issues/8
-		boolean status = false;
-		if ((seq.getLength() % 3) == 0) {
-			status = sequence.insertSequence(position, seq);
-		}
-		return(status);
+		return sequence.insertSequence(position, seq);
 	}
-
 
 	// private members
 

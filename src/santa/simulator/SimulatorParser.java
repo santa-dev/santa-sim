@@ -128,7 +128,8 @@ public class SimulatorParser {
 	private final static String DECLINE_RATE = "declineRate";
 	private final static String EXPOSURE_DEPENDENT_FITNESS_FUNCTION = "exposureDependentFitness";
 	private final static String PENALTY = "penalty";
-	private final static String EMPERICAL_FITNESS_FUNCTION = "empiricalFitness";
+	// yes, 'empirical' is misspelled throughout this source code.  Thankfully it is correct in the config files.
+	private final static String EMPIRICAL_FITNESS_FUNCTION = "empiricalFitness";
 	private final static String POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION = "populationSizeDependentFitness";
 	private final static String MAX_POP_SIZE = "maxPopulationSize";
 
@@ -599,8 +600,8 @@ public class SimulatorParser {
 				// don't need to add a factor to the product
 			} else if (e.getName().equals(PURIFYING_FITNESS_FUNCTION)) {
 				factor = parsePurifyingFitnessFunction(e);
-			} else if (e.getName().equals(EMPERICAL_FITNESS_FUNCTION)) {
-				factor = parseEmpericalFitnessFunction(e);
+			} else if (e.getName().equals(EMPIRICAL_FITNESS_FUNCTION)) {
+				factor = parseEmpiricalFitnessFunction(e);
 			} else if (e.getName().equals(FREQUENCY_DEPENDENT_FITNESS_FUNCTION)) {
 				factor = parseFrequencyDependentFitnessFunction(e);
 			} else if (e.getName().equals(AGE_DEPENDENT_FITNESS_FUNCTION)) {
@@ -775,6 +776,7 @@ public class SimulatorParser {
 	}
 
 	private FitnessFactor parsePurifyingFitnessFunction(Element element) throws ParseException {
+		// parse <ref> element to reuse a purifying fitness factor that has already been specified.
 		FitnessFactor result = getFitnessFactor(element, PurifyingFitnessFactor.class.getName());
 		if (result != null)
 			return result;
@@ -817,7 +819,8 @@ public class SimulatorParser {
 		return new PurifyingFitnessFactor(rank, valueModel, fluctuateRate, fluctuateFitnessLimit, factor.feature, factor.sites);
 	}
 
-	private FitnessFactor parseEmpericalFitnessFunction(Element element) throws ParseException {
+	private FitnessFactor parseEmpiricalFitnessFunction(Element element) throws ParseException {
+		// parse <ref> element to reuse a purifying fitness factor that has already been specified.
 		FitnessFactor result = getFitnessFactor(element, PurifyingFitnessFactor.class.getName());
 		if (result != null)
 			return result;

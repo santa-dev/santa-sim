@@ -71,4 +71,5 @@ public interface Sequence {
      * Get a subsequence.
      */
     Sequence getSubSequence(int start, int length);
+
 }

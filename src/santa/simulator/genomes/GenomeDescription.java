@@ -40,38 +40,30 @@ public final class GenomeDescription {
 	// Link a new GenomeDescription into the tree of descriptions.  Each node in the tree is associated with a single Indel mutation.  It is
 	// the Indel mutation that invalidates genome lengths and site maps, so those are recomputed and cached in each new GenomeDescription
 	// object.
-	public GenomeDescription(GenomeDescription gd, Mutation indel) {
-		this.indel = indel;
+	public GenomeDescription(GenomeDescription gd, int position, int count) {
 		this.parent = gd;
-
 
 		// Copy features from parent, adjusting as necessary for the new indel event.
 		this.features = new ArrayList<Feature>();
 
-		Feature g = gd.getFeature("genome");
-		Range<Integer> r = Range.between(g.getFragmentStart(0), g.getFragmentFinish(0));
-		r = indel.apply(r);
-		genomeLength = r.getMaximum() - r.getMinimum() + 1;
-		
 		for (Feature feature : gd.features) {
-			Feature tmp = new Feature(feature.getName(), feature.getFeatureType());
-
-			for (int i = 0; i < feature.getFragmentCount(); i++) {
-				Range<Integer> f = Range.between(feature.getFragmentStart(i), feature.getFragmentFinish(i));
-				
-				f = indel.apply(f);
-				assert(f.getMinimum() >= 0);
-				assert(f.getMaximum() >= f.getMinimum());
-				assert(f.getMaximum() < genomeLength);
-				tmp.addFragment(f.getMinimum(), f.getMaximum());
-			}
+			Feature tmp = new Feature(feature, position, count);
 			this.features.add(tmp);
 		}
 
-		assert(getFeature("genome").getNucleotideLength() == genomeLength);
+		if (count < 0)
+			count = -Math.min(-count, gd.genomeLength-position);
+		this.genomeLength = gd.genomeLength + count;
+		
+		Feature g = gd.getFeature("genome");
+		Feature tmp = new Feature(g.getName(), g.getFeatureType());
+		tmp.addFragment(0, genomeLength-1);
+		this.features.set(0, tmp);
+
+		assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
 	}
 
-		
+	
 	public static void setDescription(int genomeLength,
 	                                  List<Feature> features) {
 		setDescription(genomeLength, features, null);
@@ -123,16 +115,24 @@ public final class GenomeDescription {
 	/**
 	 * For each feature, make two lookup tables (of type int[]):
 	 *
-	 * 		'featureSiteTable' maps from genomic coordinates to feature-relative coordinates.  That is, featureSiteTable[200] = 0 if the
-	 * 		current feature begins at genomic position 0.  'featureSiteTable' spans the entire genome and holds a feature-relative position
-	 * 		where the feature is defined, and -1 elsewhere.
+	 * 'featureSiteTable' maps from genomic coordinates to feature-relative
+	 * coordinates.  That is, featureSiteTable[200] = 0 if the current feature begins
+	 * at genomic position 0.  'featureSiteTable' spans the entire genome and holds a
+	 * feature-relative position where the feature is defined, and -1 elsewhere.
 	 *
+	 * 'genomeSiteTable' maps from feature-relative coordinates to genome
+	 * coordinates.  That is, genomeSiteTable[0] = 200 for the feature that begins at
+	 * the first position on the genome. The length of 'genomeSiteTable' is the
+	 * number of nucleotides in the feature.
 	 *
-	 * 		'genomeSiteTable' maps from feature-relative coordinates to genome coordinates.  That is, genomeSiteTable[0] = 200 for the feature that
-	 * 		begins at the first position on the genome. The length of 'genomeSiteTable' is the number of nucleotides in the feature. 
+	 * A 'featureSiteTable' and 'genomeSiteTable' pair are created for each feature.
+	 * The maps are stored in 'featureSiteTables' and 'genomeSiteTables' HashMaps
+	 * indexed by the feature object.   
 	 *
-	 * Remember that a 'featureSiteTable' and 'genomeSiteTable' pair are created for each feature.  The maps are stored in the class variables
-	 * 'featureSiteTables' and 'genomeSiteTables' HashMaps indexed by the feature object.
+	 * (why not index by the feature name?  what is the advantage to using an object
+	 * as the index?  now that we can have multiple genomedescription instances, each with
+	 * their own featureSiteTables, it is probably better to index by feature name
+	 * instead of by object.)
 	 */
 	private void computeSiteTables() {
 		this.featureSiteTables = new HashMap<Feature, int[]>();
@@ -140,22 +140,10 @@ public final class GenomeDescription {
 
 		for (Feature feature : features) {
 			int[] featureSiteTable = new int[genomeLength];
-			for (int i = 0; i < genomeLength; i++) {
-				featureSiteTable[i] = -1;
-			}
-			// Sanity check to make sure AMINO_ACID features have a length that is an integral multiple of 3.
-			// Otherwise can possibly throw ArrayIndexOutOfBoundsException in SimpleGenome(BaseGenome).getChanges()
-			if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
-				int featureLength = feature.getNucleotideLength();
-				if ((featureLength % 3) != 0) {
-					throw new IllegalArgumentException("Total length of AminoAcid feature \"" + feature.getName() + "\" must be an integral number of codons long (currently " + String.format("%.1f", featureLength/3.0) + " codons as specified).");
-				}
-			}
 			int[] genomeSiteTable = new int[feature.getNucleotideLength()];
-			for (int i = 0; i < genomeSiteTable.length; i++) {
-				genomeSiteTable[i] = -1;
-			}
 
+			Arrays.fill(featureSiteTable, -1);
+			Arrays.fill(genomeSiteTable, -1);
 
 			int k = 0;
 			for (int i = 0; i < feature.getFragmentCount(); i++) {
@@ -249,13 +237,10 @@ public final class GenomeDescription {
 
 	private int genomeLength;
 
-
     private BinomialDistribution mutationDist = null;
 
 
-
-
-	
+	// static variables.
 	private static List<Sequence> sequences = null;
 
 	private static List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();

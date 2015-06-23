@@ -36,19 +36,39 @@ public class Deletion extends Indel {
 	 * ranges are inclusive!
 	 */
 	public Range<Integer> apply(Range<Integer> fragment) {
-		if (fragment.isAfter(position+count-1)) {
-			fragment =  Range.between(fragment.getMinimum() - count, fragment.getMaximum() - count);
 
-		} else if (fragment.isOverlappedBy(Range.between(position, position+count-1))) {
-			int start = Math.min(fragment.getMinimum(), position);
-			int end = Math.max(start, fragment.getMaximum() - count);
-			fragment = Range.between(start, end);
-		} 
+		Range<Integer> del = Range.between(position, position+count-1);
+		
+		if (fragment.isAfterRange(del))
+			// deletion is fully left of fragment
+			// fragment moves left
+			fragment = Range.between(fragment.getMinimum() - count, fragment.getMaximum() - count);
+		else if (del.getMinimum() <= fragment.getMinimum()) {
+			if (del.getMaximum() <= fragment.getMaximum()) 
+				// deletion overlaps fragment on the left
+				fragment = Range.between(del.getMinimum(), fragment.getMaximum() - count);
+			else
+				// deletion completely covers fragment - fragment gets wiped out.
+				fragment = null;
+		} else if (del.getMinimum() <= fragment.getMaximum()) {
+			if (del.getMaximum() <  fragment.getMaximum())
+				// fragment completely covers deletion
+				fragment = Range.between(fragment.getMinimum(), fragment.getMaximum() - count);
+			else
+				// deletion overlaps fragment on the right
+				fragment = Range.between(fragment.getMinimum(), del.getMinimum()-1);
+		}
+		/// otherwise deletion is fully to the right of fragment and fragment is unaffected.
+
 		return (fragment);
 	}
 
 	public boolean apply(Genome genome) {
 		return(genome.delete(position, count));
+	}
+
+	public int length() {
+		return -count;
 	}
 
 	/**

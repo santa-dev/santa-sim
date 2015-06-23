@@ -45,7 +45,7 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         int stateSize = getAlphabet().getStateCount();
         Set<Integer> sites = getSites();
 
-        double[][] logFitness = new double[siteCount][stateSize + 1];
+        double[][] logFitness = new double[siteCount][stateSize+1];
 
         for (int i = 0; i < logFitness.length; ++i) {
             if (sites.contains(i)) {
@@ -54,18 +54,12 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
                 for (int j = 0; j < stateSize; ++j) {
                     logFitness[i][states[j]] = Math.log(fitnesses[j]);
                 }
-
-	            // stop codons are given a logFitness of -Inf
-	            logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
             } else {
 	            // sites not handled by this factor are given a zero log likelihood
-                for (int j = 0; j < stateSize; ++j) {
-                    logFitness[i][j] = 0.0;
-                }
-
-	            // stop codons are given a logFitness of -Inf
-	            logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
+				Arrays.fill(logFitness[i], 0.0);
             }
+			// stop codons are always have a logFitness of -Inf
+			logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
         }
 
         initialize(logFitness);

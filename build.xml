@@ -11,6 +11,12 @@
 
     <property environment="env"/>
 
+    <!-- Populates a class path containing our classes and jars -->
+    <path id="classpath">
+      <fileset dir="${lib}" includes="**/*.jar"/>
+      <pathelement path="${build}"/>
+    </path>
+    
     <target name="init">
         <!-- Create the time stamp -->
         <tstamp/>
@@ -21,11 +27,14 @@
     </target>
 	
     <target name="compile" depends="init">
+
         <!-- Compile the java code from ${src} into ${build} -->
 	<!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
         <javac srcdir="${src}" destdir="${build}"
-	       includeantruntime="false"
-               classpath="${lib}/commons-math3-3.4.1/commons-math3-3.4.1.jar:${lib}/commons-lang3-3.4/commons-lang3-3.4.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
+	       includeantruntime="false">
+      	  <classpath>
+	    <path refid="classpath"/>
+	  </classpath>
 	  <compilerarg value="-Xlint:deprecation" />
 	  
           <include name="santa/**"/>
@@ -48,6 +57,45 @@
 
     <target name="clean">
         <delete dir="${build}"/>
+    </target>
+
+    <target name="test" depends="dist">
+      <property name="test" location="test"/>
+      <property name="test.src" location="${test}"/>
+      <property name="test.reports" location="${test}/reports"/>
+      <property name="test.build" location="${test}/build"/>
+
+      <mkdir dir="${test.reports}"/>
+      <mkdir dir="${test.build}"/>
+
+      <javac srcdir="${test.src}" destdir="${test.build}"
+	     includeantruntime="false">
+      	<classpath>
+	  <fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	  <pathelement path="${test.build}"/>
+	  <path refid="classpath"/>
+	</classpath>
+	<compilerarg value="-Xlint:deprecation" />
+        <include name="santa/**"/>
+      </javac>
+
+      <junit printsummary="yes" haltonfailure="yes">
+	<classpath>
+	  <fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	  <pathelement path="${test.build}"/>
+	  <path refid="classpath"/>
+	</classpath>
+
+	<formatter type="plain"/>
+
+	<test name="my.test.TestCase" haltonfailure="no" outfile="result">
+	  <formatter type="xml"/>
+	</test>
+
+	<batchtest fork="yes" todir="${test.reports}">
+	  <fileset dir="${test.src}" includes="**/*.java"/>
+	</batchtest>
+      </junit>
     </target>
 
 </project>

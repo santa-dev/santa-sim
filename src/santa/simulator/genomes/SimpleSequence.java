@@ -110,28 +110,30 @@ public final class SimpleSequence implements Sequence {
 	}
 	
 	public boolean deleteSubSequence(int pos, int count) {
-		assert (states.length % 3) == 0;
-		assert (count % 3) == 0;
+		// assert that insert preserved frame...
+		// assert (states.length % 3) == 0;
+		// assert (count % 3) == 0;
 
 		byte newstates[] = new byte[states.length - count];
 		System.arraycopy(states, 0, newstates, 0, pos);
 		System.arraycopy(states, pos+count, newstates, pos, states.length-pos-count);
 		states = newstates;
-		assert (states.length % 3) == 0;
+		// assert (states.length % 3) == 0;
 
 		return(true);
 	}
 	
 	public boolean insertSequence(int start, SimpleSequence source) {
 		// allocate more space and copy the old contents
-		assert (states.length % 3) == 0;
-		assert (source.getLength() % 3) == 0;
+		// assert that insert preserved frame...
+		// assert (states.length % 3) == 0;
+		// assert (source.getLength() % 3) == 0;
 
 		byte newstates[] = Arrays.copyOf(states, states.length + source.getLength());
 		System.arraycopy(source.states, 0, newstates, start, source.getLength());
 		System.arraycopy(states, start, newstates, start+source.getLength(), states.length-start);
 		states = newstates;
-		assert (states.length % 3) == 0;
+		// assert (states.length % 3) == 0;
 		return(true);
 	}
 
