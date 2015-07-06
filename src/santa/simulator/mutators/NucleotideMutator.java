@@ -1,6 +1,7 @@
 package santa.simulator.mutators;
 
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import santa.simulator.Random;
 import santa.simulator.IndelModel;
@@ -113,7 +114,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 
 	@Override public SortedSet<Mutation> mutate(Genome genome) {
-		SortedSet<Mutation> mutations = super.mutate(genome);
+		SortedSet<Mutation> mutations;
 
 		// total probability space, { insertion, deletion, neither }
 		// probability of getting an insertion *or* deletion.
@@ -124,6 +125,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 		
 		if (r < indelProb) {
+			mutations = new TreeSet<Mutation>();
 			// Doing an indel....
 			if (r < insertProb) {	// Insertion!
 				int pos = Random.nextInt(0, genome.getLength());	// start position
@@ -152,6 +154,8 @@ public class NucleotideMutator extends AbstractMutator {
 					mutations.add(new Deletion(pos, count));
 				}
 			}
+		} else {
+			mutations = super.mutate(genome);
 		}
 		return mutations;
     }
