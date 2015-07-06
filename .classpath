@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="lib" path="lib/jebl-0.3.jar"/>
-	<classpathentry kind="lib" path="lib/commons-math3-3.4.1/commons-math3-3.4.1.jar" sourcepath="lib/commons-math3-3.4.1-src"/>
+	<classpathentry kind="lib" path="lib/commons-math3-3.4.1/commons-math3-3.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.4/commons-lang3-3.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -118,7 +118,7 @@ public abstract class BaseGenome implements Genome {
 		assert(descriptor.getGenomeLength() == getLength());
 			
 		// Note that Mutation objects are positioned by nucleotide relevant to the start of the genome.
-		// Change objects also have a position, but the units depend upon the alphabet of the feature.
+		// 'StateChange' objects also have a position, but the units depend upon the alphabet of the feature.
 		// 
 		
 		feature = descriptor.getFeature(feature.getName());
