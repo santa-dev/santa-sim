@@ -98,6 +98,8 @@ public final class Feature {
 		 * copy constructor.   Clone a fragment and apply an indel.
 		 * It is possible the indel will have no effect on the fragment in which
 		 * case the cloned fragment will have identical values as the original.
+		 * It is also possible that the indel will completely wipe out
+		 * the fragment (reducing it to one nucleotide or less).
 		 *
 		 * @param: f: fragment to be cloned.
 		 * @param position: non-negative position where indel whould begin
@@ -118,7 +120,7 @@ public final class Feature {
 				this.start = f.start;
 				if (count < 0) {
 					// delete: count < 0
-					count = -Math.min(-count, f.finish-position);
+					count = -Math.min(-count, f.finish-position+1);
 				}
 				this.finish = f.finish + count;
 			} else {
@@ -126,7 +128,7 @@ public final class Feature {
 				this.finish = f.finish;
 			}
 		}
-		
+
 		public int getStart() {
 			return start;
 		}
