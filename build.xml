@@ -1,101 +1,102 @@
 <project name="SANTA" default="dist" basedir=".">
-    <description>
+  <description>
     build file for santa-sim
-    </description>
-    <!-- set global properties for this build -->
-    <property name="src" location="src"/>
-    <property name="build" location="build"/>
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
 
-    <property name="lib" location="lib"/>
-    <property name="dist" location="dist"/>
+  <property name="lib" location="lib"/>
+  <property name="dist" location="dist"/>
 
-    <property environment="env"/>
+  <property environment="env"/>
 
-    <!-- Populates a class path containing our classes and jars -->
-    <path id="classpath">
-      <fileset dir="${lib}" includes="**/*.jar"/>
-      <pathelement path="${build}"/>
-    </path>
-    
-    <target name="init">
-        <!-- Create the time stamp -->
-        <tstamp/>
-        <!-- Create the build directory structure used by compile -->
-        <mkdir dir="${build}"/>
-        <mkdir dir="${dist}"/>
-        <mkdir dir="${lib}"/>
-    </target>
-	
-    <target name="compile" depends="init">
+  <!-- Populates a class path containing our classes and jars -->
+  <path id="classpath">
+    <fileset dir="${lib}" includes="**/*.jar"/>
+    <pathelement path="${build}"/>
+  </path>
+  
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${lib}"/>
+  </target>
+  
+  <target name="compile" depends="init">
 
-        <!-- Compile the java code from ${src} into ${build} -->
-	<!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
-        <javac srcdir="${src}" destdir="${build}"
-	       includeantruntime="false">
-      	  <classpath>
-	    <path refid="classpath"/>
-	  </classpath>
-	  <compilerarg value="-Xlint:deprecation" />
-	  
-          <include name="santa/**"/>
-        </javac>
-    </target>
+    <!-- Compile the java code from ${src} into ${build} -->
+    <!-- Avoid ant warning: “'includeantruntime' was not set” -->
+    <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
+    <javac srcdir="${src}" destdir="${build}"
+	   includeantruntime="false">
+      <classpath>
+	<path refid="classpath"/>
+      </classpath>
+      <compilerarg value="-Xlint:deprecation" />
+      
+      <include name="santa/**"/>
+    </javac>
+  </target>
 
-    <target name="dist" depends="compile" description="generate the distribution">
-        <!-- Create the distribution directory -->
-        <mkdir dir="${dist}"/>
+  <target name="dist" depends="compile" description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
 
-        <jar jarfile="${dist}/santa.jar">
-            <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
-            </manifest>
-            <zipgroupfileset dir="${lib}" includes="*.jar"/>
-        </jar>
-    </target>
+    <jar jarfile="${dist}/santa.jar">
+      <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
+      </manifest>
+      <zipgroupfileset dir="${lib}" includes="*.jar"/>
+    </jar>
+  </target>
 
-    <target name="clean">
-        <delete dir="${build}"/>
-    </target>
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
 
-    <target name="test" depends="dist">
-      <property name="test" location="test"/>
-      <property name="test.src" location="${test}"/>
-      <property name="test.reports" location="${test}/reports"/>
-      <property name="test.build" location="${test}/build"/>
+  <target name="test" depends="dist">
+    <property name="test" location="test"/>
+    <property name="test.src" location="${test}"/>
+    <property name="test.reports" location="${test}/reports"/>
+    <property name="test.build" location="${test}/build"/>
 
-      <mkdir dir="${test.reports}"/>
-      <mkdir dir="${test.build}"/>
+    <mkdir dir="${test.reports}"/>
+    <mkdir dir="${test.build}"/>
 
-      <javac srcdir="${test.src}" destdir="${test.build}"
-	     includeantruntime="false">
-      	<classpath>
-	  <fileset dir="${test.src}/lib" includes="**/*.jar"/>
-	  <pathelement path="${test.build}"/>
-	  <path refid="classpath"/>
-	</classpath>
-	<compilerarg value="-Xlint:deprecation" />
-        <include name="santa/**"/>
-      </javac>
+    <javac srcdir="${test.src}" destdir="${test.build}"
+	   includeantruntime="false">
+      <classpath>
+	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	<pathelement path="${test.build}"/>
+	<path refid="classpath"/>
+      </classpath>
+      <compilerarg value="-Xlint:deprecation" />
+      <include name="santa/**"/>
+    </javac>
 
-      <junit printsummary="yes" haltonfailure="yes">
-	<classpath>
-	  <fileset dir="${test.src}/lib" includes="**/*.jar"/>
-	  <pathelement path="${test.build}"/>
-	  <path refid="classpath"/>
-	</classpath>
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	<pathelement path="${test.build}"/>
+	<path refid="classpath"/>
+      </classpath>
 
-	<formatter type="plain"/>
+      <formatter type="plain"/>
 
-	<test name="my.test.TestCase" haltonfailure="no" outfile="result">
-	  <formatter type="xml"/>
-	</test>
+      <test name="my.test.TestCase" haltonfailure="no" outfile="result">
+	<formatter type="xml"/>
+      </test>
 
-	<batchtest fork="yes" todir="${test.reports}">
-	  <fileset dir="${test.src}" includes="**/*.java"/>
-	</batchtest>
-      </junit>
-    </target>
+      <batchtest fork="yes" todir="${test.reports}">
+	<fileset dir="${test.src}" includes="**/*.java"/>
+      </batchtest>
+    </junit>
+  </target>
 
 </project>
