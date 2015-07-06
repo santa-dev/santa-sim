@@ -82,9 +82,13 @@ public class Deletion extends Indel {
 		for (int p = this.position; p < featureSiteTable.length; p++) {
 			fp = featureSiteTable[p];
 			if (fp >= 0) {
-				byte oldState = genome.getNucleotide(p);
-				byte newState = genome.getNucleotide(p+this.count);
-				scl.add( new StateChange(fp, oldState, newState) );
+				try {
+					byte oldState = genome.getNucleotide(p);
+					byte newState = genome.getNucleotide(p+this.count);
+					scl.add( new StateChange(fp, oldState, newState) );
+				} catch(IndexOutOfBoundsException e) {
+					
+				}
 			}
 		}
 
