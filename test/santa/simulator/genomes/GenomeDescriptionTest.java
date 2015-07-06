@@ -27,7 +27,7 @@ public class GenomeDescriptionTest {
 	 */
 
 	/**
-	 * This gets runs once before any tests in this class.  It is responsible or initializing the state expected by the subsequent tests.
+	 * This gets runs once before any tests in this class.  It is responsible for initializing the state expected by the subsequent tests.
 	 *
 	 * Create a GenomeDescription that has two features, the first of which has two fragements.
 	 */
@@ -52,7 +52,27 @@ public class GenomeDescriptionTest {
 	}
 
 	@Test
+	public void testRootGenomeDescription() {
+		assertNotNull(GenomeDescription.root);
+		Feature pol = GenomeDescription.root.getFeature("POL");
+		assertNotNull(pol);
+		assertEquals(9, pol.getLength());
+		Feature gag = GenomeDescription.root.getFeature("GAG");
+		assertNotNull(gag);
+		assertEquals(6, gag.getLength());
+	}
+
+
+
+	/**
+	 * We make new GenomeDescriptor objects by modifying an existing one.
+	 * Verify that various types of modifications do what we expect.
+	 */
+	@Test
 	public void testGenomeDescriptionIndelAtEnd() {
+		// aaaaCCCCCcCCCCggTTTTTTaa
+		// 012345678901234567890123
+
 		Mutation m;
 		GenomeDescription gd;
 
@@ -67,22 +87,20 @@ public class GenomeDescriptionTest {
 		// inserting at end
 		gd = new GenomeDescription(GenomeDescription.root, 23, 1);
 		assertEquals(25, gd.getGenomeLength());
-		}
-	
-	/**
-	 * Test method for {@link santa.simulator.genomes.GenomeDescription#GenomeDescription(santa.simulator.genomes.GenomeDescription, santa.simulator.genomes.Mutation)}.
-	 */
-	@Test
-	public void testBasicGenomeDescription() {
-		assertNotNull(GenomeDescription.root);
-		assertNotNull(GenomeDescription.root.getFeature("POL"));
-		Feature pol = GenomeDescription.root.getFeature("POL");
-		assertEquals(9, pol.getLength());
-		assertNotNull(GenomeDescription.root.getFeature("GAG"));
-		Feature gag = GenomeDescription.root.getFeature("GAG");
-		assertEquals(6, gag.getLength());
+
+		// overlapping delete at the start
+		gd = new GenomeDescription(GenomeDescription.root, 2, -4);
+		assertEquals(20, gd.getGenomeLength());
+
+		Feature pol = gd.getFeature("POL");
+		assertNotNull(pol);
+		assertEquals(2, pol.getFragmentStart(0));
+		assertEquals(4, pol.getFragmentFinish(0));
+		assertEquals(6, pol.getFragmentStart(1));
+		assertEquals(9, pol.getFragmentFinish(1));
 	}
 
+	
 	/**
 	 * Test method for {@link santa.simulator.genomes.GenomeDescription#GenomeDescription(santa.simulator.genomes.GenomeDescription, santa.simulator.genomes.Mutation)}.
 	 */
