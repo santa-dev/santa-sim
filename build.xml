@@ -53,6 +53,7 @@
         <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
       </manifest>
       <zipgroupfileset dir="${lib}" includes="*.jar"/>
+      <zipgroupfileset dir="${lib}/commons-math3-3.4.1" includes="*.jar"/>
     </jar>
   </target>
 
