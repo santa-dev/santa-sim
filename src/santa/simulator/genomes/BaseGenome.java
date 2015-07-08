@@ -67,27 +67,24 @@ public abstract class BaseGenome implements Genome {
 		this.fitnessCache = fitnessCache;
 	}
 
+	/**
+	 * Retrieve a contiguous array of nucleotides corresponding to a feature.
+	 *
+	 * @return byte array of nucleotides (encoded as integer states)
+	 **/
 	public byte[] getNucleotides(Feature feature) {
-		byte[] nucleotides = new byte[feature.getNucleotideLength()];
+		int sites[] = descriptor.getGenomeSiteTable(feature);
+		byte[] nucleotides = new byte[sites.length];
+
 		int k = 0;
-		for (int i = 0; i < feature.getFragmentCount(); i++) {
-			int start = feature.getFragmentStart(i);
-			int finish = feature.getFragmentFinish(i);
-			if (start < finish) {
-				for (int j = start; j <= finish; j++) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			} else {
-				for (int j = finish; j >= start; j--) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			}
+		for (int i: sites) {
+			nucleotides[k] = getNucleotide(i);
+			k++;
 		}
 
 		return nucleotides;
 	}
+
 
 	public byte[] getStates(Feature feature) {
 		Sequence seq = new SimpleSequence(getNucleotides(feature));

@@ -9,51 +9,6 @@ public class SimpleGenome extends BaseGenome {
 	public SimpleGenome() {
 	}
 
-	/**
-	 * Retrieve a contiguous byte array of nucleotides corresponding to a feature.
-	 *
-	 * Adjust feature coordinates to reflect indel
-	 * mutations.  Feature coordinates are relative to the original
-	 * founder genome.  Before using those coordinates to retrieve
-	 * nucleotides, they must be updated to take into account all the
-	 * overlapping indel events that have occurred on this genome.
-	 * @return byte array of nucleotides (encoded as ints? as characters? )
-	 **/
-	@Override 
-	public byte[] getNucleotides(Feature feature) {
-		int total = feature.getNucleotideLength();	// total width of feature
-
-		byte[] nucleotides = new byte[total];
-		int k = 0;
-		for (int i = 0; i < feature.getFragmentCount(); i++) {
-			int start = feature.getFragmentStart(i);
-			int finish = feature.getFragmentFinish(i);
-			
-			/*
-			it looks like this code is prepared for 'finish' to be less than 'start'.
-			Why do we need to support that?  It doesn't seem to have anything to do with supporting fitness on the non-template DNA strand.
-			So why not just always assume (or ensure) that start < finish?
-			*/
-
-			if (start < finish) {
-				for (int j = start; j <= finish; j++) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			} else {
-				for (int j = finish; j >= start; j--) {
-					nucleotides[k] = getNucleotide(j);
-					k++;
-				}
-			}
-		}
-
-		return nucleotides;
-	}
-
-
-
-	
 	public void duplicate(SimpleGenome source) {
 		this.sequence = new SimpleSequence(source.sequence);
 		this.fitnessCache = source.fitnessCache.clone();

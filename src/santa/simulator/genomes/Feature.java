@@ -66,13 +66,11 @@ public final class Feature {
 
 	public int getNucleotideLength() {
 		int length = 0;
-
-		for (Fragment fragment : fragments) {
-			length += Math.abs(fragment.getFinish() - fragment.getStart()) + 1;
-		}
-
+		for (Fragment fragment : fragments) 
+			length += fragment.getLength();
 		return length;
 	}
+	
 	public int getFragmentCount() {
 		return fragments.size();
 	}
@@ -90,7 +88,8 @@ public final class Feature {
 	private class Fragment {
 		public Fragment(int start, int finish) {
 			this.start = start;
-			this.finish = finish;
+			this.count = finish - start + 1;
+			assert(this.count > 0);
 		}
 
 
@@ -99,47 +98,83 @@ public final class Feature {
 		 * It is possible the indel will have no effect on the fragment in which
 		 * case the cloned fragment will have identical values as the original.
 		 * It is also possible that the indel will completely wipe out
-		 * the fragment (reducing it to one nucleotide or less).
+		 * the fragment (reducing it's lemgth to zero).
 		 *
+		 * Note: A negative delta indicates deletion from the current position moving right.  It DOES NOT mean to remove bases to the left of current position.
+		 * 
 		 * @param: f: fragment to be cloned.
 		 * @param position: non-negative position where indel whould begin
-		 * @param count: positive/negative count of positions to be inserted/deleted.
+		 * @param delta: positive/negative count of positions to be inserted/deleted.
 		 */
-		public Fragment(Fragment f, int position, int count) {
+		public Fragment(Fragment f, int position, int delta) {
 			if (position < f.start) {
-				// delete: count < 0
-				// insert: count > 0
-				this.finish = Math.max(position, f.finish + count);
-				if (count < 0) {
-					// delete: count < 0
-					count = -Math.min(-count, f.start-position);
-				} 
-				this.start = f.start + count;
-			}
-			else if (position <= f.finish) {
-				this.start = f.start;
-				if (count < 0) {
-					// delete: count < 0
-					count = -Math.min(-count, f.finish-position+1);
+				// delete: delta < 0
+				// insert: delta > 0
+				if (delta < 0) {
+					// delete: delta < 0
+					int shift = Math.min(-delta, f.start-position);
+					this.start = f.start - shift;
+					this.count = f.count + (delta+shift);
+				} else {	
+					this.start = f.start + delta;
+					this.count = f.count;
 				}
-				this.finish = f.finish + count;
+			}
+			else if (position <= f.getFinish()) {
+				this.start = f.start;
+				if (delta < 0) {
+					// delete: delta < 0
+					delta = -Math.min(-delta, f.count);
+				}
+				this.count = f.count + delta;
 			} else {
 				this.start = f.start;
-				this.finish = f.finish;
+				this.count = f.count;
 			}
 		}
+
+		// public Fragment(Fragment f, int position, int delta) {
+		// 	if (position < f.start) {
+		// 		// delete: delta < 0
+		// 		// insert: delta > 0
+		// 		this.finish = Math.max(position, f.finish + delta);
+		// 		if (delta < 0) {
+		// 			// delete: delta < 0
+		// 			delta = -Math.min(-delta, f.start-position);
+		// 		} 
+		// 		this.start = f.start + delta;
+		// 	}
+		// 	else if (position <= f.finish) {
+		// 		this.start = f.start;
+		// 		if (delta < 0) {
+		// 			// delete: delta < 0
+		// 			delta = -Math.min(-delta, f.finish-position+1);
+		// 		}
+		// 		this.finish = f.finish + delta;
+		// 	} else {
+		// 		this.start = f.start;
+		// 		this.finish = f.finish;
+		// 	}
+		// }
 
 		public int getStart() {
 			return start;
 		}
 
 		public int getFinish() {
-			return finish;
+			if (count <= 0) 
+				throw new RuntimeException("getFinish() is meaningless on zero-length fragments");
+
+			return start + count - 1;
+		}
+
+		public int getLength() {
+			return count;
 		}
 
 		
 		private final int start;
-		private final int finish;
+		private final int count;
 	}
 
 	private final String name;

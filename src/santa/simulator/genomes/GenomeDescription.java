@@ -45,22 +45,25 @@ public final class GenomeDescription {
 
 		// Copy features from parent, adjusting as necessary for the new indel event.
 		this.features = new ArrayList<Feature>();
-
-		for (Feature feature : gd.features) {
-			Feature tmp = new Feature(feature, position, count);
-			this.features.add(tmp);
-		}
-
-		if (count < 0)
-			count = -Math.min(-count, gd.genomeLength-position);
+		if (count < 0) 
+			count = -Math.min(-count, gd.genomeLength - position);
 		this.genomeLength = gd.genomeLength + count;
-		
-		Feature g = gd.getFeature("genome");
-		Feature tmp = new Feature(g.getName(), g.getFeatureType());
-		tmp.addFragment(0, genomeLength-1);
-		this.features.set(0, tmp);
+		if (this.genomeLength > 0) {
+			for (Feature feature : gd.features) {
+				Feature tmp = new Feature(feature, position, count);
+				this.features.add(tmp);
+			}
 
-		assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
+			if (count < 0)
+				count = -Math.min(-count, gd.genomeLength-position);
+		
+			Feature g = gd.getFeature("genome");
+			Feature tmp = new Feature(g.getName(), g.getFeatureType());
+			tmp.addFragment(0, this.genomeLength-1);
+			this.features.set(0, tmp);
+			assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
+		}
+		
 	}
 
 	
@@ -155,7 +158,7 @@ public final class GenomeDescription {
 						genomeSiteTable[k] = j;
 						k++;
 					}
-				} else {
+				} else if (finish < start) {
 					for (int j = finish; j >= start; j--) {
 						featureSiteTable[j] = k;
 						genomeSiteTable[k] = j;
@@ -169,11 +172,11 @@ public final class GenomeDescription {
 	}
 
 	/**
-	 * returns a table that maps the sites in the genome to the
-	 * nucleotides sites of the specified feature (nucleotide
-	 * sites even if the feature is amino acids).
+	 * returns an integer array that maps positions in the genome to positions in a feature.
+	 * The returned array will have a length equal to the number of positions in the genome.
+	 * Note: a genome may have zero length, in which case an empty array will be returned.
 	 * @param feature
-	 * @return an array of integers as long as the genome
+	 * @return integer array
 	 */
 	public int[] getFeatureSiteTable(Feature feature) {
 		if (featureSiteTables == null) {
@@ -183,10 +186,11 @@ public final class GenomeDescription {
 	}
 
 	/**
-	 * returns a table that maps the nucloetide sites of the specified
-	 * feature to the sites of the genome.
+	 * returns an integer array that maps positions in a feature to positions in the genome.
+	 * The returned array will have a length equal to the number of positions in the feature.
+	 * Note: a feature may have zero length, which case an empty array will be returned!
 	 * @param feature
-	 * @return an array of integers as long as the feature in nucleotides
+	 * @return integer array
 	 */
 	public int[] getGenomeSiteTable(Feature feature) {
 		if (genomeSiteTables == null) {
