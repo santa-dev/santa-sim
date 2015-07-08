@@ -8,6 +8,9 @@
  */
 package santa.simulator.genomes;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * @file   Indel.java
  * @author cswarth
@@ -37,6 +40,25 @@ public class Indel extends Mutation {
     public Indel getParent() {
         return parent;
     }
+
+	/**
+	 * Return a list of nucleotide changes relative to a particular feature.
+	 * Changes induced by mutations are difficult to capture as a list of single-nucleotde changes.
+	 * This routine doesn't even try to do that, and always returns an empty list of changes.
+	 * Changes to fitness will be captured at a complete fitness recalculation.
+	 *
+	 * @param genome: the genome object which is changing.
+	 * @param featureSiteTable: map from genomic coordinates to feature coordinates.
+	 */
+	@Override
+	public List<StateChange> getChanges(Genome genome, int[] featureSiteTable) {
+		// probably time to revisit the idea that indels are just another kind of mutation like substitutions.
+		// They share very little infrastructure.
+
+		List<StateChange> scl = new ArrayList<StateChange>();
+		return (scl);
+	}
+
 
 	public Indel parent;
     public int generation;

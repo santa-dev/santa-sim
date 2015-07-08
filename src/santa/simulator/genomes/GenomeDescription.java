@@ -19,7 +19,7 @@ public final class GenomeDescription {
 	private GenomeDescription(int genomeLength, List<Feature> features, List<Sequence> sequences) {
 		this.genomeLength = genomeLength;
 		Feature genomeFeature = new Feature("genome", Feature.Type.NUCLEOTIDE);
-		genomeFeature.addFragment(0, genomeLength - 1);
+		genomeFeature.addFragment(0, genomeLength);
 
 		this.features = new ArrayList<Feature>();
 		this.features.add(genomeFeature);
@@ -32,6 +32,9 @@ public final class GenomeDescription {
 			}
 			GenomeDescription.sequences = new ArrayList<Sequence>(sequences);
 		}
+		assert(this.features != null);
+		assert(this.features.size() >= 1);
+
 	}
 
 
@@ -41,6 +44,9 @@ public final class GenomeDescription {
 	// the Indel mutation that invalidates genome lengths and site maps, so those are recomputed and cached in each new GenomeDescription
 	// object.
 	public GenomeDescription(GenomeDescription gd, int position, int count) {
+		assert(gd.features != null);
+		assert(gd.features.size() >= 1);
+
 		this.parent = gd;
 
 		// Copy features from parent, adjusting as necessary for the new indel event.
@@ -48,21 +54,20 @@ public final class GenomeDescription {
 		if (count < 0) 
 			count = -Math.min(-count, gd.genomeLength - position);
 		this.genomeLength = gd.genomeLength + count;
-		if (this.genomeLength > 0) {
-			for (Feature feature : gd.features) {
-				Feature tmp = new Feature(feature, position, count);
-				this.features.add(tmp);
-			}
-
-			if (count < 0)
-				count = -Math.min(-count, gd.genomeLength-position);
-		
-			Feature g = gd.getFeature("genome");
-			Feature tmp = new Feature(g.getName(), g.getFeatureType());
-			tmp.addFragment(0, this.genomeLength-1);
-			this.features.set(0, tmp);
-			assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
+		for (Feature feature : gd.features) {
+			Feature tmp = new Feature(feature, position, count);
+			this.features.add(tmp);
 		}
+
+		Feature g = gd.getFeature("genome");
+		Feature tmp = new Feature(g.getName(), g.getFeatureType());
+		tmp.addFragment(0, this.genomeLength);
+		this.features.set(0, tmp);
+		assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
+
+		assert(this.features != null);
+		assert(this.features.size() >= 1);
+
 		
 	}
 
@@ -138,36 +143,35 @@ public final class GenomeDescription {
 	 * instead of by object.)
 	 */
 	private void computeSiteTables() {
-		this.featureSiteTables = new HashMap<Feature, int[]>();
-		this.genomeSiteTables = new HashMap<Feature, int[]>();
+		this.featureSiteTables = new HashMap<String, int[]>();
+		this.genomeSiteTables = new HashMap<String, int[]>();
+
+		System.out.println("computeSiteTables");
+		assert(features != null);
+		assert(features.size() >= 1);
 
 		for (Feature feature : features) {
 			int[] featureSiteTable = new int[genomeLength];
 			int[] genomeSiteTable = new int[feature.getNucleotideLength()];
+
+			System.out.println("feature "+feature.getName()+" NucleotideLength="+feature.getNucleotideLength());
+
 
 			Arrays.fill(featureSiteTable, -1);
 			Arrays.fill(genomeSiteTable, -1);
 
 			int k = 0;
 			for (int i = 0; i < feature.getFragmentCount(); i++) {
-				int start = feature.getFragmentStart(i);
-				int finish = feature.getFragmentFinish(i);
-				if (start < finish) {
-					for (int j = start; j <= finish; j++) {
-						featureSiteTable[j] = k;
-						genomeSiteTable[k] = j;
-						k++;
-					}
-				} else if (finish < start) {
-					for (int j = finish; j >= start; j--) {
-						featureSiteTable[j] = k;
-						genomeSiteTable[k] = j;
-						k++;
-					}
+				int len = feature.getFragmentLength(i);
+				int j = feature.getFragmentStart(i);
+				while (len-- > 0) {
+					featureSiteTable[j] = k;
+					genomeSiteTable[k] = j;
+					k++; j++;
 				}
 			}
-			featureSiteTables.put(feature, featureSiteTable);
-			genomeSiteTables.put(feature, genomeSiteTable);
+			featureSiteTables.put(feature.getName(), featureSiteTable);
+			genomeSiteTables.put(feature.getName(), genomeSiteTable);
 		}
 	}
 
@@ -182,7 +186,7 @@ public final class GenomeDescription {
 		if (featureSiteTables == null) {
 			computeSiteTables();
 		}
-		return featureSiteTables.get(feature);
+		return featureSiteTables.get(feature.getName());
 	}
 
 	/**
@@ -196,7 +200,7 @@ public final class GenomeDescription {
 		if (genomeSiteTables == null) {
 			computeSiteTables();
 		}
-		return genomeSiteTables.get(feature);
+		return genomeSiteTables.get(feature.getName());
 	}
 
 
@@ -236,8 +240,8 @@ public final class GenomeDescription {
 	private List<Feature> features = null;
 
 	// These site maps are recomputed based on the feature coordinates inherited from the parent description.
-	private Map<Feature, int[]> genomeSiteTables = null;
-	private Map<Feature, int[]> featureSiteTables = null;
+	private Map<String, int[]> genomeSiteTables = null;
+	private Map<String, int[]> featureSiteTables = null;
 
 	private int genomeLength;
 

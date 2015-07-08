@@ -65,6 +65,8 @@ public class SimpleGenome extends BaseGenome {
 					if (gd == null) {
 						gd = new GenomeDescription(descriptor, m.position, m.length());
 						descriptor = gd;
+						System.out.println("invalidating fitness cache.");
+						this.fitnessCache = null;
 						assert(descriptor.getGenomeLength() == getLength());
 					}
 				}

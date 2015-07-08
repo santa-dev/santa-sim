@@ -27,16 +27,16 @@ public final class Feature {
 	 * @param position: non-negative position where indel whould begin
 	 * @param count: positive/negative count of positions to be inserted/deleted.
 	 */
-	public Feature(Feature f, int position, int count) {
+	public Feature(Feature f, int position, int delta) {
 		this.name = f.name;
 		this.featureType = f.featureType;
 		for (Fragment fr: f.fragments) {
-			fragments.add(new Fragment(fr, position, count));
+			fragments.add(new Fragment(fr, position, delta));
 		}
 	}
 
-	public void addFragment(int start, int finish) {
-		fragments.add(new Fragment(start, finish));
+	public void addFragment(int start, int count) {
+		fragments.add(new Fragment(start, count));
 	}
 
 	public String getName() {
@@ -67,7 +67,7 @@ public final class Feature {
 	public int getNucleotideLength() {
 		int length = 0;
 		for (Fragment fragment : fragments) 
-			length += fragment.getLength();
+			length = length + fragment.getLength();
 		return length;
 	}
 	
@@ -83,13 +83,17 @@ public final class Feature {
 		return fragments.get(index).getFinish();
 	}
 
+	public int getFragmentLength(int index) {
+		return fragments.get(index).getLength();
+	}
+
 	private final List<Fragment> fragments = new ArrayList<Fragment>();
 
 	private class Fragment {
-		public Fragment(int start, int finish) {
+		public Fragment(int start, int count) {
+			assert(count >= 0);
 			this.start = start;
-			this.count = finish - start + 1;
-			assert(this.count > 0);
+			this.count = count;
 		}
 
 
@@ -120,7 +124,7 @@ public final class Feature {
 					this.count = f.count;
 				}
 			}
-			else if (position <= f.getFinish()) {
+			else if (f.count > 0 && position <= f.getFinish()) {
 				this.start = f.start;
 				if (delta < 0) {
 					// delete: delta < 0
@@ -131,31 +135,10 @@ public final class Feature {
 				this.start = f.start;
 				this.count = f.count;
 			}
-		}
+			assert(this.start >= 0);
+			assert(this.count >= 0);
 
-		// public Fragment(Fragment f, int position, int delta) {
-		// 	if (position < f.start) {
-		// 		// delete: delta < 0
-		// 		// insert: delta > 0
-		// 		this.finish = Math.max(position, f.finish + delta);
-		// 		if (delta < 0) {
-		// 			// delete: delta < 0
-		// 			delta = -Math.min(-delta, f.start-position);
-		// 		} 
-		// 		this.start = f.start + delta;
-		// 	}
-		// 	else if (position <= f.finish) {
-		// 		this.start = f.start;
-		// 		if (delta < 0) {
-		// 			// delete: delta < 0
-		// 			delta = -Math.min(-delta, f.finish-position+1);
-		// 		}
-		// 		this.finish = f.finish + delta;
-		// 	} else {
-		// 		this.start = f.start;
-		// 		this.finish = f.finish;
-		// 	}
-		// }
+		}
 
 		public int getStart() {
 			return start;

@@ -122,7 +122,8 @@ public abstract class BaseGenome implements Genome {
 		assert(feature != null);
 		
 		// Convert mutations from genome-relative coordinates to feature-relative coordinates.
-		// Mutations that do not affect a feature are silently dropped.
+		// Mutations that do not affect a feature do not result in any changes.
+		// Indels also do not result in any changes - they are not appropriate to capture via individual nucleotide changes.
 		int[] featureSiteTable = descriptor.getFeatureSiteTable(feature);
 		for (Mutation m : mutations) {
 			List<StateChange> c = m.getChanges(this, featureSiteTable);

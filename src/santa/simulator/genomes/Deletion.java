@@ -8,8 +8,6 @@
  */
 package santa.simulator.genomes;
 
-import java.util.List;
-import java.util.ArrayList;
 import org.apache.commons.lang3.Range;
 
 /**
@@ -69,30 +67,6 @@ public class Deletion extends Indel {
 
 	public int length() {
 		return -count;
-	}
-
-	/**
-	 * create a list of nucleotides changed by this mutation.
-	 */
-	public List<StateChange> getChanges(Genome genome, int[] featureSiteTable) {
-		List<StateChange> scl = new ArrayList<StateChange>();
-		int fp;
-		
-		// insertions affect everything to the right as well
-		for (int p = this.position; p < featureSiteTable.length; p++) {
-			fp = featureSiteTable[p];
-			if (fp >= 0) {
-				try {
-					byte oldState = genome.getNucleotide(p);
-					byte newState = genome.getNucleotide(p+this.count);
-					scl.add( new StateChange(fp, oldState, newState) );
-				} catch(IndexOutOfBoundsException e) {
-					
-				}
-			}
-		}
-
-		return (scl);
 	}
 
     public final int count; // how may to delete

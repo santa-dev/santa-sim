@@ -547,10 +547,10 @@ public class SimulatorParser {
 					int start = Integer.parseInt(ranges[0]);
 					int end = Integer.parseInt(ranges[1]);
 
-					feature.addFragment(start - 1, end - 1);
+					feature.addFragment(start - 1, end-start+1);
 				} else {
 					int site = Integer.parseInt(part);
-					feature.addFragment(site - 1, site - 1);
+					feature.addFragment(site - 1, 1);
 				}
 			}
 		} catch (NumberFormatException e) {

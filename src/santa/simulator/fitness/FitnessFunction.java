@@ -83,13 +83,10 @@ public final class FitnessFunction  {
 			i++;
 		}
 
-		// if the genome has shrunk below a single codon, it has -inf fitness.
-	    if (genome.getLength() < 3) 
-			result = Double.NEGATIVE_INFINITY;
-
 		genome.setLogFitness(result);
 
 	}
+
 
 	/**
 	 * Update all the fitness factors that have to recompute
@@ -98,26 +95,30 @@ public final class FitnessFunction  {
 		double result = 0;
 
 		FitnessGenomeCache cache = genome.getFitnessCache();
+		if (cache != null) {
+			int i = 0;
+			for (FitnessFactor factor : factors) {
+				double contrib = cache.factorContributions[i];
 
-		int i = 0;
-		for (FitnessFactor factor : factors) {
-			double contrib = cache.factorContributions[i];
+				if (recomputeFactor[i]) {
+					Feature feature = factor.getFeature();
+					byte[] sequence = genome.getStates(feature);
+					contrib = factor.computeLogFitness(sequence);
+				}
 
-			if (recomputeFactor[i]) {
-				Feature feature = factor.getFeature();
-				byte[] sequence = genome.getStates(feature);
-				contrib = factor.computeLogFitness(sequence);
+				cache.factorContributions[i] = contrib;
+				result += contrib;
+				i++;
 			}
-
-			cache.factorContributions[i] = contrib;
-			result += contrib;
-			i++;
+		} else {
+			System.out.println("recomputing fitness function b/c invalid cache.");
+			computeLogFitness(genome);
 		}
+
 
 		// if the genome has shrunk below a single codon, it has -inf fitness.
 	    if (genome.getLength() < 3) 
 			result = Double.NEGATIVE_INFINITY;
-
 
 		genome.setLogFitness(result);
 	}
