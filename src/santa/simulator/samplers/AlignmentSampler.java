@@ -142,7 +142,7 @@ public class AlignmentSampler implements Sampler {
             List<Virus> viruses = population.getCurrentGeneration();
             if (sampleSize>viruses.size())
             {
-            	System.out.println("warning: sampleSize of alignmentSampler was shrinked because of small population size to "+ viruses.size());
+            	System.out.println("warning: sampleSize of alignmentSampler was shrunk because of small population size to "+ viruses.size());
             }	
         	sampleSize = Math.min(sampleSize,viruses.size());
 
