@@ -111,7 +111,7 @@ public final class FitnessFunction  {
 				i++;
 			}
 		} else {
-			System.out.println("recomputing fitness function b/c invalid cache.");
+			// recompute the fitness function over this genome.
 			computeLogFitness(genome);
 		}
 

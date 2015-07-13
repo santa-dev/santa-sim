@@ -88,7 +88,6 @@ public class Phylogeny {
 	}
 
 	public void pruneDeadLineages() {
-
 		int oldestGeneration = Integer.MAX_VALUE;
 		mrca = null;
 
@@ -136,13 +135,12 @@ public class Phylogeny {
 	 * 'generation' that indcates in which generation the lineage was
 	 * created.
 	 *
-	 * At all times, leaves descended
-	 * from the same immediate common ancestor will reference the same
-	 * lineage object representing that branch point.  This invariant
-	 * is maintianed as the list of leaves is changed during tree
-	 * construction.  
+	 * At all times, leaves descended from the same immediate common
+	 * ancestor will reference the same lineage object representing
+	 * that branch point.  This invariant is maintained as the list of
+	 * leaves is changed during tree construction.
 	 * 
-	 * To construct the tree, we move up the tree toward the root,
+	 * To construct the tree, we move from the leaves toward the root,
 	 * creating internal nodes in the tree and coalescing identical
 	 * lineages as we go.  To start, choose the leftmost lineage with
 	 * the highest generation number.  Collect all other leaves
@@ -152,11 +150,10 @@ public class Phylogeny {
 	 * point up the lineage.  Repeat until there is only one remaining
 	 * lineage and the tree has been constructed.
 	 * 
-	 * If the leaves are processed in decreasing
-	 * generation order, the result will be a tree with a single
-	 * MRCA.  Previous versions of this code processed the leaves
-	 * left-to-right regardless of generation, and that is
-	 * guarranteed to fail in some cases.
+	 * If the leaves are processed in decreasing generation order, the
+	 * result will be a tree with a single MRCA.  Previous versions of
+	 * this code processed the leaves left-to-right regardless of
+	 * generation, and that is guarranteed to fail in some cases.
 	 */
 	public RootedTree reconstructPhylogeny(int[] sample, List<Taxon> taxa) {
 

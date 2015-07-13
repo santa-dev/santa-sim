@@ -152,8 +152,6 @@ public abstract class BaseGenome implements Genome {
 						if (newState != oldState) {
 							// don't include synonymous changes
 							aaChanges.add(new StateChange(lastAA, oldState, newState));
-                            
-                            //System.err.println("aa: " + lastAA + " " + oldState + " " + newState);
 						}
 					}
 
@@ -163,7 +161,6 @@ public abstract class BaseGenome implements Genome {
 					// Doing so avoids IndexOutOfRange exceptions while supporting feature
 					// boundaries that are temporarily pushed out-of-frame by indels.
 					if (genomeSiteTable.length <= (aa * 3 + 2)) {
-						System.err.println(feature.getName() + ": skipping last codon " + aa + " [" + (aa * 3) + " - " + (aa * 3 + 2) + "]");
 						continue;
 					}
 					
@@ -195,7 +192,6 @@ public abstract class BaseGenome implements Genome {
 					// don't include synonymous changes
 					aaChanges.add(new StateChange(lastAA, oldState, newState));
 
-                    //System.err.println("aa: " + lastAA + " " + oldState + " " + newState);
                 }
 			}
 

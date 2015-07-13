@@ -146,7 +146,6 @@ public final class GenomeDescription {
 		this.featureSiteTables = new HashMap<String, int[]>();
 		this.genomeSiteTables = new HashMap<String, int[]>();
 
-		System.out.println("computeSiteTables");
 		assert(features != null);
 		assert(features.size() >= 1);
 
