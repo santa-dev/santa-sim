@@ -119,8 +119,6 @@ public class SimpleGenome extends BaseGenome {
 	/**
 	 * Insertion mutation effector function.  Inserts nucleotides at
 	 * designated position relative to start of genome.  
-	 * [ may not be trye: Can only
-	 *   insert integral codon lengths on integral codon boundary.]
 	 *
 	 * @param position non-negative integer position at which insertion begins.
 	 * @param seq nucleotides to be inserted.
