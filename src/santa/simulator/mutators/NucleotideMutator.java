@@ -131,7 +131,9 @@ public class NucleotideMutator extends AbstractMutator {
 				int pos = Random.nextInt(0, genome.getLength());	// start position
 				int count = indelModel.nextLength();				// insertion length
 
-				if (count != 0) {
+				// only allow indels that preserve reading frame.
+				// Filter out any indel that is not a multiple of three nucleotides.
+				if (count != 0 && (count % 3) == 0) {
 					// what is it filled with?
 					// generate a random sequence of the appropriate length
 					// See Issue #2 - https://github.com/matsengrp/santa-sim/issues/2
@@ -149,12 +151,13 @@ public class NucleotideMutator extends AbstractMutator {
 					pos = Random.nextInt(0, genome.getLength() - 1);
 
 				int count = indelModel.nextLength(); // deletion length
-				if (count != 0) {
+				if (count != 0 && (count % 3) == 0) {
 					// System.err.println("delete: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Deletion(pos, count));
 				}
 			}
 		} else {
+			// doing a substitution
 			mutations = super.mutate(genome);
 		}
 		return mutations;
