@@ -32,7 +32,7 @@
     <!-- Avoid ant warning: “'includeantruntime' was not set” -->
     <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
     <javac srcdir="${src}" destdir="${build}"
-	   includeantruntime="false" target="1.7" >
+	   includeantruntime="false" target="1.7"  source="1.7" >
       <classpath>
 	<path refid="classpath"/>
       </classpath>
@@ -71,7 +71,7 @@
     <mkdir dir="${test.build}"/>
 
     <javac srcdir="${test.src}" destdir="${test.build}"
-	   includeantruntime="false"  target="1.7" >
+	   includeantruntime="false"  target="1.7"  source="1.7">
       <classpath>
 	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
 	<pathelement path="${test.build}"/>
