@@ -73,6 +73,15 @@
 	  <label>sequence_%g_%s|hiv_pol.fa|0|0</label>
 	</alignment>
       </sampler>
+      <sampler>
+	<atFrequency>10</atFrequency>	
+      	<fileName>trees.nex</fileName>
+      	<tree>
+      	  <sampleSize>$samplesize</sampleSize>
+      	  <format>NEXUS</format>
+      	  <label>tip_%s</label>
+      	</tree>
+      </sampler>
    </samplingSchedule>
 
   </simulation>

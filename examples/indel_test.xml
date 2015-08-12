@@ -144,15 +144,15 @@ GAGGATTAG
     </epoch>
     
     <samplingSchedule>
-      <!-- <sampler> -->
-      <!-- 	<atGeneration>50</atGeneration> -->
-      <!-- 	<fileName>trees_%r.tree</fileName> -->
-      <!-- 	<tree> -->
-      <!-- 	  <sampleSize>5</sampleSize> -->
-      <!-- 	  <format>NEXUS</format> -->
-      <!-- 	  <label>tip_%g_%s</label> -->
-      <!-- 	</tree> -->
-      <!-- </sampler> -->
+      <sampler>
+      	<atGeneration>50</atGeneration>
+      	<fileName>trees_%r.tree</fileName>
+      	<tree>
+      	  <sampleSize>5</sampleSize>
+      	  <format>NEXUS</format>
+      	  <label>tip_%g_%s</label>
+      	</tree>
+      </sampler>
       <sampler>
 	<atFrequency>100</atFrequency>	
 	<fileName>sequences_%r.fa</fileName>
