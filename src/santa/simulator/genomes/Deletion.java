@@ -27,9 +27,11 @@ public class Deletion extends Indel {
 	/**
 	 * Apply a deletion to an range of genomic positions (presumed to represent a Fragment of a Feature.)
 
-	 * If the deletion begins before the range, the entire range shifts left by the deletion count.
-	 * if the deletion overlaps the deletion, only the end-point (righthand side) of the range is shifted left, but the start is not modified.
-	 * if the deleteion begins completely to the right of the range, the range isnot modified.
+	 * If the deletion begins and ends to the left of the range, the entire range shifts left by the deletion count.
+	 * if the deletion overlaps the left-end of range,  the start and end of the range may be shifted-left by different amounts.
+	 * if the deletion is completely contained with the range, only the end-point (righthand side) of the range is shifted left, but the start is not modified.
+	 * if the deletion overlaps the left-end of range,  only the end-point (righthand side) of the range is shifted left, but the start is not modified.
+	 * if the deletion is entirely to the right of the range, the range is unaffected.
 	 *
 	 * ranges are inclusive!
 	 */
