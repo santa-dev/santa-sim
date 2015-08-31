@@ -110,7 +110,11 @@ public class SimpleGenome extends BaseGenome {
 	public boolean delete(int position, int count) {
 		assert(count >= 0);
 		assert(position >=0 && position < sequence.getLength());
-		count = Math.min(count, sequence.getLength()-position);
+		int avail = Math.min(count, sequence.getLength()-position);
+		// Ensure that we always delete in whole codon units.
+		// otherwise we may end up with genomes that are not an integer number of codons long.
+		if (count != avail)
+			return false;
 		return sequence.deleteSubSequence(position, count);
 
   	}

@@ -111,14 +111,14 @@ public final class SimpleSequence implements Sequence {
 	
 	public boolean deleteSubSequence(int pos, int count) {
 		// assert that insert preserved frame...
-		// assert (states.length % 3) == 0;
-		// assert (count % 3) == 0;
+		assert (states.length % 3) == 0;
+		assert (count % 3) == 0;
 
 		byte newstates[] = new byte[states.length - count];
 		System.arraycopy(states, 0, newstates, 0, pos);
 		System.arraycopy(states, pos+count, newstates, pos, states.length-pos-count);
 		states = newstates;
-		// assert (states.length % 3) == 0;
+		assert (states.length % 3) == 0;
 
 		return(true);
 	}
