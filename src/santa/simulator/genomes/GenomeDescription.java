@@ -153,9 +153,6 @@ public final class GenomeDescription {
 			int[] featureSiteTable = new int[genomeLength];
 			int[] genomeSiteTable = new int[feature.getNucleotideLength()];
 
-			System.out.println("feature "+feature.getName()+" NucleotideLength="+feature.getNucleotideLength());
-
-
 			Arrays.fill(featureSiteTable, -1);
 			Arrays.fill(genomeSiteTable, -1);
 
