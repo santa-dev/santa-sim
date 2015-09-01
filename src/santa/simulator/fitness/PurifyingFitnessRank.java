@@ -9,7 +9,7 @@ import java.util.*;
  * of a probable set.
  * 
  * The rank may be derived from frequencies found in the sequences of the GenomeDescription,
- * possibly using chemical properties, or simply specified.
+ * possibly using chemical properties, or explicitly specified.
  * 
  * Different configuration options:
  * {@code
@@ -26,6 +26,10 @@ public class PurifyingFitnessRank {
 	 * Creates a ranking:
      *   - based on a specified state order
      *   - based on a specified probable set size
+	 * @param feature  The feature over which this fitness function should be applied.
+	 * @param stateOrder  List of states (amino acid or nucleotide), ordered by decreasing fitness.
+	 * @param probableSetSize  
+	 * @param breakTiesRandomly  True if ties should be broken randomly, False to break ties according to order in the list.
 	 */
 	public PurifyingFitnessRank(Feature feature,
 	                            List<Byte> stateOrder,
