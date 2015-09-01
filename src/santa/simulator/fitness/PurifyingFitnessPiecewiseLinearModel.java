@@ -24,8 +24,8 @@ public class PurifyingFitnessPiecewiseLinearModel implements PurifyingFitnessMod
         fitnesses[0] = 1.;
         for (int i = 1; i < alphabet.getStateCount(); ++i) {
             if (i < probable) {
-                fitnesses[i] = 1. - (1. - lowFitness)*(i/(probable-1));
-            } else
+                fitnesses[i] = 1. - (1. - lowFitness)*(i/(probable-1.0));
+            } else 
                 fitnesses[i] = minFitness;
         }
 
