@@ -970,14 +970,10 @@ public class SimulatorParser {
 				double[] fitnesses;
 				try {
 					fitnesses = parseNumberList(e);
-					if (alphabet == SequenceAlphabet.AMINO_ACIDS) {
-						if (fitnesses.length != 20) {
-							throw new ParseException("expected 20 fitnesses, got " + fitnesses.length);
-						}
-					} else {
-						if (fitnesses.length != 4) {
-							throw new ParseException("expected 4 fitnesses, got " + fitnesses.length);
-						}
+
+					// confirm that we parsed one fitness value for each possible state.
+					if (fitnesses.length != alphabet.getStateCount()) {
+						throw new ParseException("expected " + alphabet.getStateCount() +" fitnesses, got " + fitnesses.length);
 					}
 				} catch (ParseException e1) {
 					throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
