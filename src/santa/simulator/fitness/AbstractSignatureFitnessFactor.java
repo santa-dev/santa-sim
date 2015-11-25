@@ -26,8 +26,7 @@ public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFact
 		byte state[] = new byte[getSites().size()];
 		int i = 0;
 		for (Integer site : getSites()) {
-			if (site < sequence.length)
-				state[i++] = sequence[site];
+			state[i++] = sequence[site];
 		}
 
 		return new Signature(state);

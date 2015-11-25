@@ -82,7 +82,7 @@ public class SimpleGenome extends BaseGenome {
 	 * nucleotide at a single site for another.  
 	 *
 	 * @param position   integer position relative to beginning of genome where the substitution should be made.
-	 * @param state      new nucleotie at site.  Coded as integer 0-3 = {A,C,G,T}
+	 * @param state      new nucleotide at site.  Coded as integer 0-3 = {A,C,G,T}
 	 * @return boolean   indication whether state was changed at designated site.
 	 **/
 	public boolean substitute(int position, byte state) {

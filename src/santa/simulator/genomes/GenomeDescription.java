@@ -1,7 +1,6 @@
 package santa.simulator.genomes;
 
 import java.util.*;
-import org.apache.commons.lang3.Range;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
 
@@ -23,6 +22,13 @@ public final class GenomeDescription {
 
 		this.features = new ArrayList<Feature>();
 		this.features.add(genomeFeature);
+
+		for (Feature feature : features)
+			if (feature.getNucleotideFinish() >= genomeLength) {
+				String msg = String.format("Feature %s exceeds available genome length (%d)", feature.getName(), genomeLength);
+				throw new RuntimeException(msg);
+			}
+
 		this.features.addAll(features);
 
 		if (sequences != null && sequences.size() > 0) {
@@ -40,9 +46,23 @@ public final class GenomeDescription {
 
 	// Copy constructor.
 	
-	// Link a new GenomeDescription into the tree of descriptions.  Each node in the tree is associated with a single Indel mutation.  It is
-	// the Indel mutation that invalidates genome lengths and site maps, so those are recomputed and cached in each new GenomeDescription
-	// object.
+	// Copy an existing GenomeDescription, adjusting features to accomodate an
+	// insertion or deletion in the genome sequence.
+	//
+	// The idea is to create a new GenomeDescription each time a
+	// genome changes length.  Each Genome object will point to a
+	// GenomeDescription that specifies how features are arranged on
+	// that genome.  Although a new GenomeDescription is currently
+	// only created after a indel event, recombination should probably
+	// alo create a new GenomeDescription.  Insertion or Deletion is
+	// specified as a nucleotide position and a count, which is
+	// negative for deletions and positive for insertions.
+	//
+	// The copied GenomeDescription will be linked to the object it is
+	// copied from so all GenomeDescription objects form a tree.  The
+	// history of a genome can potentially be reconstructed by
+	// following links backward in the tree of GenomeDescription
+	// objects.
 	public GenomeDescription(GenomeDescription gd, int position, int count) {
 		assert(gd.features != null);
 		assert(gd.features.size() >= 1);
@@ -51,8 +71,12 @@ public final class GenomeDescription {
 
 		// Copy features from parent, adjusting as necessary for the new indel event.
 		this.features = new ArrayList<Feature>();
+
+		// cannot delete more than we have available.
+		// should this throw an exception if |count| > available ?
 		if (count < 0) 
 			count = -Math.min(-count, gd.genomeLength - position);
+
 		this.genomeLength = gd.genomeLength + count;
 		for (Feature feature : gd.features) {
 			Feature tmp = new Feature(feature, position, count);
@@ -225,7 +249,7 @@ public final class GenomeDescription {
 
 	// Each GenomeDescription is associated with a single indel mutation.  Indel events cause a genome description to become stale and need
 	// recomputation. GenomeDescriptions are linked together in a tree that captures a phylogeny of indel mutations.  Each node in the tree
-	// points to its parent.  The lineage may be recaputilated by following parent links up to the root.  Traversing the tree from the root
+	// points to its parent.  The lineage may be recapitulated by following parent links up to the root.  Traversing the tree from the root
 	// toward the leaves is not supported.
 	private Mutation indel = null;
 	private GenomeDescription parent = null;

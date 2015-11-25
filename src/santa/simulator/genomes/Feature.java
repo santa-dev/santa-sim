@@ -70,6 +70,14 @@ public final class Feature {
 			length = length + fragment.getLength();
 		return length;
 	}
+
+	public int getNucleotideFinish() {
+		int finish = 0;
+		for (Fragment fragment : fragments) 
+			finish = Math.max(finish, fragment.getFinish());
+		return finish;
+	}
+
 	
 	public int getFragmentCount() {
 		return fragments.size();
