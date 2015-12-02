@@ -32,7 +32,7 @@ public class SimpleGenePool extends BaseGenePool {
     }
 
     /**
-     * Duplicate a genome and apply mutations.  Calculates fitness function for new genome.
+     * Duplicate a genome and apply mutations. 
      *
      * The implementation is a little tricky as this routine tries to
      * minimized recalculation of fitness functions when it can.  If
@@ -40,6 +40,16 @@ public class SimpleGenePool extends BaseGenePool {
      * fitness values are bypassed and a full recalculation is
      * performed.
      *
+	 * {@code mutations} is list of mutation objects which may include
+	 * multiple substitutions along with a single insertion or
+	 * deletion; multiple indels in a single call are not supported.
+	 * 
+	 * Under most circumstances the returned Genome object will
+	 * contain a reference to its parent's GenomeDescriptor object.
+	 * If an indel mutation changes the length of the Genome, then a
+	 * new GenomeDescriptor will be created to hold Feature objects
+	 * whose coordinates are adjusted to accomodate any indels.
+	 * 
      * @param genome the genome object
      * @param mutations the array of Mutation objects
      * @return the new replicated genome
