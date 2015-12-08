@@ -1,6 +1,7 @@
 package santa.simulator.replicators;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.SortedSet;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
@@ -35,26 +36,40 @@ public class RecombinantReplicator implements Replicator {
 		return 2;
 	}
 
-    public void replicate(Virus virus, Virus[] parents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
+    public void replicate(Virus virus, Virus[] vparents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 
-		if (true) {
-			// need to generate a new genome descrioption for the recombinate genome that may be a different length than either parent.
-			// It is likely that creating a new binomial RNG for each recombination will be too slow.  Need to find a way to cache and reuse the RNG.
-
-			throw new NotImplementedException();
-		}
-
-		
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
+			Genome[] parents = { vparents[0].getGenome(), vparents[1].getGenome() };
 
-            Genome parent1Genome = parents[0].getGenome();
-            Genome parent2Genome = parents[1].getGenome();
+			// sort the parents by increasing genome length
+			Arrays.sort(parents, new Comparator<Genome>() {
+				@Override
+				public int compare(Genome g1, Genome g2) {
+					return(g1.getLength() - g2.getLength());
+				}
+			});
+			assert(parents[0].getLength() <= parents[1].getLength());
+			
+			int length = Math.min(parents[0].getLength() - 1, parents[1].getLength() - 1);
+			BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
+			int n = 1; // binomialDeviate.sample();
+			int[] breakPoints = new int[n];
+			
+			// Then draw the positions
+			for (int i = 0; i < breakPoints.length; i++) {
+				breakPoints[i] = 100; // Random.nextInt(1, length);
+			}
+			Arrays.sort(breakPoints);
 
-            Sequence recombinantSequence = getRecombinantSequence(parent1Genome, parent2Genome);
+			// create the recombinant genome description
+			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
+			GenomeDescription gd_recomb = GenomeDescription.recombine(gd_parents, breakPoints);
+			
+			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints, gd_recomb.getGenomeLength());
 
-            Genome genome = genePool.createGenome(recombinantSequence);
-
+			Genome genome = genePool.createGenome(recombinantSequence, gd_recomb);
+			
 	        SortedSet<Mutation> mutations = mutator.mutate(genome);
 
 	        genome.setFrequency(1);
@@ -65,60 +80,62 @@ public class RecombinantReplicator implements Replicator {
 	        fitnessFunction.computeLogFitness(genome);
 
             virus.setGenome(genome);
-            virus.setParent(parents[0]);
-
-            EventLogger.log("Recombination: (" + parent1Genome.getLogFitness() + ", " + parent2Genome.getLogFitness() + ") -> " + genome.getLogFitness());
+            virus.setParent(vparents[0]);
+			
+            EventLogger.log("Recombination: (" + parents[0].getLogFitness() + ", " + parents[1].getLogFitness() + ") -> " + genome.getLogFitness());
 
         } else {
             // single infection - no recombination...
-            Genome parentGenome = parents[0].getGenome();
+            Genome parentGenome = vparents[0].getGenome();
 
             SortedSet<Mutation> mutations = mutator.mutate(parentGenome);
 
             Genome genome = genePool.duplicateGenome(parentGenome, mutations, fitnessFunction);
 
             virus.setGenome(genome);
-            virus.setParent(parents[0]);
+            virus.setParent(vparents[0]);
         }
 
     }
 
-    private Sequence getRecombinantSequence(Genome parent1Genome, Genome parent2Genome) {
 
-        // First draw the number of break points
-		int length = Math.min(parent1Genome.getLength() - 1, parent2Genome.getLength() - 1);
-		BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
-        int n = binomialDeviate.sample();
-        int[] breakPoints = new int[n];
+	/**
+	 * Create a recombined nucleotide sequence from two parents.
+	 *
+	 * Given a pair of parent genomes and a set of breakpoints, create
+	 * a new sequence that is a combination of fragments from both
+	 * parents.  breakPoints describes the positions at which we
+	 * switch from one template to the other.  
 
-        // Then draw the positions
-        for (int i = 0; i < breakPoints.length; i++) {
-            breakPoints[i] = Random.nextInt(1, length);
-        }
-        Arrays.sort(breakPoints);
+	 * 'len' in the expected length of the recombined sequence.  If
+	 * 'breakPoints' is empty, this routine simply copies the sequence
+	 * from first genome in 'parents'.
+	 **/
+    private Sequence getRecombinantSequence(Genome[] parents, int[] breakPoints, int len) {
+		assert(parents.length == 2);
 
-        // now create the recombinant by getting the list of mutations for
-        // the recombinant segments donated by the second parent.
+		int lastBreakPoint = 0;
+		int currentGenome = 0;
+		Genome gd = parents[currentGenome];
+		SimpleSequence recombinantSequence = new SimpleSequence(len);
+		
+		for (int i = 0; i < breakPoints.length; i++) {
+			int nextBreakPoint = breakPoints[i];
 
-        int lastBreakPoint = 0;
-        int currentGenome = 0;
-
-	    SimpleSequence recombinantSequence = new SimpleSequence(parent1Genome.getSequence());
-        for (int i = 0; i < breakPoints.length; i++) {
-            if (currentGenome == 1) {
-                // If this segment is given by the second parent...
-                for (int j = lastBreakPoint; j < breakPoints[i]; j++) {
-                    recombinantSequence.setNucleotide(j, parent2Genome.getNucleotide(j));
-                }
-            }
-
-            lastBreakPoint = breakPoints[i];
-            currentGenome = 1 - currentGenome;
-        }
-
-        return recombinantSequence;
-    }
-
+			for (int j = lastBreakPoint; j < nextBreakPoint; j++) {
+				recombinantSequence.setNucleotide(j, gd.getNucleotide(j));
+			}
+			lastBreakPoint = nextBreakPoint;
+			currentGenome = 1 - currentGenome;
+			gd = parents[currentGenome];
+		}
+		int nextBreakPoint =  gd.getLength();
+		for (int j = lastBreakPoint; j < nextBreakPoint; j++) {
+			recombinantSequence.setNucleotide(j, gd.getNucleotide(j));
+		}
+		return(recombinantSequence);
+	}
+	
     private final double dualInfectionProbability;
     private final double recombinationProbability;
 }

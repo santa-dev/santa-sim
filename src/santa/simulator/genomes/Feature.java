@@ -35,6 +35,15 @@ public final class Feature {
 		}
 	}
 
+	// copy constructor
+	public Feature(Feature f) {
+		this.name = f.name;
+		this.featureType = f.featureType;
+		for (Fragment fr: f.fragments) {
+			fragments.add(new Fragment(fr));
+		}
+	}
+
 	public void addFragment(int start, int count) {
 		fragments.add(new Fragment(start, count));
 	}
@@ -95,6 +104,12 @@ public final class Feature {
 		return fragments.get(index).getLength();
 	}
 
+
+	public void shift(int howmuch) {
+		for (Fragment fragment : fragments) 
+			fragment.shift(howmuch);
+	}
+	
 	private final List<Fragment> fragments = new ArrayList<Fragment>();
 
 	private class Fragment {
@@ -110,12 +125,12 @@ public final class Feature {
 		 * It is possible the indel will have no effect on the fragment in which
 		 * case the cloned fragment will have identical values as the original.
 		 * It is also possible that the indel will completely wipe out
-		 * the fragment (reducing it's lemgth to zero).
+		 * the fragment (reducing it's length to zero).
 		 *
 		 * Note: A negative delta indicates deletion from the current position moving right.  It DOES NOT mean to remove bases to the left of current position.
 		 * 
 		 * @param: f: fragment to be cloned.
-		 * @param position: non-negative position where indel whould begin
+		 * @param position: non-negative position where indel would begin
 		 * @param delta: positive/negative count of positions to be inserted/deleted.
 		 */
 		public Fragment(Fragment f, int position, int delta) {
@@ -125,8 +140,9 @@ public final class Feature {
 				if (delta < 0) {
 					// delete: delta < 0
 					int shift = Math.min(-delta, f.start-position);
+					int shrink = Math.min(-delta - shift, f.count);
 					this.start = f.start - shift;
-					this.count = f.count + (delta+shift);
+					this.count = f.count - shrink;
 				} else {	
 					this.start = f.start + delta;
 					this.count = f.count;
@@ -148,6 +164,13 @@ public final class Feature {
 
 		}
 
+		// copy constructor
+		public Fragment(Fragment f) {
+			this.start = f.start;
+			this.count = f.count;
+
+		}
+
 		public int getStart() {
 			return start;
 		}
@@ -163,9 +186,12 @@ public final class Feature {
 			return count;
 		}
 
+		public void shift(int howmuch) {
+			this.start += howmuch;
+		}
 		
-		private final int start;
-		private final int count;
+		private int start;
+		private int count;
 	}
 
 	private final String name;

@@ -40,10 +40,10 @@ public class GenomeDescriptionTest {
 		
 		List<Feature> features = new ArrayList<Feature>();
 		Feature pol = new Feature("POL", Feature.Type.NUCLEOTIDE);
-		pol.addFragment(4, 8);
-		pol.addFragment(10, 13);
+		pol.addFragment(4, 5);
+		pol.addFragment(10, 4);
 		Feature gag = new Feature("GAG", Feature.Type.NUCLEOTIDE);
-		gag.addFragment(16, 21);
+		gag.addFragment(16, 6);
 
 		features.add(pol);
 		features.add(gag);
@@ -109,13 +109,21 @@ public class GenomeDescriptionTest {
 		//     ***
 		//  aaaaCCCCCcCCCCggTTTTTTaa
 		//  012345678901234567890123
+		GenomeDescription gd;
+		Feature f;
 
-		GenomeDescription gd = new GenomeDescription(GenomeDescription.root, 3, -3);
+		// a zero-length indel should not alter the GenomeDescription.
+		gd = new GenomeDescription(GenomeDescription.root, 3, 0);
+		f = gd.getFeature("POL");
+		assertEquals(9, f.getLength());
+		f = gd.getFeature("GAG");
+		assertEquals(6, f.getLength());
 
-		Feature pol = gd.getFeature("POL");
-		assertEquals(7, pol.getLength());
-		Feature gag = gd.getFeature("GAG");
-		assertEquals(6, gag.getLength());
+		gd = new GenomeDescription(GenomeDescription.root, 3, -3);
+		f = gd.getFeature("POL");
+		assertEquals(7, f.getLength());
+		f = gd.getFeature("GAG");
+		assertEquals(6, f.getLength());
 	}
 
 	@Test

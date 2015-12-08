@@ -15,9 +15,10 @@ public class SimpleGenome extends BaseGenome {
 		this.descriptor = source.descriptor;
 		setLogFitness(source.getLogFitness());
 		assert(this.descriptor.getGenomeLength() == this.sequence.getLength());
-
 	}
 
+
+	
 	public int getLength() {
 		return sequence.getLength();
 	}
@@ -41,6 +42,7 @@ public class SimpleGenome extends BaseGenome {
 		return sequence;
 	}
 
+
 	/**
 	 * Apply an array of mutations to the genome. The new mutation array may not have the mutations
 	 * in positional order. The mutation array for the genome (mutations from the master sequence)
@@ -51,7 +53,7 @@ public class SimpleGenome extends BaseGenome {
 	public void applyMutations(SortedSet<Mutation> newMutations) {
 		GenomeDescription gd = null;
 
-		assert(descriptor.getGenomeLength() == getLength());
+		assert(this.descriptor.getGenomeLength() == getLength());
 
 		for (Mutation m : newMutations) {
 			int l = getLength();
@@ -63,8 +65,8 @@ public class SimpleGenome extends BaseGenome {
 				int nl = getLength();
 				if (l != nl) {
 					if (gd == null) {
-						gd = new GenomeDescription(descriptor, m.position, m.length());
-						descriptor = gd;
+						gd = new GenomeDescription(this.descriptor, m.position, m.length());
+						this.descriptor = gd;
 						this.fitnessCache = null;
 						assert(descriptor.getGenomeLength() == getLength());
 					}
@@ -73,7 +75,7 @@ public class SimpleGenome extends BaseGenome {
 				incrementTotalMutationCount();
 			}
 		}
-		assert(descriptor.getGenomeLength() == sequence.getLength());
+		assert(this.descriptor.getGenomeLength() == sequence.getLength());
 	}
 
 
@@ -111,8 +113,6 @@ public class SimpleGenome extends BaseGenome {
 		assert(count >= 0);
 		assert(position >=0 && position < sequence.getLength());
 		int avail = Math.min(count, sequence.getLength()-position);
-		// Ensure that we always delete in whole codon units.
-		// otherwise we may end up with genomes that are not an integer number of codons long.
 		if (count != avail)
 			return false;
 		return sequence.deleteSubSequence(position, count);

@@ -16,6 +16,16 @@ public abstract class BaseGenome implements Genome {
 		this.descriptor = GenomeDescription.root;
 	}
 
+	public void setDescription(GenomeDescription gd) {
+		this.descriptor = gd;
+		assert(this.descriptor.getGenomeLength() == getLength());
+	}
+
+	// REMIND - do we still need this?
+	public GenomeDescription getDescription() {
+		return descriptor;
+	}
+
 	public int getTotalMutationCount() {
 		return totalMutationCount;
 	}
@@ -206,7 +216,8 @@ public abstract class BaseGenome implements Genome {
 	public int binomialDeviate(double mutationRate) {
 		return descriptor.binomialDeviate(mutationRate);
 	}
-	
+
+
 	/**
 	 * Reference to an GenomeDescription.  It is through the
 	 * decription that one can obtain Feature coordinates and SiteMaps

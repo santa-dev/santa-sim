@@ -24,8 +24,8 @@ public abstract class BaseGenePool implements GenePool {
 		System.err.println("Creating BaseGenePool: Needs attention.");
         // stateFrequencies = new int[GenomeDescription.getGenomeLength()][4];
 
-		// this is not correct.
-		// We cannot use a fixed-size array to represent the state frequencies.
+		// This is not correct since the introduction of indels or homologous recombination
+		// We cannot use a fixed-size array to represent the state frequencies as genomes may be different sizes.
 		// what do we use the state frequencies for anyway?
         stateFrequencies = new int[10][4];
     }
@@ -37,6 +37,15 @@ public abstract class BaseGenePool implements GenePool {
         uniqueGenomeCount = 0;
     }
 
+
+	public Genome createGenome(Sequence sequence, GenomeDescription gd) {
+		Genome newGenome = createGenome(sequence);
+		newGenome.setDescription(gd);
+
+        return newGenome;
+    }
+
+	
     public int[][] getStateFrequencies() {
         calculateStateFrequencies();
         return stateFrequencies;

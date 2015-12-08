@@ -44,12 +44,6 @@ public class SimpleGenePool extends BaseGenePool {
 	 * multiple substitutions along with a single insertion or
 	 * deletion; multiple indels in a single call are not supported.
 	 * 
-	 * Under most circumstances the returned Genome object will
-	 * contain a reference to its parent's GenomeDescriptor object.
-	 * If an indel mutation changes the length of the Genome, then a
-	 * new GenomeDescriptor will be created to hold Feature objects
-	 * whose coordinates are adjusted to accomodate any indels.
-	 * 
      * @param genome the genome object
      * @param mutations the array of Mutation objects
      * @return the new replicated genome

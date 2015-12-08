@@ -44,25 +44,18 @@ public final class GenomeDescription {
 	}
 
 
-	// Copy constructor.
-	
-	// Copy an existing GenomeDescription, adjusting features to accomodate an
-	// insertion or deletion in the genome sequence.
-	//
-	// The idea is to create a new GenomeDescription each time a
-	// genome changes length.  Each Genome object will point to a
-	// GenomeDescription that specifies how features are arranged on
-	// that genome.  Although a new GenomeDescription is currently
-	// only created after a indel event, recombination should probably
-	// alo create a new GenomeDescription.  Insertion or Deletion is
-	// specified as a nucleotide position and a count, which is
-	// negative for deletions and positive for insertions.
-	//
-	// The copied GenomeDescription will be linked to the object it is
-	// copied from so all GenomeDescription objects form a tree.  The
-	// history of a genome can potentially be reconstructed by
-	// following links backward in the tree of GenomeDescription
-	// objects.
+	/**
+	 * Copy constructor.
+	 *
+	 * Copy an existing GenomeDescription, inserting or deleting positions as indicated.
+	 * Adjust features as necessary to accommodate indel.
+	 *
+	 * The copied GenomeDescription will be linked to the object from
+	 * which it is copied from so all GenomeDescription objects form a
+	 * tree.  The history of a genome can potentially be reconstructed
+	 * by following links backward in the tree of GenomeDescription
+	 * objects.
+	 **/
 	public GenomeDescription(GenomeDescription gd, int position, int count) {
 		assert(gd.features != null);
 		assert(gd.features.size() >= 1);
@@ -77,24 +70,108 @@ public final class GenomeDescription {
 		if (count < 0) 
 			count = -Math.min(-count, gd.genomeLength - position);
 
-		this.genomeLength = gd.genomeLength + count;
 		for (Feature feature : gd.features) {
 			Feature tmp = new Feature(feature, position, count);
-			this.features.add(tmp);
+			if (tmp.getNucleotideLength() > 0)
+				this.features.add(tmp);
 		}
 
-		Feature g = gd.getFeature("genome");
-		Feature tmp = new Feature(g.getName(), g.getFeatureType());
-		tmp.addFragment(0, this.genomeLength);
-		this.features.set(0, tmp);
+		this.genomeLength = gd.genomeLength + count;
+		Feature f = gd.getFeature("genome");
+		if (f.getNucleotideLength() != this.genomeLength) {
+			/** Replace the feature named 'genome'.
+			 *
+			 *  Insertions at the immediate left and right of a feature do
+			 *	not change the size of that feature.  That rule works well
+			 *	for all features except the genome-spanning feature named
+			 *	'genome'.  The 'genome' feature must be explicitly widened after
+			 *	inserting nucleotides at the extreme ends of the genome. 
+			 **/
+			Feature tmp = new Feature(f.getName(), f.getFeatureType());
+			tmp.addFragment(0, this.genomeLength);
+			this.features.set(0, tmp);
+		}
 		assert(this.getFeature("genome").getNucleotideLength() == this.genomeLength);
 
 		assert(this.features != null);
 		assert(this.features.size() >= 1);
-
-		
 	}
 
+
+	/**
+	 * Create a new GenomeDescription by recombining fragments of two
+	 * other parent GenomeDescriptions.
+	 *  
+	 * Fragment boundaries are determined by the array of integer
+	 * breakpoints supplied as a parameter, and by the boundaries of
+	 * the parent objects.  This routine relies up on two primitive
+	 * operations defined on GenomeDescriptors; construction of a new
+	 * description object after applying an indel, and appending one
+	 * description to another.
+	 */
+	public static GenomeDescription recombine(GenomeDescription[] parents, int[] breakPoints) {
+		/*
+		  The first call to GenomeDescription() below truncates
+		  nucleotides on the left.  The second call truncates on the
+		  right.  The result is a fragment of the original
+		  GenomeDescription covering just the nucleotides between
+		  'lastBreakPoint' and 'nextBreakPoint'.  This is appended to
+		  the 'gd_recomb' under construction.
+
+		 */
+		assert(parents[0].genomeLength <= parents[1].genomeLength);
+			
+		int lastBreakPoint = 0;
+		int currentGenome = 0;
+		
+		GenomeDescription gd = parents[currentGenome];
+		GenomeDescription gd_recomb = null;
+		for (int i = 0; i < breakPoints.length; i++) {
+			int nextBreakPoint = breakPoints[i];
+			gd = new GenomeDescription(gd, 0, -lastBreakPoint);
+			gd = new GenomeDescription(gd, nextBreakPoint-lastBreakPoint, -(gd.genomeLength - nextBreakPoint));
+			if (gd_recomb == null)
+				gd_recomb = gd;
+			else
+				gd_recomb.append(gd);
+			lastBreakPoint = nextBreakPoint;
+			currentGenome = 1 - currentGenome;
+			gd = parents[currentGenome];
+		}
+		if (lastBreakPoint < gd.genomeLength) {
+			int nextBreakPoint = gd.genomeLength;
+			gd = new GenomeDescription(gd, 0, -lastBreakPoint);
+			if (gd_recomb == null)
+				gd_recomb = gd;
+			else
+				gd_recomb.append(gd);
+		}
+
+		return(gd_recomb);
+	}
+
+
+	/**
+	 * Append a genome description to an existing GenomeDescription.
+	 *
+	 * This method extends this instance by the length of {@code gd},
+	 * copying all the feature definitions after adjusting their
+	 * coordinates to reflect their new position.  Adjacent like-named
+	 * feature definitions are collapsed.
+	 **/
+	public void append(GenomeDescription gd) {
+		int len = this.genomeLength;
+		this.genomeLength += gd.genomeLength;
+
+		// shift all the incoming features right by len
+		for (Feature feature : gd.features) {
+			Feature tmp = new Feature(feature);
+			tmp.shift(len);
+			this.features.add(tmp);
+		}
+
+		// collapse adjacent like-named feature definitions.
+	}
 	
 	public static void setDescription(int genomeLength,
 	                                  List<Feature> features) {
@@ -149,22 +226,17 @@ public final class GenomeDescription {
 	 *
 	 * 'featureSiteTable' maps from genomic coordinates to feature-relative
 	 * coordinates.  That is, featureSiteTable[200] = 0 if the current feature begins
-	 * at genomic position 0.  'featureSiteTable' spans the entire genome and holds a
+	 * at genomic position 200.  'featureSiteTable' spans the entire genome and holds a
 	 * feature-relative position where the feature is defined, and -1 elsewhere.
 	 *
-	 * 'genomeSiteTable' maps from feature-relative coordinates to genome
-	 * coordinates.  That is, genomeSiteTable[0] = 200 for the feature that begins at
-	 * the first position on the genome. The length of 'genomeSiteTable' is the
-	 * number of nucleotides in the feature.
+	 * 'genomeSiteTable' maps from feature-relative coordinates to
+	 * genome coordinates.  That is, genomeSiteTable[0] = 200 for the
+	 * feature that begins at genomic position 200. The length of
+	 * 'genomeSiteTable' is the number of nucleotides in the feature.
 	 *
-	 * A 'featureSiteTable' and 'genomeSiteTable' pair are created for each feature.
-	 * The maps are stored in 'featureSiteTables' and 'genomeSiteTables' HashMaps
-	 * indexed by the feature object.   
-	 *
-	 * (why not index by the feature name?  what is the advantage to using an object
-	 * as the index?  now that we can have multiple genomedescription instances, each with
-	 * their own featureSiteTables, it is probably better to index by feature name
-	 * instead of by object.)
+	 * A 'featureSiteTable' and 'genomeSiteTable' pair are created for
+	 * each feature and are stored HashMaps indexed by the feature
+	 * name.
 	 */
 	private void computeSiteTables() {
 		this.featureSiteTables = new HashMap<String, int[]>();
@@ -247,11 +319,26 @@ public final class GenomeDescription {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
-	// Each GenomeDescription is associated with a single indel mutation.  Indel events cause a genome description to become stale and need
-	// recomputation. GenomeDescriptions are linked together in a tree that captures a phylogeny of indel mutations.  Each node in the tree
-	// points to its parent.  The lineage may be recapitulated by following parent links up to the root.  Traversing the tree from the root
-	// toward the leaves is not supported.
+	/**
+	 * At one time each GenomeDescription was associated with a single
+	 * indel mutation.  Now that GenomeDescriptions are also created
+	 * by recombination events, this no longer hold true.  See if
+	 * there is any need to keep these indel mutations around....
+	 **/
 	private Mutation indel = null;
+
+	/**
+	 * GenomeDescriptions are linked together in a tree that captures
+	 * a phylogeny of indel mutations.  Each node in the tree points
+	 * to its parent.  The lineage may be recapitulated by following
+	 * parent links up to the root.  Traversing the tree from the root
+	 * toward the leaves is not supported.
+	 *
+	 * NOTE: this is not strictly true.  Recombination should lead to
+	 * non-tree-like structures, but only a single parental lineage is
+	 * currently captured.  if this reference isn't being used, it
+	 * should be removed.
+	**/
 	private GenomeDescription parent = null;
 
 	// The list of feature active in this simulation.  Note that the coordinates of features change as the genome evolves in the presence of

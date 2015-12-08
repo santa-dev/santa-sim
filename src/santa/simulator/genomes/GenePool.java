@@ -17,6 +17,8 @@ public interface GenePool {
 
     Genome createGenome(Sequence sequence);
 
+    Genome createGenome(Sequence sequence, GenomeDescription gd);
+
     Genome duplicateGenome(Genome genome, SortedSet<Mutation> mutations, FitnessFunction fitnessFunction);
 
     void killGenome(Genome genome);

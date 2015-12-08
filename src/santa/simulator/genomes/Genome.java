@@ -54,4 +54,7 @@ public interface Genome {
 
     int binomialDeviate(double mutationRate);
 
+	GenomeDescription getDescription();
+	void setDescription(GenomeDescription gd);
+
 }

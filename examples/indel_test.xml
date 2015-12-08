@@ -77,7 +77,19 @@ GAGGATTAG
     <fitnessFunction>
       <purifyingFitness>
 	<feature>CDS</feature>
-        <sites>1-203</sites>
+        <sites>1-25</sites>
+        <rank>
+          <order>chemical</order>
+          <breakTies>random</breakTies>
+        </rank>
+        <fitness>
+          <lowFitness>0.9</lowFitness>
+	  <minimumFitness>0.1</minimumFitness>
+        </fitness>
+      </purifyingFitness>
+      <purifyingFitness>
+	<feature>CDS</feature>
+        <sites>26-29</sites>
         <rank>
           <order>chemical</order>
           <breakTies>random</breakTies>
@@ -117,8 +129,8 @@ GAGGATTAG
 	<!-- Negative Binomial
 	     Geometric insertion length distribution (q=0.4, r=1) -->
 	<indelmodel model="NB">0.4 1</indelmodel>
-	<insertprob>2.5E-2</insertprob>
-	<deleteprob>2.5E-2</deleteprob>
+	<insertprob>2.5E-1</insertprob>
+	<deleteprob>2.5E-1</deleteprob>
 	<!-- Negative binomial
 	     Pascal insertion length distribution (q=0.2, r=4) -->
 	<!-- <delete model="NB">0.2 4</delete> -->	
@@ -131,11 +143,11 @@ GAGGATTAG
       </nucleotideMutator>
     </mutator>
     <replicator>
-      <clonalReplicator/>
-      <!-- <recombinantReplicator> -->
-      <!-- 	<dualInfectionProbability>0.05</dualInfectionProbability> -->
-      <!-- 	<recombinationProbability>0.001</recombinationProbability> -->
-      <!-- </recombinantReplicator> -->
+      <recombinantReplicator>
+	<dualInfectionProbability>0.05</dualInfectionProbability>
+	<recombinationProbability>0.001</recombinationProbability>
+      </recombinantReplicator>
+      <!-- <clonalReplicator/> -->
     </replicator>
 
     <epoch>
