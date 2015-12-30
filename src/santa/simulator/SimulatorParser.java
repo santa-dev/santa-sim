@@ -47,6 +47,7 @@ import santa.simulator.samplers.Sampler;
 import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
+import santa.simulator.samplers.GenomeDescriptionSampler;
 import santa.simulator.IndelModel;
 
 /**
@@ -144,6 +145,7 @@ public class SimulatorParser {
 
 	private final static String ALIGNMENT = "alignment";
 	private final static String TREE = "tree";
+	private final static String GENOMEDESCRIPTION = "genomedescription";
 	private final static String SAMPLE_SIZE = "sampleSize";
 	private final static String SCHEDULE = "schedule";
 	private final static String FORMAT = "format";
@@ -1162,43 +1164,38 @@ public class SimulatorParser {
 
 	private List<Sequence> parseAlignment(String text) throws ParseException {
 		List<Sequence> result = new ArrayList<Sequence>();
-
         int firstLength = 0;
+		String[] seqStrings;
 
-        if (text.charAt(0) == '>') {
+		if (text.charAt(0) == '>') {
 			/* FASTA format */
-			String[] seqStrings = text.split("(?m)^\\s*>.*$");
-
-			for (int i = 1; i < seqStrings.length; i++) {
-				seqStrings[i] = seqStrings[i].replaceAll("\\s", "");
-
-                Sequence seq = parseSequence(seqStrings[i]);
-                if (firstLength > 0) {
-                    if (seq.getLength() != firstLength) {
-                        throw new ParseException("Sequence " + i + " in the alignment is a different length (" + seq.getLength() + ", expecting " + firstLength + ")");
-                    }
-                } else {
-                    firstLength = seq.getLength();
-                }
-                result.add(seq);
-			}
+			seqStrings = text.split("(?m)^\\s*>.*$");
 		} else {
 			/* newline delimited sequences */
-			String[] seqStrings = text.split("\\s+");
-            int i = 1;
-            for (String seqString:seqStrings) {
-
-                Sequence seq = parseSequence(seqString);
-                if (firstLength > 0) {
-                    if (seq.getLength() != firstLength) {
-                        throw new ParseException("Sequence " + i + " in the alignment is a different length (" + seq.getLength() + ", expecting " + firstLength + ")");
-                    }
-                } else {
-                    firstLength = seq.getLength();
-                }
-				result.add(seq);
-                i++;
-            }
+			seqStrings = text.split("\\s+");
+		}
+		
+		int i = 1;
+		for (String s: seqStrings) {
+			if (s.equals(""))
+				continue;
+			try { // catch ParseExceptions
+					seqStrings[i] = seqStrings[i].replaceAll("\\s", "");
+					
+					Sequence seq = parseSequence(seqStrings[i]);
+					if (firstLength > 0) {
+						if (seq.getLength() != firstLength) {
+							throw new ParseException("Expected length " + firstLength + ", got " + seq.getLength());
+						}
+					} else {
+						firstLength = seq.getLength();
+					}
+					result.add(seq);
+			} catch (RuntimeException pe) {
+				throw new ParseException("Error in sequence " + i + ": " + pe.getMessage());
+			} catch (ParseException pe) {
+				throw new ParseException("Error in sequence " + i + ": " + pe.getMessage());
+			}
 		}
 		return result;
 	}
@@ -1550,6 +1547,8 @@ public class SimulatorParser {
 			Element e1 = (Element)o;
 			if (e1.getName().equals(ALIGNMENT)) {
 				sampler = parseAlignmentSampler(e1, samplingSchedule, fileName);
+			} else if (e1.getName().equals(GENOMEDESCRIPTION)) {
+				sampler = parseGenomeDescriptionSampler(e1, samplingSchedule, fileName);
 			} else if (e1.getName().equals(TREE)) {
 				sampler = parseTreeSampler(e1, samplingSchedule, fileName);
 			} else if (e1.getName().equals(ALLELE_FREQUENCY)) {
@@ -1577,6 +1576,49 @@ public class SimulatorParser {
 
 	private Sampler parseStatisticsSampler(Element e1, SamplingSchedule samplingSchedule, String fileName) {
 		return new StatisticsSampler(fileName);
+	}
+
+	private Sampler parseGenomeDescriptionSampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {
+		int sampleSize = -1;
+		Map<Integer,Integer> schedule = null;
+		String label = null;
+
+		for (Object o : element.getChildren()) {
+			Element e1 = (Element)o;
+			if (e1.getName().equals(SAMPLE_SIZE)) {
+				try {
+					sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+				} catch (ParseException pe) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+				}
+			} else if (e1.getName().equals(SCHEDULE)) {
+				String[] values = e1.getTextTrim().split("\\s+");
+				schedule = new TreeMap<Integer,Integer>();
+				try {
+					for (int i = 0; i<values.length/2; ++i) {
+						int g = Integer.parseInt(values[i*2]);
+						int n = Integer.parseInt(values[i*2 + 1]);
+
+						schedule.put(g, n);
+					}
+				} catch (NumberFormatException e) {
+					throw new ParseException("Error parsing <" + element.getName() + "> element: "
+							+ e.getMessage());
+				}
+			} else if (e1.getName().equals(LABEL)) {
+				label = e1.getTextNormalize();
+			} else {
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+			}
+
+		}
+
+		if (schedule != null && sampleSize != -1) {
+			throw new ParseException("Error parsing <" + element.getName() + "> element: specify only one of <" + SAMPLE_SIZE + "> or <" + SCHEDULE + ">.");
+		}
+
+
+		return new GenomeDescriptionSampler(sampleSize, schedule, label, fileName);
 	}
 
 	private Sampler parseAlignmentSampler(Element element, SamplingSchedule samplingSchedule, String fileName) throws ParseException {

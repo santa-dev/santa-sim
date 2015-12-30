@@ -11,60 +11,23 @@
   <simulation>
     <genome>
       
-      <length>2739</length>
+      <length>210</length>
       
       <sequences>
 > HIV-1.POL_0_|0|0|0
 ATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGT
 ATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGT
 CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
-ACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAA
-AAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGA
-AAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGAT
-TTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGT
-TAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGA
-CTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTAC
-AATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGC
-CTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTT
-AGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACA
-CCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGA
-CAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAA
-ATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACC
-AAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTC
-TAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGG
-GCAAGGCCAATGGACATATCAAATTTATCAAGAGCCATTTAAAAATCTGAAAACAGGAAAATATGCAAGA
-ATGAGGGGTGCCCACACTAATGATGTAAAACAATTAACAGAGGCAGTGCAAAAAATAACCACAGAAAGCA
-TAGTAATATGGGGAAAGACTCCTAAATTTAAACTGCCCATACAAAAGGAAACATGGGAAACATGGTGGAC
-AGAGTATTGGCAAGCCACCTGGATTCCTGAGTGGGAGTTTGTTAATACCCCTCCCTTAGTGAAATTATGG
-TACCAGTTAGAGAAAGAACCCATAGTAGGAGCAGAAACCTTCTATGTAGATGGGGCAGCTAACAGGGAGA
-CTAAATTAGGAAAAGCAGGATATGTTACTAATAGAGGAAGACAAAAAGTTGTCACCCTAACTGACACAAC
-AAATCAGAAGACTGAGTTACAAGCAATTTATCTAGCTTTGCAGGATTCGGGATTAGAAGTAAACATAGTA
-ACAGACTCACAATATGCATTAGGAATCATTCAAGCACAACCAGATCAAAGTGAATCAGAGTTAGTCAATC
-AAATAATAGAGCAGTTAATAAAAAAGGAAAAGGTCTATCTGGCATGGGTACCAGCACACAAAGGAATTGG
-AGGAAATGAACAAGTAGATAAATTAGTCAGTGCTGGAATCAGGAAAGTACTATTTTTAGATGGAATAGAT
-AAGGCCCAAGATGAACATGAGAAATATCACAGTAATTGGAGAGCAATGGCTAGTGATTTTAACCTGCCAC
-CTGTAGTAGCAAAAGAAATAGTAGCCAGCTGTGATAAATGTCAGCTAAAAGGAGAAGCCATGCATGGACA
-AGTAGACTGTAGTCCAGGAATATGGCAACTAGATTGTACACATTTAGAAGGAAAAGTTATCCTGGTAGCA
-GTTCATGTAGCCAGTGGATATATAGAAGCAGAAGTTATTCCAGCAGAAACAGGGCAGGAAACAGCATATT
-TTCTTTTAAAATTAGCAGGAAGATGGCCAGTAAAAACAATACATACTGACAATGGCAGCAATTTCACCGG
-TGCTACGGTTAGGGCCGCCTGTTGGTGGGCGGGAATCAAGCAGGAATTTGGAATTCCCTACAATCCCCAA
-AGTCAAGGAGTAGTAGAATCTATGAATAAAGAATTAAAGAAAATTATAGGACAGGTAAGAGATCAGGCTG
-AACATCTTAAGACAGCAGTACAAATGGCAGTATTCATCCACAATTTTAAAAGAAAAGGGGGGATTGGGGG
-GTACAGTGCAGGGGAAAGAATAGTAGACATAATAGCAACAGACATACAAACTAAAGAATTACAAAAACAA
-ATTACAAAAATTCAAAATTTTCGGGTTTATTACAGGGACAGCAGAAATCCACTTTGGAAAGGACCAGCAA
-AGCTCCTCTGGAAAGGTGAAGGGGCAGTAGTAATACAAGATAATAGTGACATAAAAGTAGTGCCAAGAAG
-AAAAGCAAAGATCATTAGGGATTATGGAAAACAGATGGCAGGTGATGATTGTGTGGCAAGTAGACAGGAT
-GAGGATTAG
       </sequences>
       <feature>
-	<name>PR</name>
-	<type>aminoAcid</type>
-	<coordinates>27-116</coordinates>
+      	<name>PR</name>
+      	<type>aminoAcid</type>
+      	<coordinates>27-62</coordinates>
       </feature>
       <feature>
-	<name>CDS</name>
-	<type>aminoAcid</type>
-	<coordinates>1-609</coordinates>
+      	<name>CDS</name>
+      	<type>aminoAcid</type>
+      	<coordinates>63-123</coordinates>
       </feature>
     </genome>
 
@@ -76,29 +39,29 @@ GAGGATTAG
 
     <fitnessFunction>
       <purifyingFitness>
-	<feature>CDS</feature>
-        <sites>1-25</sites>
+      	<feature>CDS</feature>
+        <sites>1</sites>
         <rank>
           <order>chemical</order>
           <breakTies>random</breakTies>
         </rank>
         <fitness>
           <lowFitness>0.9</lowFitness>
-	  <minimumFitness>0.1</minimumFitness>
+      	  <minimumFitness>0.1</minimumFitness>
         </fitness>
       </purifyingFitness>
-      <purifyingFitness>
-	<feature>CDS</feature>
-        <sites>26-29</sites>
-        <rank>
-          <order>chemical</order>
-          <breakTies>random</breakTies>
-        </rank>
-        <fitness>
-          <lowFitness>0.9</lowFitness>
-	  <minimumFitness>0.1</minimumFitness>
-        </fitness>
-      </purifyingFitness>
+      <!-- <purifyingFitness> -->
+      <!-- 	<feature>CDS</feature> -->
+      <!--   <sites>10-20</sites> -->
+      <!--   <rank> -->
+      <!--     <order>chemical</order> -->
+      <!--     <breakTies>random</breakTies> -->
+      <!--   </rank> -->
+      <!--   <fitness> -->
+      <!--     <lowFitness>0.9</lowFitness> -->
+      <!-- 	  <minimumFitness>0.1</minimumFitness> -->
+      <!--   </fitness> -->
+      <!-- </purifyingFitness> -->
       <!-- <populationSizeDependentFitness> -->
       <!-- 	<feature>PR</feature> -->
       <!-- 	<sites>1-30</sites> -->
@@ -113,18 +76,20 @@ GAGGATTAG
 
     </fitnessFunction>
 
-    <!-- mutations occur as an independent process after replication, in this -->
-    <!-- simulator. The user specifies a per-site and per-generation -->
-    <!-- probability of mutation, and the mutator component then applies -->
-    <!-- mutations to the genome accordingly. For efficiency, the default -->
-    <!-- mutator draws the number of mutations from a Poisson distribution with -->
-    <!-- an expectation given by the number of nucleotides and the rate. These -->
-    <!-- are then distributed uniformly across sites. A bias towards -->
-    <!-- transition-type mutations can be specified to reflect the action of -->
-    <!-- some polymerases, or all 12 relative rates biases may be specified -->
+    <!-- Mutations occur as an independent process after replication,
+         The user specifies a per-site and per-generation probability
+         of mutation, and the mutator component then applies mutations
+         to the genome accordingly. For efficiency, the default
+         mutator draws the number of mutations from a Poisson
+         distribution with an expectation given by the number of
+         nucleotides and the rate. These are then distributed
+         uniformly across sites. A bias towards transition-type
+         mutations can be specified to reflect the action of some
+         polymerases, or all 12 relative rates biases may be specified
+         -->
     <mutator>
       <nucleotideMutator>
-	<mutationRate>2.5E-5</mutationRate>
+	<mutationRate>2.5e-5</mutationRate>
 
 	<!-- Negative Binomial
 	     Geometric insertion length distribution (q=0.4, r=1) -->
@@ -144,8 +109,8 @@ GAGGATTAG
     </mutator>
     <replicator>
       <recombinantReplicator>
-	<dualInfectionProbability>0.05</dualInfectionProbability>
-	<recombinationProbability>0.001</recombinationProbability>
+      	<dualInfectionProbability>0.80</dualInfectionProbability>
+      	<recombinationProbability>0.80</recombinationProbability>
       </recombinantReplicator>
       <!-- <clonalReplicator/> -->
     </replicator>
@@ -175,11 +140,22 @@ GAGGATTAG
 	</alignment>
       </sampler>
       <sampler>
+      	<atFrequency>100</atFrequency>
+      	<fileName>genomes_%r.tsv</fileName>
+      	<genomedescription>
+      	  <sampleSize>10000</sampleSize>
+      	  <label>genome_%g_%s</label>
+      	</genomedescription>
+      </sampler>
+      <sampler>
         <atFrequency>100</atFrequency>
         <fileName>stats_%r.csv</fileName>
         <statistics />
     </sampler>
     </samplingSchedule>
 
+    <eventLogger>
+      <fileName>events.txt</fileName>
+    </eventLogger>
   </simulation>
 </santa>

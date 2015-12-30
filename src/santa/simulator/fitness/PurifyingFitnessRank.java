@@ -1,6 +1,9 @@
 package santa.simulator.fitness;
 
 import santa.simulator.genomes.*;
+import santa.simulator.EventLogger;
+import java.util.Formatter;
+
 
 import java.util.*;
 
@@ -206,8 +209,19 @@ public class PurifyingFitnessRank {
 		}
 
 		if (alignment != null) {
+			int n = 1;  // sequence counter
 			for (byte[] sequence : alignment) {
-				++counts.get(sequence[site]).count;
+				/**
+				 * cswarth - protect against stop codons in initial alignment.
+				 **/
+				int i = sequence[site];
+				if (i < counts.size())
+					++counts.get(i).count;
+				else {
+					String msg = String.format("PurifyingFitnessRank: Skipping feature site %d in alignment #%d.\nUsually this indicates a premature STOP codon in an Amino Acid feature.", site, n);
+					System.err.println(msg);
+				}
+				n += 1;
 			}
 		} else {
 			for (int i = 0; i < stateOrder.size(); ++i) {

@@ -2,6 +2,9 @@ package santa.simulator.genomes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  * @author Andrew Rambaut
@@ -24,7 +27,7 @@ public final class Feature {
 	 * case the cloned feature will have identical values as the original.
 	 *
 	 * @param: f: fragment to be cloned.
-	 * @param position: non-negative position where indel whould begin
+	 * @param position: non-negative position where indel would begin
 	 * @param count: positive/negative count of positions to be inserted/deleted.
 	 */
 	public Feature(Feature f, int position, int delta) {
@@ -61,6 +64,48 @@ public final class Feature {
 			return SequenceAlphabet.AMINO_ACIDS;
 		}
 		return SequenceAlphabet.NUCLEOTIDES;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((featureType == null) ? 0 : featureType.hashCode());
+		result = prime * result
+			+ ((fragments == null) ? 0 : fragments.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Feature))
+			return false;
+		Feature other = (Feature) obj;
+		if (featureType != other.featureType)
+			return false;
+		if (fragments == null) {
+			if (other.fragments != null)
+				return false;
+		} else if (!fragments.equals(other.fragments))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 	public int getLength() {
@@ -104,7 +149,32 @@ public final class Feature {
 		return fragments.get(index).getLength();
 	}
 
+	public void merge(Feature f) {
+		// expect to only merge features of identical name
+		assert(this.name.equals(f.name));
+		fragments.addAll(f.fragments);
+		
+		// sort the fragments by increasing start position
+		Collections.sort(fragments, new Comparator<Fragment>() {
+			@Override
+			public int compare(Fragment f1, Fragment f2) {
+				return(f1.getStart() - f2.getStart());
+			}
+		});
 
+		// iterate through the list, merging fragments as necessary
+		Fragment previous = null;
+		for (Iterator<Fragment> iter = fragments.listIterator(); iter.hasNext(); ) {
+			Fragment next = iter.next();
+			if (previous != null && (previous.overlaps(next) || previous.adjacent(next))) {
+				previous.merge(next);
+				iter.remove();
+				continue;
+			}
+			previous = next;
+		}
+	}
+	
 	public void shift(int howmuch) {
 		for (Fragment fragment : fragments) 
 			fragment.shift(howmuch);
@@ -112,87 +182,6 @@ public final class Feature {
 	
 	private final List<Fragment> fragments = new ArrayList<Fragment>();
 
-	private class Fragment {
-		public Fragment(int start, int count) {
-			assert(count >= 0);
-			this.start = start;
-			this.count = count;
-		}
-
-
-		/** 
-		 * copy constructor.   Clone a fragment and apply an indel.
-		 * It is possible the indel will have no effect on the fragment in which
-		 * case the cloned fragment will have identical values as the original.
-		 * It is also possible that the indel will completely wipe out
-		 * the fragment (reducing it's length to zero).
-		 *
-		 * Note: A negative delta indicates deletion from the current position moving right.  It DOES NOT mean to remove bases to the left of current position.
-		 * 
-		 * @param: f: fragment to be cloned.
-		 * @param position: non-negative position where indel would begin
-		 * @param delta: positive/negative count of positions to be inserted/deleted.
-		 */
-		public Fragment(Fragment f, int position, int delta) {
-			if (position < f.start) {
-				// delete: delta < 0
-				// insert: delta > 0
-				if (delta < 0) {
-					// delete: delta < 0
-					int shift = Math.min(-delta, f.start-position);
-					int shrink = Math.min(-delta - shift, f.count);
-					this.start = f.start - shift;
-					this.count = f.count - shrink;
-				} else {	
-					this.start = f.start + delta;
-					this.count = f.count;
-				}
-			}
-			else if (f.count > 0 && position <= f.getFinish()) {
-				this.start = f.start;
-				if (delta < 0) {
-					// delete: delta < 0
-					delta = -Math.min(-delta, f.count);
-				}
-				this.count = f.count + delta;
-			} else {
-				this.start = f.start;
-				this.count = f.count;
-			}
-			assert(this.start >= 0);
-			assert(this.count >= 0);
-
-		}
-
-		// copy constructor
-		public Fragment(Fragment f) {
-			this.start = f.start;
-			this.count = f.count;
-
-		}
-
-		public int getStart() {
-			return start;
-		}
-
-		public int getFinish() {
-			if (count <= 0) 
-				throw new RuntimeException("getFinish() is meaningless on zero-length fragments");
-
-			return start + count - 1;
-		}
-
-		public int getLength() {
-			return count;
-		}
-
-		public void shift(int howmuch) {
-			this.start += howmuch;
-		}
-		
-		private int start;
-		private int count;
-	}
 
 	private final String name;
 	private final Type featureType;

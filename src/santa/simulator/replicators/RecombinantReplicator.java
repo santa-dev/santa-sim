@@ -64,7 +64,7 @@ public class RecombinantReplicator implements Replicator {
 
 			// create the recombinant genome description
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
-			GenomeDescription gd_recomb = GenomeDescription.recombine(gd_parents, breakPoints);
+			GenomeDescription descriptor = GenomeDescription.recombine(gd_parents, breakPoints);
 			
 			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints, gd_recomb.getGenomeLength());
 
@@ -107,7 +107,7 @@ public class RecombinantReplicator implements Replicator {
 	 * parents.  breakPoints describes the positions at which we
 	 * switch from one template to the other.  
 
-	 * 'len' in the expected length of the recombined sequence.  If
+	 * 'len' is the length of the recombined sequence.  If
 	 * 'breakPoints' is empty, this routine simply copies the sequence
 	 * from first genome in 'parents'.
 	 **/
@@ -119,9 +119,7 @@ public class RecombinantReplicator implements Replicator {
 		Genome gd = parents[currentGenome];
 		SimpleSequence recombinantSequence = new SimpleSequence(len);
 		
-		for (int i = 0; i < breakPoints.length; i++) {
-			int nextBreakPoint = breakPoints[i];
-
+		for (int nextBreakPoint : breakPoints) {
 			for (int j = lastBreakPoint; j < nextBreakPoint; j++) {
 				recombinantSequence.setNucleotide(j, gd.getNucleotide(j));
 			}

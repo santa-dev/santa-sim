@@ -65,7 +65,7 @@ public class SimpleGenome extends BaseGenome {
 				int nl = getLength();
 				if (l != nl) {
 					if (gd == null) {
-						gd = new GenomeDescription(this.descriptor, m.position, m.length());
+						gd = GenomeDescription.applyIndel(this.descriptor, m.position, m.length());
 						this.descriptor = gd;
 						this.fitnessCache = null;
 						assert(descriptor.getGenomeLength() == getLength());

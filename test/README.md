@@ -16,17 +16,14 @@ convention is to use the name of the class under test and to add the
 "Test" suffix to the test class.  Each test method should be annotated
 with a `@Test`
 
-	public void multiplicationOfZeroIntegersShouldReturnZero() {
-	    ...
-	}
-
 ## Running JUnit tests
 
 The Eclipse IDE provides support for executing your tests
 interactively.
 
 To run a test, select the class which contains the tests, right-click
-on it and select Run-as → JUnit Test. This starts JUnit and executes
-all test methods in this class.
+and select Run-as → JUnit Test. This starts JUnit and executes
+all test methods in this class.  JUnit tests can be run under the
+debugger by selecting Debug-as → JUnit Test.
 
 
