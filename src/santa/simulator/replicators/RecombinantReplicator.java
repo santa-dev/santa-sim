@@ -64,7 +64,7 @@ public class RecombinantReplicator implements Replicator {
 
 			// create the recombinant genome description
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
-			GenomeDescription descriptor = GenomeDescription.recombine(gd_parents, breakPoints);
+			GenomeDescription gd_recomb = GenomeDescription.recombine(gd_parents, breakPoints);
 			
 			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints, gd_recomb.getGenomeLength());
 
