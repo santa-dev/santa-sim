@@ -177,11 +177,11 @@ public class PurifyingFitnessRank {
 	// PRIVATE STUFF
 
 	/**
-	 * Count abundance of symbols at a single site in a multiple alignment.
+	 * Count abundance of symbols at a SINGLE SITE in a multiple alignment.
 	 *
 	 * 'alphabet' references a NUCLEOTIDES or AMINO_ACIDS
 	 * alphabet.  Assuming NUCLEOTIDES, this routine would calculate
-	 * the abundance of each nucleotide at all sites in a multiple
+	 * the abundance of each nucleotide at a single column of a multiple
 	 * alignment.
 	 *
 	 * The multiple alignment is usually taken from the initial
@@ -201,7 +201,7 @@ public class PurifyingFitnessRank {
 	 * @return list of histogram elements in decreasing order of abundance.
 	 */
 	private List<HistogramEntry> createHistogram(SequenceAlphabet alphabet, boolean breakTiesRandomly,
-	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) {
+	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) throws PrematureStopException {
 		List<HistogramEntry> counts = new ArrayList<HistogramEntry>();
 
 		for (int i = 0; i < alphabet.getStateCount(); ++i) {
@@ -218,8 +218,9 @@ public class PurifyingFitnessRank {
 				if (i < counts.size())
 					++counts.get(i).count;
 				else {
-					String msg = String.format("PurifyingFitnessRank: Skipping feature site %d in alignment #%d.\nUsually this indicates a premature STOP codon in an Amino Acid feature.", site, n);
-					System.err.println(msg);
+					throw new PrematureStopException(n, site);
+					// String msg = String.format("PurifyingFitnessRank: Skipping feature site %d in alignment #%d.\nUsually this indicates a premature STOP codon in an Amino Acid feature.", site, n);
+					// System.err.println(msg);
 				}
 				n += 1;
 			}

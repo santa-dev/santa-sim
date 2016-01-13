@@ -25,6 +25,7 @@ import santa.simulator.fitness.PurifyingFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessModel;
 import santa.simulator.fitness.PurifyingFitnessPiecewiseLinearModel;
 import santa.simulator.fitness.PurifyingFitnessRank;
+import santa.simulator.fitness.PrematureStopException;
 import santa.simulator.fitness.PurifyingFitnessValuesModel;
 import santa.simulator.genomes.CompactGenePool;
 import santa.simulator.genomes.Feature;
@@ -1118,16 +1119,22 @@ public class SimulatorParser {
 
 		PurifyingFitnessRank result = null;
 
-        switch (order) {
-        case CLASSES:
-            result = new PurifyingFitnessRank(factor.feature, orderSetClasses, breakTiesRandom, probableNumber);
-            break;
-        case STATES:
-			result = new PurifyingFitnessRank(factor.feature, stateOrder, probableNumber, breakTiesRandom);
-            break;
-        case OBSERVED:
-			result = new PurifyingFitnessRank(factor.feature, probableNumber, breakTiesRandom);
-            break;
+		try {
+			switch (order) {
+			case CLASSES:
+				result = new PurifyingFitnessRank(factor.feature, orderSetClasses, breakTiesRandom, probableNumber);
+				break;
+			case STATES:
+				result = new PurifyingFitnessRank(factor.feature, stateOrder, probableNumber, breakTiesRandom);
+				break;
+			case OBSERVED:
+				result = new PurifyingFitnessRank(factor.feature, probableNumber, breakTiesRandom);
+				break;
+			}
+		} catch(PrematureStopException e) {
+			String msg = String.format("premature STOP codon in sequence #%d, feature %s, position %d",
+									   e.index, factor.feature.getName(), e.position);
+			throw new ParseException(String.format("Error parsing <%s> element: %s",  element.getName(), msg));
 		}
 
 		if (element.getAttributeValue(ID) != null) {
