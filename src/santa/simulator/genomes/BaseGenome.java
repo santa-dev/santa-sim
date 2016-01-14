@@ -83,15 +83,18 @@ public abstract class BaseGenome implements Genome {
 	 * @return byte array of nucleotides (encoded as integer states)
 	 **/
 	public byte[] getNucleotides(Feature feature) {
-		int sites[] = descriptor.getGenomeSiteTable(descriptor.getFeature(feature.getName()));
-		byte[] nucleotides = new byte[sites.length];
+		byte[] nucleotides = null;
+		Feature f = descriptor.getFeature(feature.getName());
+		if (f != null) {
+			int sites[] = descriptor.getGenomeSiteTable(descriptor.getFeature(feature.getName()));
+			nucleotides = new byte[sites.length];
 
-		int k = 0;
-		for (int i: sites) {
-			nucleotides[k] = getNucleotide(i);
-			k++;
+			int k = 0;
+			for (int i: sites) {
+				nucleotides[k] = getNucleotide(i);
+				k++;
+			}
 		}
-
 		return nucleotides;
 	}
 

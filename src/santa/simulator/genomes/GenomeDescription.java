@@ -119,7 +119,7 @@ public final class GenomeDescription {
 	 * description object after applying an indel, and appending one
 	 * description to another.
 	 */
-	public static GenomeDescription recombine(GenomeDescription[] parents, int[] breakPoints) {
+	public static GenomeDescription recombine(GenomeDescription[] parents, SortedSet<Integer> breakPoints) {
 		/*
 		  Shortcut - if both parents are identical, then the recombined hybrid will have the same feature description.
 		*/
@@ -141,8 +141,7 @@ public final class GenomeDescription {
 		assert(parents[0].genomeLength <= parents[1].genomeLength);
 		GenomeDescription gd = parents[currentGenome];
 		GenomeDescription gd_recomb = null;
-		for (int i = 0; i < breakPoints.length; i++) {
-			int nextBreakPoint = breakPoints[i];
+		for (int nextBreakPoint: breakPoints) {
 			gd = new GenomeDescription(parents[currentGenome], 0, -lastBreakPoint);
 			gd = new GenomeDescription(gd, nextBreakPoint-lastBreakPoint, -(gd.genomeLength - nextBreakPoint));
 			if (gd_recomb == null)

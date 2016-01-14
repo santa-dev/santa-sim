@@ -27,7 +27,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
       <feature>
       	<name>CDS</name>
       	<type>aminoAcid</type>
-      	<coordinates>63-123</coordinates>
+      	<coordinates>61-123</coordinates>
       </feature>
     </genome>
 
@@ -109,8 +109,8 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
     </mutator>
     <replicator>
       <recombinantReplicator>
-      	<dualInfectionProbability>0.80</dualInfectionProbability>
-      	<recombinationProbability>0.80</recombinationProbability>
+      	<dualInfectionProbability>0.99</dualInfectionProbability>
+      	<recombinationProbability>0.1</recombinationProbability>
       </recombinantReplicator>
       <!-- <clonalReplicator/> -->
     </replicator>
@@ -122,7 +122,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
     
     <samplingSchedule>
       <sampler>
-      	<atGeneration>50</atGeneration>
+      	<atGeneration>1</atGeneration>
       	<fileName>trees_%r.tree</fileName>
       	<tree>
       	  <sampleSize>5</sampleSize>
@@ -131,7 +131,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
       	</tree>
       </sampler>
       <sampler>
-	<atFrequency>100</atFrequency>	
+	<atFrequency>1</atFrequency>	
 	<fileName>sequences_%r.fa</fileName>
 	<alignment>
 	  <sampleSize>$samplesize</sampleSize>
@@ -140,7 +140,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
 	</alignment>
       </sampler>
       <sampler>
-      	<atFrequency>100</atFrequency>
+      	<atFrequency>1</atFrequency>
       	<fileName>genomes_%r.tsv</fileName>
       	<genomedescription>
       	  <sampleSize>10000</sampleSize>
@@ -148,7 +148,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
       	</genomedescription>
       </sampler>
       <sampler>
-        <atFrequency>100</atFrequency>
+        <atFrequency>1</atFrequency>
         <fileName>stats_%r.csv</fileName>
         <statistics />
     </sampler>

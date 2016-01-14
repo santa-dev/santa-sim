@@ -79,13 +79,17 @@ public final class Fragment {
 	 *
 	 * Note: A negative delta indicates deletion from the current position moving right.  It DOES NOT mean to remove bases to the left of current position.
 	 * 
-	 * @param: f: fragment to be cloned.
-	 * @param position: non-negative position where indel would begin
-	 * @param delta: positive/negative count of positions to be inserted/deleted.
+	 * @param f			fragment to be cloned.
+	 * @param position	non-negative position where indel would begin
+	 * @param delta		positive/negative count of positions to be inserted/deleted.
 	 */
 	public Fragment(Fragment f, int position, int delta) {
-		assert(f.count > 0);
-		if (position < f.start) {
+		assert(f.count >= 0);
+		if (f.count == 0) {
+			// if the fragment is already zero length, we just copy it as-is.
+			this.start = f.start;
+			this.count = f.count;
+		} else if (position < f.start) {
 			// delete: delta < 0
 			// insert: delta > 0
 			if (delta < 0) {
@@ -112,17 +116,25 @@ public final class Fragment {
 		}
 		assert(this.start >= 0);
 		assert(this.count >= 0);
-
 	}
 
+	/**
+	 * Return the genome-relative position of the first nucleotide covered by this fragment.
+	 *
+	 **/
 	public int getStart() {
 		return start;
 	}
 
+
+	/**
+	 * Return the genome-relative position of the last nucleotide covered by this fragment.
+	 * There is no last position of a zero-length fragment.
+	 *
+	 **/
 	public int getFinish() {
 		if (count <= 0) 
 			throw new RuntimeException("getFinish() is meaningless on zero-length fragments");
-
 		return start + count - 1;
 	}
 
@@ -130,8 +142,17 @@ public final class Fragment {
 		return count;
 	}
 
+	/**
+	 * Shift the genome coordinates of this fragment.
+	 * When {@code howmuch} is negative, shift to the left, otherwise to the right.
+	 * Note - no runtime bounds checking is done.  It is possible to shift the start of a fragment to a negative start value.
+	 * That probably should be checked for
+	 *
+	 * @param howmuch Positive or negative integer offset by which the fragment should be shifted.
+	 **/
 	public void shift(int howmuch) {
 		this.start += howmuch;
+		assert(this.start >= 0);
 	}
 		
 	private int start;

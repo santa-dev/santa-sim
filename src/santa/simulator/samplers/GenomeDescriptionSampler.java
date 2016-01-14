@@ -73,7 +73,9 @@ public class GenomeDescriptionSampler implements Sampler {
 				for (Feature f: g.getFeatures()) {
 					int n = f.getFragmentCount();
 					for (int i = 0; i < n; i++) {
-						destination.format("%d\t%8x\t%s\t%d\t%d\n", generation, g.hashCode(), f.getName(), f.getFragmentStart(i), f.getFragmentFinish(i));
+						if (f.getFragmentLength(i) > 0)
+							// avoid calling getFragmentFinish() on zero-length fragments.
+							destination.format("%d\t%8x\t%s\t%d\t%d\n", generation, g.hashCode(), f.getName(), f.getFragmentStart(i), f.getFragmentFinish(i));
 					}
 				}
 			}

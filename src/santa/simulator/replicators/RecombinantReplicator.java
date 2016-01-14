@@ -3,6 +3,7 @@ package santa.simulator.replicators;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BinomialDistribution;
@@ -53,14 +54,16 @@ public class RecombinantReplicator implements Replicator {
 			
 			int length = Math.min(parents[0].getLength() - 1, parents[1].getLength() - 1);
 			BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
-			int n = 1; // binomialDeviate.sample();
-			int[] breakPoints = new int[n];
+			int n = binomialDeviate.sample();
+			SortedSet<Integer> breakPoints = new TreeSet<Integer>();
 			
-			// Then draw the positions
-			for (int i = 0; i < breakPoints.length; i++) {
-				breakPoints[i] = 100; // Random.nextInt(1, length);
+			// Then draw the positions.
+			// Don't repeat a breakpoint, and only break at codon boundaries.
+			for (int i = 0; i < n; i++) {
+				int bp = Random.nextInt(1, length);
+				if (bp % 3 == 0)
+					breakPoints.add(bp);
 			}
-			Arrays.sort(breakPoints);
 
 			// create the recombinant genome description
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
@@ -111,7 +114,7 @@ public class RecombinantReplicator implements Replicator {
 	 * 'breakPoints' is empty, this routine simply copies the sequence
 	 * from first genome in 'parents'.
 	 **/
-    private Sequence getRecombinantSequence(Genome[] parents, int[] breakPoints, int len) {
+    private Sequence getRecombinantSequence(Genome[] parents, SortedSet<Integer> breakPoints, int len) {
 		assert(parents.length == 2);
 
 		int lastBreakPoint = 0;
