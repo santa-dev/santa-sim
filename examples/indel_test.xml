@@ -110,7 +110,7 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
     <replicator>
       <recombinantReplicator>
       	<dualInfectionProbability>0.99</dualInfectionProbability>
-      	<recombinationProbability>0.1</recombinationProbability>
+      	<recombinationProbability>0.01</recombinationProbability>
       </recombinantReplicator>
       <!-- <clonalReplicator/> -->
     </replicator>

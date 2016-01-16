@@ -27,7 +27,8 @@ public class RecombinationTest {
 		System.out.println(gd2);
 
 		GenomeDescription[] parents = { GenomeDescription.root, gd2 };
-		int breaks[] = {12};
+		SortedSet<Integer> breaks = new TreeSet<Integer>();
+		breaks.add(12);
 		GenomeDescription rgd = GenomeDescription.recombine(parents, breaks);
 		System.out.format("recombotest\t\t%s\n", rgd);
 	}

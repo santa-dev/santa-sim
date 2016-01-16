@@ -40,6 +40,9 @@ public final class SimpleSequence implements Sequence {
 
 
 	public SimpleSequence(byte[] states) {
+		// it is possible for {@code states} to be null at this point.
+		if (states == null)
+			states = new byte[0];
 		this.states = states;
 	}
 

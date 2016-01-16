@@ -52,7 +52,7 @@ public class RecombinantReplicator implements Replicator {
 			});
 			assert(parents[0].getLength() <= parents[1].getLength());
 			
-			int length = Math.min(parents[0].getLength() - 1, parents[1].getLength() - 1);
+			int length = Math.min(parents[0].getLength(), parents[1].getLength()) - 1;
 			BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
 			int n = binomialDeviate.sample();
 			SortedSet<Integer> breakPoints = new TreeSet<Integer>();
