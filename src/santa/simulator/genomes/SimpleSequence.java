@@ -7,6 +7,8 @@
 package santa.simulator.genomes;
 
 import java.util.Arrays;
+import java.util.TreeSet;
+import java.util.SortedSet;
 
 /**
  * @author kdforc0
@@ -228,5 +230,71 @@ public final class SimpleSequence implements Sequence {
 			return getNucleotideStates();
 		else
 			return getAminoAcidStates();
+	}
+
+	/**
+	 * calculate how long the product of recombination will be.
+	 *
+	 **/
+	static int getRecombinantLength(SimpleSequence[] parents, SortedSet<Integer> breakPoints)  {
+		assert(parents.length == 2);
+		assert(parents[0].getLength() <= parents[1].getLength());
+
+		int lastBreakPoint = 0;
+		int currentSeq = 0;
+		int newlen = 0;
+		SimpleSequence seq = parents[currentSeq];
+		for (int nextBreakPoint : breakPoints) {
+			newlen += nextBreakPoint-lastBreakPoint;
+			currentSeq = 1 - currentSeq;
+			seq = parents[currentSeq];
+		}
+		int nextBreakPoint =  seq.getLength();
+		newlen += nextBreakPoint-lastBreakPoint;
+
+		return newlen;
+	}
+	
+	/**
+	 * Factory method to create a recombined nucleotide sequence from two parents.
+	 *
+	 * Given a pair of parent sequences and a set of breakpoints,
+	 * create a new sequence that is a combination of fragments from
+	 * both parents.  breakPoints describes the positions at which we
+	 * switch from one template to the other.
+	 *
+	 * If 'breakPoints' is empty, this routine simply copies the
+	 * sequence from first genome in 'parents'.
+	 *
+	 * NOTE: This routine implements non-homologuous recombination.
+	 * It uses only a single vector to specify isoloci in each parent
+	 * where recombination should occur.  Homologous recombination
+	 * would need two breakpoint vectors identifying the points of
+	 * homology in each parent.
+	 **/
+    static SimpleSequence getRecombinantSequence(SimpleSequence[] parents, SortedSet<Integer> breakPoints) {
+	 	assert(parents.length == 2);
+		assert(parents[0].getLength() <= parents[1].getLength());
+
+		int lastBreakPoint = 0;
+		int currentSeq = 0;
+		int newlen = getRecombinantLength(parents, breakPoints);
+		SimpleSequence product = new SimpleSequence(newlen);
+
+		byte[] dest = product.states;
+		SimpleSequence seq = parents[currentSeq];
+		for (int nextBreakPoint : breakPoints) {
+			byte[] src = seq.states;
+			System.arraycopy(seq.states, lastBreakPoint, 
+							 dest, lastBreakPoint, nextBreakPoint-lastBreakPoint);
+			
+			lastBreakPoint = nextBreakPoint;
+			currentSeq = 1 - currentSeq;
+			seq = parents[currentSeq];
+		}
+		int nextBreakPoint =  seq.getLength();
+		System.arraycopy(seq.states, lastBreakPoint, 
+						 dest, lastBreakPoint, nextBreakPoint-lastBreakPoint);
+		return(product);
 	}
 }
