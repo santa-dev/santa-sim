@@ -143,17 +143,12 @@ public final class GenomeDescription {
 		GenomeDescription gd_recomb = null;
 		for (int nextBreakPoint: breakPoints) {
 			gd = new GenomeDescription(parents[currentGenome], 0, -lastBreakPoint);
-			System.out.format("left-truncate %d - %d = %d\n", parents[currentGenome].genomeLength, lastBreakPoint, gd.genomeLength);
-			System.out.format("right-truncate %d - %d",gd.genomeLength, (gd.genomeLength - nextBreakPoint));
 			gd = new GenomeDescription(gd, nextBreakPoint-lastBreakPoint, -(parents[currentGenome].genomeLength - nextBreakPoint));
-			System.out.format(" = %d\n", gd.genomeLength);
 
 			if (gd_recomb == null)
 				gd_recomb = gd;
 			else {
-				System.out.format("append %d + %d", gd_recomb.genomeLength, gd.genomeLength);
 				gd_recomb.append(gd);
-				System.out.format(" = %d\n", gd_recomb.genomeLength);
 			}
 			lastBreakPoint = nextBreakPoint;
 			currentGenome = 1 - currentGenome;
@@ -165,9 +160,7 @@ public final class GenomeDescription {
 			if (gd_recomb == null)
 				gd_recomb = gd;
 			else {
-				System.out.format("append %d + %d", gd_recomb.genomeLength, gd.genomeLength);
 				gd_recomb.append(gd);
-				System.out.format(" = %d\n", gd_recomb.genomeLength);
 			}
 		}
 

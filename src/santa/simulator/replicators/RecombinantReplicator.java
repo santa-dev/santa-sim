@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BinomialDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.Well19937c;
 
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
@@ -53,12 +55,12 @@ public class RecombinantReplicator implements Replicator {
 			assert(parents[0].getLength() <= parents[1].getLength());
 			
 			int length = Math.min(parents[0].getLength(), parents[1].getLength()) - 1;
-			BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
+			BinomialDistribution binomialDeviate = new BinomialDistribution(rng, length, recombinationProbability);
 			int n = binomialDeviate.sample();
-			SortedSet<Integer> breakPoints = new TreeSet<Integer>();
 			
 			// Then draw the positions.
 			// Don't repeat a breakpoint, and only break at codon boundaries.
+			SortedSet<Integer> breakPoints = new TreeSet<Integer>();
 			for (int i = 0; i < n; i++) {
 				int bp = Random.nextInt(1, length);
 				if (bp % 3 == 0)
@@ -139,4 +141,5 @@ public class RecombinantReplicator implements Replicator {
 	
     private final double dualInfectionProbability;
     private final double recombinationProbability;
+	private final RandomGenerator rng = new Well19937c();
 }
