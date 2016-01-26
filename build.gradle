@@ -15,6 +15,7 @@
 //
 
 apply plugin: 'application'
+apply plugin: "eclipse"
 
 distTar { enabled = false }
 distZip { enabled = false }
