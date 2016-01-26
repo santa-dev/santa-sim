@@ -71,7 +71,7 @@ public class RecombinantReplicator implements Replicator {
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
 			GenomeDescription gd_recomb = GenomeDescription.recombine(gd_parents, breakPoints);
 			
-			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints, gd_recomb.getGenomeLength());
+			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints);
 
 			Genome genome = genePool.createGenome(recombinantSequence, gd_recomb);
 			
@@ -116,29 +116,11 @@ public class RecombinantReplicator implements Replicator {
 	 * 'breakPoints' is empty, this routine simply copies the sequence
 	 * from first genome in 'parents'.
 	 **/
-    private Sequence getRecombinantSequence(Genome[] parents, SortedSet<Integer> breakPoints, int len) {
-		assert(parents.length == 2);
-
-		int lastBreakPoint = 0;
-		int currentGenome = 0;
-		Genome gd = parents[currentGenome];
-		SimpleSequence recombinantSequence = new SimpleSequence(len);
-		
-		for (int nextBreakPoint : breakPoints) {
-			for (int j = lastBreakPoint; j < nextBreakPoint; j++) {
-				recombinantSequence.setNucleotide(j, gd.getNucleotide(j));
-			}
-			lastBreakPoint = nextBreakPoint;
-			currentGenome = 1 - currentGenome;
-			gd = parents[currentGenome];
-		}
-		int nextBreakPoint =  gd.getLength();
-		for (int j = lastBreakPoint; j < nextBreakPoint; j++) {
-			recombinantSequence.setNucleotide(j, gd.getNucleotide(j));
-		}
-		return(recombinantSequence);
+    private static Sequence getRecombinantSequence(Genome[] parents, SortedSet<Integer> breakPoints) {
+		return  (parents[0].getSequence()).recombineWith(parents[1].getSequence(), breakPoints);
 	}
-	
+
+
     private final double dualInfectionProbability;
     private final double recombinationProbability;
 	private final RandomGenerator rng = new Well19937c();

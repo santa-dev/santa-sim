@@ -85,7 +85,6 @@ public final class GenomeDescription {
 		}
 
 		assert(features.size() >= 1);
-
 	}
 
 
@@ -301,13 +300,13 @@ public final class GenomeDescription {
 	 * at genomic position 200.  'featureSiteTable' spans the entire genome and holds a
 	 * feature-relative position where the feature is defined, and -1 elsewhere.
 	 *
-	 * 'genomeSiteTable' maps from feature-relative coordinates to
+	 * 'genomeSiteTable' maps from feature coordinates to
 	 * genome coordinates.  That is, genomeSiteTable[0] = 200 for the
 	 * feature that begins at genomic position 200. The length of
 	 * 'genomeSiteTable' is the number of nucleotides in the feature.
 	 *
 	 * A 'featureSiteTable' and 'genomeSiteTable' pair are created for
-	 * each feature and are stored HashMaps indexed by the feature
+	 * each feature and are stored in HashMaps indexed by the feature
 	 * name.
 	 */
 	private void computeSiteTables() {

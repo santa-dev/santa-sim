@@ -232,6 +232,12 @@ public final class SimpleSequence implements Sequence {
 			return getAminoAcidStates();
 	}
 
+
+	public Sequence recombineWith(Sequence other, SortedSet<Integer> breakPoints) {
+		SimpleSequence[] parents = {this, (SimpleSequence) other};
+		return SimpleSequence.getRecombinantSequence(parents, breakPoints);
+	}
+	
 	/**
 	 * calculate how long the product of recombination will be.
 	 *
@@ -240,19 +246,16 @@ public final class SimpleSequence implements Sequence {
 		assert(parents.length == 2);
 		assert(parents[0].getLength() <= parents[1].getLength());
 
-		int lastBreakPoint = 0;
-		int currentSeq = 0;
-		int newlen = 0;
-		SimpleSequence seq = parents[currentSeq];
-		for (int nextBreakPoint : breakPoints) {
-			newlen += nextBreakPoint-lastBreakPoint;
-			currentSeq = 1 - currentSeq;
-			seq = parents[currentSeq];
-		}
-		int nextBreakPoint =  seq.getLength();
-		newlen += nextBreakPoint-lastBreakPoint;
+		/**
+		 * NOTE: for non-homologous, isolocus recombination, the
+		 * length of the product genome is completely determined by
+		 * the length of the parent genomes and the modulus of the
+		 * number of crossings.  Homologous recombination will have a
+		 * similar shortcut.
+		 **/
+		int fastlen = parents[breakPoints.size() % 2 == 0 ? 0 : 1].getLength();
 
-		return newlen;
+		return fastlen;
 	}
 	
 	/**
@@ -276,15 +279,14 @@ public final class SimpleSequence implements Sequence {
 	 	assert(parents.length == 2);
 		assert(parents[0].getLength() <= parents[1].getLength());
 
-		int lastBreakPoint = 0;
-		int currentSeq = 0;
+		int lastBreakPoint = 0;		// previous recombination location
+		int currentSeq = 0;			// index of currently selected parent
 		int newlen = getRecombinantLength(parents, breakPoints);
 		SimpleSequence product = new SimpleSequence(newlen);
 
-		byte[] dest = product.states;
+		byte[] dest = product.states;	// where to put the product
 		SimpleSequence seq = parents[currentSeq];
 		for (int nextBreakPoint : breakPoints) {
-			byte[] src = seq.states;
 			System.arraycopy(seq.states, lastBreakPoint, 
 							 dest, lastBreakPoint, nextBreakPoint-lastBreakPoint);
 			

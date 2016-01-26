@@ -6,6 +6,8 @@
  */
 package santa.simulator.genomes;
 
+import java.util.SortedSet;
+
 /**
  * The interface for a Sequence.
  *
@@ -72,4 +74,8 @@ public interface Sequence {
      */
     Sequence getSubSequence(int start, int length);
 
+	/**
+	 * Create a hybrid sequence by combining two parents.
+	 */
+	Sequence recombineWith(Sequence other, SortedSet<Integer> breakPoints);
 }
