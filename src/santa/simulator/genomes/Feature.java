@@ -34,7 +34,9 @@ public final class Feature {
 		this.name = f.name;
 		this.featureType = f.featureType;
 		for (Fragment fr: f.fragments) {
-			fragments.add(new Fragment(fr, position, delta));
+			Fragment tmp = new Fragment(fr, position, delta);
+			if (tmp.getLength() > 0)
+				fragments.add(tmp);
 		}
 	}
 
