@@ -27,6 +27,7 @@ import santa.simulator.fitness.PurifyingFitnessPiecewiseLinearModel;
 import santa.simulator.fitness.PurifyingFitnessRank;
 import santa.simulator.fitness.PrematureStopException;
 import santa.simulator.fitness.PurifyingFitnessValuesModel;
+import santa.simulator.fitness.PrematureStopException;
 import santa.simulator.genomes.CompactGenePool;
 import santa.simulator.genomes.Feature;
 import santa.simulator.genomes.GenePool;
@@ -1187,19 +1188,20 @@ public class SimulatorParser {
 			if (s.equals(""))
 				continue;
 			try { // catch ParseExceptions
-					seqStrings[i] = seqStrings[i].replaceAll("\\s", "");
-					
-					Sequence seq = parseSequence(seqStrings[i]);
-					if (firstLength > 0) {
-						if (seq.getLength() != firstLength) {
-							throw new ParseException("Expected length " + firstLength + ", got " + seq.getLength());
-						}
-					} else {
-						firstLength = seq.getLength();
+				// remove all whitespace characters in the sequences
+				s = s.replaceAll("\\s", "");
+				
+				Sequence seq = parseSequence(s);
+				if (firstLength > 0) {
+					if (seq.getLength() != firstLength) {
+						throw new ParseException("Expected length " + firstLength + ", got " + seq.getLength());
 					}
-					result.add(seq);
-			} catch (RuntimeException pe) {
-				throw new ParseException("Error in sequence " + i + ": " + pe.getMessage());
+				} else {
+					firstLength = seq.getLength();
+				}
+				result.add(seq);
+			} catch (PrematureStopException pe) {
+				throw new ParseException("Premature stop codon detected in sequence " + i + ": " + pe.getMessage());
 			} catch (ParseException pe) {
 				throw new ParseException("Error in sequence " + i + ": " + pe.getMessage());
 			}
