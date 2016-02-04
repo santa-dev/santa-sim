@@ -3,7 +3,7 @@
 // Build file for use with the 'gradle' build and dependency management tool.
 //
 // There is also a separate build script for use by ant/ivy in build.xml and ivy.xml.
-// Those script srae not shared with this build configuation.
+// Those scripts are not shared with this build configuation.
 //
 // To build build/lib/santa.jar,
 //      $ gradle build
