@@ -1,3 +1,4 @@
+
 package santa.simulator;
 
 import java.io.FileWriter;
@@ -11,7 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
+import java.util.Scanner;
+import java.io.File;
+import static java.nio.file.Files.readAllBytes;
+import static java.nio.file.Paths.get;
 import org.jdom.Element;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
@@ -118,6 +122,7 @@ public class SimulatorParser {
     private static final String PROBABLE_SET = "probableSet";
 
 	private final static String SEQUENCES = "sequences";
+	private final static String FILENAME = "file";
 	private static final String BREAK_TIES = "breakTies";
 	private final static String BREAK_TIES_RANDOM = "random";
 	private final static String BREAK_TIES_ORDERED = "ordered";
@@ -490,7 +495,18 @@ public class SimulatorParser {
 			} else if (e.getName().equals(FEATURE)) {
                 features.add(parseFeature(e));
 			} else if (e.getName().equals(SEQUENCES)) {
-				sequences = parseAlignment(e.getTextTrim());
+				if (e.getAttributeValue(FILENAME) != null) {
+					try {
+						// quick and dirty one-liner to read in a text file.
+						// http://jdevelopment.nl/java-7-oneliner-read-file-string/
+						String text = new String(readAllBytes(get(e.getAttributeValue(FILENAME))));
+						sequences = parseAlignment(text);
+					} catch (IOException eio) {
+						throw new ParseException("Error parsing <" + SEQUENCES + "> file attribute: Cannot open file " + eio.getMessage());
+					}
+				} else {
+					sequences = parseAlignment(e.getTextTrim());
+				}
 			} else  {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
@@ -521,8 +537,9 @@ public class SimulatorParser {
 				} else if (e.getTextNormalize().equals(NUCLEOTIDE)) {
 					type = Feature.Type.NUCLEOTIDE;
 				} else {
-					throw new ParseException("Error parsing <" + element.getName()
-							+ "> element: <" + e.getName() + "> should be 'nucleotides' or 'aminoAcids'");
+					String msg = String.format("Error parsing <%s> element: <%s> should be '%s' or '%s'",
+											   element.getName(), e.getName(),NUCLEOTIDE, AMINO_ACID);
+					throw new ParseException(msg);
 				}
 			} else if (e.getName().equals(COORDINATES)) {
 				sites = e.getTextNormalize();
