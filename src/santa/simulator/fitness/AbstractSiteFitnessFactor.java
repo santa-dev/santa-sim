@@ -43,23 +43,29 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 			for (int site : getSites()) {
 				logFitness += this.logFitness[site][sequence[site]];
 			}
-		} catch(IndexOutOfBoundsException e) { /* ignore */ }
+		} catch(IndexOutOfBoundsException e) {
+			// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
+			// I'm not sure we even need this any more.
+			System.err.format("IndexOutOfBoundsException: a site is not within feature %s\n", getFeature().getName());
+		}
 
 		return logFitness;
 	}
 
     public double getLogFitnessChange(StateChange change) {
-	    // we ignore the sites list here because it is probably cheaper to look
-	    // up in the table and get a zero change than check the site list.
-	    // It does mean the logFitness array should have zeros in sites that
-	    // are not handled by this factor.
-		//
-		// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
-		double fit;
+		/**
+		 * NB: This routine previously ignores the `change.position`
+		 * field as it is assumed more efficient to preset the
+		 * fitness of every site not handled by this factor to 0.
+		 **/
+
+		double fit = 0;  // neutral fitness
 		try {
 			fit = logFitness[change.position][change.newState] - logFitness[change.position][change.oldState];
 		} catch(IndexOutOfBoundsException e) {
-			fit = 0; // neutral fitness
+			// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
+			// I'm not sure we even need this any more.
+			System.err.format("IndexOutOfBoundsException: %d is not within feature %s\n", change.position, getFeature().getName());
 		}
 		return fit;
 

@@ -17,15 +17,13 @@ public abstract class AbstractFitnessFactor implements FitnessFactor {
 	public AbstractFitnessFactor(Feature feature, Set<Integer> sites) {
 		this.feature = feature;
 		this.sites = sites;
+		SequenceAlphabet alphabet = SequenceAlphabet.NUCLEOTIDES;
 		if (feature != null) {
 			if (feature.getFeatureType() == Feature.Type.AMINO_ACID) {
 				alphabet = SequenceAlphabet.AMINO_ACIDS;
-			} else {
-				alphabet = SequenceAlphabet.NUCLEOTIDES;
 			}
-		} else {
-			alphabet = SequenceAlphabet.NUCLEOTIDES;
 		}
+		this.alphabet = alphabet;
 	}
 
     public boolean updateGeneration(int generation, Population population) {

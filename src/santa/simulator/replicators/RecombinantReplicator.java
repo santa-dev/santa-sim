@@ -56,15 +56,16 @@ public class RecombinantReplicator implements Replicator {
 			
 			int length = Math.min(parents[0].getLength(), parents[1].getLength()) - 1;
 			BinomialDistribution binomialDeviate = new BinomialDistribution(rng, length, recombinationProbability);
-			int n = binomialDeviate.sample();
+			int nbreaks = binomialDeviate.sample();
 			
 			// Then draw the positions.
 			// Don't repeat a breakpoint, and only break at codon boundaries.
 			SortedSet<Integer> breakPoints = new TreeSet<Integer>();
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < nbreaks; i++) {
 				int bp = Random.nextInt(1, length);
-				if (bp % 3 == 0)
+				if (bp % 3 == 0) {
 					breakPoints.add(bp);
+				}
 			}
 
 			// create the recombinant genome description
