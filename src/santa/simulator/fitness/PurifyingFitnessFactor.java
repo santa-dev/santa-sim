@@ -55,11 +55,10 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
                 for (int j = 0; j < stateSize; ++j) {
                     logFitness[i][states[j]] = Math.log(fitnesses[j]);
                 }
-				// stop codons always have a logFitness of -Inf.
-				// has no effect on nucleotide-denominated features.
-				logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
             }
-
+			// stop codons always have a logFitness of -Inf.
+			// has no effect on nucleotide-denominated features.
+			logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
         }
 
         initialize(logFitness);

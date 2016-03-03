@@ -40,9 +40,15 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 
 		// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
 		try {
-			for (int site : getSites()) {
+			for (int site = 0; site < this.logFitness.length; site++) {
 				logFitness += this.logFitness[site][sequence[site]];
+				if (logFitness == Double.NEGATIVE_INFINITY) {
+					break;
+				}
 			}
+			// for (int site : getSites()) {
+			// 	logFitness += this.logFitness[site][sequence[site]];
+			// }
 		} catch(IndexOutOfBoundsException e) {
 			// catch IndexOutOfBoundsException b/c indels may have caused site index to shift out of range.
 			// I'm not sure we even need this any more.
