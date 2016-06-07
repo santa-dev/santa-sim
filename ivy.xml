@@ -11,7 +11,8 @@
     <conf name="sources"  description="Source jars"/>
     <conf name="binaries" description="binary jars"/>
   </configurations>
-  
+
+  <!-- Search for dependency information at http://search.maven.org/ -->
   <dependencies>
     <dependency org="org.apache.commons" name="commons-math3"
 		rev="3.6"  conf="binaries->default"/>
@@ -20,6 +21,8 @@
 
     <dependency org="org.apache.commons" name="commons-lang3" rev="3.4" conf="binaries->default"/>
     <dependency org="org.apache.commons" name="commons-lang3" rev="3.4" conf="sources->sources"/>
+
+    <dependency org="org.jdom" name="jdom" rev="2.0.2" conf="binaries->default"/>
     
   </dependencies>
 </ivy-module>
