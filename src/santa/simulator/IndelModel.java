@@ -1,7 +1,7 @@
 
 package santa.simulator;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import santa.simulator.SimulatorParser.ParseException;
 
 public abstract class IndelModel {
@@ -11,7 +11,7 @@ public abstract class IndelModel {
 	 * Parse an indel model from XML.   Returns null if indel model could not be determined.
 	 * The configuration format specifically mentioned here in case you want to have other routines to parse from JSON or some 
 	 * other format.   
-	 * Hmm, it would probably be better to have a centrallized parser in that case rather than spreading parsing out among the 
+	 * Hmm, it would probably be better to have a centralized parser in that case rather than spreading parsing out among the 
 	 * individual classes...
 	 */
 	public static IndelModel fromXML(Element element) throws ParseException {

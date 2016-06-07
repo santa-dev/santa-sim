@@ -12,11 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Scanner;
-import java.io.File;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
 import santa.simulator.fitness.BetaDistributedPurifyingFitnessModel;
@@ -31,7 +29,6 @@ import santa.simulator.fitness.PurifyingFitnessPiecewiseLinearModel;
 import santa.simulator.fitness.PurifyingFitnessRank;
 import santa.simulator.fitness.PrematureStopException;
 import santa.simulator.fitness.PurifyingFitnessValuesModel;
-import santa.simulator.fitness.PrematureStopException;
 import santa.simulator.genomes.CompactGenePool;
 import santa.simulator.genomes.Feature;
 import santa.simulator.genomes.GenePool;
@@ -587,10 +584,13 @@ public class SimulatorParser {
 		RecombinationHotSpot hotspot = null;
 		double factor = 0;
 		FeatureAndSites segment = parseFeatureAndSites(element);
-		for (Object o : element.getChildren()){
+		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
-			if (e.getName().equals(BOOST_FACTOR)){
+			if (e.getName().equals(BOOST_FACTOR)) {
 				factor =  parseDouble(e, 0, Double.MAX_VALUE);
+				if (factor < 0) {
+					throw new ParseException("RecombinationHotSpot boost factor must be > 0");
+				}
 			}
 		}
 		hotspot = new RecombinationHotSpot(segment.sites,factor);
@@ -599,10 +599,10 @@ public class SimulatorParser {
 	
 	private List<RecombinationHotSpot> parseRecombinationHotSpots(Element element) throws ParseException{
 		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
-		for (Object o : element.getChildren()){
+		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
 			RecombinationHotSpot segment = null;			
-			if (e.getName().equals(RECOMBINATION_HOTSPOT)){
+			if (e.getName().equals(RECOMBINATION_HOTSPOT)) {
 				segment = parseRecombinationHotSpot(e);
 				recombinationHotSpots.add(segment);
 			}
@@ -1310,8 +1310,8 @@ public class SimulatorParser {
 			double transitionBias = -1.0;
 			double rateBiases[] = null;
 			IndelModel indelModel = null;
-			double insertProb = -1.0;
-			double deleteProb = -1.0;
+			double insertProb = -1.0; // negative value to indicate unset
+			double deleteProb = -1.0; // negative value to indicate unset
 
 			try {
 				for (Object o : e.getChildren()) {

@@ -5,14 +5,10 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BinomialDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.random.Well19937c;
 
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
-import santa.simulator.NotImplementedException;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
@@ -20,7 +16,6 @@ import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Mutation;
 import santa.simulator.genomes.Sequence;
-import santa.simulator.genomes.SimpleSequence;
 import santa.simulator.mutators.Mutator;
 
 /**
@@ -55,7 +50,7 @@ public class RecombinantReplicator implements Replicator {
 			assert(parents[0].getLength() <= parents[1].getLength());
 			
 			int length = Math.min(parents[0].getLength(), parents[1].getLength()) - 1;
-			BinomialDistribution binomialDeviate = new BinomialDistribution(rng, length, recombinationProbability);
+			BinomialDistribution binomialDeviate = new BinomialDistribution(Random.randomData.getRandomGenerator(), length, recombinationProbability);
 			int nbreaks = binomialDeviate.sample();
 			
 			// Then draw the positions.
@@ -124,5 +119,4 @@ public class RecombinantReplicator implements Replicator {
 
     private final double dualInfectionProbability;
     private final double recombinationProbability;
-	private final RandomGenerator rng = new Well19937c();
 }

@@ -6,25 +6,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-import santa.simulator.Random;
 import santa.simulator.Virus;
 import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Feature;
-import santa.simulator.genomes.Nucleotide;
 import santa.simulator.population.Population;
 
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
  * @version $Id: AlignmentSampler.java,v 1.6 2006/07/18 07:37:47 kdforc0 Exp $
- * Eddited by Abbas Jariani Sep 2013
+ * Edited by Abbas Jariani Sep 2013
  */
 public class GenomeDescriptionSampler implements Sampler {
 
     private int sampleSize;
-    private String label;
     private String fileName;
+    private String label;
     private PrintStream destination;
     private Map<Integer,Integer> schedule;
     private int replicate;

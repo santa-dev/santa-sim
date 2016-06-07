@@ -7,7 +7,6 @@ import santa.simulator.Random;
 import santa.simulator.IndelModel;
 import santa.simulator.genomes.Genome;
 import santa.simulator.genomes.Mutation;
-import santa.simulator.genomes.Indel;
 import santa.simulator.genomes.Insertion;
 import santa.simulator.genomes.Deletion;
 import santa.simulator.genomes.SimpleSequence;
@@ -128,7 +127,6 @@ public class NucleotideMutator extends AbstractMutator {
 			mutations = new TreeSet<Mutation>();
 			// Doing an indel....
 			if (r < insertProb) {	// Insertion!
-				int pos = Random.nextInt(0, genome.getLength());	// start position
 				int count = indelModel.nextLength();				// insertion length
 
 				// only allow indels that preserve reading frame.
@@ -142,6 +140,7 @@ public class NucleotideMutator extends AbstractMutator {
 						states[i] = (byte) Random.nextInt(0,  3);
 					}
 					SimpleSequence seq = new SimpleSequence(states);
+					int pos = Random.nextInt(0, genome.getLength());	// start position
 					//System.err.println("insert: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Insertion(pos, seq));
 				}

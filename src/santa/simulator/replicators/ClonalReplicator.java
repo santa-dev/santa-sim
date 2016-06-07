@@ -1,6 +1,5 @@
 package santa.simulator.replicators;
 
-import santa.simulator.Random;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.*;

@@ -109,43 +109,53 @@ public abstract class BaseGenome implements Genome {
 	/**
 	 * Compute feature-specific, mutation-induced changes.
 	 * 
-	 * Each change is a nucleotide pair (previous and current)
-	 * along with a position. If the feature uses the AMINO_ACID
+	 * Returned from this method is a list of `StateChange` objects,
+	 * each of which has a nucleotide pair (previous and current) and
+	 * a feature-relative position. If the feature uses the AMINO_ACID
 	 * alphabet, then the changes will be amino acids instead of
 	 * nucleotides.
 	 *
-	 * These changes will be used to compute a change in fitness value (rather than recomputing the fitness from scratch).
-	 * In reality, only subclasses of AbstractSiteFitnessFactor (which is only PurifyingFitness today) actually do anything with this information.
-	 * Other fitness functions ignore the data computed here.  
+	 * These changes will be used to compute a change in fitness value
+	 * (rather than recomputing the fitness from scratch).  In
+	 * reality, only subclasses of AbstractSiteFitnessFactor (which is
+	 * only PurifyingFitness today) actually do anything with this
+	 * information.  Other fitness functions ignore the data computed
+	 * here.
 	 *
 	 * @param feature Feature object over which the changes should be computed.
 	 * @param mutations set of mutations that are inducing changes.
 	 * @return list of <StateChange> objects
 	 **/
-	public List<StateChange> getChanges(Feature feature, SortedSet<Mutation> mutations) {
+	public List<StateChange> getChanges(Feature featureByName, SortedSet<Mutation> mutations) {
 		List<StateChange> changes = new ArrayList<StateChange>();
 
 		assert(descriptor.getGenomeLength() == getLength());
 			
-		// Note that Mutation objects are positioned by nucleotide relevant to the start of the genome.
-		// 'StateChange' objects also have a position, but the units depend upon the alphabet of the feature.
+		// Note that Mutation objects positions are in units of
+		// nucleotide and relevant to the start of the genome.
+		// 'StateChange' object position units depend upon the
+		// alphabet of the feature and are relative to the start of
+		// the feature.
 		// 
 		
-		feature = descriptor.getFeature(feature.getName());
+		Feature feature = descriptor.getFeature(featureByName.getName());
 		assert(feature != null);
 		
-		// Convert mutations from genome-relative coordinates to feature-relative coordinates.
-		// Mutations that do not affect a feature do not result in any changes.
-		// Indels also do not result in any changes - they are not appropriate to capture via individual nucleotide changes.
+		// Convert mutations from genome-relative coordinates to
+		// feature-relative coordinates.  Mutations that do not affect
+		// a feature do not result in any changes.  Indels also do not
+		// result in any changes - they are not appropriate to capture
+		// via individual nucleotide changes.
 		int[] featureSiteTable = descriptor.getFeatureSiteTable(feature);
 		for (Mutation m : mutations) {
 			List<StateChange> c = m.getChanges(this, featureSiteTable);
 			changes.addAll(c);
 		}
 
-		// At this point 'changes' are positioned at nucleotides relative to the start of the feature.
-		// For AMINO_ACID features, convert nucleotide positions to AA positions, and convert the states from nucleotides to
-		// AA states.
+		// At this point 'changes' are positioned at nucleotides
+		// relative to the start of the feature.  For AMINO_ACID
+		// features, convert nucleotide positions to AA positions, and
+		// convert the states from nucleotides to AA states.
 		if (feature.getAlphabet() == SequenceAlphabet.AMINO_ACIDS) {
 			int[] genomeSiteTable = descriptor.getGenomeSiteTable(feature);
 			byte[] codon = new byte[3];

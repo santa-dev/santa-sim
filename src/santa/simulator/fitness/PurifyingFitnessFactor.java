@@ -49,7 +49,6 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         for (int i = 0; i < logFitness.length; ++i) {
             // sites not handled by this factor are left with zero log likelihood
             if (sites.contains(i)) {
-                System.out.format("\tdefining fitnesses at site %d\n", i);
                 double[] fitnesses = valueModel.getFitnesses(i, rank);
                 byte[] states = rank.getStatesOrder(i);
                 for (int j = 0; j < stateSize; ++j) {

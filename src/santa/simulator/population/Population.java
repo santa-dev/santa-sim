@@ -20,9 +20,7 @@ import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.Feature;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Sequence;
-import santa.simulator.genomes.SimpleSequence;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.replicators.Replicator;
@@ -166,23 +164,24 @@ public abstract class Population {
         if (virus1.getGenome() == virus2.getGenome())
             return 0;
 
-        Sequence seq1 = virus1.getGenome().getSequence();
-        Sequence seq2 = virus2.getGenome().getSequence();
-
-        int distance = 0;
-
-		// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
-		// We can theoretically reconstruct an accurate pairwise alignment for any two related sequences.
-		// we'll have to implenent that later.  for now just comment this out - revisit later - csw
-		if (true) {
-			return(1.0);
+		if (virus1.getGenome().getDescription() != virus2.getGenome().getDescription()) {
+			// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
+			// We can theoretically reconstruct an accurate pairwise alignment for any two related sequences.
+			// we'll have to implement that later.  for now just comment this out - revisit later - csw
+			throw new RuntimeException("Cannot compute distances if genomes differ in length");
 		}
-        // for (int i = 0; i < GenomeDescription.getGenomeLength(); ++i) {
-        //     if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
-        //         ++distance;
-        // }
 
-        return distance;
+       Sequence seq1 = virus1.getGenome().getSequence();
+       Sequence seq2 = virus2.getGenome().getSequence();
+
+       int distance = 0;
+
+        for (int i = 0; i < virus1.getGenome().getLength(); ++i) {
+            if (seq1.getNucleotide(i) != seq2.getNucleotide(i))
+                ++distance;
+        }
+
+       return distance;
     }
 
     private void collectStatistics() {

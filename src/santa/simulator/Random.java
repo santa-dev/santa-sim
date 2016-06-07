@@ -24,7 +24,7 @@ public class Random {
     }
 
     public static int nextInt(int i, int i1) {
-        return randomData.nextInt(i, i1);
+		return randomData.nextInt(i, i1);
     }
 
     public static long nextLong(long l, long l1) {
@@ -56,7 +56,7 @@ public class Random {
     }
 
     public static double nextUniform(double v, double v1) {
-        return randomData.nextUniform(v, v1);
+    	return randomData.nextUniform(v, v1);
     }
 
     public static void shuffle(int[] numbers) {

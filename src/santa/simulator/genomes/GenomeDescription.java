@@ -2,6 +2,8 @@ package santa.simulator.genomes;
 
 import java.util.*;
 
+import santa.simulator.Random;
+
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
 
@@ -43,11 +45,11 @@ public final class GenomeDescription {
 	}
 
 	/**
-	 * Private copy constructor that applys an insertion or deletion.
+	 * Private copy constructor that applies an insertion or deletion.
 	 *
-	 * Note this method creates a new GenomeDescriptor instance and
+	 * Note this private method creates a new GenomeDescriptor instance and
 	 * does not consult the instance cache.  It is intended to be used
-	 * by routines like `recombine()` who do their own cache management.
+	 * by routines like `recombine()` which do their own cache management.
 	 *
 	 **/
 	private GenomeDescription(GenomeDescription gd, int position, int count) {
@@ -153,7 +155,6 @@ public final class GenomeDescription {
 			currentGenome = 1 - currentGenome;
 		}
 		if (lastBreakPoint < parents[currentGenome].genomeLength) {
-			int nextBreakPoint = parents[currentGenome].genomeLength;
 			gd = new GenomeDescription(parents[currentGenome], 0, -lastBreakPoint);
 
 			if (gd_recomb == null)
@@ -371,7 +372,7 @@ public final class GenomeDescription {
     public int binomialDeviate(double mutationRate) {
 		// create and cache random distribution if necessary
 		if (mutationDist == null) 
-			mutationDist = new BinomialDistribution(genomeLength, mutationRate);
+			mutationDist = new BinomialDistribution(Random.randomData.getRandomGenerator(), genomeLength, mutationRate);
 		int j = mutationDist.sample();
         return j;
     }

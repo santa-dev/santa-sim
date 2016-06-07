@@ -1,8 +1,8 @@
 package santa.simulator;
 
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,14 @@ public class SimulatorMain {
 
             Map<String, String> parameterValueMap = parseParameters(args);
 
+			// A special parameter 'seed' is used to set the RNG seed.
+			long seed = System.currentTimeMillis(); 
+            if (parameterValueMap.containsKey("seed"))
+				seed = Long.parseLong(parameterValueMap.get("seed"), 10);
+			Random.setSeed(seed);
+			System.out.println("Seed: " + seed);
+			
+
             File file = new File(args[args.length - 1]);
             try {
                 SAXBuilder builder = new SAXBuilder();
@@ -50,10 +58,6 @@ public class SimulatorMain {
                 System.exit(1);
             }
 
-			// A special parameter 'seed' is used to set the RNG seed.
-            if (parameterValueMap.containsKey("seed")) {
-            	Random.setSeed(Long.parseLong(parameterValueMap.get("seed"), 10));
-            }
             
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
 	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);

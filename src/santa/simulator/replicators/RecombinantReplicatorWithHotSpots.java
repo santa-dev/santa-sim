@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.ArrayList;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
@@ -46,10 +45,6 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 			FitnessFunction fitnessFunction, GenePool genePool) {
 
 		if (true) {
-			// need to generate a new genome descrioption for the recombinate genome that may be a different length than either parent.
-			// It is likely that creating a new binomial RNG for each recombination will be too slow.  Need to find a way to cache and reuse the RNG.
-
-			throw new NotImplementedException();
 		}
 
 
@@ -58,6 +53,19 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
             // dual infection and recombination
             Genome parent1Genome = parents[0].getGenome();
             Genome parent2Genome = parents[1].getGenome();
+
+			if (parent1Genome.getDescription() !=  parent2Genome.getDescription()) {
+				// Mismatched GenomeDescriptions is a sign that indels
+				// support is turned on.  Can't use Recombination Hot
+				// Spots at the same time.  Hotspot definition depends
+				// on feature position, which might move under indels.
+				//
+				// This would be better reported at parse time but is
+				// difficult to detect then.
+				throw new RuntimeException("Cannot use recombination hotspots with non-zero indel probabilities.");
+
+			}
+			
             Sequence recombinantSequence = getRecombinantSequence(parent1Genome, parent2Genome);
             Genome genome = genePool.createGenome(recombinantSequence);
 	        SortedSet<Mutation> mutations = mutator.mutate(genome);
@@ -80,7 +88,11 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 	//Logic: relative probability of having break point in a (hot) segment = (length of hot segment) * (probability boost factor) / (genome length)
 	//Then we normalize relative probabilities so they sum up to unity.
     private Sequence getRecombinantSequence(Genome parent1Genome, Genome parent2Genome) {
-		int length = Math.min(parent1Genome.getLength() - 1, parent2Genome.getLength() - 1);
+		assert(parent1Genome.getLength() == parent2Genome.getLength());
+		assert(parent1Genome.getDescription() == parent2Genome.getDescription());
+		
+
+		int length = parent1Genome.getLength() - 1;
         int[] breakPoints = getBreakPoints(length);
         int lastBreakPoint = 0;
         int currentGenome = 0;
@@ -100,7 +112,7 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 	
     private int[] getBreakPoints(int length) {
 		
-		BinomialDistribution binomialDeviate = new BinomialDistribution(length, recombinationProbability);
+		BinomialDistribution binomialDeviate = new BinomialDistribution(Random.randomData.getRandomGenerator(), length, recombinationProbability);
         int n = binomialDeviate.sample();
         int[] breakPoints = new int[n];
     	int nHotSegments = recombinationHotSpots.size();

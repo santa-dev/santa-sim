@@ -60,7 +60,7 @@ public class AgeDependentFitnessFactor extends AbstractSignatureFitnessFactor {
             }
         }
 
-        //System.err.println("Average viral genome age: " + sumAges / population.getPopulationSize());
+        System.err.println("Average viral genome age: " + sumAges / population.getPopulationSize());
 
         Set<Entry<Signature, Integer>> entries = birthGenerations.entrySet();
         for (Iterator<Entry<Signature, Integer>> i = entries.iterator(); i.hasNext();) {

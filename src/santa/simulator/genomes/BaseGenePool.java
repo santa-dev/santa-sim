@@ -21,13 +21,10 @@ public abstract class BaseGenePool implements GenePool {
     }
 
     public BaseGenePool() {
-		System.err.println("Creating BaseGenePool: Needs attention.");
-        // stateFrequencies = new int[GenomeDescription.getGenomeLength()][4];
-
 		// This is not correct since the introduction of indels or homologous recombination
 		// We cannot use a fixed-size array to represent the state frequencies as genomes may be different sizes.
 		// what do we use the state frequencies for anyway?
-        stateFrequencies = new int[10][4];
+        stateFrequencies = new int[GenomeDescription.root.getGenomeLength()][4];
     }
 
     public void initialize() {
@@ -51,15 +48,42 @@ public abstract class BaseGenePool implements GenePool {
         return stateFrequencies;
     }
 
-    public int[][] getStateFrequencies(Feature feature, Set<Integer> sites) {
-		// no, this won't work at all.
-		// The feature and sites list that is passed is relevant to a single genome descriptor.
-		// We can't apply the feature and sites to all the genomes in a pool b/c they might be of different lengths.
-		if (true) {
-			throw new NotImplementedException();
+
+	/**
+	 * Return true if all genomes in this pool have the same GenomeDescription.
+	 * This is a proxy for asking if indel mutations are enabled.
+	 **/
+	private boolean uniformPool() {
+		GenomeDescription gd = genomes.peekFirst().getDescription();
+        for (Genome genome : genomes) {
+			if (genome.getDescription() != gd)
+				return false;
 		}
-		
+		return true;
+	}
+
+
+	
+	/**
+	 * calculate distribution of states across multiple sites over all genomes.
+	 *
+	 * Used by class AlleleFrequencySampler ( via
+	 * Population:getAlleleFrequencies() ) to report allele
+	 * frequencies.
+	 *
+	 **/
+    public int[][] getStateFrequencies(Feature feature, Set<Integer> sites) {
         int[][] freqs = new int[sites.size()][feature.getAlphabet().getStateCount()];
+
+		/*
+		 * Cannot do this calculation if indels are turned on.
+		 * Features will shift and shrink in each genome - features
+		 * may not be common across genomes.  Fail if all genomes do
+		 * not have the same GenomeDescription.
+		 */
+		if ( !uniformPool() )
+			throw new RuntimeException("Cannot count state frequencies among genomes of different length.");
+		
         for (Genome genome : genomes) {
             int freq = genome.getFrequency();
             byte[] states = genome.getStates(feature);
@@ -75,33 +99,52 @@ public abstract class BaseGenePool implements GenePool {
         return freqs;
     }
 
+
+	/**
+	 * calculate a nucleotide consensus sequence across the entire
+	 * length of all genomes in the pool.
+	 *
+	 * Difficulty: This only works if all genomes in the pool are the
+	 * same length and are genealogically related.  When indels are
+	 * turned on, sites will shift position relative to the same site
+	 * in another genome, making it impossible to calculate a
+	 * meaningful consensus without first aligning the sequences.
+	 **/
+
     public Sequence getConsensusSequence() {
-		
-		throw new NotImplementedException();
+		/*
+		 * Fail if all genomes do not have the same GenomeDescription.
+		 */
+		if ( !uniformPool() )
+			throw new RuntimeException("Cannot calculate consensus among genomes of different length.");
 
-        // calculateStateFrequencies();
-        // SimpleSequence sequence = new SimpleSequence(GenomeDescription.getGenomeLength());
+        calculateStateFrequencies();
+        SimpleSequence sequence = new SimpleSequence(GenomeDescription.root.getGenomeLength());
 
-        // for (int i = 0; i < GenomeDescription.getGenomeLength(); i++) {
-        //     sequence.setNucleotide(i, Nucleotide.A);
-        //     int freq = stateFrequencies[i][Nucleotide.A];
-        //     for (byte j = 1; j < 4; j++) {
-        //         if (freq < stateFrequencies[i][j]) {
-        //             freq = stateFrequencies[i][j];
-        //             sequence.setNucleotide(i, j);
-        //         }
-        //     }
-        // }
+        for (int i = 0; i < sequence.getLength(); i++) {
+            sequence.setNucleotide(i, Nucleotide.A);
+            int freq = stateFrequencies[i][Nucleotide.A];
+            for (byte j = 1; j < 4; j++) {
+                if (freq < stateFrequencies[i][j]) {
+                    freq = stateFrequencies[i][j];
+                    sequence.setNucleotide(i, j);
+                }
+            }
+        }
 
-        // return sequence;
+        return sequence;
     }
 
     private void calculateStateFrequencies() {
-        for (int i = 0; i < stateFrequencies.length; i++) {
-            for (int j = 0; j < stateFrequencies[0].length; j++) {
-                stateFrequencies[i][j] = 0;
-            }
-        }
+		// zero-out the state frequencies matrix
+		for (int[] row: stateFrequencies)
+			Arrays.fill(row, 0);
+
+		/*
+		 * Fail if all genomes do not have the same GenomeDescription.
+		 */
+		if ( !uniformPool() )
+			throw new RuntimeException("Cannot calculate consensus among genomes of different length.");
 
         for (Genome genome : genomes) {
             int freq = genome.getFrequency();

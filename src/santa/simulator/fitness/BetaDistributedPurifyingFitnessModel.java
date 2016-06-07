@@ -3,6 +3,8 @@ package santa.simulator.fitness;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import santa.simulator.Random;
+
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BetaDistribution;
 
@@ -29,7 +31,7 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
 
         fitnesses = new double[sites][alphabetSize];
 
-        beta = new BetaDistribution(a, b);
+        beta = new BetaDistribution(Random.randomData.getRandomGenerator(), a, b);
         
 
         for (int i = 0; i < sites; i++) {

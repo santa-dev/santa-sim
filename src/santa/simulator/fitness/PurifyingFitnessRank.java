@@ -1,8 +1,6 @@
 package santa.simulator.fitness;
 
 import santa.simulator.genomes.*;
-import santa.simulator.EventLogger;
-import java.util.Formatter;
 
 
 import java.util.*;
