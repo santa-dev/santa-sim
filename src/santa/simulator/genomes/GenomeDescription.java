@@ -70,20 +70,29 @@ public final class GenomeDescription {
 				features.add(tmp);
 		}
 
+		// Special handling for the genome-spanning feature
+		// named 'genome'.
+		//
+		// The 'genome' feature must be explicitly widened after
+		// inserting nucleotides at the extreme ends of the
+		// genome. All other features do not change size for
+		// insertions to the immediate right of the feature.
+		
 		this.genomeLength = gd.genomeLength + count;
 		Feature f = gd.getFeature("genome");
 		if (f.getNucleotideLength() != genomeLength) {
-			/** Replace the feature named 'genome'.
-			 *
-			 *  Insertions at the immediate right of a feature do
-			 *	not change the size of that feature.  That rule works well
-			 *	for all features except the genome-spanning feature named
-			 *	'genome'.  The 'genome' feature must be explicitly widened after
-			 *	inserting nucleotides at the extreme ends of the genome. 
-			 **/
+			// create a new genome-spanning feature
 			Feature tmp = new Feature(f.getName(), f.getFeatureType());
 			tmp.addFragment(0, genomeLength);
-			features.set(0, tmp);
+			if (features.size() >= 1) {
+				// Replace the first feature if already present in the list.
+				features.set(0, tmp);
+			} else {
+				// otherwise create feature named 'genome'
+				// The 'genome' feature is always the first feeature in the
+				// list
+				features.add(tmp);
+			}
 		}
 
 		assert(features.size() >= 1);

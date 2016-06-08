@@ -107,9 +107,9 @@ public abstract class BaseGenome implements Genome {
 
 
 	/**
-	 * Compute feature-specific, mutation-induced changes.
+	 * Convert list of mutations to list of changes that affect a specific feature.
 	 * 
-	 * Returned from this method is a list of `StateChange` objects,
+	 * Return a list of `StateChange` objects,
 	 * each of which has a nucleotide pair (previous and current) and
 	 * a feature-relative position. If the feature uses the AMINO_ACID
 	 * alphabet, then the changes will be amino acids instead of
@@ -131,9 +131,9 @@ public abstract class BaseGenome implements Genome {
 
 		assert(descriptor.getGenomeLength() == getLength());
 			
-		// Note that Mutation objects positions are in units of
+		// Note: 'Mutation.position' is in units of
 		// nucleotide and relevant to the start of the genome.
-		// 'StateChange' object position units depend upon the
+		// 'StateChange.position' units depend upon the
 		// alphabet of the feature and are relative to the start of
 		// the feature.
 		// 
