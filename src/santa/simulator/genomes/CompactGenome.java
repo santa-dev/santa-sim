@@ -95,7 +95,7 @@ public class CompactGenome extends BaseGenome {
      * must be in positional order.
      * @param newMutations the array of new mutations in positional order
      */
-    @Override public void applyMutations(SortedSet<Mutation> newMutations) {
+	public void applyMutations(SortedSet<Mutation> newMutations) {
         for (Mutation m : newMutations) {
 
             Mutation current = getMutation(m.position);

@@ -2,7 +2,6 @@ package	 santa.simulator.genomes;
 
 import java.util.Collections;
 import java.util.Set;
-import santa.simulator.NotImplementedException;
 
 /**
  * @author abbas

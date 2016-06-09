@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import santa.simulator.EventLogger;
 import santa.simulator.Random;
-import santa.simulator.NotImplementedException;
 import santa.simulator.Virus;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
@@ -40,14 +39,8 @@ public class RecombinantReplicatorWithHotSpots implements Replicator {
 		return 2;
 	}
 	
-	@Override
 	public void replicate(Virus virus, Virus[] parents, Mutator mutator,
 			FitnessFunction fitnessFunction, GenePool genePool) {
-
-		if (true) {
-		}
-
-
 		
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination

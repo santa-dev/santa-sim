@@ -42,7 +42,6 @@ public class RecombinantReplicator implements Replicator {
 
 			// sort the parents by increasing genome length
 			Arrays.sort(parents, new Comparator<Genome>() {
-				@Override
 				public int compare(Genome g1, Genome g2) {
 					return(g1.getLength() - g2.getLength());
 				}

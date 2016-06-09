@@ -3,7 +3,6 @@ package santa.simulator.genomes;
 import santa.simulator.fitness.FitnessFunction;
 
 import java.util.*;
-import santa.simulator.NotImplementedException;
 
 /**
  * @author Andrew Rambaut

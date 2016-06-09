@@ -3,7 +3,6 @@ package santa.simulator.genomes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -155,15 +154,10 @@ public final class Feature {
 		// expect to only merge features of identical name
 		assert(this.name.equals(f.name));
 		fragments.addAll(f.fragments);
-		
-		// sort the fragments by increasing start position
-		Collections.sort(fragments, new Comparator<Fragment>() {
-			@Override
-			public int compare(Fragment f1, Fragment f2) {
-				return(f1.getStart() - f2.getStart());
-			}
-		});
 
+		// sort in order of starting position (see Fragment.compareTo())
+		Collections.sort(fragments);
+		
 		// iterate through the list, merging fragments as necessary
 		Fragment previous = null;
 		for (Iterator<Fragment> iter = fragments.listIterator(); iter.hasNext(); ) {

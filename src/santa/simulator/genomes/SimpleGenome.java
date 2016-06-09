@@ -49,7 +49,6 @@ public class SimpleGenome extends BaseGenome {
 	 * must be in positional order.
 	 * @param newMutations the array of new mutations in positional order
 	 */
-	@Override 
 	public void applyMutations(SortedSet<Mutation> newMutations) {
 		GenomeDescription gd = null;
 

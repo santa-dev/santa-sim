@@ -36,12 +36,10 @@ public class PopulationSizeDependentFitnessFactor extends AbstractFitnessFactor 
 		return false;
 	}
 
-	@Override
 	public double computeLogFitness(byte[] states) {		
 		return logFitness;
 	}
 
-	@Override
 	public double getLogFitnessChange(StateChange change) {
 		return logFitness;
 	}

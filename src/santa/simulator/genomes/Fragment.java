@@ -1,10 +1,12 @@
 package santa.simulator.genomes;
 
+
 /**
  * @author Andrew Rambaut
  * @version $Id$
  */
-public final class Fragment {
+
+public final class Fragment implements Comparable<Fragment> {
 	public Fragment(int start, int count) {
 		assert(count >= 0);
 		this.start = start;
@@ -50,7 +52,12 @@ public final class Fragment {
 		return true;
 	}
 
-
+	// implement comparable interace so we can sort collections of fragments.
+	// natural ordering is increasing starting position.
+    public int compareTo(Fragment f2) {
+        return (Integer.signum(this.getStart() - f2.getStart()));
+	}
+	
 	public boolean adjacent(Fragment that) {
 		return ((this.start + this.count + 1) == that.start || (that.start+that.count+1) == this.start);
 	}

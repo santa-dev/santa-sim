@@ -98,11 +98,4 @@ public class CompactGenePool extends BaseGenePool {
 //        }
     }
 
-    private void changeMasterSequence(Sequence masterSequence) {
-        for (Genome genome : genomes) {
-            ((CompactGenome)genome).changeMasterSequence(masterSequence);
-        }
-        CompactGenome.setMasterSequence(masterSequence);
-    }
-
 }
