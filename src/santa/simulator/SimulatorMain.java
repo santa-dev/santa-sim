@@ -16,13 +16,12 @@ import java.util.logging.*;
  * @version $Id: SimulatorMain.java,v 1.2 2006/02/17 12:06:55 rambaut Exp $
  */
 public class SimulatorMain {
+    public static Simulator simulator;
 
     public static void main(String[] args) {
 		System.out.println(System.getProperty("java.vendor"));
 		System.out.println(System.getProperty("java.vendor.url"));
 		System.out.println(System.getProperty("java.version"));
-
-        Simulator simulator = null;
 
         if (args.length > 0) {
 

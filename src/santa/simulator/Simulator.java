@@ -51,4 +51,9 @@ public class Simulator {
         long time = System.currentTimeMillis() - startTime;
         Logger.getLogger("santa.simulator").finest("Time taken: " + time + " ms");
     }
+
+
+	public Simulation getSimulation() {
+		return simulation;
+	}
 }
