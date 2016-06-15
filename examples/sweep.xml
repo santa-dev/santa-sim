@@ -1,0 +1,96 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+  <replicates>1</replicates>
+  <simulation>
+    <genome>
+      <length>609</length>
+      <sequences>
+	GAAGAAGAGGTAGTAATTAGATCTGAAAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAAGGAGTCTGTAGTAATTAATTGTACAAGACCCAATAACAATACAAGAAAAAGTATACAGGTAGGACCAGGGAAAGCAATTTATACAACAGGAGAAATAATAGGAGATTTAAGACAAGCACATTGTAACCTTAGTAGAGCAGAATGGAATAACACTTTAAAACAGATAGTTAAGAAATTAAGAGAACAATTTGGGAATAAAACAATAGTCTTTAATCAATCCTCAGGAGGGGACCCAGAAATTGTAATGCACAGTTTGAATTGTAGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGGATAATAGTACTTTGAATAATGTTACTGAAGGGTCAAATAGCACTGAAGAGAATATCACACTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGGAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGAGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAAGGACACGAGCAATACCGAAATCTTCAGACCTGGA
+      </sequences>
+      <feature>
+	<name>CDS</name>
+	<type>aminoAcid</type>
+	<coordinates>1-609</coordinates>
+      </feature>
+    </genome>
+
+    <population>
+      <populationSize>$population</populationSize>
+
+      <inoculum>all</inoculum>
+    </population>
+
+    <fitnessFunction>
+      <empiricalFitness>
+	<feature>CDS</feature>
+	<sites>100</sites>
+
+	<!-- assign fitness 1 to K, 0.85 to N, and 0.01 to all other amino acids -->
+	<values>
+	  0.01 <!-- A -->
+	  0.01 <!-- C -->
+	  0.01 <!-- D -->
+	  0.01 <!-- E -->
+	  0.01 <!-- F-->
+	  0.01 <!-- G -->
+	  0.01 <!-- H -->
+	  0.01 <!-- I -->
+	  0.02    <!-- K -->
+	  0.01 <!-- L -->
+	  0.01 <!-- M -->
+	  0.01 <!-- N -->
+	  0.01 <!-- P -->
+	  0.01 <!-- Q -->
+	  0.01 <!-- R -->
+	  0.01 <!-- S -->
+	  0.01 <!-- T -->
+	  0.01 <!-- V -->
+	  0.01 <!-- W -->
+	  0.01 <!-- Y -->
+	</values>
+      </empiricalFitness>
+    </fitnessFunction>
+    <mutator>
+      <nucleotideMutator>
+	<mutationRate>1.0E-4</mutationRate>
+	<transitionBias>2.0</transitionBias>
+      </nucleotideMutator>
+      <!-- <oneoff> -->
+      <!-- 	<generation>1000</generation> -->
+      <!-- 	<feature>CDS</feature> -->
+      <!-- 	<sites>100</sites> -->
+      <!-- 	<symbols>K</symbols> -->
+      <!-- </onoff> -->
+    </mutator>
+
+    <replicator>
+      <recombinantReplicator>
+      	<dualInfectionProbability>1</dualInfectionProbability>
+      	<recombinationProbability>0.01</recombinationProbability>
+      </recombinantReplicator>
+    </replicator>
+
+    <epoch>
+      <generationCount>$generations</generationCount>
+    </epoch>
+
+    <samplingSchedule>
+      <sampler>
+	<atFrequency>10</atFrequency>
+	<fileName>frequency_%r.csv</fileName>
+	<statistics></statistics>
+      </sampler>
+      <sampler>
+	<atFrequency>1</atFrequency>	
+	<fileName>sequences_%r.fa</fileName>
+	<alignment>
+	  <sampleSize>$samplesize</sampleSize>
+	  <format>FASTA</format>
+	  <label>sequence_%g_%s</label>
+	</alignment>
+      </sampler>
+    </samplingSchedule>
+
+  </simulation>
+
+</santa>
