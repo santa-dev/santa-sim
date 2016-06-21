@@ -514,7 +514,6 @@ public class SimulatorParser {
 		}
 
 		GenomeDescription.setDescription(genomeLength, features, sequences);
-
 	}
 
 	private Feature parseFeature(Element element) throws ParseException {
@@ -934,6 +933,7 @@ public class SimulatorParser {
         if (feature == null) {
 			// there is always the complete genome feature
 			feature = GenomeDescription.root.getFeature("genome");
+			assert(feature != null);
 		}
 
         for (Object o:element.getChildren()) {

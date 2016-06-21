@@ -18,7 +18,7 @@ public class RecombinationHotSpot {
 		}		
 		if (factor < 0) {
 			// can this be caught at parse time?
-			throw new RuntimeException("RecombinationHotSpot factor mus be greater than 0");
+			throw new RuntimeException("RecombinationHotSpot factor must be greater than 0");
 		}
 		this.probBoost = factor;
 		this.hotSegment = segment;

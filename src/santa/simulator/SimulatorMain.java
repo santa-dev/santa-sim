@@ -16,48 +16,13 @@ import java.util.logging.*;
  * @version $Id: SimulatorMain.java,v 1.2 2006/02/17 12:06:55 rambaut Exp $
  */
 public class SimulatorMain {
-    public static Simulator simulator;
 
     public static void main(String[] args) {
-		System.out.println(System.getProperty("java.vendor"));
-		System.out.println(System.getProperty("java.vendor.url"));
-		System.out.println(System.getProperty("java.version"));
+		Simulator simulator;
 
         if (args.length > 0) {
+			simulator = simulatorFactory(args);
 
-            Map<String, String> parameterValueMap = parseParameters(args);
-
-			// A special parameter 'seed' is used to set the RNG seed.
-			long seed = System.currentTimeMillis(); 
-            if (parameterValueMap.containsKey("seed"))
-				seed = Long.parseLong(parameterValueMap.get("seed"), 10);
-			Random.setSeed(seed);
-			System.out.println("Seed: " + seed);
-			
-
-            File file = new File(args[args.length - 1]);
-            try {
-                SAXBuilder builder = new SAXBuilder();
-                Document doc = builder.build(file);
-
-                SimulatorParser parser = new SimulatorParser();
-                parser.setParameters(parameterValueMap );
-
-                simulator = parser.parse(doc.getRootElement());
-
-            } catch (SimulatorParser.ParseException pe) {
-                pe.printStackTrace();
-                System.err.println(pe.getMessage());
-                System.exit(1);
-            } catch (JDOMException jde) {
-                System.err.println("Error parsing XML input file: " + jde.getMessage());
-                System.exit(1);
-            } catch (IOException ioe) {
-                System.err.println("Error reading XML input file: " + ioe.getMessage());
-                System.exit(1);
-            }
-
-            
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
 	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
 
@@ -69,6 +34,48 @@ public class SimulatorMain {
 	        System.exit(0);
         }
     }
+
+	public static Simulator simulatorFactory(String[] args) {
+		Simulator simulator = null;
+			
+		Map<String, String> parameterValueMap = parseParameters(args);
+		
+		// A special parameter 'seed' is used to set the RNG seed.
+		long seed = System.currentTimeMillis(); 
+		if (parameterValueMap.containsKey("seed"))
+			seed = Long.parseLong(parameterValueMap.get("seed"), 10);
+		Random.setSeed(seed);
+		System.out.println("Seed: " + seed);
+			
+
+		File file = new File(args[args.length - 1]);
+		try {
+			SAXBuilder builder = new SAXBuilder();
+			Document doc = builder.build(file);
+
+			SimulatorParser parser = new SimulatorParser();
+			parser.setParameters(parameterValueMap );
+
+			simulator = parser.parse(doc.getRootElement());
+
+		} catch (SimulatorParser.ParseException pe) {
+			pe.printStackTrace();
+			System.err.println(pe.getMessage());
+			System.exit(1);
+		} catch (JDOMException jde) {
+			System.err.println("Error parsing XML input file: " + jde.getMessage());
+			System.exit(1);
+		} catch (IOException ioe) {
+			System.err.println("Error reading XML input file: " + ioe.getMessage());
+			System.exit(1);
+		}
+
+		return simulator;
+	}
+
+
+
+
 
     private static Map<String, String> parseParameters(String[] args) {
         Map<String, String> parameterValueMap = new HashMap<String, String>();
