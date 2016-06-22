@@ -126,13 +126,12 @@ public class Phylogeny {
 	 * leaves.
 	 *
 	 * In this routine, the leaves of the tree are instances of
-	 * 'Lineage', which forms a linked list pointing to parent lineage
-	 * objects, one per generation.  Each lineage element in the list
+	 * 'Lineage', each of which is the head of a linked list of ancestral lineage objects.  Each lineage element in the 
 	 * list holds a 'count' of the number of leaves that are reachable
 	 * from that object.  While traversing the linked list of lineage
-	 * objects, the count changes at each point where two or more
+	 * objects, the count goes up at each point where two or more
 	 * branches coalesce into one.  Each lineage also contains a
-	 * 'generation' that indcates in which generation the lineage was
+	 * 'generation' that indicates in which generation the lineage was
 	 * created.
 	 *
 	 * At all times, leaves descended from the same immediate common
@@ -153,7 +152,7 @@ public class Phylogeny {
 	 * If the leaves are processed in decreasing generation order, the
 	 * result will be a tree with a single MRCA.  Previous versions of
 	 * this code processed the leaves left-to-right regardless of
-	 * generation, and that is guarranteed to fail in some cases.
+	 * generation, and that is guaranteed to fail in some cases.
 	 */
 	public RootedTree reconstructPhylogeny(int[] sample, List<Taxon> taxa) {
 
@@ -171,6 +170,7 @@ public class Phylogeny {
 				lineage.count = 0;
 				lineage = lineage.parent;
 			}
+			
 		}
 
 		int tipGeneration = lineages[0].generation;
@@ -266,6 +266,7 @@ public class Phylogeny {
 	}
 
 	private void removeLineage(Lineage lineage) {
+		lineage.parent = null;
 		availableLineages.add(lineage);
 	}
 

@@ -26,7 +26,7 @@ public class SimulatorMain {
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
 	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
 
-	        //Logger.getLogger("santa.simulator.memory").setLevel(Level.FINEST);
+	        Logger.getLogger("santa.simulator.memory").setLevel(Level.FINEST);
 
 	        simulator.run();
         } else {
@@ -72,9 +72,6 @@ public class SimulatorMain {
 
 		return simulator;
 	}
-
-
-
 
 
     private static Map<String, String> parseParameters(String[] args) {

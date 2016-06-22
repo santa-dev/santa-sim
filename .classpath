@@ -12,9 +12,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jebl-0.3.jar"/>
-	<classpathentry kind="lib" path="lib/binaries/commons-lang3.jar"/>
-	<classpathentry kind="lib" path="lib/binaries/commons-math3.jar" sourcepath="lib/sources/commons-math3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/binaries/jdom.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
