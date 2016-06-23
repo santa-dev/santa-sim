@@ -11,6 +11,8 @@ public class Simulator {
 
     private final int replicateCount;
     private final Simulation simulation;
+    final static Logger logger = Logger.getLogger("santa.simulator");
+    final static Logger memlogger = Logger.getLogger("santa.simulator.memory");
 
     public Simulator (
             int replicateCount,
@@ -21,20 +23,18 @@ public class Simulator {
         this.simulation = simulation;
     }
 
-    private double usedMemory() {
+    private long usedMemory() {
         Runtime rt = Runtime.getRuntime();
         return (rt.totalMemory() - rt.freeMemory()) / (1024*1024);
     }    
 
     public void run() {
 
-        Logger.getLogger("santa.simulator.memory").fine("Initial memory used: " + usedMemory() + "MB");
-
-        Logger logger = Logger.getLogger("santa.simulator");
-
         long startTime = System.currentTimeMillis();
-
-        Logger.getLogger("santa.simulator.memory").finest("Base memory used: " + usedMemory() + "MB");
+		
+		System.gc();
+		long usedMemoryBefore = usedMemory();
+		memlogger.fine("Initial memory used: " + usedMemoryBefore + "MB");
 
         for (int replicate = 0; replicate < replicateCount; replicate++) {
 
@@ -44,12 +44,15 @@ public class Simulator {
 
             simulation.run(replicate, logger);
 
-            Logger.getLogger("santa.simulator.memory").finest("Memory used = " + usedMemory() + "MB");
+			System.gc();
+			long usedMemoryAfter = usedMemory();
+            memlogger.fine("Memory used = " + usedMemoryAfter + "MB");
+		    memlogger.fine("Memory increase: " + (usedMemoryAfter-usedMemoryBefore));
 
         }   
 
         long time = System.currentTimeMillis() - startTime;
-        Logger.getLogger("santa.simulator").finest("Time taken: " + time + " ms");
+		logger.fine("Time taken: " + time + " ms");
     }
 
 
