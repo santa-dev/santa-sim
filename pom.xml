@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- To compile, 	-->
-<!-- 	mvn compile	-->
-<!-- To execute,	-->
-<!-- 	mvn exec:java 	-->
-<!-- To extract classpath, -->
-<!--    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt -->
+
+<!-- To compile,								  -->
+<!-- 	mvn compile								  -->
+<!-- To execute,								  -->
+<!-- 	mvn exec:java								  -->
+<!-- To extract classpath,							  -->
+<!--    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt			  -->
+<!-- to install jebl jar file in local maven repo,				  -->
+<!--     mvn install:install-file -Dfile=lib/jebl-0.3.jar -DgroupId=jebl \	  -->
+<!--     -DartifactId=jebl -Dversion=0.3 -Dpackaging=jar \			  -->
+<!--     -DlocalRepositoryPath=maven-repo					  -->
+
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>santa-sim</groupId>
   <artifactId>santa-sim</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <repositories>
+    <repository>
+      <id>maven-repo</id>
+      <url>file:///${project.basedir}/maven-repo</url>
+    </repository>
+  </repositories>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -44,15 +59,33 @@
 	  </archive>
 	</configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+	<configuration>
+	  <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+	</configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.jebl</groupId>
+      <groupId>jebl</groupId>
       <artifactId>jebl</artifactId>
-      <version>0.9.2</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/jebl-0.3.jar</systemPath>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
