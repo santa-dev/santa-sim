@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- To compile, 						-->
-<!-- 	mvn compile						-->
-<!-- To execute, 						-->
-<!-- 	mvn exec:java -Dexec.mainClass="restful.SantaRest"	-->
+<!-- To compile, 	-->
+<!-- 	mvn compile	-->
+<!-- To execute,	-->
+<!-- 	mvn exec:java 	-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -21,34 +21,55 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+	<version>1.5.0</version>
+
+        <configuration>
+          <mainClass>santa.simulator.SimulatorMain</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<version>3.0.2</version>
+	<configuration>
+	  <archive>
+	    <manifest>
+	      <mainClass>santa.simulator.SimulatorMain</mainClass>
+	    </manifest>
+	  </archive>
+	</configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
-<dependency>
-    <groupId>org.jebl</groupId>
-    <artifactId>jebl</artifactId>
-    <version>0.9.2</version>
-    <scope>system</scope>
-    <systemPath>${project.basedir}/lib/jebl-0.3.jar</systemPath>
-</dependency>
-<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-lang3</artifactId>
-  		<version>3.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-math3</artifactId>
-  		<version>3.6.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.jdom</groupId>
-  		<artifactId>jdom2</artifactId>
-  		<version>2.0.6</version>
-  	</dependency>
+    <dependency>
+      <groupId>org.jebl</groupId>
+      <artifactId>jebl</artifactId>
+      <version>0.9.2</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/jebl-0.3.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>2.0.6</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
-  	<dependencies>
-  	</dependencies>
+    <dependencies>
+    </dependencies>
   </dependencyManagement>
 </project>
