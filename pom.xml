@@ -24,7 +24,14 @@
     </plugins>
   </build>
   <dependencies>
-  	<dependency>
+<dependency>
+    <groupId>org.jebl</groupId>
+    <artifactId>jebl</artifactId>
+    <version>0.9.2</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/lib/jebl-0.3.jar</systemPath>
+</dependency>
+<dependency>
   		<groupId>org.apache.commons</groupId>
   		<artifactId>commons-lang3</artifactId>
   		<version>3.4</version>
