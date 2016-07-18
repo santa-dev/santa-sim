@@ -2,6 +2,7 @@ package santa.simulator.mutators;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.*;
 
 import santa.simulator.Random;
 import santa.simulator.IndelModel;
@@ -113,6 +114,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 
 	@Override public SortedSet<Mutation> mutate(Genome genome) {
+		Logger mutlogger = Logger.getLogger("santa.simulator.mutators");
 		SortedSet<Mutation> mutations;
 
 		// total probability space, { insertion, deletion, neither }
@@ -141,7 +143,7 @@ public class NucleotideMutator extends AbstractMutator {
 					}
 					SimpleSequence seq = new SimpleSequence(states);
 					int pos = Random.nextInt(0, genome.getLength());	// start position
-					//System.err.println("insert: " + count + "@" + pos + " on len " + genome.getLength());
+					mutlogger.fine("insert: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Insertion(pos, seq));
 				}
 			} else {	// Deletion!
@@ -151,7 +153,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 				int count = indelModel.nextLength(); // deletion length
 				if (count != 0 && (count % 3) == 0) {
-					// System.err.println("delete: " + count + "@" + pos + " on len " + genome.getLength());
+					mutlogger.fine("delete: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Deletion(pos, count));
 				}
 			}

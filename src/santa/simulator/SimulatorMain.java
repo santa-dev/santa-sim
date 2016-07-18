@@ -24,9 +24,6 @@ public class SimulatorMain {
 			simulator = simulatorFactory(args);
 
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
-	        Logger.getLogger("santa.simulator").setLevel(Level.FINEST);
-
-	        Logger.getLogger("santa.simulator.memory").setLevel(Level.FINEST);
 
 	        simulator.run();
         } else {
