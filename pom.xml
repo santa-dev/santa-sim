@@ -38,16 +38,19 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
 	<version>1.5.0</version>
-
         <configuration>
           <mainClass>santa.simulator.SimulatorMain</mainClass>
         </configuration>
       </plugin>
+
       <plugin>
+	<!-- Set the class name containing main so this can be an -->
+	<!-- executable jar file. -->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-jar-plugin</artifactId>
 	<version>3.0.2</version>
@@ -59,7 +62,10 @@
 	  </archive>
 	</configuration>
       </plugin>
+
       <plugin>
+	<!-- Shade plugin for building a single JAR file with all -->
+	<!-- dependencies directly included. -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
