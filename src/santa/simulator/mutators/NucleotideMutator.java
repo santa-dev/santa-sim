@@ -143,7 +143,7 @@ public class NucleotideMutator extends AbstractMutator {
 					}
 					SimpleSequence seq = new SimpleSequence(states);
 					int pos = Random.nextInt(0, genome.getLength());	// start position
-					mutlogger.fine("insert: " + count + "@" + pos + " on len " + genome.getLength());
+					mutlogger.finest("insert: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Insertion(pos, seq));
 				}
 			} else {	// Deletion!
@@ -153,7 +153,7 @@ public class NucleotideMutator extends AbstractMutator {
 
 				int count = indelModel.nextLength(); // deletion length
 				if (count != 0 && (count % 3) == 0) {
-					mutlogger.fine("delete: " + count + "@" + pos + " on len " + genome.getLength());
+					mutlogger.finest("delete: " + count + "@" + pos + " on len " + genome.getLength());
 					mutations.add(new Deletion(pos, count));
 				}
 			}

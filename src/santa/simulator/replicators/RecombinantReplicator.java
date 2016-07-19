@@ -35,6 +35,7 @@ public class RecombinantReplicator implements Replicator {
 	}
 
     public void replicate(Virus virus, Virus[] vparents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
+		Logger mutlogger = Logger.getLogger("santa.simulator.replicators");
 
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
@@ -61,6 +62,8 @@ public class RecombinantReplicator implements Replicator {
 					breakPoints.add(bp);
 				}
 			}
+
+			recomblogger.finest("recombination: " + breakPoints.size() + "@" + breakPoints + " on len " + genome.getLength());
 
 			// create the recombinant genome description
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
