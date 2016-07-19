@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.*;
 
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
@@ -35,7 +36,7 @@ public class RecombinantReplicator implements Replicator {
 	}
 
     public void replicate(Virus virus, Virus[] vparents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
-		Logger mutlogger = Logger.getLogger("santa.simulator.replicators");
+		Logger logger = Logger.getLogger("santa.simulator.replicators");
 
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
             // dual infection and recombination
@@ -63,7 +64,7 @@ public class RecombinantReplicator implements Replicator {
 				}
 			}
 
-			recomblogger.finest("recombination: " + breakPoints.size() + "@" + breakPoints + " on len " + genome.getLength());
+			logger.finest("recombination: " + breakPoints.size() + "@" + breakPoints);
 
 			// create the recombinant genome description
 			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
