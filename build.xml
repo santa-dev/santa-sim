@@ -49,7 +49,7 @@
     <!-- Avoid ant warning: “'includeantruntime' was not set” -->
     <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
     <javac srcdir="${src}" destdir="${build}"
-	   includeantruntime="false" target="1.7"  source="1.7" >
+	   includeantruntime="false" target="1.8"  source="1.8" >
       <classpath>
 	<path refid="classpath"/>
       </classpath>
