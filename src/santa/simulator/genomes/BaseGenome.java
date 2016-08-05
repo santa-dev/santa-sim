@@ -132,7 +132,7 @@ public abstract class BaseGenome implements Genome {
 		assert(descriptor.getGenomeLength() == getLength());
 			
 		// Note: 'Mutation.position' is in units of
-		// nucleotide and relevant to the start of the genome.
+		// nucleotide and relative to the start of the genome.
 		// 'StateChange.position' units depend upon the
 		// alphabet of the feature and are relative to the start of
 		// the feature.
