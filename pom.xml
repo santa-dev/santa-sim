@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- To compile,								  -->
+<!-- 	mvn compile								  -->
+<!-- To execute,								  -->
+<!-- 	mvn exec:java								  -->
+<!-- To extract classpath,							  -->
+<!--    mvn dependency:build-classpath -Dmdep.outputFile=cp.txt			  -->
+<!-- to install jebl jar file in local maven repo,				  -->
+<!--     mvn install:install-file -Dfile=lib/jebl-0.3.jar -DgroupId=jebl \	  -->
+<!--     -DartifactId=jebl -Dversion=0.3 -Dpackaging=jar \			  -->
+<!--     -DlocalRepositoryPath=maven-repo					  -->
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>santa-sim</groupId>
+  <artifactId>santa-sim</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <repositories>
+    <repository>
+      <id>maven-repo</id>
+      <url>file:///${project.basedir}/maven-repo</url>
+    </repository>
+  </repositories>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+	<version>1.5.0</version>
+        <configuration>
+          <mainClass>santa.simulator.SimulatorMain</mainClass>
+        </configuration>
+      </plugin>
+
+      <plugin>
+	<!-- Set the class name containing main so this can be an -->
+	<!-- executable jar file. -->
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<version>3.0.2</version>
+	<configuration>
+	  <archive>
+	    <manifest>
+	      <mainClass>santa.simulator.SimulatorMain</mainClass>
+	    </manifest>
+	  </archive>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<!-- Shade plugin for building a single JAR file with all -->
+	<!-- dependencies directly included. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+	<configuration>
+	  <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+	</configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>jebl</groupId>
+      <artifactId>jebl</artifactId>
+      <version>0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+    </dependencies>
+  </dependencyManagement>
+</project>

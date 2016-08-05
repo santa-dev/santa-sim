@@ -18,7 +18,7 @@ import java.util.*;
  * any Genome, so that factors may decide to recompute or update their individual
  * contribution.
  */
-public final class FitnessFunction  {
+public final class FitnessFunction	{
 	int generation;
 	private List<FitnessFactor> factors;
 	private boolean[] recomputeFactor;
@@ -69,7 +69,15 @@ public final class FitnessFunction  {
 			double contrib = cache.factorContributions[i];
 
 			if (!recomputeFactor[i]) {
-				Feature feature = factor.getFeature();
+				Feature feature = genome.getDescription().getFeature(factor.getFeature().getName());
+				if (feature == null) {
+					// note - if indels are active, it is possible for a feature to shrink to nothing,
+					// then looking up a feature by name may fail!
+					// When that happens, force the contribution of this factor to be neutral.
+					contrib = 0;
+					continue;
+				}
+
 				List<StateChange> changes = genome.getChanges(feature, mutations);
 
 				for (StateChange change : changes) {
@@ -87,6 +95,7 @@ public final class FitnessFunction  {
 
 	}
 
+
 	/**
 	 * Update all the fitness factors that have to recompute
 	 */
@@ -94,24 +103,32 @@ public final class FitnessFunction  {
 		double result = 0;
 
 		FitnessGenomeCache cache = genome.getFitnessCache();
+		if (cache != null) {
+			int i = 0;
+			for (FitnessFactor factor : factors) {
+				double contrib = cache.factorContributions[i];
 
-		int i = 0;
-		for (FitnessFactor factor : factors) {
-			double contrib = cache.factorContributions[i];
+				if (recomputeFactor[i]) {
+					Feature feature = factor.getFeature();
+					byte[] sequence = genome.getStates(feature);
+					contrib = factor.computeLogFitness(sequence);
+				}
 
-			if (recomputeFactor[i]) {
-				Feature feature = factor.getFeature();
-				byte[] sequence = genome.getStates(feature);
-				contrib = factor.computeLogFitness(sequence);
+				cache.factorContributions[i] = contrib;
+				result += contrib;
+				i++;
 			}
-
-			cache.factorContributions[i] = contrib;
-			result += contrib;
-			i++;
+		} else {
+			// recompute the fitness function over this genome.
+			computeLogFitness(genome);
 		}
 
-		genome.setLogFitness(result);
 
+		// if the genome has shrunk below a single codon, it has -inf fitness.
+		if (genome.getLength() < 3) 
+			result = Double.NEGATIVE_INFINITY;
+
+		genome.setLogFitness(result);
 	}
 
 	/**

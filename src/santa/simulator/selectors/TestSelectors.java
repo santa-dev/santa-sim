@@ -58,11 +58,12 @@ public class TestSelectors {
 		List<Integer> selected = new ArrayList<Integer>(popSize);
 
 		for (int r = 0; r < repCount; r++) {
-			selector.selectParents(population, selected, 1);
+			selector.selectParents(population, selected, popSize);
 			for (int i = 0; i < popSize; i++) {
 				selections[selected.get(i)] ++;
 			}
 			if (r % 10000 == 0) System.err.print(".");
+			selected.clear();
 		}
 		System.err.println();
 		long time = System.currentTimeMillis() - startTime;

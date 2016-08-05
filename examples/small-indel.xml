@@ -1,0 +1,89 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="santa.xsd">
+  <replicates>1</replicates>
+
+  <simulation>
+
+    <genome>
+      <length>18</length>
+      <sequences>
+	GAAGAAGAGGAAGAAGAG
+      </sequences>
+      <feature>
+	<name>CDS</name>
+	<type>aminoAcid</type>
+	<coordinates>1-9</coordinates>
+      </feature>
+    </genome>
+
+    <population>
+      <populationSize>$population</populationSize>
+      <inoculum>all</inoculum>
+    </population>
+    <populationType>staticPopulation</populationType>
+
+    <fitnessFunction>
+      <neutralFitness>
+        <sites>1-9</sites>
+      </neutralFitness>
+      <purifyingFitness>
+	<feature>CDS</feature>
+	<sites>1</sites>
+	<rank>
+	  <order>observed</order>
+	  <probableSet>2</probableSet>
+	  <breakTies>random</breakTies>
+	</rank>
+	<fitness>
+	  <lowFitness>0.1</lowFitness>
+	  <minimumFitness>0.1</minimumFitness>
+	</fitness>
+
+      </purifyingFitness>
+    </fitnessFunction>
+
+    <mutator>
+      <nucleotideMutator>
+	<mutationRate>1.0E-4</mutationRate>
+	<transitionBias>2.0</transitionBias>
+
+	<indelmodel model="NB">0.4 1</indelmodel>
+	<insertprob>2.5E-2</insertprob>
+	<deleteprob>2.5E-2</deleteprob>
+
+      </nucleotideMutator>
+    </mutator>
+
+    <replicator>
+      <clonalReplicator/>
+    </replicator>
+
+    <epoch>
+      <name>initial</name>
+      <generationCount>$generations</generationCount>			
+    </epoch>
+
+    <samplingSchedule>
+      <sampler>
+	<atFrequency>1</atFrequency>	
+	<fileName>sequences_%r.fa</fileName>
+	<alignment>
+	  <sampleSize>$samplesize</sampleSize>
+	  <format>FASTA</format>
+	  <label>sequence_%g_%s|hiv_pol.fa|0|0</label>
+	</alignment>
+      </sampler>
+      <sampler>
+	<atFrequency>10</atFrequency>	
+      	<fileName>trees.nex</fileName>
+      	<tree>
+      	  <sampleSize>$samplesize</sampleSize>
+      	  <format>NEXUS</format>
+      	  <label>tip_%s</label>
+      	</tree>
+      </sampler>
+   </samplingSchedule>
+
+  </simulation>
+
+</santa>

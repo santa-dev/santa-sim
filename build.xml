@@ -1,45 +1,120 @@
-<project name="SANTA" default="dist" basedir=".">
-    <description>
+<project xmlns:ivy="antlib:org.apache.ivy.ant"  name="SANTA" default="dist" basedir=".">
+  <description>
     build file for santa-sim
-    </description>
-    <!-- set global properties for this build -->
-    <property name="src" location="src"/>
-    <property name="build" location="build"/>
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
 
-    <property name="lib" location="lib"/>
-    <property name="dist" location="dist"/>
+  <property name="lib" location="lib"/>
+  <property name="dist" location="dist"/>
 
-    <property environment="env"/>
+  <property environment="env"/>
 
-    <target name="init">
-        <!-- Create the time stamp -->
-        <tstamp/>
-        <!-- Create the build directory structure used by compile -->
-        <mkdir dir="${build}"/>
-        <mkdir dir="${dist}"/>
-        <mkdir dir="${lib}"/>
-    </target>
-	
-    <target name="compile" depends="init">
-        <!-- Compile the java code from ${src} into ${build} -->
-        <javac target="1.5" source="1.5" srcdir="${src}" destdir="${build}"
-            classpath="${lib}/commons-math-2.1.jar:${lib}/jdom.jar:${lib}/jebl-0.3.jar">
-            <include name="santa/**"/>
-        </javac>
-    </target>
 
-    <target name="dist" depends="compile" description="generate the distribution">
-        <!-- Create the distribution directory -->
-        <mkdir dir="${dist}"/>
+  <!-- Ivy does not come bundled with ANT. The "install-ivy" task ensures it gets installed on the first ant run -->
+  <!-- http://stackoverflow.com/a/31542451/1135316 -->
+  <available classname="org.apache.ivy.Main" property="ivy.installed"/>
+  <target name="install-ivy" unless="ivy.installed">
+    <mkdir dir="${user.home}/.ant/lib"/>
+    <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
+    <fail message="Ivy installed  run build again"/>
+  </target>
+  
+  <target name="resolve" description="retrieve dependencies with ivy">
+    <ivy:retrieve conf="sources" pattern="lib/[conf]/[artifact](-[classifier]).[ext]"/>
+    <ivy:retrieve conf="binaries" pattern="lib/[conf]/[artifact](-[classifier]).[ext]"/>
+    <ivy:cachepath pathid="default.classpath" /> 
+  </target>
 
-        <jar jarfile="${dist}/santa.jar">
-            <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
-            </manifest>
-            <zipgroupfileset dir="${lib}" includes="*.jar"/>
-        </jar>
-    </target>
+  <!-- Populates a class path containing our classes and jars -->
+  <path id="classpath">
+    <fileset dir="${lib}" includes="**/*.jar"/>
+    <pathelement path="${build}"/>
+    <path refid="default.classpath"/>
+  </path>
+
+  <target name="init" depends="resolve">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${lib}"/>
+  </target>
+  
+  <target name="compile" depends="init">
+
+    <!-- Compile the java code from ${src} into ${build} -->
+    <!-- Avoid ant warning: “'includeantruntime' was not set” -->
+    <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
+    <javac srcdir="${src}" destdir="${build}"
+	   includeantruntime="false" target="1.8"  source="1.8" >
+      <classpath>
+	<path refid="classpath"/>
+      </classpath>
+      <compilerarg value="-Xlint:deprecation" />
+      
+      <include name="santa/**"/>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
+
+    <jar jarfile="${dist}/santa.jar">
+      <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
+      </manifest>
+      <zipgroupfileset dir="${lib}" includes="*.jar"/>
+      <zipgroupfileset dir="${lib}/binaries" includes="*.jar"/>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+
+  <target name="test" depends="dist">
+    <property name="test" location="test"/>
+    <property name="test.src" location="${test}"/>
+    <property name="test.reports" location="${test}/reports"/>
+    <property name="test.build" location="${test}/build"/>
+
+    <mkdir dir="${test.reports}"/>
+    <mkdir dir="${test.build}"/>
+
+    <javac srcdir="${test.src}" destdir="${test.build}"
+	   includeantruntime="false"  target="1.7"  source="1.7">
+      <classpath>
+	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	<pathelement path="${test.build}"/>
+	<path refid="classpath"/>
+      </classpath>
+      <compilerarg value="-Xlint:deprecation" />
+      <include name="santa/**"/>
+    </javac>
+
+    <junit printsummary="yes" haltonfailure="yes">
+      <classpath>
+	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
+	<pathelement path="${test.build}"/>
+	<path refid="classpath"/>
+      </classpath>
+
+      <formatter type="plain"/>
+
+      <test name="my.test.TestCase" haltonfailure="no" outfile="result">
+	<formatter type="xml"/>
+      </test>
+
+      <batchtest fork="yes" todir="${test.reports}">
+	<fileset dir="${test.src}" includes="**/*.java"/>
+      </batchtest>
+    </junit>
+  </target>
 
 </project>

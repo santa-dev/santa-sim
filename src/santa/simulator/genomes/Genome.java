@@ -45,4 +45,16 @@ public interface Genome {
     void setFitnessCache(FitnessFunction.FitnessGenomeCache cache);
 
     FitnessFunction.FitnessGenomeCache getFitnessCache();
+
+	boolean substitute(int position, byte state);
+
+	boolean delete(int position, int count);
+
+	boolean insert(int position, SimpleSequence seq);
+
+    int binomialDeviate(double mutationRate);
+
+	GenomeDescription getDescription();
+	void setDescription(GenomeDescription gd);
+
 }

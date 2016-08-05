@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.Mutation;
 import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.population.DynamicPopulation;
@@ -55,9 +54,6 @@ public class Simulation {
         this.genePool = genePool;
         this.selector = new DynamicSelector();
 
-        // This pre-computes all possible mutation objects as singletons...
-        Mutation.initialize();
-
         population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
  
@@ -76,9 +72,6 @@ public class Simulation {
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
         this.selector = new SimpleRouletteWheelSelector();
-
-        // This pre-computes all possible mutation objects as singletons...
-        Mutation.initialize();
 
         population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
 

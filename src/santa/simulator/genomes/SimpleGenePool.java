@@ -32,9 +32,18 @@ public class SimpleGenePool extends BaseGenePool {
     }
 
     /**
-     * Duplicates a genome with mutations given by the array of mutations. If no mutations are
-     * required then the original genome is returned but with the frequency incremented.
+     * Duplicate a genome and apply mutations. 
      *
+     * The implementation is a little tricky as this routine tries to
+     * minimized recalculation of fitness functions when it can.  If
+     * any of the mutations are insertions or deletions, cached
+     * fitness values are bypassed and a full recalculation is
+     * performed.
+     *
+	 * {@code mutations} is list of mutation objects which may include
+	 * multiple substitutions along with a single insertion or
+	 * deletion; multiple indels in a single call are not supported.
+	 * 
      * @param genome the genome object
      * @param mutations the array of Mutation objects
      * @return the new replicated genome
@@ -61,9 +70,7 @@ public class SimpleGenePool extends BaseGenePool {
             return newGenome;
         } else {
             genome.setFrequency(genome.getFrequency() + 1);
-            
             fitnessFunction.updateLogFitness(genome);
-
             return genome;
         }
     }

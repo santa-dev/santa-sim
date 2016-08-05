@@ -44,28 +44,20 @@ public class PurifyingFitnessFactor extends AbstractSiteFitnessFactor {
         int siteCount = getFeature().getLength();
         int stateSize = getAlphabet().getStateCount();
         Set<Integer> sites = getSites();
-
-        double[][] logFitness = new double[siteCount][stateSize + 1];
+        double[][] logFitness = new double[siteCount][stateSize+1];
 
         for (int i = 0; i < logFitness.length; ++i) {
+            // sites not handled by this factor are left with zero log likelihood
             if (sites.contains(i)) {
                 double[] fitnesses = valueModel.getFitnesses(i, rank);
                 byte[] states = rank.getStatesOrder(i);
                 for (int j = 0; j < stateSize; ++j) {
                     logFitness[i][states[j]] = Math.log(fitnesses[j]);
                 }
-
-	            // stop codons are given a logFitness of -Inf
-	            logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
-            } else {
-	            // sites not handled by this factor are given a zero log likelihood
-                for (int j = 0; j < stateSize; ++j) {
-                    logFitness[i][j] = 0.0;
-                }
-
-	            // stop codons are given a logFitness of -Inf
-	            logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
             }
+            // stop codons always have a logFitness of -Inf.
+            // has no effect on nucleotide-denominated features.
+            logFitness[i][stateSize] = Double.NEGATIVE_INFINITY;
         }
 
         initialize(logFitness);

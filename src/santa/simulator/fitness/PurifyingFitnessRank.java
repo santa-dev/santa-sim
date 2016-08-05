@@ -2,6 +2,7 @@ package santa.simulator.fitness;
 
 import santa.simulator.genomes.*;
 
+
 import java.util.*;
 
 /**
@@ -9,7 +10,7 @@ import java.util.*;
  * of a probable set.
  * 
  * The rank may be derived from frequencies found in the sequences of the GenomeDescription,
- * possibly using chemical properties, or simply specified.
+ * possibly using chemical properties, or explicitly specified.
  * 
  * Different configuration options:
  * {@code
@@ -26,6 +27,10 @@ public class PurifyingFitnessRank {
 	 * Creates a ranking:
      *   - based on a specified state order
      *   - based on a specified probable set size
+	 * @param feature  The feature over which this fitness function should be applied.
+	 * @param stateOrder  List of states (amino acid or nucleotide), ordered by decreasing fitness.
+	 * @param probableSetSize  
+	 * @param breakTiesRandomly  True if ties should be broken randomly, False to break ties according to order in the list.
 	 */
 	public PurifyingFitnessRank(Feature feature,
 	                            List<Byte> stateOrder,
@@ -170,11 +175,31 @@ public class PurifyingFitnessRank {
 	// PRIVATE STUFF
 
 	/**
+	 * Count abundance of symbols at a SINGLE SITE in a multiple alignment.
+	 *
+	 * 'alphabet' references a NUCLEOTIDES or AMINO_ACIDS
+	 * alphabet.  Assuming NUCLEOTIDES, this routine would calculate
+	 * the abundance of each nucleotide at a single column of a multiple
+	 * alignment.
+	 *
+	 * The multiple alignment is usually taken from the initial
+	 * population seed as specified in the config file.  It is not
+	 * unusual for there to be only a single sequence in the
+	 * alignment.
+	 * 
+	 * The abundances calculated here are used to shape a probability
+	 * distribution affecting the fitness of various substitutions at
+	 * each site.
+	 *
+	 * @param alphabet: NUCLEOTIDES or AMINO_ACIDS alphabet.
+	 * @param breakTiesRandomly:  when TRUE, abundance ties will be randomly ordered in the results, otherwise according to order of states in alphabet. 
+	 * @param alignment: multiple sequence alignment
+	 * @param stateOrder: order of states to report back; relevant only  if 'alignment' is null.
 	 * @param site: 0-based site in the sequence
-	 * @return an ordering of the states for that site
+	 * @return list of histogram elements in decreasing order of abundance.
 	 */
 	private List<HistogramEntry> createHistogram(SequenceAlphabet alphabet, boolean breakTiesRandomly,
-	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) {
+	                                             List<byte[]> alignment, List<Byte> stateOrder, int site) throws PrematureStopException {
 		List<HistogramEntry> counts = new ArrayList<HistogramEntry>();
 
 		for (int i = 0; i < alphabet.getStateCount(); ++i) {
@@ -182,8 +207,20 @@ public class PurifyingFitnessRank {
 		}
 
 		if (alignment != null) {
+			int n = 1;  // sequence counter
 			for (byte[] sequence : alignment) {
-				++counts.get(sequence[site]).count;
+				/**
+				 * cswarth - protect against stop codons in initial alignment.
+				 **/
+				int i = sequence[site];
+				if (i < counts.size())
+					++counts.get(i).count;
+				else {
+					throw new PrematureStopException(n, site);
+					// String msg = String.format("PurifyingFitnessRank: Skipping feature site %d in alignment #%d.\nUsually this indicates a premature STOP codon in an Amino Acid feature.", site, n);
+					// System.err.println(msg);
+				}
+				n += 1;
 			}
 		} else {
 			for (int i = 0; i < stateOrder.size(); ++i) {

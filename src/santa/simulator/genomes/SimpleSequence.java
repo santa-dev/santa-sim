@@ -6,6 +6,9 @@
  */
 package santa.simulator.genomes;
 
+import java.util.Arrays;
+import java.util.SortedSet;
+
 /**
  * @author kdforc0
  *
@@ -38,6 +41,9 @@ public final class SimpleSequence implements Sequence {
 
 
 	public SimpleSequence(byte[] states) {
+		// it is possible for {@code states} to be null at this point.
+		if (states == null)
+			states = new byte[0];
 		this.states = states;
 	}
 
@@ -63,7 +69,7 @@ public final class SimpleSequence implements Sequence {
 	public SimpleSequence(SimpleSequence other, int start, int length) {
 		states = new byte[length];
 
-		copyNucleotides(0, other, start, start + length);
+		copyNucleotides(0, other, start, length);
 	}
 
 	public Sequence getSubSequence(int start, int length) {
@@ -96,8 +102,8 @@ public final class SimpleSequence implements Sequence {
 	}
 
 	protected void copyNucleotides(int start, SimpleSequence source,
-	                               int sourceStart, int sourceStop) {
-		System.arraycopy(source.states, sourceStart, states, start, sourceStop - sourceStart);
+	                               int sourceStart, int sourceCount) {
+		System.arraycopy(source.states, sourceStart, states, start, sourceCount);
 	}
 
 	protected void copyNucleotides(int start, Sequence source,
@@ -105,6 +111,34 @@ public final class SimpleSequence implements Sequence {
 		for (int i = 0; i < sourceStop - sourceStart; ++i) {
 			setNucleotide(start + i, source.getNucleotide(sourceStart + i));
 		}
+	}
+	
+	public boolean deleteSubSequence(int pos, int count) {
+		// assert that insert preserved frame...
+		assert (states.length % 3) == 0;
+		assert (count % 3) == 0;
+
+		byte newstates[] = new byte[states.length - count];
+		System.arraycopy(states, 0, newstates, 0, pos);
+		System.arraycopy(states, pos+count, newstates, pos, states.length-pos-count);
+		states = newstates;
+		assert (states.length % 3) == 0;
+
+		return(true);
+	}
+	
+	public boolean insertSequence(int start, SimpleSequence source) {
+		// allocate more space and copy the old contents
+		// assert that insert preserved frame...
+		// assert (states.length % 3) == 0;
+		// assert (source.getLength() % 3) == 0;
+
+		byte newstates[] = Arrays.copyOf(states, states.length + source.getLength());
+		System.arraycopy(source.states, 0, newstates, start, source.getLength());
+		System.arraycopy(states, start, newstates, start+source.getLength(), states.length-start);
+		states = newstates;
+		// assert (states.length % 3) == 0;
+		return(true);
 	}
 
 	/* (non-Javadoc)
@@ -195,5 +229,73 @@ public final class SimpleSequence implements Sequence {
 			return getNucleotideStates();
 		else
 			return getAminoAcidStates();
+	}
+
+
+	public Sequence recombineWith(Sequence other, SortedSet<Integer> breakPoints) {
+		SimpleSequence[] parents = {this, (SimpleSequence) other};
+		return SimpleSequence.getRecombinantSequence(parents, breakPoints);
+	}
+	
+	/**
+	 * calculate how long the product of recombination will be.
+	 *
+	 **/
+	static int getRecombinantLength(SimpleSequence[] parents, SortedSet<Integer> breakPoints)  {
+		assert(parents.length == 2);
+		assert(parents[0].getLength() <= parents[1].getLength());
+
+		/**
+		 * NOTE: for non-homologous, isolocus recombination, the
+		 * length of the product genome is completely determined by
+		 * the length of the parent genomes and the modulus of the
+		 * number of crossings.  Homologous recombination will have a
+		 * similar shortcut.
+		 **/
+		int fastlen = parents[breakPoints.size() % 2 == 0 ? 0 : 1].getLength();
+
+		return fastlen;
+	}
+	
+	/**
+	 * Factory method to create a recombined nucleotide sequence from two parents.
+	 *
+	 * Given a pair of parent sequences and a set of breakpoints,
+	 * create a new sequence that is a combination of fragments from
+	 * both parents.  breakPoints describes the positions at which we
+	 * switch from one template to the other.
+	 *
+	 * If 'breakPoints' is empty, this routine simply copies the
+	 * sequence from first genome in 'parents'.
+	 *
+	 * NOTE: This routine implements non-homologuous recombination.
+	 * It uses only a single vector to specify isoloci in each parent
+	 * where recombination should occur.  Homologous recombination
+	 * would need two breakpoint vectors identifying the points of
+	 * homology in each parent.
+	 **/
+    static SimpleSequence getRecombinantSequence(SimpleSequence[] parents, SortedSet<Integer> breakPoints) {
+	 	assert(parents.length == 2);
+		assert(parents[0].getLength() <= parents[1].getLength());
+
+		int lastBreakPoint = 0;		// previous recombination location
+		int currentSeq = 0;			// index of currently selected parent
+		int newlen = getRecombinantLength(parents, breakPoints);
+		SimpleSequence product = new SimpleSequence(newlen);
+
+		byte[] dest = product.states;	// where to put the product
+		SimpleSequence seq = parents[currentSeq];
+		for (int nextBreakPoint : breakPoints) {
+			System.arraycopy(seq.states, lastBreakPoint, 
+							 dest, lastBreakPoint, nextBreakPoint-lastBreakPoint);
+			
+			lastBreakPoint = nextBreakPoint;
+			currentSeq = 1 - currentSeq;
+			seq = parents[currentSeq];
+		}
+		int nextBreakPoint =  seq.getLength();
+		System.arraycopy(seq.states, lastBreakPoint, 
+						 dest, lastBreakPoint, nextBreakPoint-lastBreakPoint);
+		return(product);
 	}
 }

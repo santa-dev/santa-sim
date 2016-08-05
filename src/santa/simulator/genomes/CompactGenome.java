@@ -1,8 +1,9 @@
+
 package santa.simulator.genomes;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
-
+import santa.simulator.NotImplementedException;
 
 /**
  * @author Andrew Rambaut
@@ -46,6 +47,13 @@ public class CompactGenome extends BaseGenome {
         setLogFitness(source.getLogFitness());
     }
 
+    public void deleteSubSequence(int pos, int count) {
+    	throw new NotImplementedException();
+    }
+    public void insertSequence(int pos, Sequence s) {
+    	throw new NotImplementedException();
+    }
+    	    
     public int getLength() {
         return masterSequence.getLength();
     }
@@ -87,7 +95,7 @@ public class CompactGenome extends BaseGenome {
      * must be in positional order.
      * @param newMutations the array of new mutations in positional order
      */
-    public void applyMutations(SortedSet<Mutation> newMutations) {
+	public void applyMutations(SortedSet<Mutation> newMutations) {
         for (Mutation m : newMutations) {
 
             Mutation current = getMutation(m.position);
@@ -136,6 +144,21 @@ public class CompactGenome extends BaseGenome {
 
         return s;
 	}
+	
+	
+	public boolean substitute(int position, byte state) {
+		throw new NotImplementedException();
+	}
+
+
+	public boolean delete(int position, int count) {
+		throw new NotImplementedException();
+	}
+
+
+	public boolean insert(int position, SimpleSequence seq) {
+		throw new NotImplementedException();
+	}
 
     // private members
     private SortedSet<Mutation> mutations = null;
@@ -150,4 +173,5 @@ public class CompactGenome extends BaseGenome {
     }
 
     private static Sequence masterSequence = null;
+    
 }
