@@ -32,12 +32,12 @@ import santa.simulator.selectors.Selector;
  *         Time: 9:12:27 AM
  */
 public abstract class Population {
-	
-	public int getPopulationSize() {
-		return getCurrentGeneration().size();
-	}
-	
-	public Population(GenePool genePool, Selector selector, Phylogeny phylogeny) {
+    
+    public int getPopulationSize() {
+        return getCurrentGeneration().size();
+    }
+    
+    public Population(GenePool genePool, Selector selector, Phylogeny phylogeny) {
         this.phylogeny = phylogeny;
         this.genePool = genePool;
         this.selector = selector;
@@ -48,7 +48,7 @@ public abstract class Population {
 
     public void initialize(List<Sequence> inoculum, int initialPopulationSize) {
         Genome[] ancestors;
-        
+
         genePool.initialize();
         currentGeneration.clear();
         lastGeneration.clear();
@@ -60,7 +60,7 @@ public abstract class Population {
                 ancestors[i] = genePool.createGenome(sequence);
             }
         } else {
-			throw new NotImplementedException();
+            throw new NotImplementedException();
 
             // create a default nucleotide sequence
             // ancestors = new Genome[1];
@@ -87,31 +87,32 @@ public abstract class Population {
             phylogeny.initialize();
         }
     }
-    
+
     protected abstract void select(List<Virus> current, List<Integer> selectedParents, int parentCount, int generation);
-    
+
+
     public void selectNextGeneration(int generation, Replicator replicator, Mutator mutator, FitnessFunction fitnessFunction) {
-    	List<Integer> selectedParents = new ArrayList<Integer>();
-    	select(currentGeneration, selectedParents, replicator.getParentCount(), generation);
-       
+        List<Integer> selectedParents = new ArrayList<Integer>();
+        select(currentGeneration, selectedParents, replicator.getParentCount(), generation);
+
         Virus[] parents = new Virus[replicator.getParentCount()];
-    	
-    	lastGeneration.clear();
-    	lastGeneration.addAll(currentGeneration);
-        currentGeneration.clear();       
+
+        lastGeneration.clear();
+        lastGeneration.addAll(currentGeneration);
+        currentGeneration.clear();
 
         // then select the currentGeneration based on the last.
-		for (int currentParent = 0; currentParent < selectedParents.size() - replicator.getParentCount() + 1;) {
-			for (int j = 0; j < parents.length; j++) {
-				parents[j] = lastGeneration.get(selectedParents.get(currentParent));
-				currentParent++;
-			}
+        for (int currentParent = 0; currentParent < selectedParents.size() - replicator.getParentCount() + 1;) {
+            for (int j = 0; j < parents.length; j++) {
+                parents[j] = lastGeneration.get(selectedParents.get(currentParent));
+                currentParent++;
+            }
 
-			// replicate the parents to create a new virus
-			Virus child = new Virus();
-			replicator.replicate(child, parents, mutator, fitnessFunction, genePool);
-			currentGeneration.add(child);
-		}
+            // replicate the parents to create a new virus
+            Virus child = new Virus();
+            replicator.replicate(child, parents, mutator, fitnessFunction, genePool);
+            currentGeneration.add(child);
+        }
 
         // then kill off the genomes in the last population.
         for (Virus v : lastGeneration) {
@@ -129,7 +130,7 @@ public abstract class Population {
         genePool.updateAllFitnesses(fitnessFunction);
         statisticsKnown = false;
     }
-    
+
     protected Virus[] getSample(int sampleSize) {
         List<Virus> viruses = getCurrentGeneration();
         sampleSize = Math.min(sampleSize, viruses.size());
@@ -164,12 +165,12 @@ public abstract class Population {
         if (virus1.getGenome() == virus2.getGenome())
             return 0;
 
-		if (virus1.getGenome().getDescription() != virus2.getGenome().getDescription()) {
-			// we don't know how to calculate distances between sequences when the sequences diverge due to indels.
-			// We can theoretically reconstruct an accurate pairwise alignment for any two related sequences.
-			// we'll have to implement that later.  for now just comment this out - revisit later - csw
-			throw new RuntimeException("Cannot compute distances if genomes differ in length");
-		}
+        if (virus1.getGenome().getDescription() != virus2.getGenome().getDescription()) {
+            // we don't know how to calculate distances between sequences when the sequences diverge due to indels.
+            // We can theoretically reconstruct an accurate pairwise alignment for any two related sequences.
+            // we'll have to implement that later.  for now just comment this out - revisit later - csw
+            throw new RuntimeException("Cannot compute distances if genomes differ in length");
+        }
 
        Sequence seq1 = virus1.getGenome().getSequence();
        Sequence seq2 = virus2.getGenome().getSequence();
@@ -193,6 +194,7 @@ public abstract class Population {
         sumFitness = 0.0;
         minFitness = Double.MAX_VALUE;
         maxFitness = 0.0;
+        double nFitness = 0;
 
         for (Virus v : currentGeneration) {
             Genome genome = v.getGenome();
@@ -204,16 +206,21 @@ public abstract class Population {
                 maxFrequency = genome.getFrequency();
             }
 
-            sumFitness += genome.getFitness();
-            if (genome.getFitness() > maxFitness) {
-                maxFitness = genome.getFitness();
-            }
-            if (genome.getFitness() < minFitness) {
-                minFitness = genome.getFitness();
+            double fitness = genome.getFitness();
+            if (fitness != 0) {
+                sumFitness += fitness;
+                nFitness += 1;
+                if (genome.getFitness() > maxFitness) {
+                    maxFitness = genome.getFitness();
+                }
+                if (genome.getFitness() < minFitness) {
+                    minFitness = genome.getFitness();
+                }
             }
         }
 
-        meanFitness = sumFitness / currentGeneration.size();
+        if (nFitness > 0)
+            meanFitness = sumFitness / nFitness;
         meanDistance = d / currentGeneration.size();
 
         statisticsKnown = true;
@@ -304,7 +311,7 @@ public abstract class Population {
     protected final Selector selector;
 
     private final Phylogeny phylogeny;
-    
+
     private List<Virus> lastGeneration;
     private List<Virus> currentGeneration;
 
