@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.logging.*;
 
 import org.apache.commons.math3.distribution.BinomialDistribution;
@@ -38,19 +40,19 @@ public class RecombinantReplicator implements Replicator {
     public void replicate(Virus virus, Virus[] vparents, Mutator mutator, FitnessFunction fitnessFunction, GenePool genePool) {
 		Logger logger = Logger.getLogger("santa.simulator.replicators");
 
+
         if (Random.nextUniform(0.0, 1.0) < dualInfectionProbability * recombinationProbability) {
+
             // dual infection and recombination
-			Genome[] parents = { vparents[0].getGenome(), vparents[1].getGenome() };
+			List<Genome> parents = Arrays.asList(vparents).stream().map(Virus::getGenome).collect(Collectors.toList());
 
 			// sort the parents by increasing genome length
-			Arrays.sort(parents, new Comparator<Genome>() {
-				public int compare(Genome g1, Genome g2) {
-					return(g1.getLength() - g2.getLength());
-				}
-			});
-			assert(parents[0].getLength() <= parents[1].getLength());
-			
-			int length = Math.min(parents[0].getLength(), parents[1].getLength()) - 1;
+			parents.sort((p1, p2) -> p1.getLength() - p2.getLength());
+
+			// get minimum length of the parents
+			int length = parents.stream().map(g -> g.getLength()).reduce(Integer::min).get() - 1 ;
+
+			// pick number of breakpoints
 			BinomialDistribution binomialDeviate = new BinomialDistribution(Random.randomData.getRandomGenerator(), length, recombinationProbability);
 			int nbreaks = binomialDeviate.sample();
 			
@@ -67,12 +69,13 @@ public class RecombinantReplicator implements Replicator {
 			logger.finest("recombination: " + breakPoints.size() + "@" + breakPoints);
 
 			// create the recombinant genome description
-			GenomeDescription[] gd_parents = { parents[0].getDescription(), parents[1].getDescription() };
-			GenomeDescription gd_recomb = GenomeDescription.recombine(gd_parents, breakPoints);
+			GenomeDescription[] gd_parents = parents.stream().map(Genome::getDescription).toArray(GenomeDescription[]::new);
+;
+			GenomeDescription recombinantGenome = GenomeDescription.recombine(gd_parents, breakPoints);
 			
 			Sequence recombinantSequence = getRecombinantSequence(parents, breakPoints);
 
-			Genome genome = genePool.createGenome(recombinantSequence, gd_recomb);
+			Genome genome = genePool.createGenome(recombinantSequence, recombinantGenome);
 			
 	        SortedSet<Mutation> mutations = mutator.mutate(genome);
 
@@ -86,7 +89,8 @@ public class RecombinantReplicator implements Replicator {
             virus.setGenome(genome);
             virus.setParent(vparents[0]);
 			
-            EventLogger.log("Recombination: (" + parents[0].getLogFitness() + ", " + parents[1].getLogFitness() + ") -> " + genome.getLogFitness());
+            String fitnessStr = parents.stream().map(Genome::getLogFitness).map(Object::toString).collect(Collectors.joining(", "));
+            EventLogger.log("Recombination: (" + fitnessStr + ") -> " + genome.getLogFitness());
 
         } else {
             // single infection - no recombination...
@@ -115,8 +119,8 @@ public class RecombinantReplicator implements Replicator {
 	 * 'breakPoints' is empty, this routine simply copies the sequence
 	 * from first genome in 'parents'.
 	 **/
-    private static Sequence getRecombinantSequence(Genome[] parents, SortedSet<Integer> breakPoints) {
-		return  (parents[0].getSequence()).recombineWith(parents[1].getSequence(), breakPoints);
+    private static Sequence getRecombinantSequence(List<Genome> parents, SortedSet<Integer> breakPoints) {
+		return parents.stream().map(Genome::getSequence).reduce((s1, s2) -> s1.recombineWith(s2, breakPoints)).get();
 	}
 
 
