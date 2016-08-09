@@ -1,0 +1,44 @@
+
+# Wercker configuration file for continuous integration build of SANTA on wercker.com.
+#
+# The purpose of continuous integration builds is to test the software after every change.
+# This configration file can also be an good source of instructions for how to actually build
+
+# when considering using the wercvker cache directory to store dependencies,
+# -Dmaven.repo.local=${WERCKER_CACHE_DIR}
+
+
+# docker box definition
+box: java
+
+# defining the dev pipeline
+dev:
+  steps:
+    - script:
+      name: ant build
+      code: |
+        ant 
+
+
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    - install-packages:
+        packages: ant 
+
+    # A step that executes `ant` command
+    - script:
+        name: build using ant
+        code: |
+          # ignore non-zero exit code from install-ivy
+          ant install-ivy && exit 0
+          ant
+          
+    # A step that runs tests
+    - script:
+        name: test using ant
+        code: |
+          # ignore non-zero exit code from install-ivy
+          ant test
+          
