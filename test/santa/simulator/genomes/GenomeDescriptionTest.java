@@ -77,19 +77,19 @@ public class GenomeDescriptionTest {
 		GenomeDescription gd;
 
 		// delete at end
-		gd = new GenomeDescription(GenomeDescription.root, 23, -1);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 23, -1);
 		assertEquals(23, gd.getGenomeLength());
 
 		// delete more than is available
-		gd = new GenomeDescription(GenomeDescription.root, 21, -5);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 21, -5);
 		assertEquals(21, gd.getGenomeLength());
 
 		// inserting at end
-		gd = new GenomeDescription(GenomeDescription.root, 23, 1);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 23, 1);
 		assertEquals(25, gd.getGenomeLength());
 
 		// overlapping delete at the start
-		gd = new GenomeDescription(GenomeDescription.root, 2, -4);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 2, -4);
 		assertEquals(20, gd.getGenomeLength());
 
 		Feature pol = gd.getFeature("POL");
@@ -113,13 +113,13 @@ public class GenomeDescriptionTest {
 		Feature f;
 
 		// a zero-length indel should not alter the GenomeDescription.
-		gd = new GenomeDescription(GenomeDescription.root, 3, 0);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 3, 0);
 		f = gd.getFeature("POL");
 		assertEquals(9, f.getLength());
 		f = gd.getFeature("GAG");
 		assertEquals(6, f.getLength());
 
-		gd = new GenomeDescription(GenomeDescription.root, 3, -3);
+		gd = GenomeDescription.applyIndel(GenomeDescription.root, 3, -3);
 		f = gd.getFeature("POL");
 		assertEquals(7, f.getLength());
 		f = gd.getFeature("GAG");
@@ -133,7 +133,7 @@ public class GenomeDescriptionTest {
 
 		// insert occurs before (to the left of) the features.
 		// length is not affected but coordinates are.
-		GenomeDescription gd = new GenomeDescription(GenomeDescription.root, 3, 3);
+		GenomeDescription gd = GenomeDescription.applyIndel(GenomeDescription.root, 3, 3);
 		Feature pol = gd.getFeature("POL");
 		assertEquals(9, pol.getLength());
 		assertEquals(7, pol.getFragmentStart(0));
@@ -155,7 +155,7 @@ public class GenomeDescriptionTest {
 		// insert occurs in the middle of the feature.
 		// feature gets wider and finish coordinate moves right.
 		// start coordinate stays where it is.
-		GenomeDescription gd = new GenomeDescription(GenomeDescription.root, 5, 3);
+		GenomeDescription gd = GenomeDescription.applyIndel(GenomeDescription.root, 5, 3);
 		Feature pol = gd.getFeature("POL");
 		assertEquals(12, pol.getLength());
 		assertEquals(4, pol.getFragmentStart(0));
@@ -176,7 +176,7 @@ public class GenomeDescriptionTest {
 
 		// insert occurs to the right of the feature.
 		// feature is unaffected.
-		GenomeDescription gd = new GenomeDescription(GenomeDescription.root, 15, 3);
+		GenomeDescription gd = GenomeDescription.applyIndel(GenomeDescription.root, 15, 3);
 		Feature pol = gd.getFeature("POL");
 		assertEquals(9, pol.getLength());
 		assertEquals(4, pol.getFragmentStart(0));
@@ -200,7 +200,7 @@ public class GenomeDescriptionTest {
 		// aaaaCCCCCcCCCCgg***TTTTTTaa
 		// 012345678901234567890123456
 
-		GenomeDescription gd = new GenomeDescription(GenomeDescription.root, 16, 3);
+		GenomeDescription gd = GenomeDescription.applyIndel(GenomeDescription.root, 16, 3);
 		Feature pol = gd.getFeature("POL");
 		assertEquals(9, pol.getLength());
 		assertEquals(4, pol.getFragmentStart(0));

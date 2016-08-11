@@ -89,10 +89,10 @@ public class SimpleGenomeTest {
 		sg.setSequence(seq);
 
 		// deletion ignored b/c span not integral codon length.
-		sg.delete(3, 1);
+		assertFalse(sg.delete(3, 1));
 		
 		SimpleSequence ss = (SimpleSequence) sg.getSequence();
-		assertEquals("ACG", ss.getNucleotides());
+		assertEquals("ACGT", ss.getNucleotides());
 	}
 
 	/**
@@ -105,10 +105,10 @@ public class SimpleGenomeTest {
 		Sequence seq = new SimpleSequence(nucleotides);
 		sg.setSequence(seq);
 
-		sg.delete(3, 9);
+		assertFalse(sg.delete(3, 9));
 		
 		SimpleSequence ss = (SimpleSequence) sg.getSequence();
-		assertEquals("ACG", ss.getNucleotides());
+		assertEquals("ACGT", ss.getNucleotides());
 	}
 
 	@Test

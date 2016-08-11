@@ -101,8 +101,12 @@ public class SimpleGenome extends BaseGenome {
 	/**
 	 * Deletion mutation effector function.  Deletes nucleotides at
 	 * designated position relative to start of genome.  If there are
-	 * not `count` elements beyond `position`, remove what is
-	 * available.  
+	 * fewer than `count` elements available, do not change anything
+	 * and return `false`
+
+	 * Note-to-future: If there are fewer elements available than
+	 * requested, it is important to NOT just delete what is
+	 * available.  Doing so might throw the feature out-of-frame.
 	 *
 	 * @param position non-negative integer position of first nucletide to be deleted.
 	 * @param count number of nucleotides to be deleted.

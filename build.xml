@@ -1,3 +1,35 @@
+
+
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!-- Usage:								    -->
+<!-- 									    -->
+<!-- This is an ANT configuration files.  ANT is a dependency and build	    -->
+<!-- manager for Java projects.  This config file can be used to compile    -->
+<!-- the SANTA source files and package the resulting classes into an	    -->
+<!-- executable JAR file.						    -->
+<!-- 									    -->
+<!-- Before building SANTA you will need to install JAVA 8.1 and the ANT    -->
+<!-- tool.  Installation of those tools is system-dependent and outside the -->
+<!-- scope of this description.						    -->
+<!-- 									    -->
+<!-- To resolve dependencies, compile java files, and create a jar	    -->
+<!-- file, use the command,						    -->
+<!-- 									    -->
+<!--     $ ant								    -->
+<!-- 									    -->
+<!-- The assembled jar file will be lift in 'dist/santa.jar'		    -->
+<!--     								    -->
+<!-- This configuration file may need to install a helper application,	    -->
+<!-- Ivy.  If that happens you will need to run `ant` a second time to	    -->
+<!-- complete the build.						    -->
+<!-- 									    -->
+<!-- To run SANTA unit tests,						    -->
+<!-- 									    -->
+<!--     $ ant test							    -->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+
 <project xmlns:ivy="antlib:org.apache.ivy.ant"  name="SANTA" default="dist" basedir=".">
   <description>
     build file for santa-sim
@@ -8,6 +40,9 @@
 
   <property name="lib" location="lib"/>
   <property name="dist" location="dist"/>
+  <property name="build.dir"        location="build"/>
+  <property name="classes.dir"      location="${build.dir}/classes"/>
+  <property name="resources.dir"    location="${build.dir}/lib"/>
 
   <property environment="env"/>
 
@@ -20,39 +55,31 @@
     <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"/>
     <fail message="Ivy installed  run build again"/>
   </target>
-  
-  <target name="resolve" description="retrieve dependencies with ivy">
-    <ivy:retrieve conf="sources" pattern="lib/[conf]/[artifact](-[classifier]).[ext]"/>
-    <ivy:retrieve conf="binaries" pattern="lib/[conf]/[artifact](-[classifier]).[ext]"/>
-    <ivy:cachepath pathid="default.classpath" /> 
-  </target>
+
 
   <!-- Populates a class path containing our classes and jars -->
   <path id="classpath">
     <fileset dir="${lib}" includes="**/*.jar"/>
     <pathelement path="${build}"/>
-    <path refid="default.classpath"/>
   </path>
+  
+  <target name="default"> 
+    <property environment="ENV"/> 
+    <echo> Classpath = ${toString:classpath}</echo>
+    <echo> Classpath = ${ant.refid:classpath}</echo>
+  </target> 
 
-  <target name="init" depends="resolve">
-    <!-- Create the time stamp -->
-    <tstamp/>
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${build}"/>
-    <mkdir dir="${dist}"/>
-    <mkdir dir="${lib}"/>
+  <target name="resolve" depends="install-ivy" description="Use ivy to resolve classpaths">
+    <ivy:retrieve />
   </target>
   
-  <target name="compile" depends="init">
+  <target name="compile" depends="resolve">
 
     <!-- Compile the java code from ${src} into ${build} -->
     <!-- Avoid ant warning: “'includeantruntime' was not set” -->
     <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
     <javac srcdir="${src}" destdir="${build}"
-	   includeantruntime="false" target="1.8"  source="1.8" >
-      <classpath>
-	<path refid="classpath"/>
-      </classpath>
+	   includeantruntime="false"  target="1.8"  source="1.8" >
       <compilerarg value="-Xlint:deprecation" />
       
       <include name="santa/**"/>
@@ -70,7 +97,6 @@
         <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
       </manifest>
       <zipgroupfileset dir="${lib}" includes="*.jar"/>
-      <zipgroupfileset dir="${lib}/binaries" includes="*.jar"/>
     </jar>
   </target>
 
@@ -88,7 +114,7 @@
     <mkdir dir="${test.build}"/>
 
     <javac srcdir="${test.src}" destdir="${test.build}"
-	   includeantruntime="false"  target="1.7"  source="1.7">
+	   includeantruntime="false"  target="1.8"  source="1.8">
       <classpath>
 	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
 	<pathelement path="${test.build}"/>

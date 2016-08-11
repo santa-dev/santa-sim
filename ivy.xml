@@ -8,6 +8,10 @@
   <!-- libdirectory where they are easy to find, and easy to add to classpath. -->
   <!-- http://stackoverflow.com/a/8718277/1135316 -->
   <configurations>
+    <conf name="compile" description="Required to compile application"/>
+    <conf name="runtime" description="Additional run-time dependencies" extends="compile"/>
+    <conf name="test"    description="Required for test only" extends="runtime"/>
+
     <conf name="sources"  description="Source jars"/>
     <conf name="binaries" description="binary jars"/>
   </configurations>
@@ -23,6 +27,10 @@
     <dependency org="org.apache.commons" name="commons-lang3" rev="3.4" conf="sources->sources"/>
 
     <dependency org="org.jdom" name="jdom2" rev="2.0.6" conf="binaries->default"/>
-    
+    <dependency org="org.jdom" name="jdom2" rev="2.0.6" conf="sources->sources"/>
+
+    <!-- test dependencies -->
+    <dependency org="junit" name="junit" rev="4.11" conf="binaries->default"/>
+
   </dependencies>
 </ivy-module>
