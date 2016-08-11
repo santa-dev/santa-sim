@@ -18,7 +18,7 @@
 <!-- 									    -->
 <!--     $ ant								    -->
 <!-- 									    -->
-<!-- The assembled jar file will be lift in 'dist/santa.jar'		    -->
+<!-- The assembled jar file will be left in 'dist/santa.jar'		    -->
 <!--     								    -->
 <!-- This configuration file may need to install a helper application,	    -->
 <!-- Ivy.  If that happens you will need to run `ant` a second time to	    -->
@@ -56,30 +56,46 @@
     <fail message="Ivy installed  run build again"/>
   </target>
 
+  <target name="resolve" depends="install-ivy" description="Use ivy to resolve classpaths">
+    <ivy:retrieve log="quiet"/>
+    <ivy:cachepath pathid="default.classpath" /> 
+  </target>
 
-  <!-- Populates a class path containing our classes and jars -->
+    <!-- Populates a class path containing our classes and jars -->
   <path id="classpath">
     <fileset dir="${lib}" includes="**/*.jar"/>
     <pathelement path="${build}"/>
+    <!-- Save the location where Ivy copied our resources       -->
+    <!-- We will use this later when compiling the java classes -->
+    <path refid="default.classpath"/>
   </path>
   
-  <target name="default"> 
+  <target name="default"  depends="resolve"> 
     <property environment="ENV"/> 
     <echo> Classpath = ${toString:classpath}</echo>
     <echo> Classpath = ${ant.refid:classpath}</echo>
   </target> 
 
-  <target name="resolve" depends="install-ivy" description="Use ivy to resolve classpaths">
-    <ivy:retrieve />
+
+  <target name="init" depends="resolve">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${lib}"/>
   </target>
   
-  <target name="compile" depends="resolve">
+  <target name="compile" depends="init">
 
     <!-- Compile the java code from ${src} into ${build} -->
     <!-- Avoid ant warning: “'includeantruntime' was not set” -->
     <!-- includeantruntime : See http://stackoverflow.com/a/5103432/1135316 -->
     <javac srcdir="${src}" destdir="${build}"
 	   includeantruntime="false"  target="1.8"  source="1.8" >
+      <classpath>
+	<path refid="classpath"/>
+      </classpath>
       <compilerarg value="-Xlint:deprecation" />
       
       <include name="santa/**"/>
@@ -88,8 +104,6 @@
 
   <target name="dist" depends="compile" description="generate the distribution">
     <!-- Create the distribution directory -->
-    <mkdir dir="${dist}"/>
-
     <jar jarfile="${dist}/santa.jar">
       <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
       <manifest>
@@ -98,8 +112,17 @@
       </manifest>
       <zipgroupfileset dir="${lib}" includes="*.jar"/>
     </jar>
+    <echo level="info">
+      The SANTA has been buit and packed into a self-contained executable JAR file in ${dist}/santa.jar
+      to test if the build worked, run `${dist}/santa`
+      More information on configuring SANTA can be found at http://github.com/santa-dev/santa-sim/wiki
+    </echo>
   </target>
 
+  <target name="post-build" depends="dist">
+
+  </target>
+  
   <target name="clean">
     <delete dir="${build}"/>
   </target>
@@ -124,7 +147,7 @@
       <include name="santa/**"/>
     </javac>
 
-    <junit printsummary="yes" haltonfailure="yes">
+    <junit printsummary="yes" haltonfailure="yes" filtertrace="off">
       <classpath>
 	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
 	<pathelement path="${test.build}"/>
