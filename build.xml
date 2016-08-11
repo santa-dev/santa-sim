@@ -1,38 +1,28 @@
 
-
-
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<!-- Usage:								    -->
-<!-- 									    -->
-<!-- This is an ANT configuration files.  ANT is a dependency and build	    -->
-<!-- manager for Java projects.  This config file can be used to compile    -->
-<!-- the SANTA source files and package the resulting classes into an	    -->
-<!-- executable JAR file.						    -->
-<!-- 									    -->
-<!-- Before building SANTA you will need to install JAVA 8.1 and the ANT    -->
-<!-- tool.  Installation of those tools is system-dependent and outside the -->
-<!-- scope of this description.						    -->
-<!-- 									    -->
-<!-- To resolve dependencies, compile java files, and create a jar	    -->
-<!-- file, use the command,						    -->
-<!-- 									    -->
-<!--     $ ant								    -->
-<!-- 									    -->
-<!-- The assembled jar file will be left in 'dist/santa.jar'		    -->
-<!--     								    -->
-<!-- This configuration file may need to install a helper application,	    -->
-<!-- Ivy.  If that happens you will need to run `ant` a second time to	    -->
-<!-- complete the build.						    -->
-<!-- 									    -->
-<!-- To run SANTA unit tests,						    -->
-<!-- 									    -->
-<!--     $ ant test							    -->
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-
-<project xmlns:ivy="antlib:org.apache.ivy.ant"  name="SANTA" default="dist" basedir=".">
+<project xmlns:ivy="antlib:org.apache.ivy.ant"  name="SANTA" default="post-build" basedir=".">
   <description>
-    build file for santa-sim
+This ANT config file can be used to compile
+the SANTA source files and package the resulting classes into an
+executable JAR file.
+
+Before building SANTA you will need to install JAVA 8.1 and the ANT
+tool.  Installation of those tools is system-dependent and outside the
+scope of this description.
+
+To resolve dependencies, compile java files, and create a jar
+file, use the command,
+
+    $ ant
+
+The assembled jar file will be left in 'dist/santa.jar'
+
+When run for the first time, this configuration file may install Ivy
+to help manage dependencies.  If that happens you will need to run
+`ant` a second time to complete the build.
+
+To run SANTA unit tests,
+
+    $ ant test
   </description>
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
@@ -58,6 +48,8 @@
 
   <target name="resolve" depends="install-ivy" description="Use ivy to resolve classpaths">
     <ivy:retrieve log="quiet"/>
+    <!-- Save the location where Ivy copied our resources       -->
+    <!-- We will use this later when compiling the java classes -->
     <ivy:cachepath pathid="default.classpath" /> 
   </target>
 
@@ -65,15 +57,14 @@
   <path id="classpath">
     <fileset dir="${lib}" includes="**/*.jar"/>
     <pathelement path="${build}"/>
-    <!-- Save the location where Ivy copied our resources       -->
-    <!-- We will use this later when compiling the java classes -->
+    <!-- Use the classpath defined by Ivy above -->
     <path refid="default.classpath"/>
   </path>
   
-  <target name="default"  depends="resolve"> 
+  <target name="debugging"  depends="resolve"> 
     <property environment="ENV"/> 
-    <echo> Classpath = ${toString:classpath}</echo>
-    <echo> Classpath = ${ant.refid:classpath}</echo>
+    <echo> CLASSPATH from environment = ${ENV.classpath}</echo>
+    <echo> classpath refid in ANT = ${ant.refid:classpath}</echo>
   </target> 
 
 
@@ -103,24 +94,41 @@
   </target>
 
   <target name="dist" depends="compile" description="generate the distribution">
-    <!-- Create the distribution directory -->
+
+    <!-- Build a "fat" jar that includes all dependencies in a single file.
+	 This will include dependencies directly into the JAR file. -->
     <jar jarfile="${dist}/santa.jar">
       <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
       </manifest>
-      <zipgroupfileset dir="${lib}" includes="*.jar"/>
+      <!-- Include all the .jar files in lib/, except for jar files containing source.  -->
+      <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*source*.jar"/>
     </jar>
-    <echo level="info">
-      The SANTA has been buit and packed into a self-contained executable JAR file in ${dist}/santa.jar
-      to test if the build worked, run `${dist}/santa`
-      More information on configuring SANTA can be found at http://github.com/santa-dev/santa-sim/wiki
-    </echo>
+
+    <!-- Build a a minimal jar file without dependencies.
+	 This will be smaller than the "fat" jar file above, 
+	 but depends upon CLASSPATH to find its dependencies. -->
+    <jar jarfile="${dist}/santa-minimal.jar">
+      <fileset dir="${build}" includes="**/*.class,*.properties,*.png"/>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Main-Class" value="santa.simulator.SimulatorMain"/>
+      </manifest>
+    </jar>
   </target>
 
   <target name="post-build" depends="dist">
+    <echo level="info">
+      SANTA has been packaged into a self-contained executable JAR file in ${dist}/santa.jar
 
+      Test your build with,
+          java -jar ${dist}/santa.jar  examples/neutral.xml
+      
+      More information on configuring SANTA can be found at
+      http://github.com/santa-dev/santa-sim/wiki
+    </echo>
   </target>
   
   <target name="clean">
