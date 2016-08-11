@@ -1,7 +1,7 @@
 # santa-sim
 SANTA simulates the evolution of a population of gene sequences forwards through time. It models the underlying biological processes as discrete components; replication (including recombination), mutation, fitness and selection
 
-[![wercker status](https://app.wercker.com/status/0fa06c11d47c043962dfb79cbe7a9c45/s/master "wercker status")](https://app.wercker.com/project/byKey/0fa06c11d47c043962dfb79cbe7a9c45)
+[![wercker status](https://app.wercker.com/status/0fa06c11d47c043962dfb79cbe7a9c45/s/ "wercker status")](https://app.wercker.com/project/byKey/0fa06c11d47c043962dfb79cbe7a9c45)
 
 # SANTA Overview #
 ## Population, individuals and genomes ##
