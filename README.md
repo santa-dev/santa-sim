@@ -17,7 +17,28 @@ The next generation of individuals then selects their parents from the previous 
 ### Replication ###
 Together with the mutation component, below, the replication component is analogous to the actions of a polymerase complex and produces the genetic material for a new individual from one or more parents. The simplest replicator is clonal and the descendent inherits the genome of exactly 1 parent. We also provide a recombinant replicator that models a ‘template-switching’ polymerase. For this replicator, two parents are selected and a probability is defined of the polymerase switching between the parents’ templates as replication proceeds along the genome.
 ### Mutation ###
-Although mutation also models the action of the polymerase, it is done as an independent process after replication. The user specifies a per-site, per-generation probability of mutation. The mutator component then applies mutations to the genome accordingly. For efficiency, the default mutator draws the number of mutations from a Poisson distribution with an expectation given by the number of nucleotides and the rate. These are then distributed uniformally across the sites. A bias towards transition-type mutations can be specified to reflect the action of some polymerases.
+
+Although mutation also models the action of the polymerase, it is done
+as an independent process after replication. The user specifies a
+per-site, per-generation probability of mutation. The mutator
+component then applies mutations to the genome accordingly. For
+efficiency, the default mutator draws the number of mutations from a
+Poisson distribution with an expectation given by the number of
+nucleotides and the rate. These are then distributed uniformally
+across the sites. A bias towards transition-type mutations can be
+specified to reflect the action of some polymerases.
+
+In addition to substitution mutations, the user may also configure
+indel processes that change the length of a simulated genome.  It is
+assumed that frame-shifting a genome is nearly always fatal so only
+whole-codon indels are permitted.  Independent proability
+distributions control the frequency of insertions and deletions, and
+another distribution controls the length of the indel.  When indels
+overlap regions on which fitness functions are defined, the regions
+may grow or shrink, or even become fragmented.  As with
+substitution mutations, indels will affect subsequent generations of
+the lineage but will not affect sibling lineages.
+
 ### Sampling and statistics ###
 At predefined time-points or intervals, SANTA can be asked to report statistics about the current population, including average fitness, genetic diversity and number of unique genomes. A random sample of individuals of a specified size can also be taken and the genomic sequences recorded as a nucleotide or amino acid alignment for use in other software. Finally, it is possible for SANTA to keep track of the genealogy of the entire population and then provide the tree of the individuals sampled. This option has significant implications in terms of efficiency and memory requirements.
 ## Implementation details ##
