@@ -4,7 +4,7 @@
 # The purpose of continuous integration builds is to test the software after every change.
 # This configration file can also be an good source of instructions for how to actually build
 
-# when considering using the wercvker cache directory to store dependencies,
+# Consider using wercker cache directory to store Ivy dependencies,
 # -Dmaven.repo.local=${WERCKER_CACHE_DIR}
 
 
@@ -39,6 +39,5 @@ build:
     - script:
         name: test using ant
         code: |
-          # ignore non-zero exit code from install-ivy
           ant test
           
