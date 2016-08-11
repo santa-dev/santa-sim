@@ -1,6 +1,8 @@
 # santa-sim
 SANTA simulates the evolution of a population of gene sequences forwards through time. It models the underlying biological processes as discrete components; replication (including recombination), mutation, fitness and selection
 
+[![wercker status](https://app.wercker.com/status/0fa06c11d47c043962dfb79cbe7a9c45/s/master "wercker status")](https://app.wercker.com/project/byKey/0fa06c11d47c043962dfb79cbe7a9c45)
+
 # SANTA Overview #
 ## Population, individuals and genomes ##
 The population in SANTA consists of individual organisms each of which contains a genome. The genome is a linear sequence of nucleotides but this can be specified as coding for amino acids and it can be partitioned with different modes and degrees of selection. Each individual stores its total fitness and other statistics that may be of interest such as the number of offspring. At present the program simulates only haploid populations and is ideal for simulating simple microorganisms such as viruses and bacteria and eukaryote organelles such as mitochondria.
