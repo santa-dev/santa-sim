@@ -147,11 +147,6 @@ CAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAG
       	  <label>genome_%g_%s</label>
       	</genomedescription>
       </sampler>
-      <sampler>
-        <atFrequency>1</atFrequency>
-        <fileName>stats_%r.csv</fileName>
-        <statistics />
-    </sampler>
     </samplingSchedule>
 
     <eventLogger>
