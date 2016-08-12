@@ -10,6 +10,7 @@ import santa.simulator.genomes.*;
 
 import java.util.Arrays;
 import java.util.Set;
+import static java.lang.System.arraycopy;
 
 public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFactor {
 
@@ -25,10 +26,19 @@ public abstract class AbstractSignatureFitnessFactor extends AbstractFitnessFact
 	protected Signature createSignature(byte[] sequence) {
 		byte state[] = new byte[getSites().size()];
 		int i = 0;
-		for (Integer site : getSites()) {
-			state[i++] = sequence[site];
-		}
 
+		try {
+			for (Integer site : getSites()) {
+				state[i++] = sequence[site];
+			}
+		} catch(IndexOutOfBoundsException e) {
+			// catch IndexOutOfBoundsException b/c indels may have
+			// caused shifted/shrunk underlying sequence.
+			// The signature will be smaller than anticipated.
+			byte temp[] = new byte[i];
+			arraycopy(state, 0, temp, 0, i);
+			state = temp;
+		}
 		return new Signature(state);
 	}
 
