@@ -1235,13 +1235,13 @@ public class SimulatorParser {
 	 * @return the number list
 	 * @throws ParseException
 	 */
-	public static double[] parseNumberList(Element element) throws ParseException {
+	public double[] parseNumberList(Element element) throws ParseException {
 		String text = element.getTextNormalize();
 		String[] values = text.split("\\s*,\\s*|\\s+");
 		double[] numbers = new double[values.length];
 		for (int i = 0; i < numbers.length; i++) {
 			try {
-				numbers[i] = Double.parseDouble(values[i]);
+				numbers[i] = Double.parseDouble(substituteParameter(values[i]));
 			} catch (NumberFormatException e1) {
 				throw new ParseException("content of <" + element.getName() + "> is not a number");
 			}
@@ -1387,7 +1387,7 @@ public class SimulatorParser {
 		modelName = element.getAttributeValue(MODEL);
 		if (modelName.equalsIgnoreCase("NB")) {
 			// Parse Negative binomial model
-			double insertParams[] = SimulatorParser.parseNumberList(element);
+			double insertParams[] = parseNumberList(element);
 			if (insertParams.length != 2) {
 				throw new ParseException("expected 2 insertion process parameters, got " + insertParams.length);
 			}
