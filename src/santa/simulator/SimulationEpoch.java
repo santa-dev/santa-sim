@@ -15,12 +15,16 @@ import santa.simulator.samplers.SamplingSchedule;
 
 import java.util.logging.Logger;
 
+import static santa.simulator.Simulator.readableByteCount;
+import static santa.simulator.Simulator.usedMemory;
+
 public class SimulationEpoch {
     private String name;
     private int generationCount;
     private FitnessFunction fitnessFunction;
     private Mutator mutator;
     private Replicator replicator;
+	private static Logger memlogger = Simulator.memlogger;
 
     public SimulationEpoch(String name, int generationCount,
             FitnessFunction fitnessFunction, Mutator mutator,
@@ -32,19 +36,6 @@ public class SimulationEpoch {
         this.replicator = replicator;
     }
 
-	private static long usedMemory() {
-        Runtime rt = Runtime.getRuntime();
-        return (rt.totalMemory() - rt.freeMemory());
-    }    
-
-	public static String humanReadableByteCount(long bytes) {
-		int unit = 1024;
-		if (bytes < unit) return bytes + " B";
-		int exp = (int) (Math.log(bytes) / Math.log(unit));
-		String pre = ("KMGTPE").charAt(exp-1) + ("i");
-		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-	}
-	
     public int run(Simulation simulation, Logger logger, int startGeneration) {
         System.err.println("Starting epoch: " + (name != null ? name : "(unnamed)"));
 
@@ -54,9 +45,7 @@ public class SimulationEpoch {
 
         final int endGeneration = startGeneration + generationCount;
 
-		System.gc();
-		long usedMemoryBefore = usedMemory();
-		logger.fine("@start of Epoch Memory used = " + humanReadableByteCount(usedMemoryBefore) + "MB");
+		memlogger.fine("@start of Epoch Memory used = " + readableByteCount(usedMemory()));
 
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
             EventLogger.setEpoch(generation);
@@ -83,9 +72,8 @@ public class SimulationEpoch {
                 if (population.getPhylogeny() != null)
                     population.getPhylogeny().pruneDeadLineages();
 
-				System.gc();
-				long usedMemoryAfter = usedMemory();
-				logger.fine("Generation "+generation+" Memory change: " + humanReadableByteCount(usedMemoryAfter-usedMemoryBefore));
+				memlogger.finest("Generation "+ generation +
+							   " used memory: " + readableByteCount(usedMemory()));
 
                 System.err.print("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
                         ", distance = " + population.getMeanDistance() +

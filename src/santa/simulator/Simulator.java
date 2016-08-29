@@ -23,10 +23,20 @@ public class Simulator {
         this.simulation = simulation;
     }
 
-    private long usedMemory() {
+	public static long usedMemory() {
         Runtime rt = Runtime.getRuntime();
-        return (rt.totalMemory() - rt.freeMemory()) / (1024*1024);
+        return (rt.totalMemory() - rt.freeMemory());
     }    
+
+
+	public static String readableByteCount(long bytes) {
+		int unit = 1024;
+		if (bytes < unit) return bytes + " B";
+		int exp = (int) (Math.log(bytes) / Math.log(unit));
+		String pre = ("KMGTPE").charAt(exp-1) + ("i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+	
 
     public void run() {
 
@@ -34,7 +44,7 @@ public class Simulator {
 		
 		System.gc();
 		long usedMemoryBefore = usedMemory();
-		memlogger.fine("Initial memory used: " + usedMemoryBefore + "MB");
+		memlogger.fine("Initial memory used: " + readableByteCount(usedMemoryBefore));
 
         for (int replicate = 0; replicate < replicateCount; replicate++) {
 
@@ -46,8 +56,8 @@ public class Simulator {
 
 			System.gc();
 			long usedMemoryAfter = usedMemory();
-            memlogger.fine("Memory used = " + usedMemoryAfter + "MB");
-		    memlogger.fine("Memory increase: " + (usedMemoryAfter-usedMemoryBefore));
+            memlogger.fine("Memory used = " + readableByteCount(usedMemoryAfter));
+		    memlogger.fine("Memory change: " + readableByteCount(usedMemoryAfter-usedMemoryBefore));
 
         }   
 
