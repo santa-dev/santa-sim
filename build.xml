@@ -1,9 +1,8 @@
 
 <project xmlns:ivy="antlib:org.apache.ivy.ant"  name="SANTA" default="post-build" basedir=".">
   <description>
-This ANT config file can be used to compile
-the SANTA source files and package the resulting classes into an
-executable JAR file.
+This ANT config file can be used to compile the SANTA source files and
+package the resulting classes into an executable JAR file.
 
 Before building SANTA you will need to install JAVA 8.1 and the ANT
 tool.  Installation of those tools is system-dependent and outside the
