@@ -1363,6 +1363,10 @@ public class SimulatorParser {
 					throw new ParseException("specify either <" + TRANSITION_BIAS + "> or <" + RATE_BIAS + ">, but not both.");
 				}
 
+				if (transitionBias == -1 && rateBiases == null) {
+					throw new ParseException("must specify one of <" + TRANSITION_BIAS + "> or <" + RATE_BIAS + ">.");
+				}
+
 				// insert and delete probability default to 0 if left unspecificed.
 				if (insertProb < 0) insertProb = 0;
 				if (deleteProb < 0) deleteProb = 0;
