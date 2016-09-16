@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -521,6 +522,7 @@ public class SimulatorParser {
 		String name = null;
 		Feature.Type type = Feature.Type.NUCLEOTIDE;
 		String sites = null;
+		List<String> parts = new ArrayList<String>();
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
@@ -539,6 +541,7 @@ public class SimulatorParser {
 				}
 			} else if (e.getName().equals(COORDINATES)) {
 				sites = e.getTextNormalize();
+				parts = Arrays.asList(sites.split(","));
 			} else {
 				throw new ParseException("Error parsing <" + element.getName()
 						+ "> element: <" + e.getName() + "> is unrecognized");
@@ -547,11 +550,9 @@ public class SimulatorParser {
 
 		Feature feature = new Feature(name, type);
 
-		String[] parts = sites.split(",");
-
 		try {
-			for (int i = 0; i < parts.length; ++i) {
-				String part = parts[i].trim();
+			for (String part: parts) {
+				part = part.trim();
 
 				if (part.contains("-")) {
 					String[] ranges = part.split("-");
