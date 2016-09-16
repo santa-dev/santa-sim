@@ -154,7 +154,7 @@ To run SANTA unit tests,
       <include name="santa/**"/>
     </javac>
 
-    <junit printsummary="yes" haltonfailure="yes" filtertrace="off">
+    <junit printsummary="yes" haltonfailure="yes" filtertrace="off" showoutput="true">
       <classpath>
 	<fileset dir="${test.src}/lib" includes="**/*.jar"/>
 	<pathelement path="${test.build}"/>
@@ -162,10 +162,6 @@ To run SANTA unit tests,
       </classpath>
 
       <formatter type="plain"/>
-
-      <test name="my.test.TestCase" haltonfailure="no" outfile="result">
-	<formatter type="xml"/>
-      </test>
 
       <batchtest fork="yes" todir="${test.reports}">
 	<fileset dir="${test.src}" includes="**/*.java"/>
