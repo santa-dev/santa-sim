@@ -77,7 +77,7 @@ public abstract class Population {
             // ancestors[0] = genePool.createGenome(sequence);
         }
 
-        if (inoculum.size() <= initialPopulationSize) {
+        if (ancestors.length >= initialPopulationSize) {
             // Allow experimenting with deterministic initial populations.
             // If the inoculum is the same size or greater than the population,
             // use the supplied inoculum as the complete population without any random selection.
