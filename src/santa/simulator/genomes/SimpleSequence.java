@@ -15,9 +15,14 @@ import java.util.SortedSet;
  * A genomic mutable sequence.
  */
 public final class SimpleSequence implements Sequence {
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+
 	/*
-		 * Internal representation: every byte corresponds to a nucleotide.
-		 */
+	 * Internal representation: every byte corresponds to a nucleotide.
+	 */
 	private byte states[];
 
 	/**
@@ -70,6 +75,35 @@ public final class SimpleSequence implements Sequence {
 		states = new byte[length];
 
 		copyNucleotides(0, other, start, length);
+	}
+
+	/* Override hashCode() and equals() so Sequence instamces can be
+	   used as keys in hash collections,
+	   e.g. Population::initialize().
+	*/
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(states);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SimpleSequence other = (SimpleSequence) obj;
+		if (!Arrays.equals(states, other.states))
+			return false;
+		return true;
 	}
 
 	public Sequence getSubSequence(int start, int length) {
