@@ -11,7 +11,9 @@ package santa.simulator.population;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.Map;
 
 import santa.simulator.NotImplementedException;
 import santa.simulator.Random;
@@ -32,16 +34,16 @@ import santa.simulator.selectors.Selector;
  *         Time: 9:12:27 AM
  */
 public abstract class Population {
-    
+
     public int getPopulationSize() {
         return getCurrentGeneration().size();
     }
-    
+
     public Population(GenePool genePool, Selector selector, Phylogeny phylogeny) {
         this.phylogeny = phylogeny;
         this.genePool = genePool;
         this.selector = selector;
-        
+
         lastGeneration = new ArrayList<Virus>();
         currentGeneration = new ArrayList<Virus>();
     }
@@ -53,11 +55,18 @@ public abstract class Population {
         currentGeneration.clear();
         lastGeneration.clear();
         if (inoculum.size() > 0) {
-            // inoculum has sequences
+            //  Build `ancestors` array holding Genomes corresponding to each entry in the
+            // inoculum.  Identical sequences share a single Genome instance (via the HashMap).
+            Map<Sequence,Genome> seqmap = new HashMap<Sequence,Genome>();
             ancestors = new Genome[inoculum.size()];
             for (int i = 0; i < ancestors.length; i++) {
-                Sequence sequence = inoculum.get(i);
-                ancestors[i] = genePool.createGenome(sequence);
+                Sequence s = inoculum.get(i);
+                Genome g = seqmap.get(s);
+                if (g == null) {
+                    g = genePool.createGenome(s);
+                    seqmap.put(s, g);
+                }
+                ancestors[i] = g;
             }
         } else {
             throw new NotImplementedException();
@@ -68,7 +77,17 @@ public abstract class Population {
             // ancestors[0] = genePool.createGenome(sequence);
         }
 
-        if (ancestors.length > 1) {
+        if (ancestors.length >= initialPopulationSize) {
+            // Allow experimenting with deterministic initial populations.
+            // If the inoculum is the same size or greater than the population,
+            // use the supplied inoculum as the complete population without any random selection.
+            for (int i = 0; i < initialPopulationSize; i++) {
+                Genome ancestor = ancestors[i];
+                currentGeneration.add(new Virus(ancestor, null));
+                lastGeneration.add(new Virus());
+                ancestor.incrementFrequency();
+            }
+        } else if (ancestors.length > 1) {
             for (int i = 0; i < initialPopulationSize; i++) {
                 Genome ancestor = ancestors[Random.nextInt(0, ancestors.length - 1)];
                 currentGeneration.add(new Virus(ancestor, null));
