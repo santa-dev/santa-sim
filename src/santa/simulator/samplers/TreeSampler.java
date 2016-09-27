@@ -107,12 +107,23 @@ public class TreeSampler implements Sampler {
 	}
 
 	public void cleanUp() {
-		try {
-			if (trees.size() > 0) {
+		if (trees.size() > 0) {
+			try {
 				exporter.exportTrees(trees);
+			} catch (IllegalArgumentException e) {
+				// Catch an exception thrown by the JEBL library
+				// when NEXUS tip labels differ across trees.
+				if (format == TreeSampler.Format.NEXUS) {
+					String msg = "Error: Cannot output NEXUS formatted trees.\n"
+						+ "NEXUS-format trees must share a single set of tip labels across all trees.\n"
+						+ "It is best to avoid using '%g' or '%r'in the the NEXUS tip labels of yourt SANTA config file.\n";
+					System.err.print(msg);
+				} else {
+					throw e;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		destination.close();
