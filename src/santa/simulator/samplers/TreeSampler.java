@@ -118,6 +118,7 @@ public class TreeSampler implements Sampler {
 						+ "NEXUS-format trees must share a single set of tip labels across all trees.\n"
 						+ "It is best to avoid using '%g' or '%r'in the the NEXUS tip labels of yourt SANTA config file.\n";
 					System.err.print(msg);
+					throw new RuntimeException("Cannot use variable tip labels");
 				} else {
 					throw e;
 				}
