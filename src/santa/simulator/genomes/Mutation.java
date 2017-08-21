@@ -8,13 +8,10 @@
  */
 package santa.simulator.genomes;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import santa.simulator.genomes.Genome;
-import santa.simulator.genomes.StateChange;
-
 import org.apache.commons.lang3.Range;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
