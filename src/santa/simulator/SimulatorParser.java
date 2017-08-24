@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
+
 import org.jdom2.Element;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
@@ -53,6 +54,7 @@ import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
 import santa.simulator.samplers.GenomeDescriptionSampler;
 import santa.simulator.IndelModel;
+import santa.simulator.selectors.DynamicSelector;
 
 /**
  * @author Andrew Rambaut
@@ -87,6 +89,9 @@ public class SimulatorParser {
 	private final static String INOCULUM_RANDOM = "random";
 	private final static String INOCULUM_ALL = "all";
 
+	private final static String GROWTH_MODEL = "growthModel";
+	private final static String GROWTH_RATE = "growthRate";
+	private final static String CARRYING_POPULATION = "carryingPopulation";
 	
 	private final static String GENOME_DESCRIPTION = "genome";
 	private final static String GENOME_LENGTH = "length";
@@ -343,6 +348,7 @@ public class SimulatorParser {
 					!e.getName().equals(EVENT_LOGGER) &&
 					!e.getName().equals(EPOCH) &&
 					!e.getName().equals(POPULATION_TYPE) &&
+                    !e.getName().equals(GROWTH_MODEL) &&
 					!e.getName().equals(RECOMBINATION_HOTSPOTS)) {
 				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
 			}
@@ -365,6 +371,7 @@ public class SimulatorParser {
 		Replicator defaultReplicator = null;
 		
 		String populationType = null;
+        DynamicSelector dynamicSelector = null;
 
 		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
 		
@@ -388,7 +395,9 @@ public class SimulatorParser {
 				populationType = (String) e.getTextNormalize();
 			} else if (name.equals(REPLICATOR)) {
 				defaultReplicator = parseReplicator(e);
-			} 
+			} else if (name.equals(GROWTH_MODEL)) {
+                dynamicSelector = parseGrowthModel(e);
+            }
 		}
 
 		if (samplingSchedule == null)
@@ -428,11 +437,38 @@ public class SimulatorParser {
 		
 		if (populationType.equals(STATIC_POPULATION))
 			return new  Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
-		else if (populationType.equals(DYNAMIC_POPULATION))
-			return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
-		else throw new ParseException("unrecognized populatioin type. should be either staticPopulation or dynamicPopulation.");
+		else if (populationType.equals(DYNAMIC_POPULATION)) {
+		    if (dynamicSelector == null) {
+                return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
+            } else {
+		        return new Simulation(populationSize, dynamicSelector, inoculumType, genePool, epochs, samplingSchedule);
+            }
+		}
+		else throw new ParseException("unrecognized population type. should be either staticPopulation or dynamicPopulation.");
 		
 	}
+
+	DynamicSelector parseGrowthModel(Element element) throws ParseException {
+	    double growthRate = -1;
+	    double carryingPopulation = -1;
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            if (e.getName().equals(GROWTH_RATE)) {
+                growthRate = Double.parseDouble(e.getTextNormalize());
+            } else if (e.getName().equals(CARRYING_POPULATION)) {
+                carryingPopulation = Double.parseDouble(e.getTextNormalize());
+            } else {
+                throw new ParseException("Error parsing <" + GROWTH_MODEL + "> element: unknown XML element within " + GROWTH_MODEL);
+            }
+        }
+
+        if (growthRate != -1 && carryingPopulation != -1) {
+            return new DynamicSelector(growthRate, carryingPopulation);
+        } else {
+            return null;
+        }
+
+    }
 	
 	SimulationEpoch parseSimulationEpoch(Element element,
 	                                     FitnessFunction fitnessFunction, Mutator mutator,

@@ -56,6 +56,25 @@ public class Simulation {
 
         population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
+
+    //Default constructor (dynamic)
+    public Simulation (
+            int populationSize,
+            DynamicSelector dynamicSelector,
+            InoculumType inoculumType,
+            GenePool genePool,
+            List<SimulationEpoch> epochs,
+            SamplingSchedule samplingSchedule) {
+
+        this.populationSize = populationSize;
+        this.inoculumType = inoculumType;
+        this.epochs = epochs;
+        this.samplingSchedule = samplingSchedule;
+        this.genePool = genePool;
+        this.selector = dynamicSelector;
+
+        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+    }
  
     //Constructor for static population
     public Simulation (
