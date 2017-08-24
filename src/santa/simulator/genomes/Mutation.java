@@ -8,10 +8,10 @@
  */
 package santa.simulator.genomes;
 
-import org.apache.commons.lang3.Range;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+
+import org.apache.commons.lang3.Range;
 
 
 /**
