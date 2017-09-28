@@ -32,42 +32,9 @@ example to bind the value '10000' to parameter 'generations':
 java -jar path/to/santa.jar -generations=10000 path/to/simulation_config.xml
 ```
 
-## Build instructions
+## Building from the source code
 
-### Install Java 8
-
-You must have Java 8 installed in order to build or run
-SANTA. On Linux, you can install the latest [JRE 8 from Oracle](https://www.java.com/en/download/help/linux_x64_install.xml) or the
-latest [OpenJDK](http://openjdk.java.net/install/).  Under MacOS you can install the official [JRE 8 from Oracle](https://www.java.com/en/download/help/mac_install.xml), but I would reccomend installing Java via
-[Homebrew](http://brew.sh/).  We have not tested SANTA on Windows recently, but it
-should work.  Start by installing the latest [JRE 8 for Windows from Oracle](https://www.java.com/en/download/help/windows_manual_download.xml).
-
-### Install Ant
-
-You will also need to install Apache Ant 1.8 or later to build SANTA.
-If you do not have ant on your machine you should follow the
-instructions at:
-
-http://ant.apache.org/manual/install.html
-
-### Clone the source repository from Github.
-
-On the command line, enter:
-```
-git clone --depth 1 https://github.com/santa-dev/santa-sim.git
-```
-
-### Building the project
-
-When building for the first time, you'll need to have an internet connection, because additional files need to be downloaded.
-
-Change to the directory where you cloned SANTA, and type:
-
-```
-ant dist
-```
-
-A directory called dist will be created which contains the file `santa.jar`
+Please consult the detailed procedure on [the documentation page](https://github.com/santa-dev/santa-sim/wiki/Documentation) if you intend to build the project from the source code.
 
 ## Performance measures
 
