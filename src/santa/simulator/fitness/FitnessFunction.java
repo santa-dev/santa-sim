@@ -82,7 +82,14 @@ public final class FitnessFunction	{
 
 				for (StateChange change : changes) {
 					double delta = factor.getLogFitnessChange(change);
-					contrib += delta;
+					//handling rare cases of +Inf -Inf sum which could happen due to out of precision values
+					if ((Double.isInfinite(delta) && Double.isInfinite(contrib)) && ((delta > 0 && contrib < 0) || (delta < 0 && contrib > 0))) {
+						System.err.println("SS");
+						contrib = 0;
+					}
+					else{
+						contrib += delta;
+					}
 				}
 			}
 
