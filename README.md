@@ -183,6 +183,6 @@ researchers.
   * Population subdivision/migration. This can be modeled by allowing
     new individuals to select parents non-uniformly from individuals
     in more than one deme.
-  * (✓ This has been implemented already) Population-size change. Non-constant demographic functions, such
+  * (✓ Logistic growth has been implemented) Population-size change. Non-constant demographic functions, such
     as logistic shapes or bottlenecks will be easily implemented our
     existing framework.
