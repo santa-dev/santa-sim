@@ -15,6 +15,7 @@ import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.selectors.DynamicSelector;
 import santa.simulator.selectors.Selector;
 import santa.simulator.selectors.SimpleRouletteWheelSelector;
+import santa.simulator.selectors.BinarySearchSelector;
 
 /**
  * @author Andrew Rambaut
@@ -90,8 +91,8 @@ public class Simulation {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-        this.selector = new SimpleRouletteWheelSelector();
-
+        this.selector = new BinarySearchSelector();
+//        this.selector = new SimpleRouletteWheelSelector();
         population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
 
     }
