@@ -7,11 +7,11 @@ mutation, fitness and selection
 
 [![wercker status](https://app.wercker.com/status/0fa06c11d47c043962dfb79cbe7a9c45/s/ "wercker status")](https://app.wercker.com/project/byKey/0fa06c11d47c043962dfb79cbe7a9c45)
 
-In this readme file a rather general overview about the software and its usage is presented. For more detailed information please consult [the documentation page](https://github.com/santa-dev/santa-sim/wiki/Documentation).
+This readme file provides a general overview about the software and its usage. For more detailed information please consult [the documentation page](https://github.com/santa-dev/santa-sim/wiki/Documentation) of the wiki page.
 
 ## Usage
 
-You need to have java 8 installed in order to use SANTA. A pre-built jar executable file is located in the folder 'dist'. The parameters defining the simulation are introduced in a simulation xml file. Examples of such files are in the folder 'examples'. 
+You need to have java 8 installed in order to use SANTA. A pre-built jar executable file is located in the folder 'dist'. The parameters defining the simulation are introduced in a simulation xml file. Examples of such files are locaded in the folder 'examples'. 
 
 In order to invoke the software run the following command
 ```{r, engine='bash', invoke santa}
@@ -19,9 +19,9 @@ java -jar /path/to/santa.jar /path/to/simulation_config.xml
 ```
 ### Simulation configuration XML File
 
-All properties of a simulation, including definition of the initial
+All properties of a simulation, including the definition of the initial
 population, fitness functions, replication and mutation operators, and
-sampling schema, is defined in the input XML file. Consult [the wiki page of SANTA](https://github.com/abbasjariani/santa-sim/wiki) to understand the variables in this file and how to work with them. Looking at the example input XML files provided in the folder 'examples/' would help you understand the logic easier.
+sampling schema, are defined in the input XML file. Consult [the wiki page of SANTA](https://github.com/abbasjariani/santa-sim/wiki) to understand the variables in this file and how to work with them. Looking at the example input XML files provided in the folder 'examples/' would help you understand the logic easier.
 
 ### Command-line options
 
