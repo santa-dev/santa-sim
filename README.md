@@ -17,6 +17,7 @@ In order to invoke the software run the following command
 ```{r, engine='bash', invoke santa}
 java -jar /path/to/santa.jar /path/to/simulation_config.xml
 ```
+Pre-compiled executable 'santa.jar' is inside the 'dist' folder of the project. 
 ### Simulation configuration XML File
 
 All properties of a simulation, including the definition of the initial
