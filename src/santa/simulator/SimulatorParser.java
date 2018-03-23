@@ -27,7 +27,7 @@ import santa.simulator.fitness.ExposureDependentFitnessFactor;
 import santa.simulator.fitness.FitnessFactor;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.fitness.FrequencyDependentFitnessFactor;
-import santa.simulator.fitness.NoFitnessFactor;
+//import santa.simulator.fitness.NoFitnessFactor;
 import santa.simulator.fitness.PopulationSizeDependentFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessModel;
@@ -84,6 +84,8 @@ public class SimulatorParser {
 	private final static String POPULATION_TYPE = "populationType";
 	private final static String STATIC_POPULATION = "staticPopulation";
 	private final static String DYNAMIC_POPULATION = "dynamicPopulation";
+        private final static String MAX_POPULATION_SIZE = "maxPopulationSize";
+        
 	
 	private final static String RECOMBINATION_HOTSPOTS = "recombinationHotSpots";
 	private final static String RECOMBINATION_HOTSPOT = "recombinationHotSpot";
@@ -149,7 +151,7 @@ public class SimulatorParser {
 	private final static String EMPIRICAL_FITNESS_FUNCTION = "empiricalFitness";
 	private final static String POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION = "populationSizeDependentFitness";
 	private final static String MAX_POP_SIZE = "maxPopulationSize";
-        private final static String NO_FITNESS_FUNCTION = "noFitness";
+//        private final static String NO_FITNESS_FUNCTION = "noFitness";
 
 	private final static String MUTATOR = "mutator";
 	private final static String REPLICATOR = "replicator";
@@ -352,6 +354,8 @@ public class SimulatorParser {
     Compartment parseCompartment(Element element) throws ParseException {
         Compartment.InoculumType inoculumType = Compartment.InoculumType.NONE;
         int populationSize = -1;
+        int maxPopulationSize = -1;
+        double growthRate = -1;
 
 		boolean genomeDescription = false;
 		for (Object o : element.getChildren()) {
@@ -376,6 +380,20 @@ public class SimulatorParser {
                                         case POPULATION_SIZE:
                                             try {
                                                 populationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                                            } catch (ParseException pe) {
+                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                                            }
+                                            break;
+                                        case MAX_POPULATION_SIZE:
+                                            try {
+                                                maxPopulationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                                            } catch (ParseException pe) {
+                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                                            }
+                                            break;
+                                        case GROWTH_RATE:
+                                            try {
+                                                growthRate = parseDouble(e1, 0, Double.MAX_VALUE);
                                             } catch (ParseException pe) {
                                                 throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
                                             }
@@ -518,7 +536,7 @@ public class SimulatorParser {
 		
             switch (populationType) {
                 case STATIC_POPULATION:
-                    return new  Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
+                    return new  Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType, growthRate, maxPopulationSize);
                 case DYNAMIC_POPULATION:
                     if (dynamicSelector == null) {
                         return new Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule);
@@ -778,9 +796,9 @@ public class SimulatorParser {
                         case POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION:
                             factor = parsePopulationSizeDependentFitnessFunction(e);
                             break;
-                        case NO_FITNESS_FUNCTION:
-                            factor = parseNoFitnessFunction(e);
-                            break;
+//                        case NO_FITNESS_FUNCTION:
+//                            factor = parseNoFitnessFunction(e);
+//                            break;
                         default:
                             throw new ParseException("Error parsing <" + element.getName()
                                     + "> element: <" + e.getName() + "> is unrecognized");
@@ -911,9 +929,9 @@ public class SimulatorParser {
 		return new PopulationSizeDependentFitnessFactor((int) maxPopSize, declineRate, factor.feature, factor.sites);
 	}
         
-        private FitnessFactor parseNoFitnessFunction(Element element) throws ParseException {
-            return new NoFitnessFactor();
-        }
+//        private FitnessFactor parseNoFitnessFunction(Element element) throws ParseException {
+//            return new NoFitnessFactor();
+//        }
 
 	/**
 	 * @param element

@@ -10,6 +10,8 @@ import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.population.DynamicPopulation;
+import santa.simulator.population.ExponentialPopulation;
+import santa.simulator.population.LogisticPopulation;
 import santa.simulator.population.Population;
 import santa.simulator.population.StaticPopulation;
 import santa.simulator.samplers.SamplingSchedule;
@@ -87,7 +89,9 @@ public class Compartment {
             GenePool genePool,
             List<CompartmentEpoch> epochs,
             SamplingSchedule samplingSchedule,
-            String populationType){
+            String populationType,
+            double growthRate,
+            int maxPopulationSize){
 	
         this.name = name;
     	this.populationSize = populationSize;
@@ -97,7 +101,18 @@ public class Compartment {
         this.genePool = genePool;
         this.selector = new BinarySearchSelector();
 //        this.selector = new SimpleRouletteWheelSelector();
-        population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+        switch (populationType) {
+            case "exponential":
+                population = new ExponentialPopulation(populationSize, growthRate, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+                break;
+            case "logistic":
+                population = new LogisticPopulation(populationSize, (int)growthRate, maxPopulationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+                break;
+            default:
+                population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+                break;
+        }
+        
 
     }
     
@@ -129,7 +144,7 @@ public class Compartment {
             default:
                 break;
         }
-        population.initialize(inoculum, populationSize);
+        population.initialize(inoculum, getPopulationSize());
     }
     
     public void cleanup(int replicate, Logger logger) {
@@ -156,6 +171,8 @@ public class Compartment {
     }
 
     public int getPopulationSize() {
+        populationSize = population.getPopulationSize();
+        
         return populationSize;
     }
 
