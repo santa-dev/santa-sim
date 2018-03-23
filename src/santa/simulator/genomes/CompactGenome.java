@@ -174,4 +174,13 @@ public class CompactGenome extends BaseGenome {
 
     private static Sequence masterSequence = null;
     
+    @Override
+    public Genome copy() {
+        CompactGenome g = new CompactGenome();
+        
+        this.baseCopy(g);
+        g.applyMutations(this.mutations);
+
+        return g;
+    }
 }

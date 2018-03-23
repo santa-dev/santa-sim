@@ -134,6 +134,15 @@ public class SimpleGenome extends BaseGenome {
 	public boolean insert(int position, SimpleSequence seq) {
 		return sequence.insertSequence(position, seq);
 	}
+        
+        public Genome copy() {
+            SimpleGenome g = new SimpleGenome();
+        
+            this.baseCopy(g);
+            g.sequence = new SimpleSequence(this.sequence);
+            
+            return g;
+        }
 
 	// private members
 

@@ -56,5 +56,7 @@ public interface Genome {
 
 	GenomeDescription getDescription();
 	void setDescription(GenomeDescription gd);
+        
+    Genome copy();
 
 }

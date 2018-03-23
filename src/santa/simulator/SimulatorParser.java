@@ -1,6 +1,7 @@
 
 package santa.simulator;
 
+import santa.simulator.compartments.CompartmentEpoch;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +18,8 @@ import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
 
 import org.jdom2.Element;
+import santa.simulator.compartments.Compartment;
+import santa.simulator.compartments.Compartments;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
 import santa.simulator.fitness.BetaDistributedPurifyingFitnessModel;
@@ -53,7 +56,6 @@ import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
 import santa.simulator.samplers.GenomeDescriptionSampler;
-import santa.simulator.IndelModel;
 import santa.simulator.selectors.DynamicSelector;
 
 /**
@@ -68,7 +70,10 @@ public class SimulatorParser {
 	private final static String REPLICATE_COUNT = "replicates";
 
 	private final static String SIMULATION = "simulation";
-
+        
+        private final static String COMPARTMENT = "compartment";
+        private final static String TRANSFER_RATES = "transferRates";
+        
 	private final static String EPOCH = "epoch";
 	private final static String NAME = "name";
 	private final static String GENERATION_COUNT = "generationCount";
@@ -193,7 +198,7 @@ public class SimulatorParser {
 	/*
 	 * Object Cache methods
 	 */
-	private Map<String, Object> objectIdMap = new HashMap<String, Object>();
+	private Map<String, Object> objectIdMap = new HashMap<>();
 
     private Object lookupObjectById(String id, Class<? extends Object> expectedType) throws ParseException {
 		
@@ -290,12 +295,61 @@ public class SimulatorParser {
 		return simulator;
 	}
 
-	//Default populationType is dynamicPopulation but in the xml file static population could be selected
-	Simulation parseSimulation(Element element) throws ParseException {
-
-		Simulation.InoculumType inoculumType = Simulation.InoculumType.NONE;
-
-		int populationSize = -1;
+    Simulation parseSimulation(Element element) throws ParseException {
+        Compartments compartments = null;
+        ArrayList<Compartment> compartmentList = new ArrayList<>();
+        
+        Element e = element.getChildren().get(0);
+        switch (e.getName()) {
+            case COMPARTMENT:
+            case TRANSFER_RATES:
+                break;
+            default:
+                double[] transferRates = {1};
+                
+                compartmentList.add(parseCompartment(element));
+                compartments = new Compartments(compartmentList, transferRates);
+                
+                break;
+        }
+        
+        if (compartments == null) {
+            double[] transferRates = null;
+            
+            for (Object o: element.getChildren()) {
+                e = (Element)element.getChildren().get(0);
+                switch (e.getName()) {
+                    case COMPARTMENT:
+                        compartmentList.add(parseCompartment(e));
+                    case TRANSFER_RATES:
+                        transferRates = parseNumberList(e);
+                    default:
+                        throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
+                }
+            }
+            
+            if (transferRates == null) {
+                throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> is missing");
+            }
+            
+            if (compartmentList.isEmpty()) {
+                throw new ParseException("Error parsing <" + SIMULATION + "> no <" + COMPARTMENT + "> found");
+            }
+            
+            if (transferRates.length != compartmentList.size() * compartmentList.size()) {
+                throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> should be size (" + compartmentList.size() * compartmentList.size() + "), but was (" + transferRates.length + ") instead");
+            }
+            
+            compartments = new Compartments(compartmentList, transferRates);
+        }
+        
+        return new Simulation(compartments);
+    }
+    
+    //Default populationType is dynamicPopulation but in the xml file static population could be selected
+    Compartment parseCompartment(Element element) throws ParseException {
+        Compartment.InoculumType inoculumType = Compartment.InoculumType.NONE;
+        int populationSize = -1;
 
 		boolean genomeDescription = false;
 		for (Object o : element.getChildren()) {
@@ -307,7 +361,7 @@ public class SimulatorParser {
 		}
 
 		if (!genomeDescription) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + GENOME_DESCRIPTION + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
 		}
 
 		for (Object o : element.getChildren()) {
@@ -316,28 +370,37 @@ public class SimulatorParser {
 
 				for (Object o1 : e.getChildren()) {
 					Element e1 = (Element)o1;
-					if (e1.getName().equals(POPULATION_SIZE)) {
-						try {
-							populationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
-						} catch (ParseException pe) {
-							throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
-						}
-					} else if (e1.getName().equals(INOCULUM)) {
-						String v = e1.getTextNormalize();
-						if (v.equals(INOCULUM_NONE)) {
-							inoculumType = Simulation.InoculumType.NONE;
-						} else if (v.equals(INOCULUM_CONSENSUS)) {
-							inoculumType = Simulation.InoculumType.CONSENSUS;
-						} else if (v.equals(INOCULUM_RANDOM)) {
-							inoculumType = Simulation.InoculumType.RANDOM;
-						} else if (v.equals(INOCULUM_ALL)) {
-							inoculumType = Simulation.InoculumType.ALL;
-						} else {
-							// do nothing
-						}
-					} else {
-						throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
-					}
+                                    switch (e1.getName()) {
+                                        case POPULATION_SIZE:
+                                            try {
+                                                populationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                                            } catch (ParseException pe) {
+                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                                            }
+                                            break;
+                                        case INOCULUM:
+                                            String v = e1.getTextNormalize();
+                                            switch (v) {
+                                                case INOCULUM_NONE:
+                                                    inoculumType = Compartment.InoculumType.NONE;
+                                                    break;
+                                                case INOCULUM_CONSENSUS:
+                                                    inoculumType = Compartment.InoculumType.CONSENSUS;
+                                                    break;
+                                                case INOCULUM_RANDOM:
+                                                    inoculumType = Compartment.InoculumType.RANDOM;
+                                                    break;
+                                                case INOCULUM_ALL:
+                                                    inoculumType = Compartment.InoculumType.ALL;
+                                                    break;
+                                                    // do nothing
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        default:
+                                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                                    }
 				}
 			} else if (!e.getName().equals(GENOME_DESCRIPTION) &&
 					!e.getName().equals(GENE_POOL) &&
@@ -350,19 +413,20 @@ public class SimulatorParser {
 					!e.getName().equals(POPULATION_TYPE) &&
                     !e.getName().equals(GROWTH_MODEL) &&
 					!e.getName().equals(RECOMBINATION_HOTSPOTS)) {
-				throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
+				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
 		
 		
 		if (populationSize == -1) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + POPULATION_SIZE + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + POPULATION_SIZE + "> is missing");
 		}
 
 		if (!GenomeDescription.isSet()) {
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + GENOME_DESCRIPTION + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
 		}
 		
+                String compartmentName = "";
 		SamplingSchedule samplingSchedule = null;
 		GenePool genePool = null;
 
@@ -373,59 +437,74 @@ public class SimulatorParser {
 		String populationType = null;
         DynamicSelector dynamicSelector = null;
 
-		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
+		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<>();		
 		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			String name = e.getName();
-			if (name.equals(GENE_POOL)) {
-				genePool = parseGenePool(e);
-			} else if (name.equals(SAMPLING_SCHEDULE)) {
-				samplingSchedule = parseSamplingSchedule(e);
-			} else if (name.equals(EVENT_LOGGER)) {
-				parseEventLogger(e);
-			} else if (name.equals(FITNESS_FUNCTION)) {
-				defaultFitnessFunction = parseFitnessFunction(e);
-			} else if (name.equals(MUTATOR)) {
-				defaultMutator = parseMutator(e);
-			} else if (name.equals(RECOMBINATION_HOTSPOTS)){
-				recombinationHotSpots = parseRecombinationHotSpots(e);
-				GenomeDescription.setHotSpots(recombinationHotSpots);
-			} else if (name.equals(POPULATION_TYPE)){
-				populationType = (String) e.getTextNormalize();
-			} else if (name.equals(REPLICATOR)) {
-				defaultReplicator = parseReplicator(e);
-			} else if (name.equals(GROWTH_MODEL)) {
-                dynamicSelector = parseGrowthModel(e);
-            }
+                    switch (name) {
+                        case NAME:
+                            compartmentName = (String)e.getTextNormalize();
+                            break;
+                        case GENE_POOL:
+                            genePool = parseGenePool(e);
+                            break;
+                        case SAMPLING_SCHEDULE:
+                            samplingSchedule = parseSamplingSchedule(e);
+                            break;
+                        case EVENT_LOGGER:
+                            parseEventLogger(e);
+                            break;
+                        case FITNESS_FUNCTION:
+                            defaultFitnessFunction = parseFitnessFunction(e);
+                            break;
+                        case MUTATOR:
+                            defaultMutator = parseMutator(e);
+                            break;
+                        case RECOMBINATION_HOTSPOTS:
+                            recombinationHotSpots = parseRecombinationHotSpots(e);
+                            GenomeDescription.setHotSpots(recombinationHotSpots);
+                            break;
+                        case POPULATION_TYPE:
+                            populationType = (String)e.getTextNormalize();
+                            break;
+                        case REPLICATOR:
+                            defaultReplicator = parseReplicator(e);
+                            break;
+                        case GROWTH_MODEL:
+                            dynamicSelector = parseGrowthModel(e);
+                            break;
+                        default:
+                            break;
+                    }
 		}
 
 		if (samplingSchedule == null)
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + SAMPLING_SCHEDULE + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + SAMPLING_SCHEDULE + "> is missing");
 
 		if (genePool == null) {
 			genePool = new SimpleGenePool();
 		}
 
 		if (defaultFitnessFunction == null)
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + FITNESS_FUNCTION + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FITNESS_FUNCTION + "> is missing");
 
 		if (defaultMutator == null)
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + MUTATOR + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + MUTATOR + "> is missing");
 
 		if (defaultReplicator == null)
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + REPLICATOR + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + REPLICATOR + "> is missing");
 		
 		if (populationType == null) {
 			populationType = STATIC_POPULATION;
         }
 
-		List<SimulationEpoch> epochs = new ArrayList<SimulationEpoch>();
+		List<CompartmentEpoch> epochs = new ArrayList<>();
 		
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(EPOCH)) {
-				SimulationEpoch epoch = parseSimulationEpoch(e,
+				CompartmentEpoch epoch = parseSimulationEpoch(e,
 						defaultFitnessFunction, defaultMutator, defaultReplicator);
 
 				epochs.add(epoch);
@@ -433,18 +512,20 @@ public class SimulatorParser {
 		}
 
 		if (epochs.isEmpty())
-			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
+			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + EPOCH + "> is missing");
 		
-		if (populationType.equals(STATIC_POPULATION))
-			return new  Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
-		else if (populationType.equals(DYNAMIC_POPULATION)) {
-		    if (dynamicSelector == null) {
-                return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
-            } else {
-		        return new Simulation(populationSize, dynamicSelector, inoculumType, genePool, epochs, samplingSchedule);
+            switch (populationType) {
+                case STATIC_POPULATION:
+                    return new  Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
+                case DYNAMIC_POPULATION:
+                    if (dynamicSelector == null) {
+                        return new Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule);
+                    } else {
+                        return new Compartment(compartmentName, populationSize, dynamicSelector, inoculumType, genePool, epochs, samplingSchedule);
+                    }
+                default:
+                    throw new ParseException("unrecognized population type. should be either staticPopulation or dynamicPopulation.");
             }
-		}
-		else throw new ParseException("unrecognized population type. should be either staticPopulation or dynamicPopulation.");
 		
 	}
 
@@ -453,13 +534,16 @@ public class SimulatorParser {
 	    double carryingPopulation = -1;
         for (Object o : element.getChildren()) {
             Element e = (Element)o;
-            if (e.getName().equals(GROWTH_RATE)) {
-                growthRate = Double.parseDouble(e.getTextNormalize());
-            } else if (e.getName().equals(CARRYING_POPULATION)) {
-                carryingPopulation = Double.parseDouble(e.getTextNormalize());
-            } else {
-                throw new ParseException("Error parsing <" + GROWTH_MODEL + "> element: unknown XML element within " + GROWTH_MODEL);
-            }
+                switch (e.getName()) {
+                    case GROWTH_RATE:
+                        growthRate = Double.parseDouble(e.getTextNormalize());
+                        break;
+                    case CARRYING_POPULATION:
+                        carryingPopulation = Double.parseDouble(e.getTextNormalize());
+                        break;
+                    default:
+                        throw new ParseException("Error parsing <" + GROWTH_MODEL + "> element: unknown XML element within " + GROWTH_MODEL);
+                }
         }
 
         if (growthRate != -1 && carryingPopulation != -1) {
@@ -470,7 +554,7 @@ public class SimulatorParser {
 
     }
 	
-	SimulationEpoch parseSimulationEpoch(Element element,
+	CompartmentEpoch parseSimulationEpoch(Element element,
 	                                     FitnessFunction fitnessFunction, Mutator mutator,
 	                                     Replicator replicator) throws ParseException {
 
@@ -500,50 +584,60 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
-			if (e.getName().equals(FITNESS_FUNCTION)) {
-				fitnessFunction = parseFitnessFunction(e);
-			} else if (e.getName().equals(MUTATOR)) {
-				mutator = parseMutator(e);
-			} else if (e.getName().equals(REPLICATOR)) {
-				replicator = parseReplicator(e);
-			}
+                    switch (e.getName()) {
+                        case FITNESS_FUNCTION:
+                            fitnessFunction = parseFitnessFunction(e);
+                            break;
+                        case MUTATOR:
+                            mutator = parseMutator(e);
+                            break;
+                        case REPLICATOR:
+                            replicator = parseReplicator(e);
+                            break;
+                        default:
+                            break;
+                    }
 		}
 
-		return new SimulationEpoch(name, generationCount, fitnessFunction, mutator, replicator);
+		return new CompartmentEpoch(name, generationCount, fitnessFunction, mutator, replicator);
 	}
 
 	private void parseGenomeDescription(Element element) throws ParseException {
 
 		int genomeLength = -1;
-		List<Feature> features = new ArrayList<Feature>();
+		List<Feature> features = new ArrayList<>();
 		List<Sequence> sequences = null;
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element)o;
-			if (e.getName().equals(GENOME_LENGTH)) {
-				try {
-					genomeLength = parseInteger(e, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + GENOME_DESCRIPTION + "> element: " + pe.getMessage());
-				}
-			} else if (e.getName().equals(FEATURE)) {
-                features.add(parseFeature(e));
-			} else if (e.getName().equals(SEQUENCES)) {
-				if (e.getAttributeValue(FILENAME) != null) {
-					try {
-						// quick and dirty one-liner to read in a text file.
-						// http://jdevelopment.nl/java-7-oneliner-read-file-string/
-						String text = new String(readAllBytes(get(e.getAttributeValue(FILENAME))));
-						sequences = parseAlignment(text);
-					} catch (IOException eio) {
-						throw new ParseException("Error parsing <" + SEQUENCES + "> file attribute: Cannot open file " + eio.getMessage());
-					}
-				} else {
-					sequences = parseAlignment(e.getTextTrim());
-				}
-			} else  {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
+                    switch (e.getName()) {
+                        case GENOME_LENGTH:
+                            try {
+                                genomeLength = parseInteger(e, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + GENOME_DESCRIPTION + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case FEATURE:
+                            features.add(parseFeature(e));
+                            break;
+                        case SEQUENCES:
+                            if (e.getAttributeValue(FILENAME) != null) {
+                                try {
+                                    // quick and dirty one-liner to read in a text file.
+                                    // http://jdevelopment.nl/java-7-oneliner-read-file-string/
+                                    String text = new String(readAllBytes(get(e.getAttributeValue(FILENAME))));
+                                    sequences = parseAlignment(text);
+                                } catch (IOException eio) {
+                                    throw new ParseException("Error parsing <" + SEQUENCES + "> file attribute: Cannot open file " + eio.getMessage());
+                                }
+                            } else {
+                                sequences = parseAlignment(e.getTextTrim());
+                            }
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                    }
 		}
 
 		if (genomeLength == -1) {
@@ -558,30 +652,37 @@ public class SimulatorParser {
 		String name = null;
 		Feature.Type type = Feature.Type.NUCLEOTIDE;
 		String sites = null;
-		List<String> parts = new ArrayList<String>();
+		List<String> parts = new ArrayList<>();
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
 
-			if (e.getName().equals(NAME)) {
-				name = e.getTextNormalize();
-			} else if (e.getName().equals(TYPE)) {
-				if (e.getTextNormalize().equals(AMINO_ACID)) {
-					type = Feature.Type.AMINO_ACID;
-				} else if (e.getTextNormalize().equals(NUCLEOTIDE)) {
-					type = Feature.Type.NUCLEOTIDE;
-				} else {
-					String msg = String.format("Error parsing <%s> element: <%s> should be '%s' or '%s'",
-											   element.getName(), e.getName(),NUCLEOTIDE, AMINO_ACID);
-					throw new ParseException(msg);
-				}
-			} else if (e.getName().equals(COORDINATES)) {
-				sites = e.getTextNormalize();
-				parts = Arrays.asList(sites.split(","));
-			} else {
-				throw new ParseException("Error parsing <" + element.getName()
-						+ "> element: <" + e.getName() + "> is unrecognized");
-			}
+                    switch (e.getName()) {
+                        case NAME:
+                            name = e.getTextNormalize();
+                            break;
+                        case TYPE:
+                        switch (e.getTextNormalize()) {
+                            case AMINO_ACID:
+                                type = Feature.Type.AMINO_ACID;
+                                break;
+                            case NUCLEOTIDE:
+                                type = Feature.Type.NUCLEOTIDE;
+                                break;
+                            default:
+                                String msg = String.format("Error parsing <%s> element: <%s> should be '%s' or '%s'",
+                                        element.getName(), e.getName(),NUCLEOTIDE, AMINO_ACID);
+                                throw new ParseException(msg);
+                        }
+                            break;
+                        case COORDINATES:
+                            sites = e.getTextNormalize();
+                            parts = Arrays.asList(sites.split(","));
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName()
+                                    + "> element: <" + e.getName() + "> is unrecognized");
+                    }
 		}
 
 		Feature feature = new Feature(name, type);
@@ -634,7 +735,7 @@ public class SimulatorParser {
 	}
 	
 	private List<RecombinationHotSpot> parseRecombinationHotSpots(Element element) throws ParseException{
-		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<RecombinationHotSpot>();		
+		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<>();		
 		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
 			RecombinationHotSpot segment = null;			
@@ -647,30 +748,38 @@ public class SimulatorParser {
 	}
 	
 	private FitnessFunction parseFitnessFunction(Element element) throws ParseException {
-		List<FitnessFactor> components = new ArrayList<FitnessFactor>();
+		List<FitnessFactor> components = new ArrayList<>();
 
 		for (Object o : element.getChildren()) {
 			Element e = (Element) o;
 			FitnessFactor factor = null;
 
-			if (e.getName().equals(NEUTRAL_MODEL_FITNESS_FUNCTION)) {
-				// don't need to add a factor to the product
-			} else if (e.getName().equals(PURIFYING_FITNESS_FUNCTION)) {
-				factor = parsePurifyingFitnessFunction(e);
-			} else if (e.getName().equals(EMPIRICAL_FITNESS_FUNCTION)) {
-				factor = parseEmpiricalFitnessFunction(e);
-			} else if (e.getName().equals(FREQUENCY_DEPENDENT_FITNESS_FUNCTION)) {
-				factor = parseFrequencyDependentFitnessFunction(e);
-			} else if (e.getName().equals(AGE_DEPENDENT_FITNESS_FUNCTION)) {
-				factor = parseAgeDependentFitnessFunction(e);
-			} else if (e.getName().equals(EXPOSURE_DEPENDENT_FITNESS_FUNCTION)) {
-				factor = parseExposureDependentFitnessFunction(e);
-			} else if (e.getName().equals(POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION)) {
-				factor = parsePopulationSizeDependentFitnessFunction(e);
-			} else {
-				throw new ParseException("Error parsing <" + element.getName()
-						+ "> element: <" + e.getName() + "> is unrecognized");
-			}
+                    switch (e.getName()) {
+                    // don't need to add a factor to the product
+                        case NEUTRAL_MODEL_FITNESS_FUNCTION:
+                            break;
+                        case PURIFYING_FITNESS_FUNCTION:
+                            factor = parsePurifyingFitnessFunction(e);
+                            break;
+                        case EMPIRICAL_FITNESS_FUNCTION:
+                            factor = parseEmpiricalFitnessFunction(e);
+                            break;
+                        case FREQUENCY_DEPENDENT_FITNESS_FUNCTION:
+                            factor = parseFrequencyDependentFitnessFunction(e);
+                            break;
+                        case AGE_DEPENDENT_FITNESS_FUNCTION:
+                            factor = parseAgeDependentFitnessFunction(e);
+                            break;
+                        case EXPOSURE_DEPENDENT_FITNESS_FUNCTION:
+                            factor = parseExposureDependentFitnessFunction(e);
+                            break;
+                        case POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION:
+                            factor = parsePopulationSizeDependentFitnessFunction(e);
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName()
+                                    + "> element: <" + e.getName() + "> is unrecognized");
+                    }
 
 			if (factor != null) {
 				components.add(factor);
@@ -981,9 +1090,9 @@ public class SimulatorParser {
             }
         }
 
-        if (sites == null || sites.size() == 0) {
+        if (sites == null || sites.isEmpty()) {
             // assume the full length of the feature
-            sites = new TreeSet<Integer>();
+            sites = new TreeSet<>();
             for (int i = 0; i < feature.getLength(); i++) {
                 sites.add(i);
             }
@@ -1005,54 +1114,55 @@ public class SimulatorParser {
 		for (Object o:element.getChildren()) {
 			Element e = (Element) o;
 
-            if (e.getName().equals(BETA_DISTIBUTED)) {
-
-                // Carrasco et al (2007)  J Virology 81:12979-12984
-                double a = 1.151;
-                double b = 1.709;
-                double pLethal = 0.4;
-
-                int alphabetSize = alphabet.getStateCount();
-                int sites = factor.sites.size();
-
-                Element aChild = e.getChild("a");
-                a = Double.parseDouble(aChild.getText());
-                Element bChild = e.getChild("b");
-                b = Double.parseDouble(bChild.getText());
-                Element pChild = e.getChild("pLethal");
-                pLethal = Double.parseDouble(pChild.getText());
-
-                return new BetaDistributedPurifyingFitnessModel(a,b, pLethal, alphabetSize, sites);
-            }
-            else if (e.getName().equals(VALUES)) {
-				double[] fitnesses;
-				try {
-					fitnesses = parseNumberList(e);
-
-					// confirm that we parsed one fitness value for each possible state.
-					if (fitnesses.length != alphabet.getStateCount()) {
-						throw new ParseException("expected " + alphabet.getStateCount() +" fitnesses, got " + fitnesses.length);
-					}
-				} catch (ParseException e1) {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
-				}
-
-				return new PurifyingFitnessValuesModel(fitnesses);
-			} else if (e.getName().equals(MINIMUM_FITNESS)) {
-				try {
-					minimumFitness = parseDouble(e, 0, 1);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e.getName().equals(LOW_FITNESS)) {
-				try {
-					lowFitness = parseDouble(e, 0, 1);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-				}
-			} else {
-				throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
+                    switch (e.getName()) {
+                        case BETA_DISTIBUTED:
+                            // Carrasco et al (2007)  J Virology 81:12979-12984
+                            double a = 1.151;
+                            double b = 1.709;
+                            double pLethal = 0.4;
+                            
+                            int alphabetSize = alphabet.getStateCount();
+                            int sites = factor.sites.size();
+                            
+                            Element aChild = e.getChild("a");
+                            a = Double.parseDouble(aChild.getText());
+                            Element bChild = e.getChild("b");
+                            b = Double.parseDouble(bChild.getText());
+                            Element pChild = e.getChild("pLethal");
+                            pLethal = Double.parseDouble(pChild.getText());
+                            
+                            return new BetaDistributedPurifyingFitnessModel(a,b, pLethal, alphabetSize, sites);
+                        case VALUES:
+                            double[] fitnesses;
+                            try {
+                                fitnesses = parseNumberList(e);
+                                
+                                // confirm that we parsed one fitness value for each possible state.
+                                if (fitnesses.length != alphabet.getStateCount()) {
+                                    throw new ParseException("expected " + alphabet.getStateCount() +" fitnesses, got " + fitnesses.length);
+                                }
+                            } catch (ParseException e1) {
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: " + e1.getMessage());
+                            }
+                            
+                            return new PurifyingFitnessValuesModel(fitnesses);
+                        case MINIMUM_FITNESS:
+                            try {
+                                minimumFitness = parseDouble(e, 0, 1);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case LOW_FITNESS:
+                            try {
+                                lowFitness = parseDouble(e, 0, 1);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                    }
 		}
 		if (minimumFitness == -1 || lowFitness == -1) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: expecting either a <" + VALUES
@@ -1123,13 +1233,17 @@ public class SimulatorParser {
 		if (breakTiesElement == null)
 			throw new ParseException("Error parsing <" + element.getName() + "> element: missing <" + BREAK_TIES + ">");
 		String breakTies = breakTiesElement.getTextNormalize();
-		if (breakTies.equals(BREAK_TIES_RANDOM))
-			breakTiesRandom = true;
-		else if (breakTies.equals(BREAK_TIES_ORDERED))
-			breakTiesRandom = false;
-		else
-			throw new ParseException("Error parsing <" + BREAK_TIES + "> element: value must be one of '"
-					+ BREAK_TIES_RANDOM + "' or '" + BREAK_TIES_ORDERED + "'");
+            switch (breakTies) {
+                case BREAK_TIES_RANDOM:
+                    breakTiesRandom = true;
+                    break;
+                case BREAK_TIES_ORDERED:
+                    breakTiesRandom = false;
+                    break;
+                default:
+                    throw new ParseException("Error parsing <" + BREAK_TIES + "> element: value must be one of '"
+                            + BREAK_TIES_RANDOM + "' or '" + BREAK_TIES_ORDERED + "'");
+            }
 
 		for (Object o:element.getChildren()) {
 			Element e = (Element) o;
@@ -1137,30 +1251,35 @@ public class SimulatorParser {
 			if (e.getName().equals(ORDER)) {
 				String v = e.getTextNormalize();
 
-                if (v.equals(ORDER_OBSERVED_FREQUENCY)) {
-                    order = OrderEnum.OBSERVED;
-                } else if (v.equals(ORDER_CHEMICAL)) {
-                    order = OrderEnum.CLASSES;
-                    orderSetClasses = parseProbableSetClasses(alphabet, CHEMICAL_CLASSES);
-                } else if (v.equals(ORDER_HYDROPATHY)) {
-                    order = OrderEnum.CLASSES;
-                    orderSetClasses = parseProbableSetClasses(alphabet, HYDROPATHY_CLASSES);
-                } else if (v.equals(ORDER_VOLUME)) {
-                    order = OrderEnum.CLASSES;
-                    orderSetClasses = parseProbableSetClasses(alphabet, VOLUME_CLASSES);
-                } else {
-                    if (v.contains("|")) {
-                        order = OrderEnum.CLASSES;
-                        orderSetClasses = parseProbableSetClasses(alphabet, v);
-                    } else {
-                        order = OrderEnum.STATES;
-                        stateOrder = new ArrayList<Byte>();
-
-                        for (int i = 0; i < v.length(); ++i) {
-                            stateOrder.add(alphabet.parse(v.charAt(i)));
-                        }
-                    }
-                }
+                            switch (v) {
+                                case ORDER_OBSERVED_FREQUENCY:
+                                    order = OrderEnum.OBSERVED;
+                                    break;
+                                case ORDER_CHEMICAL:
+                                    order = OrderEnum.CLASSES;
+                                    orderSetClasses = parseProbableSetClasses(alphabet, CHEMICAL_CLASSES);
+                                    break;
+                                case ORDER_HYDROPATHY:
+                                    order = OrderEnum.CLASSES;
+                                    orderSetClasses = parseProbableSetClasses(alphabet, HYDROPATHY_CLASSES);
+                                    break;
+                                case ORDER_VOLUME:
+                                    order = OrderEnum.CLASSES;
+                                    orderSetClasses = parseProbableSetClasses(alphabet, VOLUME_CLASSES);
+                                    break;
+                                default:
+                                    if (v.contains("|")) {
+                                        order = OrderEnum.CLASSES;
+                                        orderSetClasses = parseProbableSetClasses(alphabet, v);
+                                    } else {
+                                        order = OrderEnum.STATES;
+                                        stateOrder = new ArrayList<Byte>();
+                                        
+                                        for (int i = 0; i < v.length(); ++i) {
+                                            stateOrder.add(alphabet.parse(v.charAt(i)));
+                                        }
+                                    }               break;
+                            }
 			} else if (e.getName().equals(PROBABLE_SET)) {
 			    probableNumber = parseInteger(e, 1, alphabet.getStateCount());
 			} else if (!e.getName().equals(BREAK_TIES)) {
@@ -1200,12 +1319,12 @@ public class SimulatorParser {
 	}
 
 	private List<Set<Byte>> parseProbableSetClasses(SequenceAlphabet alphabet, String str) throws ParseException {
-        Set<Byte> completeCheck = new HashSet<Byte>();
-		List<Set<Byte>> classes = new ArrayList<Set<Byte>>();
+        Set<Byte> completeCheck = new HashSet<>();
+		List<Set<Byte>> classes = new ArrayList<>();
 
 		String[] sets = str.split("\\|");
 		for (String set : sets) {
-			Set<Byte> stateSet = new HashSet<Byte>();
+			Set<Byte> stateSet = new HashSet<>();
 			for (int i = 0; i < set.length(); i++) {
 				byte symbol = alphabet.parse(set.charAt(i));
                 stateSet.add(symbol);
@@ -1225,7 +1344,7 @@ public class SimulatorParser {
 	}
 
 	private List<Sequence> parseAlignment(String text) throws ParseException {
-		List<Sequence> result = new ArrayList<Sequence>();
+		List<Sequence> result = new ArrayList<>();
         int firstLength = 0;
 		String[] seqStrings;
 
@@ -1288,7 +1407,7 @@ public class SimulatorParser {
 	}
 
 	private Set<Integer> parseSites(Element element, Feature feature) throws ParseException {
-		Set<Integer> result = new TreeSet<Integer>();
+		Set<Integer> result = new TreeSet<>();
 
 		String sites = element.getTextNormalize();
 		String[] parts = sites.split(",");
@@ -1335,7 +1454,7 @@ public class SimulatorParser {
     }
 
 	private Mutator parseMutator(Element element) throws ParseException {
-		if (element.getChildren().size() == 0) {
+		if (element.getChildren().isEmpty()) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
 		}
 
@@ -1354,38 +1473,46 @@ public class SimulatorParser {
 				for (Object o : e.getChildren()) {
 					Element e1 = (Element)o;
 					try {
-						// this should really be a switch statement if we could use a modern java implementation...
-						if (e1.getName().equals(MUTATION_RATE)) {
-							mutationRate = parseDouble(e1, 0.0, Double.MAX_VALUE);
-						} else if (e1.getName().equals(TRANSITION_BIAS)) {
-							transitionBias = parseDouble(e1, 0.0, Double.MAX_VALUE);
-						} else if (e1.getName().equals(RATE_BIAS)) {
-							rateBiases = parseNumberList(e1);
-							if (rateBiases.length != 12) {
-								throw new ParseException("expected 12 rate biases, got " + rateBiases.length);
-							}
-						} else if (e1.getName().equals(INSERT_PROB)) {
-							// http://abacus.gene.ucl.ac.uk/software/indelible/manual/model.shtml#[indelmodel]
-							if (insertProb != -1.0) {
-								throw new ParseException("insertion probability is already set - see previous <" + INSERT_PROB + "> or <" + INDEL_PROB + ">.");
-							}
-							insertProb = parseDouble(e1, 0.0, 1.0);
-						} else if (e1.getName().equals(DELETE_PROB)) {
-							if (deleteProb != -1.0) {
-								throw new ParseException("deletion probability already set - see previous <" + DELETE_PROB + "> or <" + INDEL_PROB + ">.");
-							}
-							deleteProb = parseDouble(e1, 0.0, 1.0);
-						} else if (e1.getName().equals(INDEL_PROB)) {
-							if (insertProb != -1.0 || deleteProb != -1.0) {
-								throw new ParseException("insertion or deletion probability already set - see previous <" + DELETE_PROB + ">, <" + INSERT_PROB + ">, or <" + INDEL_PROB + ">.");
-							}
-							insertProb = parseDouble(e1, 0.0, 1.0);
-							deleteProb = insertProb;
-						} else if (e1.getName().equals(INDEL_MODEL)) {
-							indelModel = parseIndelModel(e1);
-						} else {
-							throw new ParseException("element is unrecognized");
-						}
+                                            // this should really be a switch statement if we could use a modern java implementation...
+                                            switch (e1.getName()) {
+                                                case MUTATION_RATE:
+                                                    mutationRate = parseDouble(e1, 0.0, Double.MAX_VALUE);
+                                                    break;
+                                                case TRANSITION_BIAS:
+                                                    transitionBias = parseDouble(e1, 0.0, Double.MAX_VALUE);
+                                                    break;
+                                                case RATE_BIAS:
+                                                    rateBiases = parseNumberList(e1);
+                                                    if (rateBiases.length != 12) {
+                                                        throw new ParseException("expected 12 rate biases, got " + rateBiases.length);
+                                                    }
+                                                    break;
+                                                case INSERT_PROB:
+                                                    // http://abacus.gene.ucl.ac.uk/software/indelible/manual/model.shtml#[indelmodel]
+                                                    if (insertProb != -1.0) {
+                                                        throw new ParseException("insertion probability is already set - see previous <" + INSERT_PROB + "> or <" + INDEL_PROB + ">.");
+                                                    }
+                                                    insertProb = parseDouble(e1, 0.0, 1.0);
+                                                    break;
+                                                case DELETE_PROB:
+                                                    if (deleteProb != -1.0) {
+                                                        throw new ParseException("deletion probability already set - see previous <" + DELETE_PROB + "> or <" + INDEL_PROB + ">.");
+                                                    }
+                                                    deleteProb = parseDouble(e1, 0.0, 1.0);
+                                                    break;
+                                                case INDEL_PROB:
+                                                    if (insertProb != -1.0 || deleteProb != -1.0) {
+                                                        throw new ParseException("insertion or deletion probability already set - see previous <" + DELETE_PROB + ">, <" + INSERT_PROB + ">, or <" + INDEL_PROB + ">.");
+                                                    }
+                                                    insertProb = parseDouble(e1, 0.0, 1.0);
+                                                    deleteProb = insertProb;
+                                                    break;
+                                                case INDEL_MODEL:
+                                                    indelModel = parseIndelModel(e1);
+                                                    break;
+                                                default:
+                                                    throw new ParseException("element is unrecognized");
+                                            }
 						
 					} catch(ParseException pe) {
 						throw new ParseException("element: <" + e1.getName() + ">: " + pe.getMessage());
@@ -1454,104 +1581,106 @@ public class SimulatorParser {
 
 	private Replicator parseReplicator(Element element) throws ParseException {
 
-		if (element.getChildren().size() == 0) {
+		if (element.getChildren().isEmpty()) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
 		}
 
 		Element e = (Element)element.getChildren().get(0);
-		if (e.getName().equals(CLONAL_REPLICATOR)) {
-			return new ClonalReplicator();
-		} else if (e.getName().equals(RECOMBINANT_REPLICATOR_WITH_HOTSPOTS)) {
-			double dualInfectionProbability = -1.0;
-			double recombinationProbability = -1.0;
-
-			for (Object o : e.getChildren()) {
-				Element e1 = (Element)o;
-				if (e1.getName().equals(DUAL_INFECTION_PROBABILITY)) {
-					try {
-						dualInfectionProbability = parseDouble(e1, 0.0, 1.0);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else if (e1.getName().equals(RECOMBINATION_PROBABILITY)) {
-					try {
-						recombinationProbability = parseDouble(e1, 0.0, 1.0);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-				}
-
-			}
-			if (dualInfectionProbability < 0.0) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
-			}
-
-			if (recombinationProbability < 0.0) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
-			}
-	        
-			return new RecombinantReplicatorWithHotSpots(dualInfectionProbability, recombinationProbability);
-		} 
-		
-		else if (e.getName().equals(RECOMBINANT_REPLICATOR)) {
-			double dualInfectionProbability = -1.0;
-			double recombinationProbability = -1.0;
-
-			for (Object o : e.getChildren()) {
-				Element e1 = (Element)o;
-				if (e1.getName().equals(DUAL_INFECTION_PROBABILITY)) {
-					try {
-						dualInfectionProbability = parseDouble(e1, 0.0, 1.0);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else if (e1.getName().equals(RECOMBINATION_PROBABILITY)) {
-					try {
-						recombinationProbability = parseDouble(e1, 0.0, 1.0);
-					} catch (ParseException pe) {
-						throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
-					}
-				} else {
-					throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-				}
-
-			}
-			if (dualInfectionProbability < 0.0) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
-			}
-
-			if (recombinationProbability < 0.0) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
-			}
-	        
-			return new RecombinantReplicator(dualInfectionProbability, recombinationProbability);
-		} 
-		
-		
-			else  {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-		}
+            switch (e.getName()) {
+                case CLONAL_REPLICATOR:
+                    return new ClonalReplicator();
+                case RECOMBINANT_REPLICATOR_WITH_HOTSPOTS:
+                {
+                    double dualInfectionProbability = -1.0;
+                    double recombinationProbability = -1.0;
+                    
+                    for (Object o : e.getChildren()) {
+                        Element e1 = (Element)o;
+                        if (e1.getName().equals(DUAL_INFECTION_PROBABILITY)) {
+                            try {
+                                dualInfectionProbability = parseDouble(e1, 0.0, 1.0);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                            }
+                        } else if (e1.getName().equals(RECOMBINATION_PROBABILITY)) {
+                            try {
+                                recombinationProbability = parseDouble(e1, 0.0, 1.0);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                            }
+                        } else {
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                        }
+                        
+                    }
+                    if (dualInfectionProbability < 0.0) {
+                        throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
+                    }
+                    
+                    if (recombinationProbability < 0.0) {
+                        throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
+                    }
+                    
+                    return new RecombinantReplicatorWithHotSpots(dualInfectionProbability, recombinationProbability);
+                }
+                case RECOMBINANT_REPLICATOR:
+                {
+                    double dualInfectionProbability = -1.0;
+                    double recombinationProbability = -1.0;
+                    
+                    for (Object o : e.getChildren()) {
+                        Element e1 = (Element)o;
+                        switch (e1.getName()) {
+                            case DUAL_INFECTION_PROBABILITY:
+                                try {
+                                    dualInfectionProbability = parseDouble(e1, 0.0, 1.0);
+                                } catch (ParseException pe) {
+                                    throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                                }   break;
+                            case RECOMBINATION_PROBABILITY:
+                                try {
+                                    recombinationProbability = parseDouble(e1, 0.0, 1.0);
+                                } catch (ParseException pe) {
+                                    throw new ParseException("Error parsing <" + e.getName() + "> element: " + pe.getMessage());
+                                }   break;
+                            default:
+                                throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                        }
+                        
+                    }
+                    if (dualInfectionProbability < 0.0) {
+                        throw new ParseException("Error parsing <" + element.getName() + "> element: <" + DUAL_INFECTION_PROBABILITY + "> is missing");
+                    }
+                    
+                    if (recombinationProbability < 0.0) {
+                        throw new ParseException("Error parsing <" + element.getName() + "> element: <" + RECOMBINATION_PROBABILITY + "> is missing");
+                    }
+                    
+                    return new RecombinantReplicator(dualInfectionProbability, recombinationProbability);
+                }
+                default:
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
 
 	}
 
 	private GenePool parseGenePool(Element element) throws ParseException {
 
-		if (element.getChildren().size() == 0) {
+		if (element.getChildren().isEmpty()) {
 			throw new ParseException("Error parsing <" + element.getName() + "> element: the element is empty");
 		}
 
 		Element e = (Element)element.getChildren().get(0);
-		if (e.getName().equals(SIMPLE_GENE_POOL)) {
-			// SimpleGenome/GenePool uses a simple format where the whole sequence is stored
-			return new SimpleGenePool();
-		} else if (e.getName().equals(COMPACT_GENE_POOL)) {
-			// CompactGenome/GenePool uses a compact format where only changes are stored
-			return new CompactGenePool();
-		} else {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-		}
+            switch (e.getName()) {
+                case SIMPLE_GENE_POOL:
+                    // SimpleGenome/GenePool uses a simple format where the whole sequence is stored
+                    return new SimpleGenePool();
+                case COMPACT_GENE_POOL:
+                    // CompactGenome/GenePool uses a compact format where only changes are stored
+                    return new CompactGenePool();
+                default:
+                    throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
 
 	}
 
@@ -1580,23 +1709,28 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
-			if (e1.getName().equals(AT_FREQUENCY)) {
-				try {
-					frequency = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e1.getName().equals(AT_GENERATION)) {
-				try {
-					generation = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e1.getName().equals(FILE_NAME)) {
-				fileName = e1.getTextNormalize();
-			} else {
-				// skip over it
-			}
+                    switch (e1.getName()) {
+                        case AT_FREQUENCY:
+                            try {
+                                frequency = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case AT_GENERATION:
+                            try {
+                                generation = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case FILE_NAME:
+                            fileName = e1.getTextNormalize();
+                            break;
+                    // skip over it
+                        default:
+                            break;
+                    }
 
 		}
 
@@ -1612,21 +1746,30 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
-			if (e1.getName().equals(ALIGNMENT)) {
-				sampler = parseAlignmentSampler(e1, samplingSchedule, fileName);
-			} else if (e1.getName().equals(GENOMEDESCRIPTION)) {
-				sampler = parseGenomeDescriptionSampler(e1, samplingSchedule, fileName);
-			} else if (e1.getName().equals(TREE)) {
-				sampler = parseTreeSampler(e1, samplingSchedule, fileName);
-			} else if (e1.getName().equals(ALLELE_FREQUENCY)) {
-				sampler = parseAlleleFrequencySampler(e1, samplingSchedule, fileName);
-			} else if (e1.getName().equals(STATISTICS)) {
-				sampler = parseStatisticsSampler(e1, samplingSchedule, fileName);
-			} else if (e1.getName().equals(AT_FREQUENCY) || e1.getName().equals(AT_GENERATION) || e1.getName().equals(FILE_NAME)) {
-				// skip over it
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-			}
+                    switch (e1.getName()) {
+                        case ALIGNMENT:
+                            sampler = parseAlignmentSampler(e1, samplingSchedule, fileName);
+                            break;
+                        case GENOMEDESCRIPTION:
+                            sampler = parseGenomeDescriptionSampler(e1, samplingSchedule, fileName);
+                            break;
+                        case TREE:
+                            sampler = parseTreeSampler(e1, samplingSchedule, fileName);
+                            break;
+                        case ALLELE_FREQUENCY:
+                            sampler = parseAlleleFrequencySampler(e1, samplingSchedule, fileName);
+                            break;
+                        case STATISTICS:
+                            sampler = parseStatisticsSampler(e1, samplingSchedule, fileName);
+                            break;
+                    // skip over it
+                        case AT_FREQUENCY:
+                        case AT_GENERATION:
+                        case FILE_NAME:
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                    }
 
 		}
 
@@ -1652,31 +1795,35 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
-			if (e1.getName().equals(SAMPLE_SIZE)) {
-				try {
-					sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e1.getName().equals(SCHEDULE)) {
-				String[] values = e1.getTextTrim().split("\\s+");
-				schedule = new TreeMap<Integer,Integer>();
-				try {
-					for (int i = 0; i<values.length/2; ++i) {
-						int g = Integer.parseInt(values[i*2]);
-						int n = Integer.parseInt(values[i*2 + 1]);
-
-						schedule.put(g, n);
-					}
-				} catch (NumberFormatException e) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: "
-							+ e.getMessage());
-				}
-			} else if (e1.getName().equals(LABEL)) {
-				label = e1.getTextNormalize();
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-			}
+                    switch (e1.getName()) {
+                        case SAMPLE_SIZE:
+                            try {
+                                sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case SCHEDULE:
+                            String[] values = e1.getTextTrim().split("\\s+");
+                            schedule = new TreeMap<>();
+                            try {
+                                for (int i = 0; i<values.length/2; ++i) {
+                                    int g = Integer.parseInt(values[i*2]);
+                                    int n = Integer.parseInt(values[i*2 + 1]);
+                                    
+                                    schedule.put(g, n);
+                                }
+                            } catch (NumberFormatException e) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: "
+                                        + e.getMessage());
+                            }
+                            break;
+                        case LABEL:
+                            label = e1.getTextNormalize();
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                    }
 
 		}
 
@@ -1701,51 +1848,57 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
-			if (e1.getName().equals(SAMPLE_SIZE)) {
-				try {
-					sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e1.getName().equals(SCHEDULE)) {
-				String[] values = e1.getTextTrim().split("\\s+");
-				schedule = new TreeMap<Integer,Integer>();
-				try {
-					for (int i = 0; i<values.length/2; ++i) {
-						int g = Integer.parseInt(values[i*2]);
-						int n = Integer.parseInt(values[i*2 + 1]);
-
-						schedule.put(g, n);
-					}
-				} catch (NumberFormatException e) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: "
-							+ e.getMessage());
-				}
-			} else if (e1.getName().equals(FORMAT)) {
-				String formatText = e1.getTextNormalize();
-				if (formatText.equalsIgnoreCase("NEXUS")) {
-					format = AlignmentSampler.Format.NEXUS;
-				} else if (formatText.equalsIgnoreCase("FASTA")) {
-					format = AlignmentSampler.Format.FASTA;
-				} else if (formatText.equalsIgnoreCase("XML")) {
-					format = AlignmentSampler.Format.XML;
-				} else {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FORMAT + "> value of " + formatText + " is unrecognized");
-				}
-			} else if (e1.getName().equals(CONSENSUS)) {
-				String booleanText = e1.getTextNormalize();
-				if (booleanText.equalsIgnoreCase("TRUE")) {
-					consensus = true;
-				} else if (booleanText.equalsIgnoreCase("FALSE")) {
-					consensus = false;
-				} else {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + CONSENSUS + "> value " + booleanText + " is unrecognized");
-				}
-			} else if (e1.getName().equals(LABEL)) {
-				label = e1.getTextNormalize();
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-			}
+                    switch (e1.getName()) {
+                        case SAMPLE_SIZE:
+                            try {
+                                sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case SCHEDULE:
+                            String[] values = e1.getTextTrim().split("\\s+");
+                            schedule = new TreeMap<>();
+                            try {
+                                for (int i = 0; i<values.length/2; ++i) {
+                                    int g = Integer.parseInt(values[i*2]);
+                                    int n = Integer.parseInt(values[i*2 + 1]);
+                                    
+                                    schedule.put(g, n);
+                                }
+                            } catch (NumberFormatException e) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: "
+                                        + e.getMessage());
+                            }
+                            break;
+                        case FORMAT:
+                            String formatText = e1.getTextNormalize();
+                            if (formatText.equalsIgnoreCase("NEXUS")) {
+                                format = AlignmentSampler.Format.NEXUS;
+                            } else if (formatText.equalsIgnoreCase("FASTA")) {
+                                format = AlignmentSampler.Format.FASTA;
+                            } else if (formatText.equalsIgnoreCase("XML")) {
+                                format = AlignmentSampler.Format.XML;
+                            } else {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FORMAT + "> value of " + formatText + " is unrecognized");
+                            }
+                            break;
+                        case CONSENSUS:
+                            String booleanText = e1.getTextNormalize();
+                            if (booleanText.equalsIgnoreCase("TRUE")) {
+                                consensus = true;
+                            } else if (booleanText.equalsIgnoreCase("FALSE")) {
+                                consensus = false;
+                            } else {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + CONSENSUS + "> value " + booleanText + " is unrecognized");
+                            }
+                            break;
+                        case LABEL:
+                            label = e1.getTextNormalize();
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                    }
 
 		}
 
@@ -1766,40 +1919,45 @@ public class SimulatorParser {
 
 		for (Object o : element.getChildren()) {
 			Element e1 = (Element)o;
-			if (e1.getName().equals(SAMPLE_SIZE)) {
-				try {
-					sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
-				} catch (ParseException pe) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
-				}
-			} else if (e1.getName().equals(SCHEDULE)) {
-				String[] values = e1.getTextTrim().split("\\s+");
-				schedule = new TreeMap<Integer,Integer>();
-				try {
-					for (int i = 0; i<values.length/2; ++i) {
-						int g = Integer.parseInt(values[i*2]);
-						int n = Integer.parseInt(values[i*2 + 1]);
-
-						schedule.put(g, n);
-					}
-				} catch (NumberFormatException e) {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: "
-							+ e.getMessage());
-				}
-			} else if (e1.getName().equals(FORMAT)) {
-				String formatText = e1.getTextNormalize();
-				if (formatText.equalsIgnoreCase("NEXUS")) {
-					format = TreeSampler.Format.NEXUS;
-				} else if (formatText.equalsIgnoreCase("NEWICK")) {
-					format = TreeSampler.Format.NEWICK;
-				} else {
-					throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FORMAT + "> value of " + formatText + " is unrecognized");
-				}
-			} else if (e1.getName().equals(LABEL)) {
-				label = e1.getTextNormalize();
-			} else {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-			}
+                    switch (e1.getName()) {
+                        case SAMPLE_SIZE:
+                            try {
+                                sampleSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case SCHEDULE:
+                            String[] values = e1.getTextTrim().split("\\s+");
+                            schedule = new TreeMap<Integer,Integer>();
+                            try {
+                                for (int i = 0; i<values.length/2; ++i) {
+                                    int g = Integer.parseInt(values[i*2]);
+                                    int n = Integer.parseInt(values[i*2 + 1]);
+                                    
+                                    schedule.put(g, n);
+                                }
+                            } catch (NumberFormatException e) {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: "
+                                        + e.getMessage());
+                            }
+                            break;
+                        case FORMAT:
+                            String formatText = e1.getTextNormalize();
+                            if (formatText.equalsIgnoreCase("NEXUS")) {
+                                format = TreeSampler.Format.NEXUS;
+                            } else if (formatText.equalsIgnoreCase("NEWICK")) {
+                                format = TreeSampler.Format.NEWICK;
+                            } else {
+                                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + FORMAT + "> value of " + formatText + " is unrecognized");
+                            }
+                            break;
+                        case LABEL:
+                            label = e1.getTextNormalize();
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                    }
 
 		}
 
