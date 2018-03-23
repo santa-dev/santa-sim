@@ -144,7 +144,7 @@ public class Compartment {
             default:
                 break;
         }
-        population.initialize(inoculum, getPopulationSize());
+        population.initialize(inoculum, populationSize);
     }
     
     public void cleanup(int replicate, Logger logger) {
@@ -171,8 +171,6 @@ public class Compartment {
     }
 
     public int getPopulationSize() {
-        populationSize = population.getPopulationSize();
-        
         return populationSize;
     }
 
