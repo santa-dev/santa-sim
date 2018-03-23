@@ -27,7 +27,7 @@ import santa.simulator.fitness.ExposureDependentFitnessFactor;
 import santa.simulator.fitness.FitnessFactor;
 import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.fitness.FrequencyDependentFitnessFactor;
-//import santa.simulator.fitness.NoFitnessFactor;
+import santa.simulator.fitness.NoFitnessFactor;
 import santa.simulator.fitness.PopulationSizeDependentFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessFactor;
 import santa.simulator.fitness.PurifyingFitnessModel;
@@ -154,7 +154,7 @@ public class SimulatorParser {
 	private final static String EMPIRICAL_FITNESS_FUNCTION = "empiricalFitness";
 	private final static String POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION = "populationSizeDependentFitness";
 	private final static String MAX_POP_SIZE = "maxPopulationSize";
-//        private final static String NO_FITNESS_FUNCTION = "noFitness";
+        private final static String NO_FITNESS_FUNCTION = "noFitness";
 
 	private final static String MUTATOR = "mutator";
 	private final static String REPLICATOR = "replicator";
@@ -804,9 +804,9 @@ public class SimulatorParser {
                         case POPULATION_SIZE_DEPENDENT_FITNESS_FUNCTION:
                             factor = parsePopulationSizeDependentFitnessFunction(e);
                             break;
-//                        case NO_FITNESS_FUNCTION:
-//                            factor = parseNoFitnessFunction(e);
-//                            break;
+                        case NO_FITNESS_FUNCTION:
+                            factor = parseNoFitnessFunction(e);
+                            break;
                         default:
                             throw new ParseException("Error parsing <" + element.getName()
                                     + "> element: <" + e.getName() + "> is unrecognized");
@@ -936,10 +936,10 @@ public class SimulatorParser {
 
 		return new PopulationSizeDependentFitnessFactor((int) maxPopSize, declineRate, factor.feature, factor.sites);
 	}
-        
-//        private FitnessFactor parseNoFitnessFunction(Element element) throws ParseException {
-//            return new NoFitnessFactor();
-//        }
+
+        private FitnessFactor parseNoFitnessFunction(Element element) throws ParseException {
+            return new NoFitnessFactor();
+        }
 
 	/**
 	 * @param element

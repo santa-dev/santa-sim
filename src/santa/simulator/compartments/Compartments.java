@@ -29,7 +29,7 @@ public class Compartments implements Iterable<Compartment> {
         this.transferProbs = new double[this.numCompartments][this.numCompartments];
         
         double[] sum = new double[this.numCompartments];
-        
+
         for (int i = 0; i < transferRates.length; i++) {
             this.transferProbs[i / this.numCompartments][i % this.numCompartments] = transferRates[i];
         }
