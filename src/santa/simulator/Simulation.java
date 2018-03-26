@@ -9,6 +9,7 @@ import santa.simulator.compartments.Compartments;
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
+ * @author Bradley R. Jones
  * @version $Id: Simulation.java,v 1.11 2006/07/19 12:53:05 kdforc0 Exp $
  */
 public class Simulation {
