@@ -11,6 +11,7 @@ import santa.simulator.replicators.Replicator;
 import santa.simulator.samplers.SamplingSchedule;
 
 /* 
+ * @author Andrew Rambaut
  * @author Bradley R. Jones
 */
 public class CompartmentEpoch {

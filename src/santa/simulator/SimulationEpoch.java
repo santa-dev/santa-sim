@@ -10,6 +10,7 @@ import santa.simulator.compartments.Compartments;
 
 /**
  *
+ * @author Andrew Rambaut
  * @author Bradley R. Jones
  */
 public class SimulationEpoch {
