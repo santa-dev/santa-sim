@@ -85,6 +85,8 @@ public class SimulatorParser {
 	private final static String POPULATION_TYPE = "populationType";
 	private final static String STATIC_POPULATION = "staticPopulation";
 	private final static String DYNAMIC_POPULATION = "dynamicPopulation";
+        private final static String EXPONENTIAL_POPULATION = "exponentialPopulation";
+        private final static String LOGISTIC_POPULATION = "logisticPopulation";
         private final static String MAX_POPULATION_SIZE = "maxPopulationSize";
         
 	
@@ -304,12 +306,24 @@ public class SimulatorParser {
         Compartments compartments = null;
         ArrayList<Compartment> compartmentList = new ArrayList<>();
         
+        boolean genomeDescription = false;
+        for (Object o : element.getChildren()) {
+            Element e1 = (Element)o;
+            if (e1.getName().equals(GENOME_DESCRIPTION)) {
+                parseGenomeDescription(e1);
+                genomeDescription = true;
+            }
+        }
+        
+        if (!genomeDescription) {
+            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
+        }
+        
         Element e = element.getChildren().get(0);
         switch (e.getName()) {
-            case COMPARTMENT:
             case TRANSFER_RATES:
                 break;
-            default:
+            default:                
                 double[] transferRates = {1};
                 
                 compartmentList.add(parseCompartment(element));
@@ -322,12 +336,16 @@ public class SimulatorParser {
             double[] transferRates = null;
             
             for (Object o: element.getChildren()) {
-                e = (Element)element.getChildren().get(0);
+                e = (Element)o;
                 switch (e.getName()) {
                     case COMPARTMENT:
                         compartmentList.add(parseCompartment(e));
+                        break;
                     case TRANSFER_RATES:
                         transferRates = parseNumberList(e);
+                        break;
+                    case GENOME_DESCRIPTION:
+                        break;
                     default:
                         throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
                 }
@@ -358,20 +376,7 @@ public class SimulatorParser {
         int maxPopulationSize = -1;
         double growthRate = -1;
 
-		boolean genomeDescription = false;
-		for (Object o : element.getChildren()) {
-			Element e = (Element)o;
-			if (e.getName().equals(GENOME_DESCRIPTION)) {
-				parseGenomeDescription(e);
-				genomeDescription = true;
-			}
-		}
-
-		if (!genomeDescription) {
-			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
-		}
-
-		for (Object o : element.getChildren()) {
+	for (Object o : element.getChildren()) {
 			Element e = (Element)o;
 			if (e.getName().equals(POPULATION)) {
 
@@ -380,7 +385,7 @@ public class SimulatorParser {
                                     switch (e1.getName()) {
                                         case POPULATION_SIZE:
                                             try {
-                                                populationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                                                populationSize = parseInteger(e1, 0, Integer.MAX_VALUE);
                                             } catch (ParseException pe) {
                                                 throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
                                             }
@@ -420,11 +425,10 @@ public class SimulatorParser {
                                             }
                                             break;
                                         default:
-                                            throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+                                            throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
                                     }
 				}
-			} else if (!e.getName().equals(GENOME_DESCRIPTION) &&
-					!e.getName().equals(GENE_POOL) &&
+			} else if (	!e.getName().equals(GENE_POOL) &&
 					!e.getName().equals(FITNESS_FUNCTION) &&
 					!e.getName().equals(MUTATOR) &&
 					!e.getName().equals(REPLICATOR) &&
@@ -433,7 +437,8 @@ public class SimulatorParser {
 					!e.getName().equals(EPOCH) &&
 					!e.getName().equals(POPULATION_TYPE) &&
                     !e.getName().equals(GROWTH_MODEL) &&
-					!e.getName().equals(RECOMBINATION_HOTSPOTS)) {
+					!e.getName().equals(RECOMBINATION_HOTSPOTS) &&
+                                        !e.getName().equals(NAME)) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
@@ -537,6 +542,8 @@ public class SimulatorParser {
 		
             switch (populationType) {
                 case STATIC_POPULATION:
+                case EXPONENTIAL_POPULATION:
+                case LOGISTIC_POPULATION:
                     return new  Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType, growthRate, maxPopulationSize);
                 case DYNAMIC_POPULATION:
                     if (dynamicSelector == null) {

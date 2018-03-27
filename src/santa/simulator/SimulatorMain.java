@@ -21,7 +21,7 @@ public class SimulatorMain {
 		Simulator simulator;
 
         if (args.length > 0) {
-			simulator = simulatorFactory(args);
+		simulator = simulatorFactory(args);
 
 	        Logger.getLogger("santa.simulator").addHandler(new ConsoleHandler());
 

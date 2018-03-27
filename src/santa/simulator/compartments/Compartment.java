@@ -102,10 +102,10 @@ public class Compartment {
         this.selector = new BinarySearchSelector();
 //        this.selector = new SimpleRouletteWheelSelector();
         switch (populationType) {
-            case "exponential":
+            case "exponentialPopulation":
                 population = new ExponentialPopulation(populationSize, growthRate, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
                 break;
-            case "logistic":
+            case "logisticPopulation":
                 population = new LogisticPopulation(populationSize, (int)growthRate, maxPopulationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
                 break;
             default:
