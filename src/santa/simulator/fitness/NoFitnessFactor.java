@@ -15,8 +15,8 @@ import santa.simulator.genomes.StateChange;
  */
 public class NoFitnessFactor extends AbstractFitnessFactor {
 
-    public NoFitnessFactor() {
-        super(null, null);
+    public NoFitnessFactor(Feature feature, Set<Integer> sites) {
+        super(feature, sites);
     }
 
     @Override

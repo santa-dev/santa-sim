@@ -938,7 +938,9 @@ public class SimulatorParser {
 	}
 
         private FitnessFactor parseNoFitnessFunction(Element element) throws ParseException {
-            return new NoFitnessFactor();
+            FeatureAndSites factor = parseFeatureAndSites(element);
+            
+            return new NoFitnessFactor(factor.feature, factor.sites);
         }
 
 	/**

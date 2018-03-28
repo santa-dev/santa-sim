@@ -23,7 +23,10 @@ public abstract class AbstractMutator implements Mutator {
         // iterate. This would avoid the sort at the end.
         SortedSet<Mutation> mutations = new TreeSet<Mutation>();
         
-        int mutationCount = genome.binomialDeviate(mutationRate);
+        int mutationCount = 0;
+        
+        if (mutationRate > 0)
+            genome.binomialDeviate(mutationRate);
 
         // We expect only a few mutations per genome. Therefore, simply check
         // by looping over the already generated mutations to avoid duplicates hits.
