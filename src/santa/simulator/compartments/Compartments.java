@@ -8,11 +8,12 @@ package santa.simulator.compartments;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 import santa.simulator.Random;
 import santa.simulator.Virus;
+import santa.simulator.fitness.FitnessFunction;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.Genome;
-import santa.simulator.population.Population;
 
 /**
  *
@@ -35,10 +36,10 @@ public class Compartments implements Iterable<Compartment> {
         }
     }
     
-    public void genomeTransfer(int generation) {
+    public void genomeTransfer(int generation, List<CompartmentEpoch> currentEpochs) {
         if (numCompartments > 1) {
-        ArrayList< ArrayList<Genome> > allGenomesToAdd = new ArrayList(numCompartments);
-        ArrayList< ArrayList<Virus> > allVirusesToAdd = new ArrayList(numCompartments);
+        ArrayList< ArrayList<Genome> > allGenomesToAdd = new ArrayList<>(numCompartments);
+        ArrayList< ArrayList<Virus> > allVirusesToAdd = new ArrayList<>(numCompartments);
         
         for (int i = 0; i < numCompartments; i++) {
             allGenomesToAdd.add(new ArrayList<>());
@@ -63,12 +64,14 @@ public class Compartments implements Iterable<Compartment> {
                                 Virus virus = viruses.get(k);
                                 Genome genome = virus.getGenome();
                                 Genome migratingGenome = genome.copy();
-                                
+                                                                
                                 virus.setGenome(migratingGenome);
                                 virusesToAdd.add(virus);
                                 viruses.remove(k);
                                 
+                                // fix this later to make less genomes
                                 genePool.killGenome(genome);
+                                migratingGenome.setFrequency(1);
                                 genomesToAdd.add(migratingGenome);
                             }
                         }
@@ -78,6 +81,7 @@ public class Compartments implements Iterable<Compartment> {
         }
         
         for (int i = 0; i < numCompartments; i++) {
+            FitnessFunction fitnessFunction = currentEpochs.get(i).getFitnessFunction();
             GenePool compartmentGenePool = compartments.get(i).getGenePool();
             List<Genome> compartmentGenomes = compartmentGenePool.getGenomes();  
             List<Virus> viruses = compartments.get(i).getPopulation().getCurrentGeneration();
@@ -85,7 +89,10 @@ public class Compartments implements Iterable<Compartment> {
             for (Genome genome: allGenomesToAdd.get(i)) {
                 Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
                 
-                newGenome.setFrequency(genome.getFrequency());
+                for (int j = 0; j < genome.getFrequency(); j++) {
+                    compartmentGenePool.duplicateGenome(newGenome, new TreeSet<>(), fitnessFunction);
+                }
+                    
                 compartmentGenomes.add(newGenome);
             }
             

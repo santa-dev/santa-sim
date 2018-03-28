@@ -265,11 +265,4 @@ public abstract class BaseGenome implements Genome {
 	private int totalMutationCount = 0;
 
 	FitnessFunction.FitnessGenomeCache fitnessCache;
-        
-    public void baseCopy(BaseGenome g) {
-        g.descriptor = this.descriptor;
-        
-        g.frequency = this.frequency;
-        g.totalMutationCount = this.totalMutationCount;
-    }
 }

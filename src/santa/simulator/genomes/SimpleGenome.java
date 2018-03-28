@@ -11,7 +11,7 @@ public class SimpleGenome extends BaseGenome {
 
 	public void duplicate(SimpleGenome source) {
 		this.sequence = new SimpleSequence(source.sequence);
-		this.fitnessCache = source.fitnessCache.clone();
+                this.fitnessCache = source.fitnessCache.clone();
 		this.descriptor = source.descriptor;
 		setLogFitness(source.getLogFitness());
 		assert(this.descriptor.getGenomeLength() == this.sequence.getLength());
@@ -137,9 +137,8 @@ public class SimpleGenome extends BaseGenome {
         
         public Genome copy() {
             SimpleGenome g = new SimpleGenome();
-        
-            this.baseCopy(g);
-            g.sequence = new SimpleSequence(this.sequence);
+            
+            g.duplicate(this);
             
             return g;
         }

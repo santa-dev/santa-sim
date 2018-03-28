@@ -178,8 +178,7 @@ public class CompactGenome extends BaseGenome {
     public Genome copy() {
         CompactGenome g = new CompactGenome();
         
-        this.baseCopy(g);
-        g.applyMutations(this.mutations);
+        g.duplicate(this);
 
         return g;
     }

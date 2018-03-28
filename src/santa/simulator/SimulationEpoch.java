@@ -51,7 +51,7 @@ public class SimulationEpoch {
             }
             
             if (compartments.getNumCompartments() > 1)
-                compartments.genomeTransfer(generation);
+                compartments.genomeTransfer(generation, compartmentEpochs);
                 
             if (generation % 100 == 0) {
                 memlogger.finest("Generation "+ generation + " used memory: " + readableByteCount(usedMemory()));

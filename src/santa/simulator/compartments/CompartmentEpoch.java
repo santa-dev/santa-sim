@@ -45,7 +45,9 @@ public class CompartmentEpoch {
             // adapt to this epoch, and the new generation
             population.updateAllFitnesses(fitnessFunction);
             
-            System.err.println("Initial population: compartment = " + compartment.getName() +
+            System.err.println("Initial population:" +
+                    " compartment = " + compartment.getName() +
+                    ", population = " + population.getCurrentGeneration().size() +
                     ", fitness = " + population.getMeanFitness() +
                 ", distance = " + population.getMeanDistance() +
                 ", max freq = " + population.getMaxFrequency() +
@@ -62,7 +64,9 @@ public class CompartmentEpoch {
             if (population.getPhylogeny() != null)
                 population.getPhylogeny().pruneDeadLineages();
 
-            System.err.print("Generation " + generation + ": compartment = " + compartment.getName() +
+            System.err.print("Generation " + generation + 
+                    ": compartment = " + compartment.getName() +
+                    ", population = " + population.getCurrentGeneration().size() +
                     ", fitness = " + population.getMeanFitness() +
                 ", distance = " + population.getMeanDistance() +
                 ", max freq = " + population.getMaxFrequency() +
@@ -76,7 +80,9 @@ public class CompartmentEpoch {
             } else
                 System.err.println();
         } else {
-            logger.finest("Generation " + generation + ": compartment = " + compartment.getName() +
+            logger.finest("Generation " + generation + 
+                    ": compartment = " + compartment.getName() +
+                    ", population = " + population.getCurrentGeneration().size() +
                     " fitness = " + population.getMeanFitness() +
                 ", distance = " + population.getMeanDistance() +
             	", max freq = " + population.getMaxFrequency() +

@@ -2,7 +2,7 @@
 	xsi:noNamespaceSchemaLocation="santa.xsd">
 	<replicates>1</replicates>
 	<simulation>
-		<transferRates>0 3.5e-6 0.001 0</transferRates>
+		<transferRates>0 0.00001 0.00001 0</transferRates>
 		<genome>
 			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1 -->
 			<length>9719</length>
@@ -28,14 +28,19 @@
 		</genome>
 		
 		<compartment>
-		<name>plasma</name>
+			<name>plasma</name>
 		
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
-			<populationSize>10000</populationSize>
+			<populationSize>100</populationSize>
 			<inoculum>all</inoculum>
 		</population>
+		
+			<growthModel>
+				<growthRate>1.1</growthRate>
+				<carryingPopulation>100000</carryingPopulation>
+			</growthModel>
 
 		<fitnessFunction>
 			<populationSizeDependentFitness>
@@ -101,28 +106,9 @@
 			<generationCount>1080</generationCount>
 			
 `			<fitnessFunction>
-				<populationSizeDependentFitness>
-					<declineRate>1</declineRate>
-					<maxPopulationSize>1</maxPopulationSize>
-				</populationSizeDependentFitness>
+				<noFitness>
+				</noFitness>
 			</fitnessFunction>
-
-			<mutator>
-				<nucleotideMutator>
-					<mutationRate>2.5E-5</mutationRate>
-					<rateBias>
-	        	            0.42 2.49 0.29
-	            	        1.73 0.23 4.73
-	                	    6.99 0.20 0.60
-	                	    1.02 2.56 0.88
-	                 </rateBias>
-				</nucleotideMutator>
-			</mutator>
-
-			<replicator>
-				<noReplication>
-				</noReplication>
-			</replicator>
 		</epoch>
 		
 		<samplingSchedule>
@@ -147,6 +133,11 @@
 			<populationSize>0</populationSize>
 			<inoculum>all</inoculum>
 		</population>
+		
+		<growthModel>
+			<growthRate>1.01</growthRate>
+			<carryingPopulation>10000</carryingPopulation>
+		</growthModel>
 		
 		<fitnessFunction></fitnessFunction>
 
