@@ -40,7 +40,7 @@ public class Simulation {
     public Simulation (
             int populationSize,
             Selector selector,
-            PopulationGrowth growthModel,
+            PopulationGrowth growth,
             InoculumType inoculumType,
             GenePool genePool,
             List<SimulationEpoch> epochs,
@@ -53,7 +53,7 @@ public class Simulation {
         this.genePool = genePool;
         this.selector = selector;
 
-        population = new Population(genePool, selector, growthModel, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+        population = new Population(genePool, selector, growth, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
     
     public void run(int replicate, Logger logger) {
