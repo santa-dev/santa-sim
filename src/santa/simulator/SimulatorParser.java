@@ -42,6 +42,9 @@ import santa.simulator.genomes.SimpleSequence;
 import santa.simulator.genomes.RecombinationHotSpot;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
+import santa.simulator.population.DynamicPopulationGrowth;
+import santa.simulator.population.PopulationGrowth;
+import santa.simulator.population.StaticPopulationGrowth;
 import santa.simulator.replicators.ClonalReplicator;
 import santa.simulator.replicators.RecombinantReplicatorWithHotSpots;
 import santa.simulator.replicators.RecombinantReplicator;
@@ -54,7 +57,9 @@ import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
 import santa.simulator.samplers.GenomeDescriptionSampler;
 import santa.simulator.IndelModel;
+import santa.simulator.selectors.BinarySearchSelector;
 import santa.simulator.selectors.DynamicSelector;
+import santa.simulator.selectors.Selector;
 
 /**
  * @author Andrew Rambaut
@@ -435,14 +440,21 @@ public class SimulatorParser {
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + EPOCH + "> is missing");
 		
-		if (populationType.equals(STATIC_POPULATION))
-			return new  Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType);
-		else if (populationType.equals(DYNAMIC_POPULATION)) {
+		
+		if (populationType.equals(STATIC_POPULATION)) {
+			Selector selector = new BinarySearchSelector();
+			PopulationGrowth growth = new StaticPopulationGrowth(populationSize);
+			return new  Simulation(populationSize, selector, growth, inoculumType, genePool, epochs, samplingSchedule);
+		} else if (populationType.equals(DYNAMIC_POPULATION)) {
+			PopulationGrowth growth = new DynamicPopulationGrowth();
+			Selector selector = null;
 		    if (dynamicSelector == null) {
-                return new Simulation(populationSize, inoculumType, genePool, epochs, samplingSchedule);
-            } else {
-		        return new Simulation(populationSize, dynamicSelector, inoculumType, genePool, epochs, samplingSchedule);
-            }
+		    	selector = new DynamicSelector();
+		    } else {
+		    	selector = dynamicSelector;
+		    }
+		    	
+		    return new Simulation(populationSize, selector, growth, inoculumType, genePool, epochs, samplingSchedule);
 		}
 		else throw new ParseException("unrecognized population type. should be either staticPopulation or dynamicPopulation.");
 		

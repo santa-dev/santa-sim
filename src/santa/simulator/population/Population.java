@@ -33,16 +33,17 @@ import santa.simulator.selectors.Selector;
  *         Date: Apr 22, 2005
  *         Time: 9:12:27 AM
  */
-public abstract class Population {
+public class Population {
 
     public int getPopulationSize() {
         return getCurrentGeneration().size();
     }
 
-    public Population(GenePool genePool, Selector selector, Phylogeny phylogeny) {
+    public Population(GenePool genePool, Selector selector, PopulationGrowth growth, Phylogeny phylogeny) {
         this.phylogeny = phylogeny;
         this.genePool = genePool;
         this.selector = selector;
+        this.growth = growth;
 
         lastGeneration = new ArrayList<Virus>();
         currentGeneration = new ArrayList<Virus>();
@@ -107,12 +108,9 @@ public abstract class Population {
         }
     }
 
-    protected abstract void select(List<Virus> current, List<Integer> selectedParents, int parentCount, int generation);
-
-
     public void selectNextGeneration(int generation, Replicator replicator, Mutator mutator, FitnessFunction fitnessFunction) {
         List<Integer> selectedParents = new ArrayList<Integer>();
-        select(currentGeneration, selectedParents, replicator.getParentCount(), generation);
+        growth.select(selector, currentGeneration, selectedParents, replicator.getParentCount(), generation);
 
         Virus[] parents = new Virus[replicator.getParentCount()];
 
@@ -327,7 +325,8 @@ public abstract class Population {
 
     private final GenePool genePool;
 
-    protected final Selector selector;
+    private final Selector selector;
+    private final PopulationGrowth growth;
 
     private final Phylogeny phylogeny;
 

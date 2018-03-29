@@ -8,14 +8,10 @@ import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
-import santa.simulator.population.DynamicPopulation;
+import santa.simulator.population.PopulationGrowth;
 import santa.simulator.population.Population;
-import santa.simulator.population.StaticPopulation;
 import santa.simulator.samplers.SamplingSchedule;
-import santa.simulator.selectors.DynamicSelector;
 import santa.simulator.selectors.Selector;
-import santa.simulator.selectors.SimpleRouletteWheelSelector;
-import santa.simulator.selectors.BinarySearchSelector;
 
 /**
  * @author Andrew Rambaut
@@ -40,9 +36,11 @@ public class Simulation {
 		ALL
 	};
 	
-	//Default constructor (dynamic)
+    //Default constructor
     public Simulation (
             int populationSize,
+            Selector selector,
+            PopulationGrowth growthModel,
             InoculumType inoculumType,
             GenePool genePool,
             List<SimulationEpoch> epochs,
@@ -53,48 +51,9 @@ public class Simulation {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-        this.selector = new DynamicSelector();
+        this.selector = selector;
 
-        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-    }
-
-    //Default constructor (dynamic)
-    public Simulation (
-            int populationSize,
-            DynamicSelector dynamicSelector,
-            InoculumType inoculumType,
-            GenePool genePool,
-            List<SimulationEpoch> epochs,
-            SamplingSchedule samplingSchedule) {
-
-        this.populationSize = populationSize;
-        this.inoculumType = inoculumType;
-        this.epochs = epochs;
-        this.samplingSchedule = samplingSchedule;
-        this.genePool = genePool;
-        this.selector = dynamicSelector;
-
-        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-    }
- 
-    //Constructor for static population
-    public Simulation (
-    		int populationSize,
-    		InoculumType inoculumType,
-            GenePool genePool,
-            List<SimulationEpoch> epochs,
-            SamplingSchedule samplingSchedule,
-            String populationType){
-	
-    	this.populationSize = populationSize;
-        this.inoculumType = inoculumType;
-        this.epochs = epochs;
-        this.samplingSchedule = samplingSchedule;
-        this.genePool = genePool;
-        this.selector = new BinarySearchSelector();
-//        this.selector = new SimpleRouletteWheelSelector();
-        population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-
+        population = new Population(genePool, selector, growthModel, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
     
     public void run(int replicate, Logger logger) {
