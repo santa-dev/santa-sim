@@ -8,7 +8,10 @@ import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.fitness.FrequencyDependentFitnessFactor;
 
 import santa.simulator.population.Population;
-import santa.simulator.population.StaticPopulation;
+import santa.simulator.population.PopulationGrowth;
+import santa.simulator.population.StaticPopulationGrowth;
+import santa.simulator.selectors.BinarySearchSelector;
+import santa.simulator.selectors.Selector;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.SimpleGenePool;
 
@@ -42,7 +45,9 @@ public class TreeSamplerTest {
 		int populationSize = 100;
 		pool = new SimpleGenePool();
 		phy = new Phylogeny(populationSize);
-		pop = new StaticPopulation(populationSize, pool, null, phy);
+		Selector selector = new BinarySearchSelector();
+		PopulationGrowth growth = new StaticPopulationGrowth(populationSize);
+		pop = new Population(pool, selector, growth, phy);
 		Sequence founder = new SimpleSequence("aaaaCCCCCcCCCCggTTTTTTaa");
 		List<Sequence> inoculum = new ArrayList<Sequence>();
 		inoculum.add(founder);

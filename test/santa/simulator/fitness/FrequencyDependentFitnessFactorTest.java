@@ -10,7 +10,10 @@ import santa.simulator.genomes.StateChange;
 import santa.simulator.genomes.AminoAcid;
 
 import santa.simulator.population.Population;
-import santa.simulator.population.StaticPopulation;
+import santa.simulator.population.PopulationGrowth;
+import santa.simulator.population.StaticPopulationGrowth;
+import santa.simulator.selectors.Selector;
+import santa.simulator.selectors.BinarySearchSelector;
 import santa.simulator.genomes.GenePool;
 import santa.simulator.genomes.SimpleGenePool;
 
@@ -81,7 +84,9 @@ public class FrequencyDependentFitnessFactorTest {
 
 		// populate the genome pool
 		GenePool pool = new SimpleGenePool();
-		Population pop = new StaticPopulation(100, pool, null, null);
+		Selector selector = new BinarySearchSelector();
+		PopulationGrowth growth = new StaticPopulationGrowth(100);
+		Population pop = new Population(pool, selector, growth, null);
 		Sequence founder = new SimpleSequence("aaaaCCCCCcCCCCggTTTTTTaa");
 		List<Sequence> inoculum = new ArrayList<Sequence>();
 		inoculum.add(founder);

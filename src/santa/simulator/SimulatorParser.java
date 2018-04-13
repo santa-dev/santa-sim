@@ -46,6 +46,9 @@ import santa.simulator.genomes.SimpleSequence;
 import santa.simulator.genomes.RecombinationHotSpot;
 import santa.simulator.mutators.Mutator;
 import santa.simulator.mutators.NucleotideMutator;
+import santa.simulator.population.DynamicPopulationGrowth;
+import santa.simulator.population.PopulationGrowth;
+import santa.simulator.population.StaticPopulationGrowth;
 import santa.simulator.replicators.ClonalReplicator;
 import santa.simulator.replicators.RecombinantReplicatorWithHotSpots;
 import santa.simulator.replicators.RecombinantReplicator;
@@ -57,7 +60,9 @@ import santa.simulator.samplers.SamplingSchedule;
 import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
 import santa.simulator.samplers.GenomeDescriptionSampler;
+import santa.simulator.selectors.BinarySearchSelector;
 import santa.simulator.selectors.DynamicSelector;
+import santa.simulator.selectors.Selector;
 
 /**
  * @author Andrew Rambaut
@@ -542,19 +547,23 @@ public class SimulatorParser {
 		
             switch (populationType) {
                 case STATIC_POPULATION:
-                case EXPONENTIAL_POPULATION:
-                case LOGISTIC_POPULATION:
-                    return new  Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule, populationType, growthRate, maxPopulationSize);
+                    Selector selector = new BinarySearchSelector();
+                    PopulationGrowth growth = new StaticPopulationGrowth(populationSize);
+                    return new  Compartment(compartmentName, populationSize, selector, growth, inoculumType, genePool, epochs, samplingSchedule);
                 case DYNAMIC_POPULATION:
-                    if (dynamicSelector == null) {
-                        return new Compartment(compartmentName, populationSize, inoculumType, genePool, epochs, samplingSchedule);
-                    } else {
-                        return new Compartment(compartmentName, populationSize, dynamicSelector, inoculumType, genePool, epochs, samplingSchedule);
-                    }
+                    PopulationGrowth growth = new DynamicPopulationGrowth();
+                    Selector selector = null;
+                    
+		    if (dynamicSelector == null) {
+		    	selector = new DynamicSelector();
+		    } else {
+		    	selector = dynamicSelector;
+		    }
+                    
+                    return new Compartment(compartmentName, populationSize, selector, growth, inoculumType, genePool, epochs, samplingSchedule);
                 default:
                     throw new ParseException("unrecognized population type. should be either staticPopulation or dynamicPopulation.");
-            }
-		
+            }		
 	}
 
 	DynamicSelector parseGrowthModel(Element element) throws ParseException {

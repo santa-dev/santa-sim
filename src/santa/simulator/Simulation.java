@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import santa.simulator.compartments.Compartment;
 import santa.simulator.compartments.Compartments;
+
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
@@ -74,8 +75,6 @@ public class Simulation {
             compartmentEpochIndex++;
         }
     }
-    
-
     
     public void run(int replicate, Logger logger) {
         for (Compartment compartment: compartments) {

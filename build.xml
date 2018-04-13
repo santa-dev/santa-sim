@@ -132,6 +132,9 @@ To run SANTA unit tests,
   
   <target name="clean">
     <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <delete dir="${test.build}"/>
+    <delete dir="${test.reports}"/>
   </target>
 
   <target name="test" depends="dist">
