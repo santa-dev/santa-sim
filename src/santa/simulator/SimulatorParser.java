@@ -545,14 +545,17 @@ public class SimulatorParser {
 		if (epochs.isEmpty())
 			throw new ParseException("Error parsing <" + element.getName() + "> element: <" + EPOCH + "> is missing");
 		
+            Selector selector;
+            PopulationGrowth growth;
+                
             switch (populationType) {
                 case STATIC_POPULATION:
-                    Selector selector = new BinarySearchSelector();
-                    PopulationGrowth growth = new StaticPopulationGrowth(populationSize);
+                    selector = new BinarySearchSelector();
+                    growth = new StaticPopulationGrowth(populationSize);
                     return new  Compartment(compartmentName, populationSize, selector, growth, inoculumType, genePool, epochs, samplingSchedule);
                 case DYNAMIC_POPULATION:
-                    PopulationGrowth growth = new DynamicPopulationGrowth();
-                    Selector selector = null;
+                    growth = new DynamicPopulationGrowth();
+                    selector = null;
                     
 		    if (dynamicSelector == null) {
 		    	selector = new DynamicSelector();

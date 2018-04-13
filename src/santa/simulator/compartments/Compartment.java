@@ -10,9 +10,8 @@ import santa.simulator.genomes.GenomeDescription;
 import santa.simulator.genomes.Sequence;
 import santa.simulator.phylogeny.Phylogeny;
 import santa.simulator.population.Population;
+import santa.simulator.population.PopulationGrowth;
 import santa.simulator.samplers.SamplingSchedule;
-import santa.simulator.selectors.BinarySearchSelector;
-import santa.simulator.selectors.DynamicSelector;
 import santa.simulator.selectors.Selector;
 
 /**
@@ -40,6 +39,8 @@ public class Compartment {
     public Compartment (
             String name,
             int populationSize,
+            Selector selector,
+            PopulationGrowth growth,
             InoculumType inoculumType,
             GenePool genePool,
             List<CompartmentEpoch> epochs,
@@ -51,65 +52,9 @@ public class Compartment {
         this.epochs = epochs;
         this.samplingSchedule = samplingSchedule;
         this.genePool = genePool;
-        this.selector = new DynamicSelector();
+        this.selector = selector;
 
-        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-    }
-
-    //Default constructor (dynamic)
-    public Compartment (
-            String name,
-            int populationSize,
-            DynamicSelector dynamicSelector,
-            InoculumType inoculumType,
-            GenePool genePool,
-            List<CompartmentEpoch> epochs,
-            SamplingSchedule samplingSchedule) {
-
-        this.name = name;
-        this.populationSize = populationSize;
-        this.inoculumType = inoculumType;
-        this.epochs = epochs;
-        this.samplingSchedule = samplingSchedule;
-        this.genePool = genePool;
-        this.selector = dynamicSelector;
-
-        population = new DynamicPopulation(genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-    }
-    
-    //Constructor for static population
-    public Compartment (
-            String name,
-    		int populationSize,
-    		InoculumType inoculumType,
-            GenePool genePool,
-            List<CompartmentEpoch> epochs,
-            SamplingSchedule samplingSchedule,
-            String populationType,
-            double growthRate,
-            int maxPopulationSize){
-	
-        this.name = name;
-    	this.populationSize = populationSize;
-        this.inoculumType = inoculumType;
-        this.epochs = epochs;
-        this.samplingSchedule = samplingSchedule;
-        this.genePool = genePool;
-        this.selector = new BinarySearchSelector();
-//        this.selector = new SimpleRouletteWheelSelector();
-        switch (populationType) {
-            case "exponentialPopulation":
-                population = new ExponentialPopulation(populationSize, growthRate, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-                break;
-            case "logisticPopulation":
-                population = new LogisticPopulation(populationSize, (int)growthRate, maxPopulationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-                break;
-            default:
-                population = new StaticPopulation(populationSize, genePool, selector, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
-                break;
-        }
-        
-
+        population = new Population(genePool, selector, growth, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
     }
     
     public void initalize(int replicate, Logger logger) {
