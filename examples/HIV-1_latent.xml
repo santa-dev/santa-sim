@@ -2,7 +2,7 @@
 	xsi:noNamespaceSchemaLocation="santa.xsd">
 	<replicates>1</replicates>
 	<simulation>
-		<transferRates>0 0.001 1e-7 0</transferRates>
+		<transferRates>0 0.001 1e-8 0</transferRates>
 		<genome>
 			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1 -->
 			<length>9719</length>
@@ -103,7 +103,7 @@
 		
 		<epoch>
 			<name>treatment</name>
-			<generationCount>1080</generationCount>
+			<generationCount>540</generationCount>
 			
 `			<fitnessFunction>
 				<noFitness>
@@ -135,8 +135,9 @@
 		</population>
 		
 		<growthModel>
-			<growthRate>1.01</growthRate>
+			<growthRate>1.001</growthRate>
 			<carryingPopulation>10000</carryingPopulation>
+			<clonalExpansion></clonalExpansion>
 		</growthModel>
 		
 		<fitnessFunction></fitnessFunction>
@@ -158,15 +159,15 @@
 
 		<epoch>
 			<name>epoch</name>
-			<generationCount>2160</generationCount>
+			<generationCount>1620</generationCount>
 		</epoch>
 		
 		<samplingSchedule>
 			<sampler>
-				<atGeneration>2160</atGeneration>
+				<atGeneration>1620</atGeneration>
 				<fileName>alignment_latent.fasta</fileName>
 				<alignment>
-					<sampleSize>20</sampleSize>
+					<sampleSize>1000</sampleSize>
 					<format>FASTA</format>
 					<label>seq_latent_%s</label>
 				</alignment>

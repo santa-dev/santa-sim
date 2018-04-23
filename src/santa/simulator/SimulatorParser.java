@@ -61,6 +61,7 @@ import santa.simulator.samplers.StatisticsSampler;
 import santa.simulator.samplers.TreeSampler;
 import santa.simulator.samplers.GenomeDescriptionSampler;
 import santa.simulator.selectors.BinarySearchSelector;
+import santa.simulator.selectors.ClonalExpansionSelector;
 import santa.simulator.selectors.DynamicSelector;
 import santa.simulator.selectors.Selector;
 
@@ -106,6 +107,7 @@ public class SimulatorParser {
 	private final static String INOCULUM_ALL = "all";
 
 	private final static String GROWTH_MODEL = "growthModel";
+        private final static String CLONAL_EXPANSION = "clonalExpansion";
 	private final static String GROWTH_RATE = "growthRate";
 	private final static String CARRYING_POPULATION = "carryingPopulation";
 	
@@ -443,7 +445,8 @@ public class SimulatorParser {
 					!e.getName().equals(POPULATION_TYPE) &&
                     !e.getName().equals(GROWTH_MODEL) &&
 					!e.getName().equals(RECOMBINATION_HOTSPOTS) &&
-                                        !e.getName().equals(NAME)) {
+                                        !e.getName().equals(NAME) &&
+                                        !e.getName().equals(GENOME_DESCRIPTION)) {
 				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
 			}
 		}
@@ -466,7 +469,7 @@ public class SimulatorParser {
 		Replicator defaultReplicator = null;
 		
 		String populationType = null;
-        DynamicSelector dynamicSelector = null;
+         Selector dynamicSelector = null;
 
 		List<RecombinationHotSpot> recombinationHotSpots = new ArrayList<>();		
 		
@@ -569,9 +572,10 @@ public class SimulatorParser {
             }		
 	}
 
-	DynamicSelector parseGrowthModel(Element element) throws ParseException {
+	Selector parseGrowthModel(Element element) throws ParseException {
 	    double growthRate = -1;
 	    double carryingPopulation = -1;
+            boolean clonal = false;
         for (Object o : element.getChildren()) {
             Element e = (Element)o;
                 switch (e.getName()) {
@@ -581,13 +585,20 @@ public class SimulatorParser {
                     case CARRYING_POPULATION:
                         carryingPopulation = Double.parseDouble(e.getTextNormalize());
                         break;
+                    case CLONAL_EXPANSION:
+                        clonal = true;
+                        break;
                     default:
                         throw new ParseException("Error parsing <" + GROWTH_MODEL + "> element: unknown XML element within " + GROWTH_MODEL);
                 }
         }
 
         if (growthRate != -1 && carryingPopulation != -1) {
-            return new DynamicSelector(growthRate, carryingPopulation);
+            if (clonal) {
+                return new ClonalExpansionSelector(growthRate, carryingPopulation);
+            } else {
+                return new DynamicSelector(growthRate, carryingPopulation);
+            }
         } else {
             return null;
         }

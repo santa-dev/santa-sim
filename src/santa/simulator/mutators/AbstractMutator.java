@@ -26,7 +26,7 @@ public abstract class AbstractMutator implements Mutator {
         int mutationCount = 0;
         
         if (mutationRate > 0)
-            genome.binomialDeviate(mutationRate);
+            mutationCount = genome.binomialDeviate(mutationRate);
 
         // We expect only a few mutations per genome. Therefore, simply check
         // by looping over the already generated mutations to avoid duplicates hits.
