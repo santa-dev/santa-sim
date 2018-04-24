@@ -2,7 +2,7 @@
 	xsi:noNamespaceSchemaLocation="santa.xsd">
 	<replicates>1</replicates>
 	<simulation>
-		<transferRates>0 0.001 1e-8 0</transferRates>
+		<transferRates>0 3.5e-6 0.001 0</transferRates>
 		<genome>
 			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1 -->
 			<length>9719</length>
@@ -38,7 +38,7 @@
 		</population>
 		
 			<growthModel>
-				<growthRate>1.1</growthRate>
+				<growthRate>1000</growthRate>
 				<carryingPopulation>100000</carryingPopulation>
 			</growthModel>
 
@@ -105,7 +105,7 @@
 			<name>treatment</name>
 			<generationCount>540</generationCount>
 			
-`			<fitnessFunction>
+			<fitnessFunction>
 				<noFitness>
 				</noFitness>
 			</fitnessFunction>
@@ -135,8 +135,8 @@
 		</population>
 		
 		<growthModel>
-			<growthRate>1.001</growthRate>
-			<carryingPopulation>10000</carryingPopulation>
+			<growthRate>1.0001</growthRate>
+			<carryingPopulation>1000</carryingPopulation>
 			<clonalExpansion></clonalExpansion>
 		</growthModel>
 		

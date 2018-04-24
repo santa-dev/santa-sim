@@ -19,10 +19,11 @@ public class ClonalExpansionSelector implements Selector {
     }
 
     public void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int sampleSize) {
+        Collections.shuffle(currentGeneration);
         for(int i = 0; i < currentGeneration.size(); ++i) {
             double fitness = currentGeneration.get(i).getFitness();
             
-            double splitProb =  Math.max(fitness *  (1 - growthRate) * (1-selectedParents.size()/carryingPopulation),Double.MIN_VALUE);
+            double splitProb =  Math.max(fitness *  (1 - growthRate) * (1-(selectedParents.size() + currentGeneration.size())/carryingPopulation),Double.MIN_VALUE);
             long nbChildren = fitness == 0 ? 0 : Random.nextBinomial(1, splitProb) + 1;
             for(long n = 0; n < nbChildren * sampleSize; ++n) {
                 selectedParents.add(i);
