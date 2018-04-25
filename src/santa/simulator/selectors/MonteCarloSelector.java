@@ -1,11 +1,4 @@
-/*
- * Population.java
- *
- * (c) 2002-2005 BEAST Development Core Team
- *
- * This package may be distributed under the
- * Lesser Gnu Public Licence (LGPL)
- */
+
 package santa.simulator.selectors;
 
 import java.util.List;
