@@ -107,9 +107,10 @@ public class SimulatorParser {
 	private final static String INOCULUM_ALL = "all";
 
 	private final static String GROWTH_MODEL = "growthModel";
-        private final static String CLONAL_EXPANSION = "clonalExpansion";
-	private final static String GROWTH_RATE = "growthRate";
+        private final static String GROWTH_RATE = "growthRate";
 	private final static String CARRYING_POPULATION = "carryingPopulation";
+        private final static String SPLIT_PROBABILITY = "split";
+        private final static String DEATH_PROBABILITY = "death";
 	
 	private final static String GENOME_DESCRIPTION = "genome";
 	private final static String GENOME_LENGTH = "length";
@@ -575,7 +576,8 @@ public class SimulatorParser {
 	Selector parseGrowthModel(Element element) throws ParseException {
 	    double growthRate = -1;
 	    double carryingPopulation = -1;
-            boolean clonal = false;
+            double split = -1;
+            double death = -1;
         for (Object o : element.getChildren()) {
             Element e = (Element)o;
                 switch (e.getName()) {
@@ -585,8 +587,11 @@ public class SimulatorParser {
                     case CARRYING_POPULATION:
                         carryingPopulation = Double.parseDouble(e.getTextNormalize());
                         break;
-                    case CLONAL_EXPANSION:
-                        clonal = true;
+                    case SPLIT_PROBABILITY:
+                        split = Double.parseDouble(e.getTextNormalize());
+                        break;
+                    case DEATH_PROBABILITY:
+                        death = Double.parseDouble(e.getTextNormalize());
                         break;
                     default:
                         throw new ParseException("Error parsing <" + GROWTH_MODEL + "> element: unknown XML element within " + GROWTH_MODEL);
@@ -594,11 +599,9 @@ public class SimulatorParser {
         }
 
         if (growthRate != -1 && carryingPopulation != -1) {
-            if (clonal) {
-                return new ClonalExpansionSelector(growthRate, carryingPopulation);
-            } else {
-                return new DynamicSelector(growthRate, carryingPopulation);
-            }
+            return new DynamicSelector(growthRate, carryingPopulation);
+        } else if (split != -1 && death != -1) {
+            return new ClonalExpansionSelector(split, death);
         } else {
             return null;
         }

@@ -38,11 +38,9 @@ public class Compartments implements Iterable<Compartment> {
     
     public void genomeTransfer(int generation, List<CompartmentEpoch> currentEpochs) {
         if (numCompartments > 1) {
-        ArrayList< ArrayList<Genome> > allGenomesToAdd = new ArrayList<>(numCompartments);
         ArrayList< ArrayList<Virus> > allVirusesToAdd = new ArrayList<>(numCompartments);
         
         for (int i = 0; i < numCompartments; i++) {
-            allGenomesToAdd.add(new ArrayList<>());
             allVirusesToAdd.add(new ArrayList<>());
         }
         
@@ -53,26 +51,22 @@ public class Compartments implements Iterable<Compartment> {
             
             for (int j = 0; j < numCompartments; j++) {
                 if (i != j) {
-                    ArrayList<Genome> genomesToAdd = allGenomesToAdd.get(j);
                     ArrayList<Virus> virusesToAdd = allVirusesToAdd.get(j);
                     
-                    for (int k =0; k < viruses.size(); k++) {
+                    for (int k = 0; k < viruses.size();) {
                         if (transferProbs[i][j] > 0) {
                             boolean transfer = Random.nextUniform(0, 1) <= transferProbs[i][j];
                             
                             if (transfer) {
                                 Virus virus = viruses.get(k);
                                 Genome genome = virus.getGenome();
-                                Genome migratingGenome = genome.copy();
-                                                                
-                                virus.setGenome(migratingGenome);
+                                
                                 virusesToAdd.add(virus);
                                 viruses.remove(k);
                                 
-                                // fix this later to make less genomes
                                 genePool.killGenome(genome);
-                                migratingGenome.setFrequency(1);
-                                genomesToAdd.add(migratingGenome);
+                            } else {
+                                k++;
                             }
                         }
                     }
@@ -81,22 +75,25 @@ public class Compartments implements Iterable<Compartment> {
         }
         
         for (int i = 0; i < numCompartments; i++) {
-            FitnessFunction fitnessFunction = currentEpochs.get(i).getFitnessFunction();
-            GenePool compartmentGenePool = compartments.get(i).getGenePool();
-            List<Genome> compartmentGenomes = compartmentGenePool.getGenomes();  
-            List<Virus> viruses = compartments.get(i).getPopulation().getCurrentGeneration();
+            List<Virus> virusesToAdd = allVirusesToAdd.get(i);
             
-            for (Genome genome: allGenomesToAdd.get(i)) {
-                Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
-                
-                for (int j = 0; j < genome.getFrequency(); j++) {
+            if (!virusesToAdd.isEmpty()) {
+                FitnessFunction fitnessFunction = currentEpochs.get(i).getFitnessFunction();
+                GenePool compartmentGenePool = compartments.get(i).getGenePool();
+                List<Virus> viruses = compartments.get(i).getPopulation().getCurrentGeneration();
+            
+                // fix later to remove create less genomes
+                for (Virus v: virusesToAdd) {
+                    Genome genome = v.getGenome();
+                    Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
+                    
+                    v.setGenome(newGenome);
+                    
                     compartmentGenePool.duplicateGenome(newGenome, new TreeSet<>(), fitnessFunction);
                 }
-                    
-                compartmentGenomes.add(newGenome);
-            }
             
-            viruses.addAll(allVirusesToAdd.get(i));
+                viruses.addAll(virusesToAdd);
+            }
         }
         }
     }

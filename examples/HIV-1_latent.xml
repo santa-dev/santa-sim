@@ -33,13 +33,13 @@
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
-			<populationSize>100</populationSize>
+			<populationSize>15000</populationSize>
 			<inoculum>all</inoculum>
 		</population>
 		
 			<growthModel>
-				<growthRate>1000</growthRate>
-				<carryingPopulation>100000</carryingPopulation>
+				<growthRate>5</growthRate>
+				<carryingPopulation>30000</carryingPopulation>
 			</growthModel>
 
 		<fitnessFunction>
@@ -130,14 +130,13 @@
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
-			<populationSize>0</populationSize>
+			<populationSize>100</populationSize>
 			<inoculum>all</inoculum>
 		</population>
 		
 		<growthModel>
-			<growthRate>1.0001</growthRate>
-			<carryingPopulation>1000</carryingPopulation>
-			<clonalExpansion></clonalExpansion>
+			<split>0.003</split>
+			<death>0.003</death>
 		</growthModel>
 		
 		<fitnessFunction></fitnessFunction>
