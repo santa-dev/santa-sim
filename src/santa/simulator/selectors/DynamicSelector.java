@@ -25,6 +25,7 @@ public class DynamicSelector implements Selector {
 	}
 
 	public void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int nbOfParents) {
+            Collections.shuffle(currentGeneration);
 		for(int i = 0; i < currentGeneration.size(); ++i) {
 			double fitness = currentGeneration.get(i).getFitness();
 			//Abbas: The below formulation of logistic growth was implemented by Gertjan

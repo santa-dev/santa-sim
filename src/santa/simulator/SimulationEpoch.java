@@ -1,116 +1,67 @@
-/*
- * Created on Mar 12, 2007
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package santa.simulator;
 
-import santa.simulator.fitness.FitnessFunction;
-import santa.simulator.genomes.GenePool;
-import santa.simulator.mutators.Mutator;
-import santa.simulator.population.Population;
-import santa.simulator.replicators.Replicator;
-import santa.simulator.samplers.SamplingSchedule;
-
+import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import static santa.simulator.Simulator.readableByteCount;
 import static santa.simulator.Simulator.usedMemory;
+import santa.simulator.compartments.Compartment;
+import santa.simulator.compartments.CompartmentEpoch;
+import santa.simulator.compartments.Compartments;
 
+/**
+ *
+ * @author Andrew Rambaut
+ * @author Bradley R. Jones
+ */
 public class SimulationEpoch {
     private String name;
     private int generationCount;
-    private FitnessFunction fitnessFunction;
-    private Mutator mutator;
-    private Replicator replicator;
-	private static Logger memlogger = Simulator.memlogger;
-
-    public SimulationEpoch(String name, int generationCount,
-            FitnessFunction fitnessFunction, Mutator mutator,
-            Replicator replicator) {
+    private static Logger memlogger = Simulator.memlogger;
+   
+    public SimulationEpoch(String name, int generationCount) {
         this.name = name;
         this.generationCount = generationCount;
-        this.fitnessFunction = fitnessFunction;
-        this.mutator = mutator;
-        this.replicator = replicator;
     }
-
+    
     public int run(Simulation simulation, Logger logger, int startGeneration) {
         System.err.println("Starting epoch: " + (name != null ? name : "(unnamed)"));
 
-        Population population = simulation.getPopulation();
-        GenePool genePool = simulation.getGenePool();
-        SamplingSchedule samplingSchedule = simulation.getSamplingSchedule();
+        Compartments compartments = simulation.getCompartments();
+        ArrayList<CompartmentEpoch> compartmentEpochs = new ArrayList<>();
+        
+        for (Compartment compartment: compartments) {
+            compartmentEpochs.add(compartment.getCurrentEpoch(name));
+        }
 
         final int endGeneration = startGeneration + generationCount;
 
-		memlogger.fine("@start of Epoch Memory used = " + readableByteCount(usedMemory()));
+        memlogger.fine("@start of Epoch Memory used = " + readableByteCount(usedMemory()));
 
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
             EventLogger.setEpoch(generation);
-
-            fitnessFunction.updateGeneration(generation, population);
-
-            if (generation == startGeneration) {
-                // adapt to this epoch, and the new generation
-                population.updateAllFitnesses(fitnessFunction);
-                
-                System.err.println("Initial population:  fitness = " + population.getMeanFitness() +
-                        ", distance = " + population.getMeanDistance() +
-                        ", max freq = " + population.getMaxFrequency() +
-                        ", genepool size = " + genePool.getUniqueGenomeCount() +
-                        " (" + genePool.getUnusedGenomeCount() + " available)");                
+            
+            int i = 0;
+            int totalPopulation = 0;
+            for (Compartment compartment: compartments) {
+                totalPopulation += compartmentEpochs.get(i++).step(compartment, logger, startGeneration, generation);
             }
-
-            population.selectNextGeneration(generation, replicator, mutator, fitnessFunction);
-            if(population.getCurrentGeneration().size() == 0) {
+            
+            if (totalPopulation == 0) {
             	return generation;
             }
             
+            if (compartments.getNumCompartments() > 1)
+                compartments.genomeTransfer(generation, compartmentEpochs);
+                
             if (generation % 100 == 0) {
-                if (population.getPhylogeny() != null)
-                    population.getPhylogeny().pruneDeadLineages();
-
-				memlogger.finest("Generation "+ generation +
-							   " used memory: " + readableByteCount(usedMemory()));
-
-                System.err.print("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
-                        ", distance = " + population.getMeanDistance() +
-                        ", max freq = " + population.getMaxFrequency() +
-                        ", genepool size = " + genePool.getUniqueGenomeCount() +
-                        " (" + genePool.getUnusedGenomeCount() + " available)");
-                if (population.getPhylogeny() != null) {
-                    population.getPhylogeny().pruneDeadLineages();
-                    System.err.println(", phylogeny size = " + population.getPhylogeny().getSize() +
-                        " (used = " + population.getPhylogeny().getLineageCount()+ ")" +
-                        ", tmrca = " + population.getPhylogeny().getMRCA().getGeneration() );
-                } else
-                    System.err.println();
-            } else {
-            	logger.finest("Generation " + generation + ":  fitness = " + population.getMeanFitness() +
-            			", distance = " + population.getMeanDistance() +
-            			", max freq = " + population.getMaxFrequency() +
-            			", genepool size= " + genePool.getUniqueGenomeCount() +
-            			"(" + genePool.getUnusedGenomeCount() + " available)");                
+                memlogger.finest("Generation "+ generation + " used memory: " + readableByteCount(usedMemory()));
             }
-
-            samplingSchedule.doSampling(generation, population);
         }
 
         return endGeneration;
     }
-
-    public FitnessFunction getFitnessFunction() {
-        return fitnessFunction;
+    
+    public String getName() {
+        return name;
     }
-
-    public Mutator getMutator() {
-        return mutator;
-    }
-
-    public Replicator getReplicator() {
-        return replicator;
-    }
-
 }

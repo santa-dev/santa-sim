@@ -38,6 +38,10 @@ public class Random {
     public static long nextPoisson(double v) {
         return randomData.nextPoisson(v);
     }
+    
+    public static int nextBinomial(int n, double p) {
+        return randomData.nextBinomial(n, p);
+    }
 
     public static Object[] nextSample(Collection<?> collection, int i) {
         return randomData.nextSample(collection, i);
