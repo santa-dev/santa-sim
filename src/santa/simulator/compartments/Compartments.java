@@ -20,82 +20,18 @@ import santa.simulator.genomes.Genome;
  * @author Bradley R. Jones
  */
 public class Compartments implements Iterable<Compartment> {
-    private double[][] transferProbs;
+    private Transfer transfer;
     private List<Compartment> compartments;
     private int numCompartments;
     
-    public Compartments(List<Compartment> compartments, double[] transferRates) {
+    public Compartments(List<Compartment> compartments, Transfer transfer) {
         this.compartments = compartments;
         this.numCompartments = compartments.size();
-        this.transferProbs = new double[this.numCompartments][this.numCompartments];
-        
-        double[] sum = new double[this.numCompartments];
-
-        for (int i = 0; i < transferRates.length; i++) {
-            this.transferProbs[i / this.numCompartments][i % this.numCompartments] = transferRates[i];
-        }
+        this.transfer = transfer;
     }
     
     public void genomeTransfer(int generation, List<CompartmentEpoch> currentEpochs) {
-        if (numCompartments > 1) {
-        ArrayList< ArrayList<Virus> > allVirusesToAdd = new ArrayList<>(numCompartments);
-        
-        for (int i = 0; i < numCompartments; i++) {
-            allVirusesToAdd.add(new ArrayList<>());
-        }
-        
-        for (int i = 0; i < numCompartments; i++) {
-            Compartment migrator = compartments.get(i);
-            List<Virus> viruses = migrator.getPopulation().getCurrentGeneration();
-            GenePool genePool = migrator.getGenePool();
-            
-            for (int j = 0; j < numCompartments; j++) {
-                if (i != j) {
-                    ArrayList<Virus> virusesToAdd = allVirusesToAdd.get(j);
-                    
-                    for (int k = 0; k < viruses.size();) {
-                        if (transferProbs[i][j] > 0) {
-                            boolean transfer = Random.nextUniform(0, 1) <= transferProbs[i][j];
-                            
-                            if (transfer) {
-                                Virus virus = viruses.get(k);
-                                Genome genome = virus.getGenome();
-                                
-                                virusesToAdd.add(virus);
-                                viruses.remove(k);
-                                
-                                genePool.killGenome(genome);
-                            } else {
-                                k++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        for (int i = 0; i < numCompartments; i++) {
-            List<Virus> virusesToAdd = allVirusesToAdd.get(i);
-            
-            if (!virusesToAdd.isEmpty()) {
-                FitnessFunction fitnessFunction = currentEpochs.get(i).getFitnessFunction();
-                GenePool compartmentGenePool = compartments.get(i).getGenePool();
-                List<Virus> viruses = compartments.get(i).getPopulation().getCurrentGeneration();
-            
-                // fix later to remove create less genomes
-                for (Virus v: virusesToAdd) {
-                    Genome genome = v.getGenome();
-                    Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
-                    
-                    v.setGenome(newGenome);
-                    
-                    compartmentGenePool.duplicateGenome(newGenome, new TreeSet<>(), fitnessFunction);
-                }
-            
-                viruses.addAll(virusesToAdd);
-            }
-        }
-        }
+        transfer.genomeTransfer(compartments, generation, currentEpochs);
     }
     
     public int getNumCompartments() {

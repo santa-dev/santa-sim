@@ -20,6 +20,7 @@ import static java.nio.file.Paths.get;
 import org.jdom2.Element;
 import santa.simulator.compartments.Compartment;
 import santa.simulator.compartments.Compartments;
+import santa.simulator.compartments.MatrixTransfer;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
 import santa.simulator.fitness.BetaDistributedPurifyingFitnessModel;
@@ -327,52 +328,48 @@ public class SimulatorParser {
             throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
         }
         
+        double[] transferRates = null;
+        
         Element e = element.getChildren().get(0);
         switch (e.getName()) {
             case TRANSFER_RATES:
+                for (Object o: element.getChildren()) {
+                    Element e2 = (Element)o;
+                    switch (e2.getName()) {
+                        case COMPARTMENT:
+                            compartmentList.add(parseCompartment(e2));
+                            break;
+                        case TRANSFER_RATES:
+                            transferRates = parseNumberList(e2);
+                            break;
+                        case GENOME_DESCRIPTION:
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
+                    }
+                }
+            
+                if (transferRates == null) {
+                    throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> is missing");
+                }
+            
+                if (compartmentList.isEmpty()) {
+                    throw new ParseException("Error parsing <" + SIMULATION + "> no <" + COMPARTMENT + "> found");
+                }
+            
+                if (transferRates.length != compartmentList.size() * compartmentList.size()) {
+                    throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> should be size (" + compartmentList.size() * compartmentList.size() + "), but was (" + transferRates.length + ") instead");
+                }
                 break;
             default:                
-                double[] transferRates = {1};
+                transferRates = new double[1];
+                transferRates[1] = 1;
                 
-                compartmentList.add(parseCompartment(element));
-                compartments = new Compartments(compartmentList, transferRates);
-                
+                compartmentList.add(parseCompartment(element));                
                 break;
         }
         
-        if (compartments == null) {
-            double[] transferRates = null;
-            
-            for (Object o: element.getChildren()) {
-                e = (Element)o;
-                switch (e.getName()) {
-                    case COMPARTMENT:
-                        compartmentList.add(parseCompartment(e));
-                        break;
-                    case TRANSFER_RATES:
-                        transferRates = parseNumberList(e);
-                        break;
-                    case GENOME_DESCRIPTION:
-                        break;
-                    default:
-                        throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
-                }
-            }
-            
-            if (transferRates == null) {
-                throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> is missing");
-            }
-            
-            if (compartmentList.isEmpty()) {
-                throw new ParseException("Error parsing <" + SIMULATION + "> no <" + COMPARTMENT + "> found");
-            }
-            
-            if (transferRates.length != compartmentList.size() * compartmentList.size()) {
-                throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> should be size (" + compartmentList.size() * compartmentList.size() + "), but was (" + transferRates.length + ") instead");
-            }
-            
-            compartments = new Compartments(compartmentList, transferRates);
-        }
+        compartments = new Compartments(compartmentList, new MatrixTransfer(transferRates, compartmentList.size()));
         
         return new Simulation(compartments);
     }
