@@ -35,7 +35,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		if (this.logFitness.length != sequence.length) {
 			logFitness = Double.NEGATIVE_INFINITY;
 		} else {
-			for (int site = 0; site < this.logFitness.length; site++) {
+			for (int site: getSites()) {
 				logFitness += this.logFitness[site][sequence[site]];
 				if (logFitness == Double.NEGATIVE_INFINITY) {
 					break;
