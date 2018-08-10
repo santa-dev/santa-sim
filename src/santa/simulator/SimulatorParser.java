@@ -363,7 +363,7 @@ public class SimulatorParser {
                 break;
             default:                
                 transferRates = new double[1];
-                transferRates[1] = 1;
+                transferRates[0] = 1;
                 
                 compartmentList.add(parseCompartment(element));                
                 break;
