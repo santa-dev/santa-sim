@@ -23,7 +23,7 @@ public class MatrixTransfer implements Transfer {
     private double[][] transferProbs;
     private int numCompartments;
     
-    public MatrixTransfer(double [] transferRates, int numCompartment) {
+    public MatrixTransfer(double [] transferRates, int numCompartments) {
         this.numCompartments = numCompartments;
         this.transferProbs = new double[this.numCompartments][this.numCompartments];
         
@@ -64,6 +64,8 @@ public class MatrixTransfer implements Transfer {
                             } else {
                                 k++;
                             }
+                        } else {
+                            k++;
                         }
                     }
                 }
