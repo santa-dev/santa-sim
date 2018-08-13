@@ -59,6 +59,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		double fit = 0;	 // neutral fitness
 		double[] logFitnessPosition = null;
 		try {
+                    if (getSites().contains(change.position))
 			logFitnessPosition = logFitness[change.position];
 		} catch(IndexOutOfBoundsException e) {
 			// catch IndexOutOfBoundsException b/c insertions may have
