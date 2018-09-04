@@ -40,45 +40,46 @@ public class MatrixTransfer implements Transfer {
             allVirusesToAdd.add(new ArrayList<Virus>());
         }
         
-        for (int i = 0; i < numCompartments; i++) {
-            Compartment migrator = compartments.get(i);
+        for (int compartmentFromID = 0; compartmentFromID < numCompartments; compartmentFromID++) {
+            Compartment migrator = compartments.get(compartmentFromID);
             List<Virus> viruses = migrator.getPopulation().getCurrentGeneration();
             GenePool genePool = migrator.getGenePool();
             
-            for (int j = 0; j < numCompartments; j++) {
-                if (i != j) {
-                    ArrayList<Virus> virusesToAdd = allVirusesToAdd.get(j);
-                    
-                    for (int k = 0; k < viruses.size();) {
-                        if (transferProbs[i][j] > 0) {
-                            boolean transfer = Random.nextUniform(0, 1) <= transferProbs[i][j];
+            for (int virusID = 0; virusID < viruses.size(); virusID++) {
+                double transfer = Random.nextUniform(0, 1);
+            
+                for (int compartmentToID = 0; compartmentToID < numCompartments; compartmentToID++) {
+                    if (transfer < transferProbs[compartmentFromID][compartmentToID]) {
+                        if (compartmentFromID != compartmentToID) {
+                            ArrayList<Virus> virusesToAdd = allVirusesToAdd.get(compartmentToID);
+                            Virus virus = viruses.get(virusID);
+                            Genome genome = virus.getGenome();
                             
-                            if (transfer) {
-                                Virus virus = viruses.get(k);
-                                Genome genome = virus.getGenome();
-                                
-                                virusesToAdd.add(virus);
-                                viruses.remove(k);
-                                
-                                genePool.killGenome(genome);
-                            } else {
-                                k++;
-                            }
-                        } else {
-                            k++;
+                            // record compartment entry
+                            virus.setAge(generation);
+                            
+                            virusesToAdd.add(virus);
+                            viruses.remove(virusID);
+                            genePool.killGenome(genome);
+                                                        
+                            virusID--;
                         }
+                        
+                        break;
+                    } else {
+                        transfer -= transferProbs[compartmentFromID][compartmentToID];
                     }
                 }
             }
         }
         
-        for (int i = 0; i < numCompartments; i++) {
-            List<Virus> virusesToAdd = allVirusesToAdd.get(i);
+        for (int compartmentToID = 0; compartmentToID < numCompartments; compartmentToID++) {
+            List<Virus> virusesToAdd = allVirusesToAdd.get(compartmentToID);
             
             if (!virusesToAdd.isEmpty()) {
-                FitnessFunction fitnessFunction = currentEpochs.get(i).getFitnessFunction();
-                GenePool compartmentGenePool = compartments.get(i).getGenePool();
-                List<Virus> viruses = compartments.get(i).getPopulation().getCurrentGeneration();
+                FitnessFunction fitnessFunction = currentEpochs.get(compartmentToID).getFitnessFunction();
+                GenePool compartmentGenePool = compartments.get(compartmentToID).getGenePool();
+                List<Virus> viruses = compartments.get(compartmentToID).getPopulation().getCurrentGeneration();
             
                 // fix later to remove create less genomes
                 for (Virus v: virusesToAdd) {
@@ -86,7 +87,6 @@ public class MatrixTransfer implements Transfer {
                     Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
                     
                     v.setGenome(newGenome);
-                    
                     compartmentGenePool.duplicateGenome(newGenome, new TreeSet<Mutation>(), fitnessFunction);
                 }
             

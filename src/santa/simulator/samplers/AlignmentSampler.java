@@ -44,7 +44,7 @@ public class AlignmentSampler implements Sampler {
      * @param consensus   write the consensus sequence of the sample rather than writing the sample ?
      * @param schedule    amount of sequences to sample at irregular intervals
      * @param format      format
-     * @param label       label with possible %g, %s and %t variables
+     * @param label       label with possible %g, %s, %t and %a variables
      * @param fileName    name of the file to write the samples
      */
     public AlignmentSampler(Feature feature, Set<Integer> sites, int sampleSize, boolean consensus,
@@ -69,7 +69,7 @@ public class AlignmentSampler implements Sampler {
     public void initialize(int replicate) {
 
         this.replicate = replicate;
-        String fName = substituteVariables(fileName, 0, 0);
+        String fName = substituteVariables(fileName, 0, 0, null);
 
         try {
             destination = new PrintStream(fName);
@@ -96,10 +96,15 @@ public class AlignmentSampler implements Sampler {
         }
     }
 
-    private String substituteVariables(String name, int generation, int seq) {
+    private String substituteVariables(String name, int generation, int seq, Virus virus) {
         String result = name.replaceAll("%r", String.valueOf(replicate+1));
         result = result.replaceAll("%g", String.valueOf(generation));
         result = result.replaceAll("%s", String.valueOf(seq));
+        
+        // generation when lineage entered its compartment
+        if (virus != null)
+            result = result.replaceAll("%a", String.valueOf(virus.getAge()));
+        
         return result;
     }
 
@@ -165,14 +170,14 @@ public class AlignmentSampler implements Sampler {
 
     private void writeNexusFormat(int generation, Virus[] sample) {
         if (consensus) {
-            String l = substituteVariables(label, generation, 0);
+            String l = substituteVariables(label, generation, 0, null);
 
             destination.print(l + "\t");
             destination.println(computeConsensus(sample));
         } else {
             int i = 1;
             for (Virus virus : sample) {
-                String l = substituteVariables(label, generation, i);
+                String l = substituteVariables(label, generation, i, virus);
 
                 destination.print(l + "\t");
 
@@ -230,7 +235,7 @@ public class AlignmentSampler implements Sampler {
 
     private void writeFastaFormat(int generation, Virus[] sample) {
         if (consensus) {
-            String l = substituteVariables(label, generation, 0);
+            String l = substituteVariables(label, generation, 0, null);
 
             destination.println(">" + l);
             destination.println(computeConsensus(sample));
@@ -238,7 +243,7 @@ public class AlignmentSampler implements Sampler {
             int i = 1;
 
             for (Virus virus : sample) {
-                String l = substituteVariables(label, generation, i);
+                String l = substituteVariables(label, generation, i, virus);
 
                 destination.println(">" + l);
                 destination.println(virus.getGenome().getSequence().getNucleotides());
@@ -254,7 +259,7 @@ public class AlignmentSampler implements Sampler {
         destination.println("<!-- Generation = " + generation + " -->");
         int i = 1;
         for (Virus virus : sample) {
-            String l = substituteVariables(label, generation, i);
+            String l = substituteVariables(label, generation, i, virus);
             destination.println("\t<sequence label=\"" + l+ "\">");
             destination.println("\t\t" + virus.getGenome().getSequence().getNucleotides());
             destination.println("\t</sequence>");

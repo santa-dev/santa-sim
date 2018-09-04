@@ -16,6 +16,8 @@ public class Virus {
     public Virus(Genome genome, Virus parent) {
         this.genome = genome;
         this.parent = parent;
+        if (parent != null)
+            this.age = parent.age;
     }
 
     public Genome getGenome() {
@@ -34,12 +36,17 @@ public class Virus {
 		return genome.getFitness();
 	}
 
+    public int getAge() {
+        return age;
+    }
+        
     public void setGenome(Genome genome) {
         this.genome = genome;
     }
 
     public void setParent(Virus parent) {
         this.parent = parent;
+        setAge(parent.age);
     }
 
     public int getOffspringCount() {
@@ -49,9 +56,14 @@ public class Virus {
     public void setOffspringCount(int offspringCount) {
         this.offspringCount = offspringCount;
     }
+    
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     private Genome genome = null;
     private Virus parent = null;
     private int offspringCount = 0;
+    private int age = 0;
 
 }
