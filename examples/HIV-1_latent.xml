@@ -74,6 +74,8 @@
 				</values>
 			</empiricalFitness>
 			
+			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687-->
+			
 			<empiricalFitness id="GAGstop">
 				<feature>gag</feature>
 				<sites>1-500</sites>
@@ -1078,7 +1080,7 @@
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
-			<populationSize>10000</populationSize>
+			<populationSize>100</populationSize>
 			<inoculum>all</inoculum>
 		</population>
 		
@@ -1089,7 +1091,7 @@
 
 		<mutator>
 			<nucleotideMutator>
-				<mutationRate>2.5E-5</mutationRate>
+				<mutationRate>9.3E-5</mutationRate> <!--2.5E-5-->
 				<rateBias>
 	                    0.42 2.49 0.29
 	                    1.73 0.23 4.73
