@@ -2,11 +2,18 @@
 	xsi:noNamespaceSchemaLocation="santa.xsd">
 	<replicates>1</replicates>
 	<simulation>
-		<transferRates>0 1 0 0 0 1</transferRates>
-		<transferFitness>
-
-		</transferFitness>
-		<transferRates>0 0</transferRates>
+		<timedTransfer>
+			<toCompartment>pat1</toCompartment>
+			<fromCompartment>pat2</fromCompartment>
+			<generation>500</generation>
+			<amountToTransfer>100</amountToTransfer>
+		</timedTransfer>
+		<timedTransfer>
+			<toCompartment>pat2</toCompartment>
+			<fromCompartment>pat3</fromCompartment>
+			<generation>1000</generation>
+			<amountToTransfer>100</amountToTransfer>
+		</timedTransfer>
 		<genome>
 			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1 (premature stop codon in NEF replaced with TGG) -->
 			<length>9719</length>
@@ -42,636 +49,10 @@
 		</genome>
 		
 		<compartment>
-			<name>plasma</name>
+			<name>pat1</name>
 
 		<fitnessFunction>
-			<populationSizeDependentFitness>
-				<feature>PR</feature>
-				<sites>1-99</sites>
-				<declineRate>0.005</declineRate>
-				<maxPopulationSize>50000</maxPopulationSize>
-			</populationSizeDependentFitness>
-			<empiricalFitness id="RT1">
-				<feature>RT</feature>
-				<sites>1</sites>
-				<values>
-                        0.01 <!-- A -->
-                        0.01 <!-- C -->
-                        0.01 <!-- D -->
-                        0.01 <!-- E -->
-                        0.01 <!-- F -->
-                        0.01 <!-- G -->
-                        0.01 <!-- H -->
-                        0.01 <!-- I -->
-                        0.01 <!-- K -->
-                        0.01 <!-- L -->
-                        0.01 <!-- M -->
-                        0.01 <!-- N -->
-                        1.20 <!-- P -->
-                        0.01 <!-- Q -->
-                        0.01 <!-- R -->
-                        0.01 <!-- S -->
-                        0.01 <!-- T -->
-                        0.01 <!-- V -->
-                        0.01 <!-- W -->
-                        0.01 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="GAGstop">
-				<feature>gag</feature>
-				<sites>1-500</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-						
-			<empiricalFitness id="GAG1">
-				<feature>gag</feature>
-				<sites>1</sites>
-				<values>
-                        0.01 <!-- A -->
-                        0.01 <!-- C -->
-                        0.01 <!-- D -->
-                        0.01 <!-- E -->
-                        0.01 <!-- F -->
-                        0.01 <!-- G -->
-                        0.01 <!-- H -->
-                        0.01 <!-- I -->
-                        0.01 <!-- K -->
-                        0.01 <!-- L -->
-                        1.20 <!-- M -->
-                        0.01 <!-- N -->
-                        0.01 <!-- P -->
-                        0.01 <!-- Q -->
-                        0.01 <!-- R -->
-                        0.01 <!-- S -->
-                        0.01 <!-- T -->
-                        0.01 <!-- V -->
-                        0.01 <!-- W -->
-                        0.01 <!-- Y -->
-				</values>
-			</empiricalFitness>			
-			
-			<empiricalFitness id="GAG26">
-				<feature>gag</feature>
-				<sites>26</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.01 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="GAG65">
-				<feature>gag</feature>
-				<sites>65</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        0.99 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="GAG81">
-				<feature>gag</feature>
-				<sites>81</sites>
-				<values>
-                        0.99 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="GAG104">
-				<feature>gag</feature>
-				<sites>104</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.01 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="GAG268">
-				<feature>gag</feature>
-				<sites>268</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.02 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        0.98 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="GAG331">
-				<feature>gag</feature>
-				<sites>331</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        0.98 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.02 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-
-			<empiricalFitness id="GAG390">
-				<feature>gag</feature>
-				<sites>390</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.01 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="GAG479">
-				<feature>gag</feature>
-				<sites>479</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.01 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>	
-			
-			<empiricalFitness id="RTstop">
-				<feature>RT</feature>
-				<sites>1-560</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT200">
-				<feature>RT</feature>
-				<sites>200</sites>
-				<values>
-                        0.98 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT275">
-				<feature>RT</feature>
-				<sites>275</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.02 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT454">
-				<feature>RT</feature>
-				<sites>454</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.02 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        0.98 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT461">
-				<feature>RT</feature>
-				<sites>461</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.02 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        0.98 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-						
-			<empiricalFitness id="RT466">
-				<feature>RT</feature>
-				<sites>466</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        0.98 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT468">
-				<feature>RT</feature>
-				<sites>468</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.02 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        0.98 <!-- S -->
-                        1.10 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="RT469">
-				<feature>RT</feature>
-				<sites>469</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.02 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="INstop">
-				<feature>IN</feature>
-				<sites>1-288</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="IN138">
-				<feature>IN</feature>
-				<sites>138</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        0.99 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="IN173">
-				<feature>IN</feature>
-				<sites>173</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        0.98 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.02 <!-- R -->
-                        1.00 <!-- S -->
-                        1.00 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<empiricalFitness id="IN218">
-				<feature>IN</feature>
-				<sites>218</sites>
-				<values>
-                        1.00 <!-- A -->
-                        1.00 <!-- C -->
-                        1.00 <!-- D -->
-                        1.00 <!-- E -->
-                        1.00 <!-- F -->
-                        1.00 <!-- G -->
-                        1.00 <!-- H -->
-                        1.00 <!-- I -->
-                        1.00 <!-- K -->
-                        1.00 <!-- L -->
-                        1.00 <!-- M -->
-                        1.00 <!-- N -->
-                        1.00 <!-- P -->
-                        1.00 <!-- Q -->
-                        1.00 <!-- R -->
-                        1.00 <!-- S -->
-                        1.01 <!-- T -->
-                        1.00 <!-- V -->
-                        1.00 <!-- W -->
-                        1.00 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
+			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687 HLA B08-->
 			<empiricalFitness id="NEFstop">
 				<feature>NEF</feature>
 				<sites>1-206</sites>
@@ -1082,62 +463,14 @@
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
-			<populationSize>15000</populationSize>
+			<populationSize>100</populationSize>
 			<inoculum>all</inoculum>
 		</population>
 		
 		<growthModel>
-			<split>4</split>
-			<death>0</death>
+			<growthRate>5</growthRate>
+			<carryingPopulation>100000</carryingPopulation>
 		</growthModel>
-
-		<mutator>
-			<nucleotideMutator>
-				<mutationRate>0.0</mutationRate>
-				<rateBias>
-	                   0 0 0 0
-	                   0 0 0 0
-	                   0 0 0 0
-	                </rateBias>
-			</nucleotideMutator>
-		</mutator>
-		
-		<replicator>
-			<clonalReplicator></clonalReplicator>
-		</replicator>
-
-		<epoch>
-			<name>epoch</name>
-			<generationCount>3044</generationCount>	
-		</epoch>
-		
-			<samplingSchedule>
-			</samplingSchedule>		
-		</compartment>
-		
-		<compartment>
-			<name>infected</name>
-			
-			<populationType>dynamicPopulation</populationType>
-			
-		<population>
-			<populationSize>65000</populationSize>
-			<inoculum>all</inoculum>
-		</population>
-		
-		<growthModel>
-			<split>0</split>
-			<death>0.95</death>
-		</growthModel>
-		
-		<fitnessFunction></fitnessFunction>
-
-		<replicator>
-			<recombinantReplicator>
-				<dualInfectionProbability>0.05</dualInfectionProbability>
-				<recombinationProbability>0.001</recombinationProbability>
-			</recombinantReplicator>
-		</replicator>
 
 		<mutator>
 			<nucleotideMutator>
@@ -1151,37 +484,335 @@
 			</nucleotideMutator>
 		</mutator>
 
+		<replicator>
+			<recombinantReplicator>
+				<dualInfectionProbability>0.05</dualInfectionProbability>
+				<recombinationProbability>0.001</recombinationProbability>
+			</recombinantReplicator>
+		</replicator>
+
 		<epoch>
 			<name>active</name>
-			<generationCount>1522</generationCount>
-		</epoch>
-			
-		<epoch>
-			<name>treatment</name>
-			<generationCount>1522</generationCount>
-			
-			<fitnessFunction>
-				<noFitness>
-				</noFitness>
-			</fitnessFunction>
+			<generationCount>2000</generationCount>	
 		</epoch>
 		
 		<samplingSchedule>
 			<sampler>
-				<atFrequency>152</atFrequency>
-				<fileName>alignment_plasma.fasta</fileName>
+				<atFrequency>200</atFrequency>
+				<fileName>alignment_pat1.fasta</fileName>
 				<alignment>
 					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
-					<label>seq_%g_%s</label>
+					<label>pat1_%s_%g</label>
 				</alignment>
 			</sampler>
 		</samplingSchedule>
 		</compartment>
 		
 		<compartment>
-		<name>latent_reservoir</name>
-		
+			<name>pat2</name>
+
+		<fitnessFunction>
+			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687 HLA A02-->
+			<empiricalFitness id="NEFstop">
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF1">
+				<feature>NEF</feature>
+				<sites>1</sites>
+				<values>
+                        0.01 <!-- A -->
+                        0.01 <!-- C -->
+                        0.01 <!-- D -->
+                        0.01 <!-- E -->
+                        0.01 <!-- F -->
+                        0.01 <!-- G -->
+                        0.01 <!-- H -->
+                        0.01 <!-- I -->
+                        0.01 <!-- K -->
+                        0.01 <!-- L -->
+                        1.20 <!-- M -->
+                        0.01 <!-- N -->
+                        0.01 <!-- P -->
+                        0.01 <!-- Q -->
+                        0.01 <!-- R -->
+                        0.01 <!-- S -->
+                        0.01 <!-- T -->
+                        0.01 <!-- V -->
+                        0.01 <!-- W -->
+                        0.01 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<!--A02 associated mutations-->
+			<empiricalFitness id="NEF_HLA9">
+				<feature>NEF</feature>
+				<sites>9</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        0.99 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA46">
+				<feature>NEF</feature>
+				<sites>46</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        0.99 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.01 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA53">
+				<feature>NEF</feature>
+				<sites>53</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        0.99 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA85">
+				<feature>NEF</feature>
+				<sites>85</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.01 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        0.99 <!-- L -->
+                        0.99 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA98">
+				<feature>NEF</feature>
+				<sites>98</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        0.99 <!-- D -->
+                        1.01 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA150">
+				<feature>NEF</feature>
+				<sites>150</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        0.99 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA151">
+				<feature>NEF</feature>
+				<sites>151</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.02 <!-- D -->
+                        0.98 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA152">
+				<feature>NEF</feature>
+				<sites>152</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.01 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA153">
+				<feature>NEF</feature>
+				<sites>153</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.02 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        0.98 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
 		<populationType>dynamicPopulation</populationType>
 		
 		<population>
@@ -1190,43 +821,507 @@
 		</population>
 		
 		<growthModel>
-			<split>0</split>
-			<death>0.004</death>
+			<growthRate>5</growthRate>
+			<carryingPopulation>100000</carryingPopulation>
 		</growthModel>
-		
-		<fitnessFunction></fitnessFunction>
 
 		<mutator>
 			<nucleotideMutator>
-				<mutationRate>0.0</mutationRate>
+				<mutationRate>2.5E-5</mutationRate>
 				<rateBias>
-	                   0 0 0 0
-	                   0 0 0 0
-	                   0 0 0 0
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
 	                </rateBias>
 			</nucleotideMutator>
 		</mutator>
 
 		<replicator>
-			<clonalReplicator></clonalReplicator>
+			<recombinantReplicator>
+				<dualInfectionProbability>0.05</dualInfectionProbability>
+				<recombinationProbability>0.001</recombinationProbability>
+			</recombinantReplicator>
 		</replicator>
 
 		<epoch>
-			<name>epoch</name>
-			<generationCount>3044</generationCount>
+			<name>active</name>
+			<generationCount>2000</generationCount>	
 		</epoch>
 		
 		<samplingSchedule>
 			<sampler>
-				<atGeneration>3044</atGeneration>
-				<fileName>alignment_latent.fasta</fileName>
+				<atFrequency>200</atFrequency>
+				<fileName>alignment_pat2.fasta</fileName>
 				<alignment>
-					<sampleSize>50</sampleSize>
+					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
-					<label>seq_latent_%s</label>
+					<label>pat2_%s_%g</label>
 				</alignment>
 			</sampler>
 		</samplingSchedule>
 		</compartment>
+		
+		<compartment>
+			<name>pat3</name>
+
+		<fitnessFunction>
+			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687 HLA B08-->
+			<empiricalFitness id="NEFstop">
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF1">
+				<feature>NEF</feature>
+				<sites>1</sites>
+				<values>
+                        0.01 <!-- A -->
+                        0.01 <!-- C -->
+                        0.01 <!-- D -->
+                        0.01 <!-- E -->
+                        0.01 <!-- F -->
+                        0.01 <!-- G -->
+                        0.01 <!-- H -->
+                        0.01 <!-- I -->
+                        0.01 <!-- K -->
+                        0.01 <!-- L -->
+                        1.20 <!-- M -->
+                        0.01 <!-- N -->
+                        0.01 <!-- P -->
+                        0.01 <!-- Q -->
+                        0.01 <!-- R -->
+                        0.01 <!-- S -->
+                        0.01 <!-- T -->
+                        0.01 <!-- V -->
+                        0.01 <!-- W -->
+                        0.01 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<!--B08 associated mutations-->
+			<empiricalFitness id="NEF_HLA18">
+				<feature>NEF</feature>
+				<sites>18</sites>
+				<values>
+                        1.10 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        0.99 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA40">
+				<feature>NEF</feature>
+				<sites>40</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        0.99 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.01 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+						
+			<empiricalFitness id="NEF_HLA83">
+				<feature>NEF</feature>
+				<sites>83</sites>
+				<values>
+                        1.01 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA87">
+				<feature>NEF</feature>
+				<sites>87</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.01 <!-- I -->
+                        1.00 <!-- K -->
+                        0.99 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA91">
+				<feature>NEF</feature>
+				<sites>91</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.01 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA93">
+				<feature>NEF</feature>
+				<sites>93</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        0.99 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.01 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA94">
+				<feature>NEF</feature>
+				<sites>94</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.02 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        0.98 <!-- K -->
+                        1.00 <!-- L -->
+                        1.02 <!-- M -->
+                        1.02 <!-- N -->
+                        1.00 <!-- P -->
+                        1.02 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.98 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA101">
+				<feature>NEF</feature>
+				<sites>101</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.02 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        0.98 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA104">
+				<feature>NEF</feature>
+				<sites>104</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.01 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA105">
+				<feature>NEF</feature>
+				<sites>105</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        0.98 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.02 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA170">
+				<feature>NEF</feature>
+				<sites>170</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.01 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA192">
+				<feature>NEF</feature>
+				<sites>192</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.02 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF_HLA194">
+				<feature>NEF</feature>
+				<sites>194</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.02 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        0.98 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>0</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<growthRate>5</growthRate>
+			<carryingPopulation>100000</carryingPopulation>
+		</growthModel>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>2.5E-5</mutationRate>
+				<rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<recombinantReplicator>
+				<dualInfectionProbability>0.05</dualInfectionProbability>
+				<recombinationProbability>0.001</recombinationProbability>
+			</recombinantReplicator>
+		</replicator>
+
+		<epoch>
+			<name>active</name>
+			<generationCount>2000</generationCount>	
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>200</atFrequency>
+				<fileName>alignment_pat3.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>pat3_%s_%g</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+		
 	</simulation>
 </santa>

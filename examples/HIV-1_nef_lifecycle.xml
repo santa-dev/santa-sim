@@ -1,0 +1,472 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="santa.xsd">
+	<replicates>1</replicates>
+	<simulation>
+		<transferRates>0 1 0 0 0 1</transferRates>
+		<transferFitness>
+			<fitnessFunction>
+			<empiricalFitness id="NEF10">
+				<feature>NEF</feature>
+				<sites>10</sites>
+				<values>
+                        0.99 <!-- A -->
+                        0.99 <!-- C -->
+                        0.99 <!-- D -->
+                        0.99 <!-- E -->
+                        0.99 <!-- F -->
+                        0.99 <!-- G -->
+                        0.99 <!-- H -->
+                        0.99 <!-- I -->
+                        0.99 <!-- K -->
+                        0.99 <!-- L -->
+                        0.99 <!-- M -->
+                        0.99 <!-- N -->
+                        0.99 <!-- P -->
+                        0.99 <!-- Q -->
+                        0.99 <!-- R -->
+                        0.99 <!-- S -->
+                        0.99 <!-- T -->
+                        0.999 <!-- V -->
+                        0.99 <!-- W -->
+                        0.99 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF47">
+				<feature>NEF</feature>
+				<sites>47</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        0.001 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF68">
+				<feature>NEF</feature>
+				<sites>68</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        0.10 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF100">
+				<feature>NEF</feature>
+				<sites>100</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        0.01 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			</fitnessFunction>
+		</transferFitness>
+		<transferRates>0 0</transferRates>
+		<genome>
+			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1 (premature stop codon in NEF replaced with TGG) -->
+			<length>618</length>
+			<sequences>
+			ATGGGTGGCAAGTGGTCAAAAAGTAGTGTGATTGGATGGCCTACTGTAAGGGAAAGAATGAGACGAGCTGAGCCAGCAGCAGATAGGGTGGGAGCAGCATCTCGAGACCTGGAAAAACATGGAGCAATCACAAGTAGCAATACAGCAGCTACCAATGCTGCTTGTGCCTGGCTAGAAGCACAAGAGGAGGAGGAGGTGGGTTTTCCAGTCACACCTCAGGTACCTTTAAGACCAATGACTTACAAGGCAGCTGTAGATCTTAGCCACTTTTTAAAAGAAAAGGGGGGACTGGAAGGGCTAATTCACTCCCAAAGAAGACAAGATATCCTTGATCTGTGGATCTACCACACACAAGGCTACTTCCCTGATTGGCAGAACTACACACCAGGGCCAGGGGTCAGATATCCACTGACCTTTGGATGGTGCTACAAGCTAGTACCAGTTGAGCCAGATAAGATAGAAGAGGCCAATAAAGGAGAGAACACCAGCTTGTTACACCCTGTGAGCCTGCATGGGATGGATGACCCGGAGAGAGAAGTGTTAGAGTGGAGGTTTGACAGCCGCCTAGCATTTCATCACGTGGCCCGAGAGCTGCATCCGGAGTACTTCAAGAACTGC
+			</sequences>
+			<feature>
+				<name>NEF</name>
+				<type>aminoAcid</type>
+				<coordinates>1-618</coordinates>
+			</feature>
+		</genome>
+		
+		<compartment>
+			<name>plasma</name>
+
+		<fitnessFunction>
+			<!-- Fake -->			
+			<populationSizeDependentFitness>
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<declineRate>0.005</declineRate>
+				<maxPopulationSize>1000</maxPopulationSize>
+			</populationSizeDependentFitness>
+			
+			<empiricalFitness id="NEFstop">
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF1">
+				<feature>NEF</feature>
+				<sites>1</sites>
+				<values>
+                        0.01 <!-- A -->
+                        0.01 <!-- C -->
+                        0.01 <!-- D -->
+                        0.01 <!-- E -->
+                        0.01 <!-- F -->
+                        0.01 <!-- G -->
+                        0.01 <!-- H -->
+                        0.01 <!-- I -->
+                        0.01 <!-- K -->
+                        0.01 <!-- L -->
+                        1.20 <!-- M -->
+                        0.01 <!-- N -->
+                        0.01 <!-- P -->
+                        0.01 <!-- Q -->
+                        0.01 <!-- R -->
+                        0.01 <!-- S -->
+                        0.01 <!-- T -->
+                        0.01 <!-- V -->
+                        0.01 <!-- W -->
+                        0.01 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>15000</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<split>0.003</split>
+			<death>0.0033</death>
+		</growthModel>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>0.0</mutationRate>
+				<rateBias>
+	                   0 0 0 0
+	                   0 0 0 0
+	                   0 0 0 0
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+		
+		<replicator>
+			<clonalReplicator></clonalReplicator>
+		</replicator>
+
+		<epoch>
+			<name>active</name>
+			<generationCount>1522</generationCount>
+		</epoch>
+			
+		<epoch>
+			<name>treatment</name>
+			<generationCount>1522</generationCount>
+			
+			<fitnessFunction>
+				<noFitness>
+				</noFitness>
+			</fitnessFunction>
+		</epoch>
+
+		<epoch>
+			<name>epoch</name>
+			<generationCount>3044</generationCount>	
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>152</atFrequency>
+				<fileName>alignment_plasma.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>seq_%g_%s</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+		
+		<compartment>
+			<name>rt</name>
+			
+			<populationType>dynamicPopulation</populationType>
+			
+		<population>
+			<populationSize>15000</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<split>0.003</split>
+			<death>0.0033</death>
+		</growthModel>
+		
+		<fitnessFunction>
+			<!-- Fake -->			
+			<empiricalFitness id="NEF10">
+				<feature>NEF</feature>
+				<sites>10</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.10 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF47">
+				<feature>NEF</feature>
+				<sites>47</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.01 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF131">
+				<feature>NEF</feature>
+				<sites>131</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        0.50 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF181">
+				<feature>NEF</feature>
+				<sites>181</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.01 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.10 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
+		<replicator>
+			<recombinantReplicator>
+				<dualInfectionProbability>0.05</dualInfectionProbability>
+				<recombinationProbability>0.001</recombinationProbability>
+			</recombinantReplicator>
+		</replicator>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>2.5E-5</mutationRate>
+				<rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<epoch>
+			<name>active</name>
+			<generationCount>1522</generationCount>
+		</epoch>
+			
+		<epoch>
+			<name>treatment</name>
+			<generationCount>1522</generationCount>
+			
+			<fitnessFunction>
+				<noFitness>
+				</noFitness>
+			</fitnessFunction>
+		</epoch>
+		
+		<samplingSchedule>
+		</samplingSchedule>
+		</compartment>
+		
+		<compartment>
+		<name>dna</name>
+		
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>15000</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<split>0.003</split>
+			<death>0.0028</death>
+		</growthModel>
+		
+		<fitnessFunction></fitnessFunction>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>0.0</mutationRate>
+				<rateBias>
+	                   0 0 0 0
+	                   0 0 0 0
+	                   0 0 0 0
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<clonalReplicator></clonalReplicator>
+		</replicator>
+
+		<epoch>
+			<name>epoch</name>
+			<generationCount>3044</generationCount>
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atGeneration>3044</atGeneration>
+				<fileName>dna.fasta</fileName>
+				<alignment>
+					<sampleSize>50</sampleSize>
+					<format>FASTA</format>
+					<label>seq_dna_%s</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+	</simulation>
+</santa>

@@ -20,7 +20,11 @@ import static java.nio.file.Paths.get;
 import org.jdom2.Element;
 import santa.simulator.compartments.Compartment;
 import santa.simulator.compartments.Compartments;
+import santa.simulator.compartments.DoubleProb;
+import santa.simulator.compartments.FitnessProb;
 import santa.simulator.compartments.MatrixTransfer;
+import santa.simulator.compartments.TimedTransfer;
+import santa.simulator.compartments.TransferProb;
 
 import santa.simulator.fitness.AgeDependentFitnessFactor;
 import santa.simulator.fitness.BetaDistributedPurifyingFitnessModel;
@@ -82,6 +86,14 @@ public class SimulatorParser {
         
         private final static String COMPARTMENT = "compartment";
         private final static String TRANSFER_RATES = "transferRates";
+        
+        private final static String FITNESS_TRANSFER = "transferFitness";
+        
+        private final static String TIMED_TRANSFER = "timedTransfer";
+        private final static String TO_COMPARTMENT = "toCompartment";
+        private final static String FROM_COMPARTMENT = "fromCompartment";
+        private final static String TRANSFER_GENERATION = "generation";
+        private final static String TRANSFER_AMOUNT = "amountToTransfer";
         
 	private final static String EPOCH = "epoch";
 	private final static String NAME = "name";
@@ -328,11 +340,14 @@ public class SimulatorParser {
             throw new ParseException("Error parsing <" + element.getName() + "> element: <" + GENOME_DESCRIPTION + "> is missing");
         }
         
-        double[] transferRates = null;
+        ArrayList<TransferProb> transferRates = new ArrayList<>();
+        ArrayList<TimedTransfer.TransferEvent> transferEvents = new ArrayList<>();
         
         Element e = element.getChildren().get(0);
         switch (e.getName()) {
             case TRANSFER_RATES:
+            case TIMED_TRANSFER:
+            case FITNESS_TRANSFER:
                 for (Object o: element.getChildren()) {
                     Element e2 = (Element)o;
                     switch (e2.getName()) {
@@ -340,16 +355,37 @@ public class SimulatorParser {
                             compartmentList.add(parseCompartment(e2));
                             break;
                         case TRANSFER_RATES:
-                            transferRates = parseNumberList(e2);
+                            double[] parsedRates = parseNumberList(e2);
+                            
+                            for (int i = 0; i < parsedRates.length; i++) {
+                                transferRates.add(new DoubleProb(parsedRates[i]));
+                            }
+                            
+                            break;
+                        case FITNESS_TRANSFER:
+                            for (Object o3: e2.getChildren()) {
+                                Element e3 = (Element)o3;
+                                
+                                if (e3.getName().equals(FITNESS_FUNCTION)) {
+                                    FitnessFunction fitness = parseFitnessFunction(e3);
+                                    
+                                    transferRates.add(new FitnessProb(fitness));
+                                } else {
+                                    throw new ParseException("Error parsing <" + FITNESS_TRANSFER + "> element: <" + e3.getName() + "> is unrecognized");
+                                }                                
+                            }
+                            break;
+                        case TIMED_TRANSFER:
+                            transferEvents.add(parseTransferEvent(e2));
                             break;
                         case GENOME_DESCRIPTION:
                             break;
                         default:
-                            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e.getName() + "> is unrecognized");
+                            throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + e2.getName() + "> is unrecognized");
                     }
                 }
             
-                if (transferRates == null) {
+                if (transferRates.isEmpty() && transferEvents.isEmpty()) {
                     throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> is missing");
                 }
             
@@ -357,19 +393,45 @@ public class SimulatorParser {
                     throw new ParseException("Error parsing <" + SIMULATION + "> no <" + COMPARTMENT + "> found");
                 }
             
-                if (transferRates.length != compartmentList.size() * compartmentList.size()) {
-                    throw new ParseException("Error parsing <" + SIMULATION + "> element: <" + TRANSFER_RATES + "> should be size (" + compartmentList.size() * compartmentList.size() + "), but was (" + transferRates.length + ") instead");
+                if (transferRates.isEmpty() && transferRates.size() != compartmentList.size() * compartmentList.size()) {
+                    throw new ParseException(
+                        "Error parsing <" +
+                            SIMULATION +
+                            "> element: <" + 
+                            TRANSFER_RATES + 
+                            "> should be size (" + 
+                            compartmentList.size() * compartmentList.size() + 
+                            "), but was (" +
+                            transferRates.size() +
+                            ") instead"
+                    );
                 }
-                break;
-            default:                
-                transferRates = new double[1];
-                transferRates[0] = 1;
+                    
+                break;                
+            default:
+                transferRates.add(new DoubleProb(1));
                 
                 compartmentList.add(parseCompartment(element));                
                 break;
         }
         
-        compartments = new Compartments(compartmentList, new MatrixTransfer(transferRates, compartmentList.size()));
+        if (!transferEvents.isEmpty()) {
+            ArrayList<String> compartmentNames = new ArrayList<>();
+            
+            for (Compartment compartment: compartmentList) {
+                compartmentNames.add(compartment.getName());
+            }
+            
+            for (TimedTransfer.TransferEvent event: transferEvents) {
+                if (!event.findCompartmentIndices(compartmentNames)) {
+                    throw new ParseException("Compartment not found for timedTransfer");
+                }
+            }
+            
+            compartments = new Compartments(compartmentList, new TimedTransfer(transferEvents));
+        } else {
+            compartments = new Compartments(compartmentList, new MatrixTransfer(transferRates, compartmentList.size()));
+        }
         
         return new Simulation(compartments);
     }
@@ -382,9 +444,8 @@ public class SimulatorParser {
         double growthRate = -1;
 
 	for (Object o : element.getChildren()) {
-			Element e = (Element)o;
-			if (e.getName().equals(POPULATION)) {
-
+            Element e = (Element)o;
+            if (e.getName().equals(POPULATION)) {
 				for (Object o1 : e.getChildren()) {
 					Element e1 = (Element)o1;
                                     switch (e1.getName()) {
@@ -603,6 +664,51 @@ public class SimulatorParser {
             return null;
         }
 
+    }
+        
+    TimedTransfer.TransferEvent parseTransferEvent(Element element) throws ParseException {
+        String toCompartment = null;
+        String fromCompartment = null;
+        int generation = -1;
+        int amountToTransfer = -1;
+        
+        for (Object o : element.getChildren()) {
+            Element e = (Element)o;
+            switch (e.getName()){
+                case TO_COMPARTMENT:
+                    toCompartment = e.getTextNormalize();
+                    break;
+                case FROM_COMPARTMENT:
+                    fromCompartment = e.getTextNormalize();
+                    break;
+                case TRANSFER_GENERATION:
+                    generation = Integer.parseInt(e.getTextNormalize());
+                    break;
+                case TRANSFER_AMOUNT:
+                    amountToTransfer = Integer.parseInt(e.getTextNormalize());
+                    break;
+                default:
+                    throw new ParseException("Error parsing <" + TIMED_TRANSFER + "> element: unknown XML element within " + TIMED_TRANSFER);
+            }                   
+        }
+        
+        if (toCompartment == null) {
+            throw new ParseException("Error parsing <" + TIMED_TRANSFER + "> element: " + TO_COMPARTMENT + " was not found");
+        }
+        
+        if (fromCompartment == null) {
+            throw new ParseException("Error parsing <" + TIMED_TRANSFER + "> element: " + FROM_COMPARTMENT + " was not found");
+        }
+        
+        if (generation < 0) {
+            throw new ParseException("Error parsing <" + TIMED_TRANSFER + "> element: " + TRANSFER_GENERATION + " is negative or was not found");
+        }
+        
+        if (amountToTransfer < 0) {
+            throw new ParseException("Error parsing <" + TIMED_TRANSFER + "> element: " + TRANSFER_AMOUNT + " is negative or was not found");
+        }
+        
+        return new TimedTransfer.TransferEvent(toCompartment, fromCompartment, generation, amountToTransfer);
     }
 	
 	CompartmentEpoch parseSimulationEpoch(Element element,

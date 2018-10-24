@@ -33,6 +33,7 @@ public class DynamicSelector implements Selector {
 			//A slightly different formulation is introduced according to: https://www.maa.org/press/periodicals/loci/joma/logistic-growth-model-background-logistic-modeling
 			//expectedProgenyCount =  Math.max(fitness * (1 + growthRate*(1-selectedParents.size()/carryingPopulation)),Double.MIN_VALUE);
 			expectedProgenyCount =  Math.max(fitness * growthRate*(1-selectedParents.size()/carryingPopulation),Double.MIN_VALUE);
+                        
 			long nbChildren = fitness == 0 ? 0 : Random.nextPoisson(expectedProgenyCount);
 			for(long n = 0; n < nbChildren * nbOfParents; ++n) {
 				selectedParents.add(i);
