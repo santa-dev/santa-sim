@@ -41,40 +41,7 @@
 			<name>plasma</name>
 
 		<fitnessFunction>
-			<populationSizeDependentFitness>
-				<feature>PR</feature>
-				<sites>1-99</sites>
-				<declineRate>0.005</declineRate>
-				<maxPopulationSize>50000</maxPopulationSize>
-			</populationSizeDependentFitness>
-			<empiricalFitness id="RT1">
-				<feature>RT</feature>
-				<sites>1</sites>
-				<values>
-                        0.01 <!-- A -->
-                        0.01 <!-- C -->
-                        0.01 <!-- D -->
-                        0.01 <!-- E -->
-                        0.01 <!-- F -->
-                        0.01 <!-- G -->
-                        0.01 <!-- H -->
-                        0.01 <!-- I -->
-                        0.01 <!-- K -->
-                        0.01 <!-- L -->
-                        0.01 <!-- M -->
-                        0.01 <!-- N -->
-                        1.20 <!-- P -->
-                        0.01 <!-- Q -->
-                        0.01 <!-- R -->
-                        0.01 <!-- S -->
-                        0.01 <!-- T -->
-                        0.01 <!-- V -->
-                        0.01 <!-- W -->
-                        0.01 <!-- Y -->
-				</values>
-			</empiricalFitness>
-			
-			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687-->
+			<!--proteins and fitness based on doi:10.1371/journal.pone.0006687 HLA B08-->
 			
 			<empiricalFitness id="GAGstop">
 				<feature>gag</feature>
