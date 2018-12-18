@@ -14,10 +14,10 @@ git clone https://github.com/santa-dev/santa-sim
 ant
 ```
 
-
+Detailed information on how to use SANTA is available at the [wiki](https://github.com/santa-dev/santa-sim/wiki) page.  Several example simulation configuration files (.xml) are inside the _examples_ directory. 
 
 [![wercker status](https://app.wercker.com/status/0fa06c11d47c043962dfb79cbe7a9c45/s/ "wercker status")](https://app.wercker.com/project/byKey/0fa06c11d47c043962dfb79cbe7a9c45)
 
-Detailed information on how to download, build and use SANTA is available at the [wiki](https://github.com/santa-dev/santa-sim/wiki) page.  Several example simulation configuration files (.xml) are inside the _examples_ directory. 
+
 
 
