@@ -16,12 +16,13 @@ public class Phylogeny {
 
 	public Phylogeny(int populationSize) {
 		this.populationSize = populationSize;
-		extantLineages = new Lineage[populationSize];
-		newExtantLineages = new Lineage[populationSize];
+		initialize();
 	}
 
 	public void initialize() {
-		availableLineages.addAll(lineages);
+		extantLineages = new Lineage[populationSize];
+		newExtantLineages = new Lineage[populationSize];
+		availableLineages.clear();
 		lineages.clear();
 
 		mrca = createLineage();
