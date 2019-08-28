@@ -1,7 +1,7 @@
 package santa.simulator.fitness;
 
 import santa.simulator.genomes.*;
-
+import santa.simulator.Random;
 
 import java.util.*;
 
@@ -229,7 +229,7 @@ public class PurifyingFitnessRank {
 		}
 
 		if (breakTiesRandomly)
-			Collections.shuffle(counts);
+			Random.shuffle(counts);
 
 		Collections.sort(counts);
 		return counts;

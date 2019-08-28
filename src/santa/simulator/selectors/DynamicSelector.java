@@ -25,21 +25,25 @@ public class DynamicSelector implements Selector {
 	}
 
 	public void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int nbOfParents) {
-            Collections.shuffle(currentGeneration);
+            Random.shuffle(currentGeneration);
 		for(int i = 0; i < currentGeneration.size(); ++i) {
 			double fitness = currentGeneration.get(i).getFitness();
-			//Abbas: The below formulation of logistic growth was implemented by Gertjan
+                        
+                        //Abbas: The below formulation of logistic growth was implemented by Gertjan
 			//It was noticed that for slower growth rates, the simulator overshoots the carrying size.
 			//A slightly different formulation is introduced according to: https://www.maa.org/press/periodicals/loci/joma/logistic-growth-model-background-logistic-modeling
 			//expectedProgenyCount =  Math.max(fitness * (1 + growthRate*(1-selectedParents.size()/carryingPopulation)),Double.MIN_VALUE);
-			expectedProgenyCount =  fitness * growthRate*(1-selectedParents.size()/carryingPopulation);
+			expectedProgenyCount =  fitness * growthRate * (1 - selectedParents.size() / carryingPopulation);
                         
-			long nbChildren = fitness == 0 || expectedProgenyCount <= Double.MIN_VALUE ? 0 : Random.nextPoisson(expectedProgenyCount);
+                        // Set to zero if infinite fitness is observed (this usually happens if zero fitness is changed to nonzero fitness)
+			long nbChildren = 0;
+                        if (fitness > 0 && Double.isFinite(fitness) && expectedProgenyCount > Double.MIN_VALUE)
+                                nbChildren =  Random.nextPoisson(expectedProgenyCount);
 			for(long n = 0; n < nbChildren * nbOfParents; ++n) {
 				selectedParents.add(i);
 			}
 		}
-		Collections.shuffle(selectedParents);
+		Random.shuffle(selectedParents);
 	}
 
 }

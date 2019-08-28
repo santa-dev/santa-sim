@@ -38,6 +38,6 @@ public class ClonalExpansionSelector implements Selector {
                 selectedParents.add(i);
             }
         }
-        Collections.shuffle(selectedParents);
+        Random.shuffle(selectedParents);
     }
 }

@@ -1,6 +1,10 @@
 package santa.simulator;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Collections;
+import java.util.ListIterator;
+import java.util.RandomAccess;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 
@@ -72,6 +76,41 @@ public class Random {
         for (int i = 0; i < numbers.length; ++i) {
             numbers[i] = numbersCopy[permutation[i]];
         }
+    }
+    
+    // From java.util.Collections
+    public static void shuffle(List<?> list) {
+        int size = list.size();
+        if (size < 5000 || list instanceof RandomAccess) {
+            for (int i=size; i>1; i--)
+                Collections.swap(list, i-1, nextInt(0, i - 1));
+        } else {
+            Object arr[] = list.toArray();
+
+            // Shuffle array
+            for (int i=size; i>1; i--)
+                swap(arr, i-1, nextInt(0, i - 1));
+
+            // Dump array back into list
+            // instead of using a raw type here, it's possible to capture
+            // the wildcard but it will require a call to a supplementary
+            // private method
+            ListIterator it = list.listIterator();
+            for (int i=0; i<arr.length; i++) {
+                it.next();
+                it.set(arr[i]);
+            }
+        }
+    }
+    
+    /**
+     * From java.util.Collections
+     * Swaps the two specified elements in the specified array.
+     */
+    private static void swap(Object[] arr, int i, int j) {
+        Object tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
     
     public static void setSeed(long seed) {

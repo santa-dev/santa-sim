@@ -31,6 +31,7 @@ public class CompartmentEpoch {
         this.replicator = replicator;
     }
 
+    @SuppressWarnings("empty-statement")
     public int step(Compartment compartment, Logger logger, int startGeneration, int generation) {
         Population population = compartment.getPopulation();
         GenePool genePool = compartment.getGenePool();
@@ -60,7 +61,7 @@ public class CompartmentEpoch {
         if (population.getCurrentGeneration().isEmpty())
             return 0;
         
-        if (generation % 100 == 0) {
+        if (generation % 10 == 0) {
             if (population.getPhylogeny() != null)
                 population.getPhylogeny().pruneDeadLineages();
 
@@ -89,7 +90,7 @@ public class CompartmentEpoch {
             	", genepool size= " + genePool.getUniqueGenomeCount() +
             	"(" + genePool.getUnusedGenomeCount() + " available)");                
         }
-        
+                
         samplingSchedule.doSampling(generation, population);
         
         return population.getPopulationSize();
