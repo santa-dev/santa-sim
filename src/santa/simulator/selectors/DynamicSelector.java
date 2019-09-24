@@ -1,6 +1,5 @@
 package santa.simulator.selectors;
 
-import java.util.Collections;
 import java.util.List;
 
 import santa.simulator.Random;
@@ -24,6 +23,7 @@ public class DynamicSelector implements Selector {
 		this.carryingPopulation = carryingPopulation;
 	}
 
+        @Override
 	public void selectParents(List<Virus> currentGeneration, List<Integer> selectedParents, int nbOfParents) {
             Random.shuffle(currentGeneration);
 		for(int i = 0; i < currentGeneration.size(); ++i) {

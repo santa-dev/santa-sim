@@ -49,6 +49,8 @@ public class TimedTransfer implements Transfer {
                  fromGenePool.killGenome(genome);
                                   
                  virus.setAge(generation);
+                 virus.setLastCompartment(fromCompartment);
+                 
                  Genome newGenome = toGenePool.createGenome(genome.getSequence(), genome.getDescription());
                  virus.setGenome(newGenome);
                  fromGenePool.duplicateGenome(newGenome, new TreeSet<Mutation>(), fitness);

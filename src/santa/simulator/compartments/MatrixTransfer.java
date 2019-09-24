@@ -56,6 +56,7 @@ public class MatrixTransfer implements Transfer {
 
                                 // record compartment entry
                                 virus.setAge(generation);
+                                virus.setLastCompartment(migrator);
 
                                 virusesToAdd.add(virus);
                                 viruses.remove(virusID);

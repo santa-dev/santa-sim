@@ -79,6 +79,7 @@ public class Random {
     }
     
     // From java.util.Collections
+    // Added so that all random calls go through this class
     public static void shuffle(List<?> list) {
         int size = list.size();
         if (size < 5000 || list instanceof RandomAccess) {

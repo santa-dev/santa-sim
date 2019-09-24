@@ -44,7 +44,7 @@ public class AlignmentSampler implements Sampler {
      * @param consensus   write the consensus sequence of the sample rather than writing the sample ?
      * @param schedule    amount of sequences to sample at irregular intervals
      * @param format      format
-     * @param label       label with possible %g, %s, %t and %a variables
+     * @param label       label with possible %g, %s, %r, %a and %c variables
      * @param fileName    name of the file to write the samples
      */
     public AlignmentSampler(Feature feature, Set<Integer> sites, int sampleSize, boolean consensus,
@@ -101,9 +101,18 @@ public class AlignmentSampler implements Sampler {
         result = result.replaceAll("%g", String.valueOf(generation));
         result = result.replaceAll("%s", String.valueOf(seq));
         
-        // generation when lineage entered its compartment
-        if (virus != null)
+        if (virus != null) {
+            // generation when lineage entered its compartment
             result = result.replaceAll("%a", String.valueOf(virus.getAge()));
+            
+            // track last compartment
+            if (virus.getLastCompartment() != null) {
+                result = result.replace("%c", virus.getLastCompartment().getName());
+            }
+        }
+        
+        result = result.replaceAll("%a", "NA");
+        result = result.replaceAll("%c", "NA");
         
         return result;
     }
