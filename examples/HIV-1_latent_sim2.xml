@@ -1409,12 +1409,12 @@
 		<!-- ten years (1 cycle per 2.6 days) doi:10.1126/science.271.5255.1582 -->
 		<epoch>
 			<name>active</name>
-			<generationCount>1400</generationCount>
+			<generationCount>560</generationCount>
 		</epoch>
 		
 		<epoch>
 			<name>treatment</name>
-			<generationCount>1400</generationCount>
+			<generationCount>140</generationCount>
 			
 			<fitnessFunction>
 				<noFitness>
@@ -1424,12 +1424,32 @@
 		
 		<samplingSchedule>
 			<sampler>
-				<atFrequency>140</atFrequency>
-				<fileName>alignment_plasma.fasta</fileName>
+				<atGeneration>19</atGeneration>
+				<fileName>alignment_active_19.fasta</fileName>
 				<alignment>
 					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
-					<label>plasma_%s_%g</label>
+					<label>active_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			
+			<sampler>
+				<atGeneration>140</atGeneration>
+				<fileName>alignment_active_140.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>active_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			
+			<sampler>
+				<atGeneration>560</atGeneration>
+				<fileName>alignment_active_560.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>active_%s_%g_%a</label>
 				</alignment>
 			</sampler>
 		</samplingSchedule>
@@ -1470,13 +1490,13 @@
 
 		<epoch>
 			<name>epoch</name>
-			<generationCount>2800</generationCount>
+			<generationCount>700</generationCount>
 		</epoch>
 		
 		<samplingSchedule>
 			<sampler>
-				<atGeneration>1680</atGeneration>
-				<fileName>alignment_latent_1680.fasta</fileName>
+				<atGeneration>560</atGeneration>
+				<fileName>alignment_latent_560.fasta</fileName>
 				<alignment>
 					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
@@ -1484,8 +1504,8 @@
 				</alignment>
 			</sampler>
 			<sampler>
-				<atGeneration>1960</atGeneration>
-				<fileName>alignment_latent_1960.fasta</fileName>
+				<atGeneration>630</atGeneration>
+				<fileName>alignment_latent_630.fasta</fileName>
 				<alignment>
 					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
@@ -1493,26 +1513,8 @@
 				</alignment>
 			</sampler>
 			<sampler>
-				<atGeneration>2240</atGeneration>
-				<fileName>alignment_latent_2240.fasta</fileName>
-				<alignment>
-					<sampleSize>10</sampleSize>
-					<format>FASTA</format>
-					<label>latent_%s_%g_%a</label>
-				</alignment>
-			</sampler>
-			<sampler>
-				<atGeneration>2520</atGeneration>
-				<fileName>alignment_latent_2520.fasta</fileName>
-				<alignment>
-					<sampleSize>10</sampleSize>
-					<format>FASTA</format>
-					<label>latent_%s_%g_%a</label>
-				</alignment>
-			</sampler>
-			<sampler>
-				<atGeneration>2800</atGeneration>
-				<fileName>alignment_latent_2800.fasta</fileName>
+				<atGeneration>700</atGeneration>
+				<fileName>alignment_latent_700.fasta</fileName>
 				<alignment>
 					<sampleSize>10</sampleSize>
 					<format>FASTA</format>
