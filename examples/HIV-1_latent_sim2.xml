@@ -1400,10 +1400,7 @@
 		</mutator>
 
 		<replicator>
-			<recombinantReplicator>
-				<dualInfectionProbability>0.05</dualInfectionProbability>
-				<recombinationProbability>0.001</recombinationProbability>
-			</recombinantReplicator>
+			<clonalReplicator />
 		</replicator>
 
 		<!-- ten years (1 cycle per 2.6 days) doi:10.1126/science.271.5255.1582 -->
