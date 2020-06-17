@@ -10,7 +10,6 @@ import santa.simulator.compartments.Compartments;
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
- * @author Bradley R. Jones
  * @version $Id: Simulation.java,v 1.11 2006/07/19 12:53:05 kdforc0 Exp $
  */
 public class Simulation {
@@ -22,18 +21,18 @@ public class Simulation {
     public Simulation(Compartments compartments) {
         this.compartments = compartments;
         
-        //fix Epochs
+        // split CompartmentEpochs so that they have the same time slices
         this.epochs = new ArrayList<>();
         int compartmentEpochIndex = 0;
         boolean cont = true;
         
-        while (cont) {
+         while (cont) {
             int minGenerations = Integer.MAX_VALUE;
-            String epochName = "";
+            ArrayList<CompartmentEpoch> compartmentEpochs = new ArrayList();
             
             for (Compartment compartment: compartments) {
                 CompartmentEpoch currentCompartmentEpoch = compartment.getEpochs().get(compartmentEpochIndex);
-                epochName += currentCompartmentEpoch.getName();
+                compartmentEpochs.add(currentCompartmentEpoch);
                 
                 if (minGenerations > currentCompartmentEpoch.getGenerationCount()) {
                     minGenerations = currentCompartmentEpoch.getGenerationCount();
@@ -41,11 +40,11 @@ public class Simulation {
             }
             
             for (Compartment compartment: compartments) {
-                List<CompartmentEpoch> compartmentEpochs = compartment.getEpochs();
-                CompartmentEpoch currentCompartmentEpoch = compartmentEpochs.get(compartmentEpochIndex);
+                List<CompartmentEpoch> compartmentsEpochs = compartment.getEpochs();
+                CompartmentEpoch currentCompartmentEpoch = compartmentsEpochs.get(compartmentEpochIndex);
                 
                 if (minGenerations < currentCompartmentEpoch.getGenerationCount()) {
-                    compartmentEpochs.add(compartmentEpochIndex + 1, new CompartmentEpoch(
+                    compartmentsEpochs.add(compartmentEpochIndex + 1, new CompartmentEpoch(
                         currentCompartmentEpoch.getName(),
                         currentCompartmentEpoch.getGenerationCount() - minGenerations,
                         currentCompartmentEpoch.getFitnessFunction(),
@@ -53,18 +52,13 @@ public class Simulation {
                         currentCompartmentEpoch.getReplicator()));
                 }
                 
-                compartmentEpochs.set(compartmentEpochIndex, new CompartmentEpoch(
-                    epochName,
-                    minGenerations,
-                    currentCompartmentEpoch.getFitnessFunction(),
-                    currentCompartmentEpoch.getMutator(),
-                    currentCompartmentEpoch.getReplicator()));
+                currentCompartmentEpoch.setGenerationCount(minGenerations);
                 
-                if (compartmentEpochs.size() <= compartmentEpochIndex + 1)
+                if (compartmentsEpochs.size() <= compartmentEpochIndex + 1)
                     cont = false;
             }
             
-            this.epochs.add(new SimulationEpoch(epochName, minGenerations));
+            this.epochs.add(new SimulationEpoch(compartmentEpochs, minGenerations));
             
             /* 
              * TODO:

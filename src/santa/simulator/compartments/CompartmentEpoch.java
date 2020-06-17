@@ -115,4 +115,8 @@ public class CompartmentEpoch {
     public String getName() {
         return name;
     }
+    
+    public void setGenerationCount(int generationCount) {
+        this.generationCount = generationCount;
+    }
 }

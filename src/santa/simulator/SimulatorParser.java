@@ -73,7 +73,6 @@ import santa.simulator.selectors.Selector;
 /**
  * @author Andrew Rambaut
  * @author Alexei Drummond
- * @author Bradley R. Jones
  * @version $Id: SimulatorParser.java,v 1.19 2006/07/19 14:35:32 kdforc0 Exp $
  */
 public class SimulatorParser {

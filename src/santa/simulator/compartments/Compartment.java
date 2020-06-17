@@ -92,17 +92,6 @@ public class Compartment {
         samplingSchedule.cleanUp();
     }
     
-    public CompartmentEpoch getCurrentEpoch(String name) {
-        int index;
-        
-        for (index = 0; index < epochs.size(); index++) {
-            if (epochs.get(index).getName().equals(name))
-                break;
-        }
-        
-        return epochs.get(index);
-    }
-    
     public GenePool getGenePool() {
         return genePool;
     }

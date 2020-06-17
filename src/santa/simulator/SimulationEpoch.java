@@ -7,34 +7,41 @@ import static santa.simulator.Simulator.usedMemory;
 import santa.simulator.compartments.Compartment;
 import santa.simulator.compartments.CompartmentEpoch;
 import santa.simulator.compartments.Compartments;
+import java.util.List;
 
 /**
  *
  * @author Andrew Rambaut
- * @author Bradley R. Jones
  */
 public class SimulationEpoch {
-    private String name;
     private int generationCount;
+    private List<CompartmentEpoch> compartmentEpochs;
+    private String name;
     private static Logger memlogger = Simulator.memlogger;
    
-    public SimulationEpoch(String name, int generationCount) {
-        this.name = name;
+    public SimulationEpoch(List<CompartmentEpoch> epochs, int generationCount) {
+        this.compartmentEpochs = epochs;
         this.generationCount = generationCount;
+        
+        this.name = null;
+        
+        for (CompartmentEpoch epoch: compartmentEpochs) {
+            if (name == null) {
+                epoch.getName();
+            } else {
+                this.name += ", " + epoch.getName();
+            }
+            
+        }
     }
     
     public int run(Simulation simulation, Logger logger, int startGeneration) {
-        System.err.println("Starting epoch: " + (name != null ? name : "(unnamed)"));
-
         Compartments compartments = simulation.getCompartments();
-        ArrayList<CompartmentEpoch> compartmentEpochs = new ArrayList<>();
-        
-        for (Compartment compartment: compartments) {
-            compartmentEpochs.add(compartment.getCurrentEpoch(name));
-        }
 
         final int endGeneration = startGeneration + generationCount;
 
+        System.err.println("Starting epochs: " + name);
+                
         memlogger.fine("@start of Epoch Memory used = " + readableByteCount(usedMemory()));
 
         for (int generation = startGeneration; generation < endGeneration; ++generation) {
