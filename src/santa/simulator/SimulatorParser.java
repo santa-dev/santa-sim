@@ -445,69 +445,69 @@ public class SimulatorParser {
 	for (Object o : element.getChildren()) {
             Element e = (Element)o;
             if (e.getName().equals(POPULATION)) {
-				for (Object o1 : e.getChildren()) {
-					Element e1 = (Element)o1;
-                                    switch (e1.getName()) {
-                                        case POPULATION_SIZE:
-                                            try {
-                                                populationSize = parseInteger(e1, 0, Integer.MAX_VALUE);
-                                            } catch (ParseException pe) {
-                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
-                                            }
-                                            break;
-                                        case MAX_POPULATION_SIZE:
-                                            try {
-                                                maxPopulationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
-                                            } catch (ParseException pe) {
-                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
-                                            }
-                                            break;
-                                        case GROWTH_RATE:
-                                            try {
-                                                growthRate = parseDouble(e1, 0, Double.MAX_VALUE);
-                                            } catch (ParseException pe) {
-                                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
-                                            }
-                                            break;
-                                        case INOCULUM:
-                                            String v = e1.getTextNormalize();
-                                            switch (v) {
-                                                case INOCULUM_NONE:
-                                                    inoculumType = Compartment.InoculumType.NONE;
-                                                    break;
-                                                case INOCULUM_CONSENSUS:
-                                                    inoculumType = Compartment.InoculumType.CONSENSUS;
-                                                    break;
-                                                case INOCULUM_RANDOM:
-                                                    inoculumType = Compartment.InoculumType.RANDOM;
-                                                    break;
-                                                case INOCULUM_ALL:
-                                                    inoculumType = Compartment.InoculumType.ALL;
-                                                    break;
-                                                    // do nothing
-                                                default:
-                                                    break;
-                                            }
-                                            break;
-                                        default:
-                                            throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
-                                    }
-				}
-			} else if (	!e.getName().equals(GENE_POOL) &&
-					!e.getName().equals(FITNESS_FUNCTION) &&
-					!e.getName().equals(MUTATOR) &&
-					!e.getName().equals(REPLICATOR) &&
-					!e.getName().equals(SAMPLING_SCHEDULE) &&
-					!e.getName().equals(EVENT_LOGGER) &&
-					!e.getName().equals(EPOCH) &&
-					!e.getName().equals(POPULATION_TYPE) &&
+                for (Object o1 : e.getChildren()) {
+                    Element e1 = (Element)o1;
+                    switch (e1.getName()) {
+                        case POPULATION_SIZE:
+                            try {
+                                populationSize = parseInteger(e1, 0, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case MAX_POPULATION_SIZE:
+                            try {
+                                maxPopulationSize = parseInteger(e1, 1, Integer.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case GROWTH_RATE:
+                            try {
+                                growthRate = parseDouble(e1, 0, Double.MAX_VALUE);
+                            } catch (ParseException pe) {
+                                throw new ParseException("Error parsing <" + POPULATION + "> element: " + pe.getMessage());
+                            }
+                            break;
+                        case INOCULUM:
+                            String v = e1.getTextNormalize();
+                            switch (v) {
+                                case INOCULUM_NONE:
+                                    inoculumType = Compartment.InoculumType.NONE;
+                                    break;
+                                case INOCULUM_CONSENSUS:
+                                    inoculumType = Compartment.InoculumType.CONSENSUS;
+                                    break;
+                                case INOCULUM_RANDOM:
+                                    inoculumType = Compartment.InoculumType.RANDOM;
+                                    break;
+                                case INOCULUM_ALL:
+                                    inoculumType = Compartment.InoculumType.ALL;
+                                    break;
+                                    // do nothing
+                                default:
+                                    break;
+                            }
+                            break;
+                        default:
+                            throw new ParseException("Error parsing <" + e.getName() + "> element: <" + e1.getName() + "> is unrecognized");
+                    }
+                }
+            } else if (	!e.getName().equals(GENE_POOL) &&
+                    !e.getName().equals(FITNESS_FUNCTION) &&
+                    !e.getName().equals(MUTATOR) &&
+                    !e.getName().equals(REPLICATOR) &&
+                    !e.getName().equals(SAMPLING_SCHEDULE) &&
+                    !e.getName().equals(EVENT_LOGGER) &&
+                    !e.getName().equals(EPOCH) &&
+                    !e.getName().equals(POPULATION_TYPE) &&
                     !e.getName().equals(GROWTH_MODEL) &&
-					!e.getName().equals(RECOMBINATION_HOTSPOTS) &&
-                                        !e.getName().equals(NAME) &&
-                                        !e.getName().equals(GENOME_DESCRIPTION)) {
-				throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
-			}
-		}
+                    !e.getName().equals(RECOMBINATION_HOTSPOTS) &&
+                    !e.getName().equals(NAME) &&
+                    !e.getName().equals(GENOME_DESCRIPTION)) {
+                throw new ParseException("Error parsing <" + element.getName() + "> element: <" + e.getName() + "> is unrecognized");
+            }
+        }
 		
 		
 		if (populationSize == -1) {
