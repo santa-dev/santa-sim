@@ -16,16 +16,19 @@ public abstract class BaseGenome implements Genome {
 		this.descriptor = GenomeDescription.root;
 	}
 
+        @Override
 	public void setDescription(GenomeDescription gd) {
 		this.descriptor = gd;
 		assert(this.descriptor.getGenomeLength() == getLength());
 	}
 
 	// REMIND - do we still need this?
+        @Override
 	public GenomeDescription getDescription() {
 		return descriptor;
 	}
 
+        @Override
 	public int getTotalMutationCount() {
 		return totalMutationCount;
 	}
@@ -38,22 +41,27 @@ public abstract class BaseGenome implements Genome {
 		totalMutationCount++;
 	}
 
+        @Override
 	public int getFrequency() {
 		return frequency;
 	}
 
+        @Override
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
 
+        @Override
 	public void incrementFrequency() {
 		frequency++;
 	}
 
+        @Override
 	public double getLogFitness() {
 		return logFitness;
 	}
 
+        @Override
 	public void setLogFitness(double logFitness) {
 		if (logFitness != this.logFitness) {
 			this.logFitness = logFitness;
@@ -61,6 +69,7 @@ public abstract class BaseGenome implements Genome {
 		}
 	}
 
+        @Override
 	public double getFitness() {
 		if (!fitnessKnown) {
 			fitness = Math.exp(logFitness);
@@ -69,10 +78,12 @@ public abstract class BaseGenome implements Genome {
 		return fitness;
 	}
 
+        @Override
 	public FitnessFunction.FitnessGenomeCache getFitnessCache() {
 		return fitnessCache;
 	}
 
+        @Override
 	public void setFitnessCache(FitnessFunction.FitnessGenomeCache fitnessCache) {
 		this.fitnessCache = fitnessCache;
 	}
@@ -82,6 +93,7 @@ public abstract class BaseGenome implements Genome {
 	 *
 	 * @return byte array of nucleotides (encoded as integer states)
 	 **/
+        @Override
 	public byte[] getNucleotides(Feature feature) {
 		byte[] nucleotides = null;
 		Feature f = descriptor.getFeature(feature.getName());
@@ -99,6 +111,7 @@ public abstract class BaseGenome implements Genome {
 	}
 
 
+        @Override
 	public byte[] getStates(Feature feature) {
 		Sequence seq = new SimpleSequence(getNucleotides(feature));
 		return seq.getStates(feature.getAlphabet());
@@ -122,10 +135,11 @@ public abstract class BaseGenome implements Genome {
 	 * information.  Other fitness functions ignore the data computed
 	 * here.
 	 *
-	 * @param feature Feature object over which the changes should be computed.
+	 * @param featureByName Feature object over which the changes should be computed.
 	 * @param mutations set of mutations that are inducing changes.
 	 * @return list of <StateChange> objects
 	 **/
+        @Override
 	public List<StateChange> getChanges(Feature featureByName, SortedSet<Mutation> mutations) {
 		List<StateChange> changes = new ArrayList<StateChange>();
 
@@ -226,10 +240,10 @@ public abstract class BaseGenome implements Genome {
 	}
 
 
+        @Override
 	public int binomialDeviate(double mutationRate) {
 		return descriptor.binomialDeviate(mutationRate);
 	}
-
 
 	/**
 	 * Reference to an GenomeDescription.  It is through the

@@ -44,7 +44,7 @@ public class AlignmentSampler implements Sampler {
      * @param consensus   write the consensus sequence of the sample rather than writing the sample ?
      * @param schedule    amount of sequences to sample at irregular intervals
      * @param format      format
-     * @param label       label with possible %g, %s, %t, and %f variables
+     * @param label       label with possible %g, %s, %r, %a, %c and %f variables
      * @param fileName    name of the file to write the samples
      */
     public AlignmentSampler(Feature feature, Set<Integer> sites, int sampleSize, boolean consensus,
@@ -69,7 +69,7 @@ public class AlignmentSampler implements Sampler {
     public void initialize(int replicate) {
 
         this.replicate = replicate;
-        String fName = substituteVariables(fileName, 0, 0, 0.0);
+        String fName = substituteVariables(fileName, 0, 0, null, 0.0);
 
         try {
             destination = new PrintStream(fName);
@@ -96,11 +96,25 @@ public class AlignmentSampler implements Sampler {
         }
     }
 
-    private String substituteVariables(String name, int generation, int seq, double fitness) {
+    private String substituteVariables(String name, int generation, int seq, Virus virus, double fitness) {
         String result = name.replaceAll("%r", String.valueOf(replicate+1));
         result = result.replaceAll("%g", String.valueOf(generation));
         result = result.replaceAll("%s", String.valueOf(seq));
         result = result.replaceAll("%f", String.valueOf(fitness));
+        
+        if (virus != null) {
+            // generation when lineage entered its compartment
+            result = result.replaceAll("%a", String.valueOf(virus.getAge()));
+            
+            // track last compartment
+            if (virus.getLastCompartment() != null) {
+                result = result.replace("%c", virus.getLastCompartment().getName());
+            }
+        }
+        
+        result = result.replaceAll("%a", "NA");
+        result = result.replaceAll("%c", "NA");
+        
         return result;
     }
 
@@ -166,14 +180,14 @@ public class AlignmentSampler implements Sampler {
 
     private void writeNexusFormat(int generation, Virus[] sample) {
         if (consensus) {
-            String l = substituteVariables(label, generation, 0, 0.0);
+            String l = substituteVariables(label, generation, 0, null, 0.0);
 
             destination.print(l + "\t");
             destination.println(computeConsensus(sample));
         } else {
             int i = 1;
             for (Virus virus : sample) {
-                String l = substituteVariables(label, generation, i, virus.getFitness());
+                String l = substituteVariables(label, generation, i, virus, virus.getFitness());
 
                 destination.print(l + "\t");
 
@@ -231,7 +245,7 @@ public class AlignmentSampler implements Sampler {
 
     private void writeFastaFormat(int generation, Virus[] sample) {
         if (consensus) {
-            String l = substituteVariables(label, generation, 0, 0.0);
+            String l = substituteVariables(label, generation, 0, null, 0.0);
 
             destination.println(">" + l);
             destination.println(computeConsensus(sample));
@@ -239,7 +253,7 @@ public class AlignmentSampler implements Sampler {
             int i = 1;
 
             for (Virus virus : sample) {
-                String l = substituteVariables(label, generation, i, virus.getFitness());
+                String l = substituteVariables(label, generation, i, virus, virus.getFitness());
 
                 destination.println(">" + l);
                 destination.println(virus.getGenome().getSequence().getNucleotides());
@@ -255,7 +269,7 @@ public class AlignmentSampler implements Sampler {
         destination.println("<!-- Generation = " + generation + " -->");
         int i = 1;
         for (Virus virus : sample) {
-            String l = substituteVariables(label, generation, i, virus.getFitness());
+            String l = substituteVariables(label, generation, i, virus, virus.getFitness());
             destination.println("\t<sequence label=\"" + l+ "\">");
             destination.println("\t\t" + virus.getGenome().getSequence().getNucleotides());
             destination.println("\t</sequence>");

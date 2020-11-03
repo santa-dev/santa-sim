@@ -1,7 +1,6 @@
 
 package santa.simulator;
 
-import santa.simulator.Random;
 import org.apache.commons.math3.distribution.PascalDistribution;
 
 public class NegBinIndelModel extends IndelModel {

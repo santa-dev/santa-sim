@@ -1,17 +1,11 @@
 package santa.simulator;
 
+import santa.simulator.compartments.CompartmentEpoch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import santa.simulator.genomes.GenePool;
-import santa.simulator.genomes.GenomeDescription;
-import santa.simulator.genomes.Sequence;
-import santa.simulator.phylogeny.Phylogeny;
-import santa.simulator.population.PopulationGrowth;
-import santa.simulator.population.Population;
-import santa.simulator.samplers.SamplingSchedule;
-import santa.simulator.selectors.Selector;
+import santa.simulator.compartments.Compartment;
+import santa.simulator.compartments.Compartments;
 
 /**
  * @author Andrew Rambaut
@@ -20,67 +14,67 @@ import santa.simulator.selectors.Selector;
  */
 public class Simulation {
 
-    private final int populationSize;
-    private final InoculumType inoculumType;
-    private final GenePool genePool;
-    private final List<SimulationEpoch> epochs;
-    private final Selector selector;
-    private final SamplingSchedule samplingSchedule;
-
-    private final Population population;
-
-	public enum InoculumType {
-		NONE,
-		CONSENSUS,
-		RANDOM,
-		ALL
-	};
-	
-    //Default constructor
-    public Simulation (
-            int populationSize,
-            Selector selector,
-            PopulationGrowth growth,
-            InoculumType inoculumType,
-            GenePool genePool,
-            List<SimulationEpoch> epochs,
-            SamplingSchedule samplingSchedule) {
-
-        this.populationSize = populationSize;
-        this.inoculumType = inoculumType;
-        this.epochs = epochs;
-        this.samplingSchedule = samplingSchedule;
-        this.genePool = genePool;
-        this.selector = selector;
-
-        population = new Population(genePool, selector, growth, samplingSchedule.isSamplingTrees() ? new Phylogeny(populationSize) : null);
+    private List<SimulationEpoch> epochs;
+    private Compartments compartments;
+    private static Logger memlogger = Simulator.memlogger;
+    
+    public Simulation(Compartments compartments) {
+        this.compartments = compartments;
+        
+        // split CompartmentEpochs so that they have the same time slices
+        this.epochs = new ArrayList<>();
+        int compartmentEpochIndex = 0;
+        boolean cont = true;
+        
+         while (cont) {
+            int minGenerations = Integer.MAX_VALUE;
+            ArrayList<CompartmentEpoch> compartmentEpochs = new ArrayList();
+            
+            for (Compartment compartment: compartments) {
+                CompartmentEpoch currentCompartmentEpoch = compartment.getEpochs().get(compartmentEpochIndex);
+                compartmentEpochs.add(currentCompartmentEpoch);
+                
+                if (minGenerations > currentCompartmentEpoch.getGenerationCount()) {
+                    minGenerations = currentCompartmentEpoch.getGenerationCount();
+                }
+            }
+            
+            for (Compartment compartment: compartments) {
+                List<CompartmentEpoch> compartmentsEpochs = compartment.getEpochs();
+                CompartmentEpoch currentCompartmentEpoch = compartmentsEpochs.get(compartmentEpochIndex);
+                
+                if (minGenerations < currentCompartmentEpoch.getGenerationCount()) {
+                    compartmentsEpochs.add(compartmentEpochIndex + 1, new CompartmentEpoch(
+                        currentCompartmentEpoch.getName(),
+                        currentCompartmentEpoch.getGenerationCount() - minGenerations,
+                        currentCompartmentEpoch.getFitnessFunction(),
+                        currentCompartmentEpoch.getMutator(),
+                        currentCompartmentEpoch.getReplicator()));
+                }
+                
+                currentCompartmentEpoch.setGenerationCount(minGenerations);
+                
+                if (compartmentsEpochs.size() <= compartmentEpochIndex + 1)
+                    cont = false;
+            }
+            
+            this.epochs.add(new SimulationEpoch(compartmentEpochs, minGenerations));
+            
+            /* 
+             * TODO:
+             * Add check for duplicate epoch names
+             * Add check / deal with different overall epoch length
+            */
+            
+            compartmentEpochIndex++;
+        }
     }
     
     public void run(int replicate, Logger logger) {
-
-        samplingSchedule.initialize(replicate);
-
-        EventLogger.setReplicate(replicate);
-
-        logger.finer("Initializing population: " + populationSize + " viruses.");
-
-	    List<Sequence> inoculum = new ArrayList<Sequence>();
-	    if (inoculumType == InoculumType.CONSENSUS) {
-		    inoculum.add(GenomeDescription.getConsensus());
-	    } else if (inoculumType == InoculumType.ALL) {
-		    inoculum.addAll(GenomeDescription.getSequences());
-	    } else if (inoculumType == InoculumType.RANDOM) {
-		    List<Sequence> sequences = GenomeDescription.getSequences();
-		    if (sequences.size() == 1) {
-			    inoculum.add(sequences.get(0));
-		    } else {
-		        inoculum.add(sequences.get(Random.nextInt(0, sequences.size() - 1)));
-		    }
-	    } else { // NONE
-		    // do nothing
-	    }
-        population.initialize(inoculum, populationSize);
-
+        for (Compartment compartment: compartments) {
+            compartment.initalize(replicate, logger);
+        }
+        
         int generation = 1;
 
         int epochCount = 0;
@@ -89,28 +83,29 @@ public class Simulation {
             EventLogger.setEpoch(epochCount);
 
             generation = epoch.run(this, logger, generation);
-            if(population.getCurrentGeneration().size() == 0) {
+            
+            boolean allDead = true;
+            
+            for (Compartment compartment: compartments) {
+                if (!compartment.getPopulation().getCurrentGeneration().isEmpty()) {
+                    allDead = false;
+                    break;
+                }
+            }
+        
+            if (allDead) {
             	System.err.println("Population crashed after "+generation+" generations.");
             	return;
             }
             epochCount++;
         }
-        samplingSchedule.cleanUp();
+        
+        for (Compartment compartment: compartments) {
+            compartment.cleanup(replicate, logger);
+        }
     }
-
-    public GenePool getGenePool() {
-        return genePool;
-    }
-
-    public Population getPopulation() {
-        return population;
-    }
-
-    public int getPopulationSize() {
-        return populationSize;
-    }
-
-    public SamplingSchedule getSamplingSchedule() {
-        return samplingSchedule;
+   
+    public Compartments getCompartments() {
+        return compartments;
     }
 }
