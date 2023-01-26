@@ -87,6 +87,7 @@ public class MatrixTransfer implements Transfer {
                         Genome newGenome = compartmentGenePool.createGenome(genome.getSequence(), genome.getDescription());
 
                         v.setGenome(newGenome);
+                        fitnessFunction.computeLogFitness(newGenome);
                         compartmentGenePool.duplicateGenome(newGenome, new TreeSet<Mutation>(), fitnessFunction);
                     }
 

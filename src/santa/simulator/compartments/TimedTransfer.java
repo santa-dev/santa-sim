@@ -53,6 +53,7 @@ public class TimedTransfer implements Transfer {
                  
                  Genome newGenome = toGenePool.createGenome(genome.getSequence(), genome.getDescription());
                  virus.setGenome(newGenome);
+                 fitness.computeLogFitness(newGenome);
                  fromGenePool.duplicateGenome(newGenome, new TreeSet<Mutation>(), fitness);
                  toViruses.add(virus);
             }
