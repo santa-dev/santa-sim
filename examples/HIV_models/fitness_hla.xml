@@ -1,0 +1,2114 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="santa.xsd">
+	<replicates>1</replicates>
+	<simulation>
+		<!--
+		#	rate plasma -> latent (doi:10.1371/journal.pcbi.1000533)
+		#	rate latent -> plasma chosen to make reservoir half-life 70 weeks (doi:10.1086/428777)
+		-->
+		<transferRates>0 0.0026 0.00108 0</transferRates>
+		<genome>
+			<!-- http://www.ncbi.nlm.nih.gov/nuccore/K03455.1
+				 premature stop codon in NEF replaced with TGG
+				 premature start codon in vpu replaced with ATG
+			-->
+			<length>9719</length>
+			<sequences>
+				TGGAAGGGCTAATTCACTCCCAACGAAGACAAGATATCCTTGATCTGTGGATCTACCACACACAAGGCTACTTCCCTGATTAGCAGAACTACACACCAGGGCCAGGGATCAGATATCCACTGACCTTTGGATGGTGCTACAAGCTAGTACCAGTTGAGCCAGAGAAGTTAGAAGAAGCCAACAAAGGAGAGAACACCAGCTTGTTACACCCTGTGAGCCTGCATGGAATGGATGACCCGGAGAGAGAAGTGTTAGAGTGGAGGTTTGACAGCCGCCTAGCATTTCATCACATGGCCCGAGAGCTGCATCCGGAGTACTTCAAGAACTGCTGACATCGAGCTTGCTACAAGGGACTTTCCGCTGGGGACTTTCCAGGGAGGCGTGGCCTGGGCGGGACTGGGGAGTGGCGAGCCCTCAGATCCTGCATATAAGCAGCTGCTTTTTGCCTGTACTGGGTCTCTCTGGTTAGACCAGATCTGAGCCTGGGAGCTCTCTGGCTAACTAGGGAACCCACTGCTTAAGCCTCAATAAAGCTTGCCTTGAGTGCTTCAAGTAGTGTGTGCCCGTCTGTTGTGTGACTCTGGTAACTAGAGATCCCTCAGACCCTTTTAGTCAGTGTGGAAAATCTCTAGCAGTGGCGCCCGAACAGGGACCTGAAAGCGAAAGGGAAACCAGAGGAGCTCTCTCGACGCAGGACTCGGCTTGCTGAAGCGCGCACGGCAAGAGGCGAGGGGCGGCGACTGGTGAGTACGCCAAAAATTTTGACTAGCGGAGGCTAGAAGGAGAGAGATGGGTGCGAGAGCGTCAGTATTAAGCGGGGGAGAATTAGATCGATGGGAAAAAATTCGGTTAAGGCCAGGGGGAAAGAAAAAATATAAATTAAAACATATAGTATGGGCAAGCAGGGAGCTAGAACGATTCGCAGTTAATCCTGGCCTGTTAGAAACATCAGAAGGCTGTAGACAAATACTGGGACAGCTACAACCATCCCTTCAGACAGGATCAGAAGAACTTAGATCATTATATAATACAGTAGCAACCCTCTATTGTGTGCATCAAAGGATAGAGATAAAAGACACCAAGGAAGCTTTAGACAAGATAGAGGAAGAGCAAAACAAAAGTAAGAAAAAAGCACAGCAAGCAGCAGCTGACACAGGACACAGCAATCAGGTCAGCCAAAATTACCCTATAGTGCAGAACATCCAGGGGCAAATGGTACATCAGGCCATATCACCTAGAACTTTAAATGCATGGGTAAAAGTAGTAGAAGAGAAGGCTTTCAGCCCAGAAGTGATACCCATGTTTTCAGCATTATCAGAAGGAGCCACCCCACAAGATTTAAACACCATGCTAAACACAGTGGGGGGACATCAAGCAGCCATGCAAATGTTAAAAGAGACCATCAATGAGGAAGCTGCAGAATGGGATAGAGTGCATCCAGTGCATGCAGGGCCTATTGCACCAGGCCAGATGAGAGAACCAAGGGGAAGTGACATAGCAGGAACTACTAGTACCCTTCAGGAACAAATAGGATGGATGACAAATAATCCACCTATCCCAGTAGGAGAAATTTATAAAAGATGGATAATCCTGGGATTAAATAAAATAGTAAGAATGTATAGCCCTACCAGCATTCTGGACATAAGACAAGGACCAAAGGAACCCTTTAGAGACTATGTAGACCGGTTCTATAAAACTCTAAGAGCCGAGCAAGCTTCACAGGAGGTAAAAAATTGGATGACAGAAACCTTGTTGGTCCAAAATGCGAACCCAGATTGTAAGACTATTTTAAAAGCATTGGGACCAGCGGCTACACTAGAAGAAATGATGACAGCATGTCAGGGAGTAGGAGGACCCGGCCATAAGGCAAGAGTTTTGGCTGAAGCAATGAGCCAAGTAACAAATTCAGCTACCATAATGATGCAGAGAGGCAATTTTAGGAACCAAAGAAAGATTGTTAAGTGTTTCAATTGTGGCAAAGAAGGGCACACAGCCAGAAATTGCAGGGCCCCTAGGAAAAAGGGCTGTTGGAAATGTGGAAAGGAAGGACACCAAATGAAAGATTGTACTGAGAGACAGGCTAATTTTTTAGGGAAGATCTGGCCTTCCTACAAGGGAAGGCCAGGGAATTTTCTTCAGAGCAGACCAGAGCCAACAGCCCCACCAGAAGAGAGCTTCAGGTCTGGGGTAGAGACAACAACTCCCCCTCAGAAGCAGGAGCCGATAGACAAGGAACTGTATCCTTTAACTTCCCTCAGGTCACTCTTTGGCAACGACCCCTCGTCACAATAAAGATAGGGGGGCAACTAAAGGAAGCTCTATTAGATACAGGAGCAGATGATACAGTATTAGAAGAAATGAGTTTGCCAGGAAGATGGAAACCAAAAATGATAGGGGGAATTGGAGGTTTTATCAAAGTAAGACAGTATGATCAGATACTCATAGAAATCTGTGGACATAAAGCTATAGGTACAGTATTAGTAGGACCTACACCTGTCAACATAATTGGAAGAAATCTGTTGACTCAGATTGGTTGCACTTTAAATTTTCCCATTAGCCCTATTGAGACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAAGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAGTAGAAATTTGTACAGAGATGGAAAAGGAAGGGAAAATTTCAAAAATTGGGCCTGAAAATCCATACAATACTCCAGTATTTGCCATAAAGAAAAAAGACAGTACTAAATGGAGAAAATTAGTAGATTTCAGAGAACTTAATAAGAGAACTCAAGACTTCTGGGAAGTTCAATTAGGAATACCACATCCCGCAGGGTTAAAAAAGAAAAAATCAGTAACAGTACTGGATGTGGGTGATGCATATTTTTCAGTTCCCTTAGATGAAGACTTCAGGAAGTATACTGCATTTACCATACCTAGTATAAACAATGAGACACCAGGGATTAGATATCAGTACAATGTGCTTCCACAGGGATGGAAAGGATCACCAGCAATATTCCAAAGTAGCATGACAAAAATCTTAGAGCCTTTTAGAAAACAAAATCCAGACATAGTTATCTATCAATACATGGATGATTTGTATGTAGGATCTGACTTAGAAATAGGGCAGCATAGAACAAAAATAGAGGAGCTGAGACAACATCTGTTGAGGTGGGGACTTACCACACCAGACAAAAAACATCAGAAAGAACCTCCATTCCTTTGGATGGGTTATGAACTCCATCCTGATAAATGGACAGTACAGCCTATAGTGCTGCCAGAAAAAGACAGCTGGACTGTCAATGACATACAGAAGTTAGTGGGGAAATTGAATTGGGCAAGTCAGATTTACCCAGGGATTAAAGTAAGGCAATTATGTAAACTCCTTAGAGGAACCAAAGCACTAACAGAAGTAATACCACTAACAGAAGAAGCAGAGCTAGAACTGGCAGAAAACAGAGAGATTCTAAAAGAACCAGTACATGGAGTGTATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAGCAGGGGCAAGGCCAATGGACATATCAAATTTATCAAGAGCCATTTAAAAATCTGAAAACAGGAAAATATGCAAGAATGAGGGGTGCCCACACTAATGATGTAAAACAATTAACAGAGGCAGTGCAAAAAATAACCACAGAAAGCATAGTAATATGGGGAAAGACTCCTAAATTTAAACTGCCCATACAAAAGGAAACATGGGAAACATGGTGGACAGAGTATTGGCAAGCCACCTGGATTCCTGAGTGGGAGTTTGTTAATACCCCTCCCTTAGTGAAATTATGGTACCAGTTAGAGAAAGAACCCATAGTAGGAGCAGAAACCTTCTATGTAGATGGGGCAGCTAACAGGGAGACTAAATTAGGAAAAGCAGGATATGTTACTAATAGAGGAAGACAAAAAGTTGTCACCCTAACTGACACAACAAATCAGAAGACTGAGTTACAAGCAATTTATCTAGCTTTGCAGGATTCGGGATTAGAAGTAAACATAGTAACAGACTCACAATATGCATTAGGAATCATTCAAGCACAACCAGATCAAAGTGAATCAGAGTTAGTCAATCAAATAATAGAGCAGTTAATAAAAAAGGAAAAGGTCTATCTGGCATGGGTACCAGCACACAAAGGAATTGGAGGAAATGAACAAGTAGATAAATTAGTCAGTGCTGGAATCAGGAAAGTACTATTTTTAGATGGAATAGATAAGGCCCAAGATGAACATGAGAAATATCACAGTAATTGGAGAGCAATGGCTAGTGATTTTAACCTGCCACCTGTAGTAGCAAAAGAAATAGTAGCCAGCTGTGATAAATGTCAGCTAAAAGGAGAAGCCATGCATGGACAAGTAGACTGTAGTCCAGGAATATGGCAACTAGATTGTACACATTTAGAAGGAAAAGTTATCCTGGTAGCAGTTCATGTAGCCAGTGGATATATAGAAGCAGAAGTTATTCCAGCAGAAACAGGGCAGGAAACAGCATATTTTCTTTTAAAATTAGCAGGAAGATGGCCAGTAAAAACAATACATACTGACAATGGCAGCAATTTCACCGGTGCTACGGTTAGGGCCGCCTGTTGGTGGGCGGGAATCAAGCAGGAATTTGGAATTCCCTACAATCCCCAAAGTCAAGGAGTAGTAGAATCTATGAATAAAGAATTAAAGAAAATTATAGGACAGGTAAGAGATCAGGCTGAACATCTTAAGACAGCAGTACAAATGGCAGTATTCATCCACAATTTTAAAAGAAAAGGGGGGATTGGGGGGTACAGTGCAGGGGAAAGAATAGTAGACATAATAGCAACAGACATACAAACTAAAGAATTACAAAAACAAATTACAAAAATTCAAAATTTTCGGGTTTATTACAGGGACAGCAGAAATCCACTTTGGAAAGGACCAGCAAAGCTCCTCTGGAAAGGTGAAGGGGCAGTAGTAATACAAGATAATAGTGACATAAAAGTAGTGCCAAGAAGAAAAGCAAAGATCATTAGGGATTATGGAAAACAGATGGCAGGTGATGATTGTGTGGCAAGTAGACAGGATGAGGATTAGAACATGGAAAAGTTTAGTAAAACACCATATGTATGTTTCAGGGAAAGCTAGGGGATGGTTTTATAGACATCACTATGAAAGCCCTCATCCAAGAATAAGTTCAGAAGTACACATCCCACTAGGGGATGCTAGATTGGTAATAACAACATATTGGGGTCTGCATACAGGAGAAAGAGACTGGCATTTGGGTCAGGGAGTCTCCATAGAATGGAGGAAAAAGAGATATAGCACACAAGTAGACCCTGAACTAGCAGACCAACTAATTCATCTGTATTACTTTGACTGTTTTTCAGACTCTGCTATAAGAAAGGCCTTATTAGGACACATAGTTAGCCCTAGGTGTGAATATCAAGCAGGACATAACAAGGTAGGATCTCTACAATACTTGGCACTAGCAGCATTAATAACACCAAAAAAGATAAAGCCACCTTTGCCTAGTGTTACGAAACTGACAGAGGATAGATGGAACAAGCCCCAGAAGACCAAGGGCCACAGAGGGAGCCACACAATGAATGGACACTAGAGCTTTTAGAGGAGCTTAAGAATGAAGCTGTTAGACATTTTCCTAGGATTTGGCTCCATGGCTTAGGGCAACATATCTATGAAACTTATGGGGATACTTGGGCAGGAGTGGAAGCCATAATAAGAATTCTGCAACAACTGCTGTTTATCCATTTTCAGAATTGGGTGTCGACATAGCAGAATAGGCGTTACTCGACAGAGGAGAGCAAGAAATGGAGCCAGTAGATCCTAGACTAGAGCCCTGGAAGCATCCAGGAAGTCAGCCTAAAACTGCTTGTACCAATTGCTATTGTAAAAAGTGTTGCTTTCATTGCCAAGTTTGTTTCATAACAAAAGCCTTAGGCATCTCCTATGGCAGGAAGAAGCGGAGACAGCGACGAAGAGCTCATCAGAACAGTCAGACTCATCAAGCTTCTCTATCAAAGCAGTAAGTAGTACATGTAATGCAACCTATACCAATAGTAGCAATAGTAGCATTAGTAGTAGCAATAATAATAGCAATAGTTGTGTGGTCCATAGTAATCATAGAATATAGGAAAATATTAAGACAAAGAAAAATAGACAGGTTAATTGATAGACTAATAGAAAGAGCAGAAGACAGTGGCAATGAGAGTGAAGGAGAAATATCAGCACTTGTGGAGATGGGGGTGGAGATGGGGCACCATGCTCCTTGGGATGTTGATGATCTGTAGTGCTACAGAAAAATTGTGGGTCACAGTCTATTATGGGGTACCTGTGTGGAAGGAAGCAACCACCACTCTATTTTGTGCATCAGATGCTAAAGCATATGATACAGAGGTACATAATGTTTGGGCCACACATGCCTGTGTACCCACAGACCCCAACCCACAAGAAGTAGTATTGGTAAATGTGACAGAAAATTTTAACATGTGGAAAAATGACATGGTAGAACAGATGCATGAGGATATAATCAGTTTATGGGATCAAAGCCTAAAGCCATGTGTAAAATTAACCCCACTCTGTGTTAGTTTAAAGTGCACTGATTTGAAGAATGATACTAATACCAATAGTAGTAGCGGGAGAATGATAATGGAGAAAGGAGAGATAAAAAACTGCTCTTTCAATATCAGCACAAGCATAAGAGGTAAGGTGCAGAAAGAATATGCATTTTTTTATAAACTTGATATAATACCAATAGATAATGATACTACCAGCTATAAGTTGACAAGTTGTAACACCTCAGTCATTACACAGGCCTGTCCAAAGGTATCCTTTGAGCCAATTCCCATACATTATTGTGCCCCGGCTGGTTTTGCGATTCTAAAATGTAATAATAAGACGTTCAATGGAACAGGACCATGTACAAATGTCAGCACAGTACAATGTACACATGGAATTAGGCCAGTAGTATCAACTCAACTGCTGTTAAATGGCAGTCTAGCAGAAGAAGAGGTAGTAATTAGATCTGTCAATTTCACGGACAATGCTAAAACCATAATAGTACAGCTGAACACATCTGTAGAAATTAATTGTACAAGACCCAACAACAATACAAGAAAAAGAATCCGTATCCAGAGAGGACCAGGGAGAGCATTTGTTACAATAGGAAAAATAGGAAATATGAGACAAGCACATTGTAACATTAGTAGAGCAAAATGGAATAACACTTTAAAACAGATAGCTAGCAAATTAAGAGAACAATTTGGAAATAATAAAACAATAATCTTTAAGCAATCCTCAGGAGGGGACCCAGAAATTGTAACGCACAGTTTTAATTGTGGAGGGGAATTTTTCTACTGTAATTCAACACAACTGTTTAATAGTACTTGGTTTAATAGTACTTGGAGTACTGAAGGGTCAAATAACACTGAAGGAAGTGACACAATCACCCTCCCATGCAGAATAAAACAAATTATAAACATGTGGCAGAAAGTAGGAAAAGCAATGTATGCCCCTCCCATCAGTGGACAAATTAGATGTTCATCAAATATTACAGGGCTGCTATTAACAAGAGATGGTGGTAATAGCAACAATGAGTCCGAGATCTTCAGACCTGGAGGAGGAGATATGAGGGACAATTGGAGAAGTGAATTATATAAATATAAAGTAGTAAAAATTGAACCATTAGGAGTAGCACCCACCAAGGCAAAGAGAAGAGTGGTGCAGAGAGAAAAAAGAGCAGTGGGAATAGGAGCTTTGTTCCTTGGGTTCTTGGGAGCAGCAGGAAGCACTATGGGCGCAGCCTCAATGACGCTGACGGTACAGGCCAGACAATTATTGTCTGGTATAGTGCAGCAGCAGAACAATTTGCTGAGGGCTATTGAGGCGCAACAGCATCTGTTGCAACTCACAGTCTGGGGCATCAAGCAGCTCCAGGCAAGAATCCTGGCTGTGGAAAGATACCTAAAGGATCAACAGCTCCTGGGGATTTGGGGTTGCTCTGGAAAACTCATTTGCACCACTGCTGTGCCTTGGAATGCTAGTTGGAGTAATAAATCTCTGGAACAGATTTGGAATCACACGACCTGGATGGAGTGGGACAGAGAAATTAACAATTACACAAGCTTAATACACTCCTTAATTGAAGAATCGCAAAACCAGCAAGAAAAGAATGAACAAGAATTATTGGAATTAGATAAATGGGCAAGTTTGTGGAATTGGTTTAACATAACAAATTGGCTGTGGTATATAAAATTATTCATAATGATAGTAGGAGGCTTGGTAGGTTTAAGAATAGTTTTTGCTGTACTTTCTATAGTGAATAGAGTTAGGCAGGGATATTCACCATTATCGTTTCAGACCCACCTCCCAACCCCGAGGGGACCCGACAGGCCCGAAGGAATAGAAGAAGAAGGTGGAGAGAGAGACAGAGACAGATCCATTCGATTAGTGAACGGATCCTTGGCACTTATCTGGGACGATCTGCGGAGCCTGTGCCTCTTCAGCTACCACCGCTTGAGAGACTTACTCTTGATTGTAACGAGGATTGTGGAACTTCTGGGACGCAGGGGGTGGGAAGCCCTCAAATATTGGTGGAATCTCCTACAGTATTGGAGTCAGGAACTAAAGAATAGTGCTGTTAGCTTGCTCAATGCCACAGCCATAGCAGTAGCTGAGGGGACAGATAGGGTTATAGAAGTAGTACAAGGAGCTTGTAGAGCTATTCGCCACATACCTAGAAGAATAAGACAGGGCTTGGAAAGGATTTTGCTATAAGATGGGTGGCAAGTGGTCAAAAAGTAGTGTGATTGGATGGCCTACTGTAAGGGAAAGAATGAGACGAGCTGAGCCAGCAGCAGATAGGGTGGGAGCAGCATCTCGAGACCTGGAAAAACATGGAGCAATCACAAGTAGCAATACAGCAGCTACCAATGCTGCTTGTGCCTGGCTAGAAGCACAAGAGGAGGAGGAGGTGGGTTTTCCAGTCACACCTCAGGTACCTTTAAGACCAATGACTTACAAGGCAGCTGTAGATCTTAGCCACTTTTTAAAAGAAAAGGGGGGACTGGAAGGGCTAATTCACTCCCAAAGAAGACAAGATATCCTTGATCTGTGGATCTACCACACACAAGGCTACTTCCCTGATTGGCAGAACTACACACCAGGGCCAGGGGTCAGATATCCACTGACCTTTGGATGGTGCTACAAGCTAGTACCAGTTGAGCCAGATAAGATAGAAGAGGCCAATAAAGGAGAGAACACCAGCTTGTTACACCCTGTGAGCCTGCATGGGATGGATGACCCGGAGAGAGAAGTGTTAGAGTGGAGGTTTGACAGCCGCCTAGCATTTCATCACGTGGCCCGAGAGCTGCATCCGGAGTACTTCAAGAACTGCTGACATCGAGCTTGCTACAAGGGACTTTCCGCTGGGGACTTTCCAGGGAGGCGTGGCCTGGGCGGGACTGGGGAGTGGCGAGCCCTCAGATCCTGCATATAAGCAGCTGCTTTTTGCCTGTACTGGGTCTCTCTGGTTAGACCAGATCTGAGCCTGGGAGCTCTCTGGCTAACTAGGGAACCCACTGCTTAAGCCTCAATAAAGCTTGCCTTGAGTGCTTCAAGTAGTGTGTGCCCGTCTGTTGTGTGACTCTGGTAACTAGAGATCCCTCAGACCCTTTTAGTCAGTGTGGAAAATCTCTAGCA
+			</sequences>
+			
+			<feature>
+				<name>gag</name>
+				<type>aminoAcid</type>
+				<coordinates>790-2289</coordinates>
+			</feature>
+
+			<feature>
+				<name>pol</name>
+				<type>aminoAcid</type>
+				<coordinates>2085-5093</coordinates>
+			</feature>
+			
+			<feature>
+				<name>PR</name>
+				<type>aminoAcid</type>
+				<coordinates>2253-2549</coordinates>
+			</feature>
+			<feature>
+				<name>RT</name>
+				<type>aminoAcid</type>
+				<coordinates>2550-4229</coordinates>
+			</feature>
+			<feature>
+				<name>IN</name>
+				<type>aminoAcid</type>
+				<coordinates>4230-5093</coordinates>
+			</feature>
+
+			<feature>
+				<name>vif</name>
+				<type>aminoAcid</type>
+				<coordinates>5041-5616</coordinates>
+			</feature>
+
+			<feature>
+				<name>vpr</name>
+				<type>aminoAcid</type>
+				<coordinates>5559-5847</coordinates>
+			</feature>
+
+			<feature>
+				<name>vpu</name>
+				<type>aminoAcid</type>
+				<coordinates>6062-6307</coordinates>
+			</feature>
+
+			<feature>
+				<name>env</name>
+				<type>aminoAcid</type>
+				<coordinates>6225-8792</coordinates>
+			</feature>
+
+			<feature>
+				<name>NEF</name>
+				<type>aminoAcid</type>
+				<coordinates>8797-9414</coordinates>
+			</feature>
+		</genome>
+		
+		<compartment>
+			<name>plasma</name>
+
+		<fitnessFunction>
+			<!--
+				start and stop codon
+			-->
+			
+			<empiricalFitness id="gagstop">
+				<feature>gag</feature>
+				<sites>1-500</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+						
+			<empiricalFitness id="gag1">
+				<feature>gag</feature>
+				<sites>1</sites>
+				<values>
+                        0.001 <!-- A -->
+                        0.001 <!-- C -->
+                        0.001 <!-- D -->
+                        0.001 <!-- E -->
+                        0.001 <!-- F -->
+                        0.001 <!-- G -->
+                        0.001 <!-- H -->
+                        0.001 <!-- I -->
+                        0.001 <!-- K -->
+                        0.001 <!-- L -->
+                        1.00 <!-- M -->
+                        0.001 <!-- N -->
+                        0.001 <!-- P -->
+                        0.001 <!-- Q -->
+                        0.001 <!-- R -->
+                        0.001 <!-- S -->
+                        0.001 <!-- T -->
+                        0.001 <!-- V -->
+                        0.001 <!-- W -->
+                        0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="polstop">
+				<feature>pol</feature>
+				<sites>1-1003</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vifstop">
+				<feature>vif</feature>
+				<sites>1-192</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vif1">
+				<feature>vif</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vpustop">
+				<feature>vpu</feature>
+				<sites>1-82</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vpu1">
+				<feature>vpu</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="envstop">
+				<feature>env</feature>
+				<sites>1-856</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="env1">
+				<feature>env</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEFstop">
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF1">
+				<feature>NEF</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<!--
+				nef replication capacity (CD4 down-modulation and HLA-I down-modulation) 
+				doi: 10.1093/ve/vez029
+			-->
+			
+			<empiricalFitness id="NEF21">
+				<feature>NEF</feature>
+				<sites>21</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					1.464 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.515 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					1.000 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF28">
+				<feature>NEF</feature>
+				<sites>28</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					1.000 <!-- D -->
+					0.851 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF33">
+				<feature>NEF</feature>
+				<sites>33</sites>
+				<values>
+					1.293 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					1.000 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF43">
+				<feature>NEF</feature>
+				<sites>43</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					1.000 <!-- I -->
+					0.001 <!-- K -->
+					0.694 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF57">
+				<feature>NEF</feature>
+				<sites>57</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.009 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.008 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					1.000 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF71">
+				<feature>NEF</feature>
+				<sites>71</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.854 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					1.000 <!-- R -->
+					0.001 <!-- S -->
+					1.000 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF76">
+				<feature>NEF</feature>
+				<sites>76</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					1.000 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.843 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF80">
+				<feature>NEF</feature>
+				<sites>80</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.186 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.832 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					1.000 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF88">
+				<feature>NEF</feature>
+				<sites>88</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.870 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					1.000 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF102">
+				<feature>NEF</feature>
+				<sites>102</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.466 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.754 <!-- W --> <!-- wildtype? -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF123">
+				<feature>NEF</feature>
+				<sites>123</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					1.000 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.064 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF133">
+				<feature>NEF</feature>
+				<sites>133</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					1.000 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.599 <!-- T -->
+					1.000 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF135">
+				<feature>NEF</feature>
+				<sites>135</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.135 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					1.000 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF143">
+				<feature>NEF</feature>
+				<sites>143</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					1.000 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.941 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF188">
+				<feature>NEF</feature>
+				<sites>188</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.689 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					1.000 <!-- L -->
+					0.001 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					1.000 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<!--
+			#	HLA: A*01-B*08-DRB1*04:01 most common in USA causcasians (doi:10.1016/j.humimm.2007.10.009)
+			#	B*08: fitness based on doi:10.1371/journal.pone.0006687
+			#	A*01: fitness based on doi:10.1371/journal.pone.0006687
+			-->
+
+			<empiricalFitness id="GAG26">
+				<feature>gag</feature>
+				<sites>26</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.01 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG65">
+				<feature>gag</feature>
+				<sites>65</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					0.99 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG76A">
+				<feature>gag</feature>
+				<sites>76</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.02 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					0.99 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG79A">
+				<feature>gag</feature>
+				<sites>79</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.02 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					0.98 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG81">
+				<feature>gag</feature>
+				<sites>81</sites>
+				<values>
+					0.99 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG104">
+				<feature>gag</feature>
+				<sites>104</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.01 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG268">
+				<feature>gag</feature>
+				<sites>268</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.02 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					0.98 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG331">
+				<feature>gag</feature>
+				<sites>331</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					0.98 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.02 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG390">
+				<feature>gag</feature>
+				<sites>390</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.01 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG439A">
+				<feature>gag</feature>
+				<sites>439</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.01 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					0.99 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG470A">
+				<feature>gag</feature>
+				<sites>470</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.01 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="GAG479">
+				<feature>gag</feature>
+				<sites>479</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.01 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT200">
+				<feature>RT</feature>
+				<sites>200</sites>
+				<values>
+					0.98 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT275">
+				<feature>RT</feature>
+				<sites>275</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.02 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT288A">
+				<feature>RT</feature>
+				<sites>288</sites>
+				<values>
+					1.02 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT454">
+				<feature>RT</feature>
+				<sites>454</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.02 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					0.98 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT461">
+				<feature>RT</feature>
+				<sites>461</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.02 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					0.98 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT466">
+				<feature>RT</feature>
+				<sites>466</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					0.98 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT468">
+				<feature>RT</feature>
+				<sites>468</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.02 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					0.98 <!-- S -->
+					1.01 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="RT469">
+				<feature>RT</feature>
+				<sites>469</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.02 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="IN91A">
+				<feature>IN</feature>
+				<sites>91</sites>
+				<values>
+					1.01 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="IN119A">
+				<feature>IN</feature>
+				<sites>119</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					0.99 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="IN138">
+				<feature>IN</feature>
+				<sites>138</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					0.99 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="IN173">
+				<feature>IN</feature>
+				<sites>173</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					0.98 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.02 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="IN218">
+				<feature>IN</feature>
+				<sites>218</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					0.99 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA18">
+				<feature>NEF</feature>
+				<sites>18</sites>
+				<values>
+					1.01 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					0.99 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA18A">
+				<feature>NEF</feature>
+				<sites>18</sites>
+				<values>
+					1.01 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA23A">
+				<feature>NEF</feature>
+				<sites>23</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					0.99 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA40">
+				<feature>NEF</feature>
+				<sites>40</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					0.99 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.01 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA83">
+				<feature>NEF</feature>
+				<sites>83</sites>
+				<values>
+					1.01 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA87">
+				<feature>NEF</feature>
+				<sites>87</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.01 <!-- I -->
+					1.00 <!-- K -->
+					0.99 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA91">
+				<feature>NEF</feature>
+				<sites>91</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.01 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA93">
+				<feature>NEF</feature>
+				<sites>93</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					0.99 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.01 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA94">
+				<feature>NEF</feature>
+				<sites>94</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.02 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					0.98 <!-- K -->
+					1.00 <!-- L -->
+					1.02 <!-- M -->
+					1.02 <!-- N -->
+					1.00 <!-- P -->
+					1.02 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.01 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA94A">
+				<feature>NEF</feature>
+				<sites>94</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					0.99 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA101">
+				<feature>NEF</feature>
+				<sites>101</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.02 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					0.98 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA104">
+				<feature>NEF</feature>
+				<sites>104</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.01 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA105">
+				<feature>NEF</feature>
+				<sites>105</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					0.98 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.02 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA170">
+				<feature>NEF</feature>
+				<sites>170</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.01 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA182A">
+				<feature>NEF</feature>
+				<sites>182</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.01 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA188A">
+				<feature>NEF</feature>
+				<sites>188</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					0.99 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA192">
+				<feature>NEF</feature>
+				<sites>192</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.01 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="NEF_HLA194">
+				<feature>NEF</feature>
+				<sites>194</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.02 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					0.98 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>10</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<!--
+			# growth rate based on Figure 1B from 10.1128/JVI.02520-15
+			# 10^5 virions in 1 ml of plasma
+			-->
+			<growthRate>50</growthRate>
+			<carryingPopulation>100000</carryingPopulation>
+		</growthModel>
+
+		<mutator>
+			<nucleotideMutator>
+				<!-- from doi:10.1371/journal.pbio.1002251 -->
+				<mutationRate>9.3E-5</mutationRate>
+				<rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+			
+		<replicator>
+			<clonalReplicator />		
+		</replicator>
+
+		<!-- ten years (1 cycle per 2.6 days) doi:10.1126/science.271.5255.1582 -->
+		<epoch>
+			<name>active</name>
+			<generationCount>1400</generationCount>
+		</epoch>
+		
+		<epoch>
+			<name>treatment</name>
+			<generationCount>1400</generationCount>
+			
+			<fitnessFunction>
+				<noFitness>
+				</noFitness>
+			</fitnessFunction>
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>140</atFrequency>
+				<fileName>alignment_plasma.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>plasma_%s_%g</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+		
+		<compartment>
+		<name>latent_reservoir</name>
+		
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>0</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<!--
+		# proloferation (doi:10.1002/eji.200323763)
+		# death-birth 0.001 day-1 (doi:10.1371/journal.pcbi.1000533)
+		-->
+		<growthModel>
+			<split>0.003</split>
+			<death>0.0056</death>
+		</growthModel>
+		
+		<fitnessFunction></fitnessFunction>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>0.0</mutationRate>
+				<rateBias>
+	                   0 0 0 0
+	                   0 0 0 0
+	                   0 0 0 0
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<clonalReplicator></clonalReplicator>
+		</replicator>
+
+		<epoch>
+			<name>epoch</name>
+			<generationCount>2800</generationCount>
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atGeneration>1680</atGeneration>
+				<fileName>alignment_latent_1680.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>1960</atGeneration>
+				<fileName>alignment_latent_1960.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2240</atGeneration>
+				<fileName>alignment_latent_2240.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2520</atGeneration>
+				<fileName>alignment_latent_2520.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2800</atGeneration>
+				<fileName>alignment_latent_2800.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+	</simulation>
+</santa>

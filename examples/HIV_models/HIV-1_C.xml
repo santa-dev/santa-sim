@@ -1,0 +1,515 @@
+<santa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="santa.xsd">
+	<replicates>1</replicates>
+	<simulation>
+		<!--
+		#	rate plasma -> latent (doi:10.1371/journal.pcbi.1000533)
+		#	rate latent -> plasma chosen to make reservoir half-life 70 weeks (doi:10.1086/428777)
+		-->
+		<transferRates>0 0.0026 0.00108 0</transferRates>
+		<genome>
+			<!-- 
+				http://www.ncbi.nlm.nih.gov/nuccore/KC156214.1
+				sub type C full genome
+			-->
+			<length>9705</length>
+			<sequences>
+				CTGGAAGGGTTAATTTACTCCAAGAAAAGGCAAGACATCCTTGATTTGTGGGTTTATAACACACAAGGCTTCTTTCCTGATTGGCAAAACTACACACCGGGACCAGGGGTCAGATATCCACTGACCTTTGGATGGTGCTTCAAGCTAGTACCAGTTGACCCAAGGGAAGTAGAAGAAGCCAACGAAGGAGAAAACAACTGTCTGCTACACCCTATGAGCCAACATGGAATGGATGATGATCACAGAGAAGTATTAAAGTGGAAGTTTGACAGTCAACTAGCACACAAACACATGGCCCGCGAGCTACATCCGGAGTTTTACAAAGACTGCTGACACAAAAGGGACTTTCCGCTGGGACTTTCCACTTGGGCGTTCCAGGAGGTGGGGTCTGGGCGGGACCGGGGAGTGGCCAGCCCTCAGATGCTGCATATAAGCAGCTGCTTTTCGCCTGTACTGGGTCTCTCTAGGTAGACCAGATCTGAGCCTGGGAGCTCTCTGGCTGCCTAGGGAACCCACTGCTTAAGCCTCAATAAAGCTTGCCTTGAGTGCTCTAAGTAGTGTGTGCCCGTCTGTTGTGTGACTCTGGTAACTAGAGATCCCTCAGACCATTTTGGTTGCGTGGAAAATCTCTAGCAGTGGCGCCCGAACAGGGACTTGAAAGCGAAAGTAAGACCAGAGGAGATCTCTCGACGCAGGACTCGGCTTGCTGAAGTGCACTCGGCAAGAGGCGAGAGCGGCGACTGGTGAGTACGCCAATTTTATTTTGACTAGCGGAGGCTAGAAGGAGAGAGATGGGTGCGAGAGCGTCAATATTAAGAGGGGGAAAATTAGATAAATGGGAAAAAATTAGGTTAAGGCCAGGGGGAAAGAAAAAATATCAGCTAAAACACCTAGTATGGGCAAGCAGGGAGCTGGAAAAATTTGCACTTAACCCTGACCTTTTAGAAACATCAGAAGGCTGTAAACAAATAATAAGACAGCTACACCCAGCTCTCCAGACAGGAACAGAGGAACTCAAATCACTATATAACACAGTAGCAACTCTCTATTGTGTACATAAAAATATAGATGTGCGAGACACCAAGGAGGCCTTAGACAGGATAGAGGAGGAACAAAACAAATGTCAGCAAAAAACACAGCAGGCAGCAGCGGCTGACGGACAGGTCAGTCGAAATTTTCCTATAGTACAGAATCTTCAAGGGCAAATGGTACACCAGCCCTTATCACCTAGAACTTTGAATGCTTGGGTAAAAGTAGTAGAGGAGAAGGGTTTCAACCCAGAGGTAATACCCATGTTTACAGCATTATCAGAAGGAGCCACCCCACAAGATATGAACACTATGTTAAATACAGTGGGGGGACATCAAGCAGCCATGCAAATGTTAAAAGATACCATCAATGAGGAGGCTGCAGAGTGGGATAGATTACATCCAGTACAGGCAGGGCCTGTTGCACCAGGCCAAATAAGGGAACCAAGGGGAAGTGACATAGCAGGAACTACTAGTACCCTTCAGGAACAAATAGCATGGATGACAAGTAACCCACCTGTTCCAGTGGGAGACATCTATAAAAGATGGATAATTCTGGGGTTAAATAAAATAGTAAGAATGTATAGCCCTGTCAGCATTTTGGACATAAAACAAGGACCAAAGGAACCCTTTAGAGACTATGTAGATCGGTTCTTTAAAACTTTAAGGGCTGAACAGGCTACACAAGATGTAAAAAATTGGATGACAGACACCCTGTTGGTCCAAAATGCGAACCCAGATTGCAAGACCATTTTAAGAGCACTAGGACCAGGGGCTACATTAGAGGAAATGATGACAGCATGTCAAGGAGTGGGAGGACCTAGCCACAAAGCAAGAGTGTTAGCCGAGGCAATGAGCCAAACAAACACAAACATACTGATGCAGAGAAGCAATTTCAAAGGCACTAGAAGAATTGTTAAATGTTTCAACTGTGGCAAGGAAGGGCACATAGCCAAAAATTGCAGGGCCCCTAGGAAAAAGGGCTGTTGGAAATGTGGAAAGGAAGGACACCAAATGAAAGACTGTACAGAAAGGCAGGCTAATTTTTTAGGGAAAATTTGGCCTTCCCACAAGGGGAGGCCAGGGAATTTCCTTCAGAACAGGCCAGAGCCAACAGCCCCACCACTAGAACCAACAGCCCCACCAGCAGAGAGCTCCACCCCCGCTCTGAAGCAGGAGCAGAAAGACAGGGAACCCTCAATTTCCCTCAAATCACTCTTTGGCAACGACCCCTTGTCACAATAAGAGTAGGGGGACAAATAAAGGAGGCTCTATTAGACACAGGAGCAGATGACACAGTATTAGAAGAATTAAGTTTGCCAGGAAAATGGAAACCAAAAATGATAGGAGGAATTGGAGGATTTATCAAAGTAAGACAGTATGATCAAATATCTATAGAAATTTGTGGAAAAAAGGCTATAGGTACAGTATTGGTAGGACCTACACCTGTCAACATAATTGGAAGAAACATGTTGACTCAGCTTGGATGCACCCTAAATTTTCCAATTAGTCCCATTGAAACTGTACCAGTAAAATTAAAGCCAGGAATGGATGGCCCAAAGGTTAAACAATGGCCATTGACAGAAGAAAAAATAAAAGCATTAACAGCAATTTGTGAAGAAATGGAAAAGGAAGGAAAAATTACAAAAATTGGGCCTGAAAACCCATATAACACTCCAGTATTTGCCATTAAAAAGAAGGACAGTACAAAGTGGAGAAAATTAGTAGATTTCAGGGAACTTAATAAAAGGACTCAAGACTTTTGGGAAGTTCAATTAGGAATACCACACCCAGCAGGGTTAAAAAAGAAAAAATCAGTGACAGTACTGGATGTGGGGGATGCATATTTTTCAGTTCCTTTAGATAAAGATTTCAGGAAATATACTGCATTCACCATACCTAGTATAAACAATGAAACACCAGGAATTAGATATCAATATAATGTGCTTCCACAAGGATGGAAAGGATCACCAGCAATATTCCAGAGTAGCATGACAAAAATCTTAGAGCCCTTTAGAGCAAAAAACCCAGAAATAGTCATCTATCAATATATGGATGACTTATATGTAGGGTCTGACTTAGAAATAGGGCAACATAGAGCAAAAATAGAGGAGTTAAGAAAACACCTATTGAAATGGGGATTTACCACACCAGACAAGAAACATCAGAAGGAGCCCCCATTTCTTTGGATGGGGTATGAACTCCATCCTGACAAATGGACAGTACAGTCTATACAGCTACCGGAAAAGGACAGCTGGACTGTCAATGATATACAGAAGTTAGTGGGAAAATTAAACTGGGCAAGTCAGATTTACCCAGGAATTAAAGTAAAGCAAATGTGTAAACTCCTTAGGGGAGCCAAAGCACTAACAGATGTAGTACCACTGACTGAAGAAGCAGAATTAGAATTGGCAGAGAACAGGGAAATTCTAAAAGAACCAGTACATGGAGTATATTATGACCCATCAAAAGACTTAATAGCAGAAATACAGAAACAGGGAGATGACCAGTGGACATATCAAATTTACCAAGAACCATTCAAAAATCTAAAAACAGGAAAATATGCAAAACAGAGAACTGCCCACACAAATGATGTAAAACAATTAACTGAGGCAGTGCAGAAAATATGCATGGAAAGCATAGTAATATGGGGGAAGATTCCTAAGTTTAGACTACCCATCCAAAAGGAAACATGGGAGACATGGTGGACAGACTACTGGCAAGCCACCTGGATTCCTGAGTGGGAATTTATTAATACCCCTCCCCTAGTAAAATTATGGTATCAGCTGGAGAAGGAACCCATAGCAGGGGCAGAAACTTTCTATGTAGATGGAGCAGCTAATAGGGAAACTAAAAAGGGAAAAGCAGGTTATGTTACTGACAGAGGAAGGCAGAAAGTTGTTTCTCTAACTGGAACAACAAATCAAAAGACTGAGTTACAAGCAATTCAGCTAGCTTTGCAAGACTCAGGATCAGAAGTAAATATAGTAACAGACTCACAGTATGCATTAGGAATCATTCAAGCACAACCAGATAAGAGTGAATCAGAGTTAGTCAATCAAATAATAGAACAGCTAATAAAAAAGGAAAGAATCTACCTGTCATGGGTACCAGCACACAAAGGAATTGGAGGAAATGAACAAGTAGATAAATTAGTAAGTAGTGGAATCAGGAAAGTACTGTTTCTAGATGGAATAGATAAAGCTCAAGAAGACCATGAAAGATATCACAGCAATTGGAGAGCGATGGCTAGCGAGTTTAATCTGCCACCCATAGTAGCAAAAGAAATAGTAGCCAGCTGTGATAAATGTCAGCTAAAAGGGGAAGCCATACATGGACAAGTAGACTGTAGTCCAGGGGTATGGCAACTAGATTGTACACACTTAGAAGGGAAAATCATCCTGGTAGCAGTCCATGTAGCCAGTGGATACATAGAAGCAGAAGTCATCCCAACAGAAACAGGACAAGAAACAGCATACTATATACTAAAATTAGCAGGAAGATGGCCAGTCAAAGTAATACATACAGACAATGGCCCTAATTTTACCAGTGCTGCAGTTAAGGCAGCCTGTTGGTGGGCAGGTATCCAACAGGAATTTGGAATTCCCTACAATCCCCAAAGTCAGGGAGTAGTGGAATCCATGAATAAAGAATTAAAGAAAATCATAGGGCAAGTAAGAGATCAAGCTGAGCACCTTAAGACAGCAGTACAAATGGCAGTGTTCATTCACAATTTTAAAAGAAAAGGGGGGATTGGGGGGTACACTGCAGGGGAAAGAATAATAGACATAATAGCAACAGACATACAAACTAAGCAATTACAAAAACAAATTATAAAAATTCAAAATTTTCGGGTTTATTACAGAGACAGCAGAGATCCAATTTGGAAAGGACCAGCCAAACTACTCTGGAAAGGTGAAGGGGCAGTAGTAATACAAGATAACAGTGACATAAAGGTAGTACCAAGAAGGAAAGCAAAGATTATTAAGGACTATGGAAAACAGATGGCAGGTGCTGATTGTGTGGCAGGTAGACAGGATGAAGATTAGAACATGGAATAGTCTAGTAAAGCACCATATGTATGTTTCAAGGAGAGCTGATGGATGGTTTTACAGACATCACTATGAAAGCAGACATCCAAAAATAAGTTCAGAAGTACACATCCCATTAGGGGATGCTAGATTAGTAATAAAAACATATTGGGGTTTGCAGACAGGAGAAAGAGCTTGGCATTTGGGTCATGGAGTCTCCATAGAATGGAGACTGAAAAGATATAGCACACAAGTAGACCCTGACCTGGCAGATCAACTAATTCATATGCATTATTTTGATTGTTTTGCAGACTCTGCCATAAGACAAGCCATACTAGGACACGTAGTTAGCCCTAGGTGTGACTATCAAGCAGGACATAACAAGGTAGGATCTCTACAATACTTGGCACTGACAGCATTGATAAAGCCAAAAAAGATAAAGCCACCTCTGCCTAGTGTTAGCAAGTTAGTAGAGGATAAATGGAACAAGCCCCAGAAGACCAGGGGCCGCAGAGGGAACCATACAATGAATGGACACTAGAGCTTCTAGAGGAACTCAAGCAGGAAGCTGTCAGACACTTTCCTAGGCCATGGCTTCACAGTTTAGGACAACATATCTATGAAACCTATGGGGACACTTGGACGGGAGTTGAAGCCATAATAAGAATTCTGCAACAACTGTTGTTTGTTCATTTCAGAATTGGGTGCCAGCATAGCAGAATAGGCATTATACGACAGAGAAGAGCAAGAAATGGAGCCAATAGATCCTAAACTAGAGCCCTGGAATCATCCAGGAAGCCAGCCTAAGACTGCTTGTAATAAGTGCTATTGTAAAAAATGTAGCTATCATTGTCTAGTTTGCTTTCAGACAAAAGGCTTAGGCATTTCCTATGGCAGGAAGAAGCGGAGACAGCGACGAAGCGCTCCTCCAAGCAGTAAGGATCATCAAAATCCTCTACCAAAGCAGTAAGTATATGTAATGTTAGACTTAGTAGCAAGAGTAGATTATAGAATAGGAGTAGGAGCATTAATAGTAGCACTAATCATAGCAATAGTTGTGTGGATCCTAGCATATATAGAATATAAAAGGTGGTTAAAACAAAAGAAAATAGACTGGTTAATTAAAAGAATTAGGGAAAGAGCAGAAGACAGTGGCAATGAGAGTGAGGGGGATACAGAGGAATTATCAACAATGGTGGATATGGAGCATCTTGGCCTTTTGGATGTTAATGGTTAGTGTGAGGGGAAACTTGTGGGTTACAGTCTATTATGGGGTACCTGTGTGGAAAGAAGCAAAAACTACTCTATTCTGTGCATCAGATGCTAAAGCATATGACAAGGAAGTGCATAATGTCTGGGCTACACATGCCTGTGTACCCACAGACCCCAACCCACAAGAAATAAAATTGGAAAATGTAACAGAAAATTTTAATATGTGGAAAAATGATATGGTGGATCAGATGCATGAGGATATAATCAGTTTATGGGATCAAAGCCTAAAGCCATGTGTGAAGTTGACCCCACTTTGTGTCACTTTAAACTGTAGTCATAATATTACGGTTAATGGTACCATGGGAAATGGTACCAGGGGAAATGATAGTACGATTGGGAAAATGGGAGATGAAATGACAAATTGCTCTTTCAATGCAACCACAGAAATAAAAGATAAGAAAAAGCTAGAATATGCACTTTTTTATAAACTTGATGTAGTAACACTTGAGGAAAACTCCAGTGAGTACAGATTAATAAATTGTAATACCTCAGTAGTTACACAAGCCTGTCCAAAGGTTTCGTTTCACCCAATTCCTATACATTATTGTGCTCCTGCTGGTTATGCGATTCTAAAGTGTAATAATAAGACATTCAATGGAACAGGACCATGCAATAAGATCAGCACTGTACAGTGTACACATGGGATCAAGCCAGTGGTATCTACTCAACTACTGTTAAATGGTAGTCTAGCAGAAAAAGAGATAATAGTTAGATCTGAAAATATACAGGACAATGTCAAAACAATCATAGTACATCTTAATGAATCTGTGAAAATTGAGTGTACAAGGCCCGGCAATAATACAAGAAAAAGTGTGAGGATAGGACCAGGACAAACATTCTTTGCAACAGGAGACATAATAGGAGATATAAGACAAGCATACTGTACCATTAATGGGACTCAATGGAATGACACTTTAAATAGGGTAAGAGAAACATTACAAAGGCACTTCCCTAATAAAACAATAAAATTTAGACCACACTCAGGAGGGGACTTAGAAATTACAACACATAGCTTTAATTGTAGAGGAGAGTTTTTCTATTGCAATACATCAAAAATATTTGATAGTGACAATGCAAACAAAACTTCAGGAAATATCACACTCCCATGCAAAATAAAACAAATCATAAACATGTGGCAGGGGGTAGGAAGAGCAATGTATGCCCCTCCCATTGCAGGAAACATAACATGTACATCAAATATCACAGGACTACTATTGACACGTGATGGAGGCAATGTTACAAATGACACAGAGATATTCAGACCTGGAGGAGGAAATATGAGGGACAATTGGAGAAGTGAATTATACAAATATAAAGTGGTAGAAATTAAGCCATTAGGGATAGCACCCACCAAGGCAAAAAGGCGAGTGGTGGAGAGAGAAAAAAGAGCAGTGGGAATAGGAGCTGTATTCCTTGGGTTCTTGGGAGCAGCAGGAAGCACTATGGGCGCAGCGTCAATAGCGCTGACGGTACAGGCCAGACAATTGTTGTCTGGTATAGTGCAACAGCAAAACAATTTGCTGAGAGCTATAGAGGCGCAACAGCATATGTTGCAACTCACGGTCTGGGGCATTAAACAGCTCCAGGCAAGAGTCCTGGCTATAGAAAGATACCTAGAGGATCAACAGCTCCTAGGGATTTGGGGCTGCTCTGGAAAACTCATCTGCACCACTGCCGTGCCTTGGAACAATAGTTGGAGTAATAAATCTCAAGATGATATTTGGGGCAATATGACCTGGATGCAATGGGACAGAGAAATTAGCAATTACACAGACACAATATACAGGTTGCTTGAAGACTCGCAAATCCAGCAGGAAAAGAATGAAAAGGATTTACTAGCATTGGACAGTTGGCAAAATTTGTGGAATTGGTTTAACATAACAAAATGGCTGTGGTATATAAAAATATTCATAATGATAGTAGGAGGCTTAATAGGTTTAAGAATAATTTTTGCTGTACTATCTATAGTAAATAGAGTTAGGCAGGGATACTCACCTTTGTCGTTTCAGACCCTTATCCCAAACCAGAGGGAACCCGACAGGCTCGGAAGAATCGAAGAAGAAGGTGGAGAGCCAGACAGAAACAGATCCATTCGATTGGTGAACGGATTCTTAGCTCTTACCTGGGACGACCTGCGGAGCCTGTGCCTCTTCAGCTACCACCGATTGAGAGACTTCATATTGGTGACAGTGAGAGTGGTGGAACTTCTGGGACGCAGCAGCTTCAGGGGACTACAGAGGGGGTGGGAAGCCCTTAAGTATCTGGGAAGCCTTGTGCAGTATTGGGGTCTAGAGCTAAAAAAGAGTGCTATTAGTTTGCTTGATACCACAGCAATAGCAGTAGCTGAAGGAACAGATAGGATTATAGAATTCCTACAGAGAATTTGTAGAGCTATCTACCATATACCTAGAAGAATAAGACAGGGCTTTGAAGCAGCTTTGCAATAAAATGGGGGGCAAGTGGTCAAAAAGCAGTATAGTTGGATGGCCTAATGTAAGGGAAAGAATAAGGCGAACTGATCCAGCAGCAGAGGGAGTAGGAGCAGCATCTCGAGACTTAGAGAGACATGGGGCACTTACTACCAGCAACACAGTCAGCAACAATGCTGCATGTGCCTGGCTGGAAGCACAAGAAGAGGAAAAAGAAGTAGGCTTTCCAGTCAGACCTCAAGTGCCTTTAAGACCAATGACTTATAAAGGAGCATTCGATCTCAGCTTCTTTTTAAAAGAAAAGGGGGGACTGGAAGGGTTAATTTACTCCAAGAAAAGGCAAGACATCCTTGATTTGTGGGTTTATAACACACAAGGCTTCTTTCCTGATTGGCAAAACTACACACCGGGACCAGGGGTCAGATATCCACTGACCTTTGGATGGTGCTTCAAGCTAGTACCAGTTGACCCAAGGGAAGTAGAAGAAGCCAACGAAGGAGAAAACAACTGTCTGCTACACCCTATGAGCCAACATGGAATGGATGATGATCACAGAGAAGTATTAAAGTGGAAGTTTGACAGTCAACTAGCACACAAACACATGGCCCGCGAGCTACATCCGGAGTTTTACAAAGACTGCTGACACAAAAGGGACTTTCCGCTGGGACTTTCCACTTGGGCGTTCCAGGAGGTGGGGTCTGGGCGGGACCGGGGAGTGGCCAGCCCTCAGATGCTGCATATAAGCAGCTGCTTTTCGCCTGTACTGGGTCTCTCTAGGTAGACCAGATCTGAGCCTGGGAGCTCTCTGGCTGCCTAGGGAACCCACTGCTTAAGCCTCAATAAAGCTTGCCTTGAGTGCTCTAAGTAGTGTGTGCCCGTCTGTTGTGTGACTCTGGTAACTAGAGATCCCTCAGACCATTTTGGTTGCGTGGAAAATCTCTAGCA
+			</sequences>
+			
+			<feature>
+				<name>gag</name>
+				<type>aminoAcid</type>
+				<coordinates>792-2270</coordinates>
+			</feature>
+
+			<feature>
+				<name>pol</name>
+				<type>aminoAcid</type>
+				<coordinates>2072-5074</coordinates>
+			</feature>
+			
+			<feature>
+				<name>vif</name>
+				<type>aminoAcid</type>
+				<coordinates>5022-5597</coordinates>
+			</feature>
+
+			<feature>
+				<name>vpu</name>
+				<type>aminoAcid</type>
+				<coordinates>6039-6293</coordinates>
+			</feature>
+
+			<feature>
+				<name>env</name>
+				<type>aminoAcid</type>
+				<coordinates>6217-8775</coordinates>
+			</feature>
+
+			<feature>
+				<name>NEF</name>
+				<type>aminoAcid</type>
+				<coordinates>8780-9400</coordinates>
+			</feature>
+		</genome>
+		
+		<compartment>
+			<name>plasma</name>
+
+		<fitnessFunction>
+			<!--
+				start and stop codon
+			-->
+			
+			<empiricalFitness id="gagstop">
+				<feature>gag</feature>
+				<sites>1-492</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="gag1">
+				<feature>gag</feature>
+				<sites>1</sites>
+				<values>
+                        0.001 <!-- A -->
+                        0.001 <!-- C -->
+                        0.001 <!-- D -->
+                        0.001 <!-- E -->
+                        0.001 <!-- F -->
+                        0.001 <!-- G -->
+                        0.001 <!-- H -->
+                        0.001 <!-- I -->
+                        0.001 <!-- K -->
+                        0.001 <!-- L -->
+                        1.00 <!-- M -->
+                        0.001 <!-- N -->
+                        0.001 <!-- P -->
+                        0.001 <!-- Q -->
+                        0.001 <!-- R -->
+                        0.001 <!-- S -->
+                        0.001 <!-- T -->
+                        0.001 <!-- V -->
+                        0.001 <!-- W -->
+                        0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="polstop">
+				<feature>pol</feature>
+				<sites>1-1000</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vifstop">
+				<feature>vif</feature>
+				<sites>1-191</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vif1">
+				<feature>vif</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vpustop">
+				<feature>vpu</feature>
+				<sites>1-84</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="vpu1">
+				<feature>vpu</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="envstop">
+				<feature>env</feature>
+				<sites>1-852</sites>
+				<values>
+					1.00 <!-- A -->
+					1.00 <!-- C -->
+					1.00 <!-- D -->
+					1.00 <!-- E -->
+					1.00 <!-- F -->
+					1.00 <!-- G -->
+					1.00 <!-- H -->
+					1.00 <!-- I -->
+					1.00 <!-- K -->
+					1.00 <!-- L -->
+					1.00 <!-- M -->
+					1.00 <!-- N -->
+					1.00 <!-- P -->
+					1.00 <!-- Q -->
+					1.00 <!-- R -->
+					1.00 <!-- S -->
+					1.00 <!-- T -->
+					1.00 <!-- V -->
+					1.00 <!-- W -->
+					1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+
+			<empiricalFitness id="env1">
+				<feature>env</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEFstop">
+				<feature>NEF</feature>
+				<sites>1-206</sites>
+				<values>
+                        1.00 <!-- A -->
+                        1.00 <!-- C -->
+                        1.00 <!-- D -->
+                        1.00 <!-- E -->
+                        1.00 <!-- F -->
+                        1.00 <!-- G -->
+                        1.00 <!-- H -->
+                        1.00 <!-- I -->
+                        1.00 <!-- K -->
+                        1.00 <!-- L -->
+                        1.00 <!-- M -->
+                        1.00 <!-- N -->
+                        1.00 <!-- P -->
+                        1.00 <!-- Q -->
+                        1.00 <!-- R -->
+                        1.00 <!-- S -->
+                        1.00 <!-- T -->
+                        1.00 <!-- V -->
+                        1.00 <!-- W -->
+                        1.00 <!-- Y -->
+				</values>
+			</empiricalFitness>
+			
+			<empiricalFitness id="NEF1">
+				<feature>NEF</feature>
+				<sites>1</sites>
+				<values>
+					0.001 <!-- A -->
+					0.001 <!-- C -->
+					0.001 <!-- D -->
+					0.001 <!-- E -->
+					0.001 <!-- F -->
+					0.001 <!-- G -->
+					0.001 <!-- H -->
+					0.001 <!-- I -->
+					0.001 <!-- K -->
+					0.001 <!-- L -->
+					1.00 <!-- M -->
+					0.001 <!-- N -->
+					0.001 <!-- P -->
+					0.001 <!-- Q -->
+					0.001 <!-- R -->
+					0.001 <!-- S -->
+					0.001 <!-- T -->
+					0.001 <!-- V -->
+					0.001 <!-- W -->
+					0.001 <!-- Y -->
+				</values>
+			</empiricalFitness>
+		</fitnessFunction>
+
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>10</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<growthModel>
+			<!--
+			# growth rate based on Figure 1B from 10.1128/JVI.02520-15
+			# 10^5 virions in 1 ml of plasma
+			-->
+			<growthRate>50</growthRate>
+			<carryingPopulation>100000</carryingPopulation>
+		</growthModel>
+
+		<mutator>
+			<nucleotideMutator>
+				<!-- from doi:10.1371/journal.pbio.1002251 -->
+				<mutationRate>9.3E-5</mutationRate>
+				<rateBias>
+	                    0.42 2.49 0.29
+	                    1.73 0.23 4.73
+	                    6.99 0.20 0.60
+	                    1.02 2.56 0.88
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+			
+		<replicator>
+			<clonalReplicator />		
+		</replicator>
+
+		<!-- ten years (1 cycle per 2.6 days) doi:10.1126/science.271.5255.1582 -->
+		<epoch>
+			<name>active</name>
+			<generationCount>1400</generationCount>
+		</epoch>
+		
+		<epoch>
+			<name>treatment</name>
+			<generationCount>1400</generationCount>
+			
+			<fitnessFunction>
+				<noFitness>
+				</noFitness>
+			</fitnessFunction>
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atFrequency>140</atFrequency>
+				<fileName>alignment_plasma.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>plasma_%s_%g</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+		
+		<compartment>
+		<name>latent_reservoir</name>
+		
+		<populationType>dynamicPopulation</populationType>
+		
+		<population>
+			<populationSize>0</populationSize>
+			<inoculum>all</inoculum>
+		</population>
+		
+		<!--
+		# proloferation (doi:10.1002/eji.200323763)
+		# death-birth 0.001 day-1 (doi:10.1371/journal.pcbi.1000533)
+		-->
+		<growthModel>
+			<split>0.003</split>
+			<death>0.0056</death>
+		</growthModel>
+		
+		<fitnessFunction></fitnessFunction>
+
+		<mutator>
+			<nucleotideMutator>
+				<mutationRate>0.0</mutationRate>
+				<rateBias>
+	                   0 0 0 0
+	                   0 0 0 0
+	                   0 0 0 0
+	                </rateBias>
+			</nucleotideMutator>
+		</mutator>
+
+		<replicator>
+			<clonalReplicator></clonalReplicator>
+		</replicator>
+
+		<epoch>
+			<name>epoch</name>
+			<generationCount>2800</generationCount>
+		</epoch>
+		
+		<samplingSchedule>
+			<sampler>
+				<atGeneration>1680</atGeneration>
+				<fileName>alignment_latent_1680.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>1960</atGeneration>
+				<fileName>alignment_latent_1960.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2240</atGeneration>
+				<fileName>alignment_latent_2240.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2520</atGeneration>
+				<fileName>alignment_latent_2520.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+			<sampler>
+				<atGeneration>2800</atGeneration>
+				<fileName>alignment_latent_2800.fasta</fileName>
+				<alignment>
+					<sampleSize>10</sampleSize>
+					<format>FASTA</format>
+					<label>latent_%s_%g_%a</label>
+				</alignment>
+			</sampler>
+		</samplingSchedule>
+		</compartment>
+	</simulation>
+</santa>
