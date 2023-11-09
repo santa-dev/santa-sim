@@ -35,7 +35,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		if (this.logFitness.length != sequence.length) {
 			logFitness = Double.NEGATIVE_INFINITY;
 		} else {
-			for (int site = 0; site < this.logFitness.length; site++) {
+			for (int site: getSites()) {
 				logFitness += this.logFitness[site][sequence[site]];
 				if (logFitness == Double.NEGATIVE_INFINITY) {
 					break;
@@ -59,6 +59,7 @@ public abstract class AbstractSiteFitnessFactor extends AbstractFitnessFactor {
 		double fit = 0;	 // neutral fitness
 		double[] logFitnessPosition = null;
 		try {
+                    if (getSites().contains(change.position))
 			logFitnessPosition = logFitness[change.position];
 		} catch(IndexOutOfBoundsException e) {
 			// catch IndexOutOfBoundsException b/c insertions may have

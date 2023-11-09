@@ -12,9 +12,10 @@ import java.util.*;
 public abstract class BaseGenePool implements GenePool {
     protected int uniqueGenomeCount = 0;
     protected final int[][] stateFrequencies;
-    protected final LinkedList<Genome> genomes = new LinkedList<Genome>();
-    protected final LinkedList<Genome> unusedGenomes = new LinkedList<Genome>();
+    protected final LinkedList<Genome> genomes = new LinkedList<>();
+    protected final LinkedList<Genome> unusedGenomes = new LinkedList<>();
 
+    @Override
     public LinkedList<Genome> getGenomes() {
         return genomes;
     }
@@ -26,6 +27,7 @@ public abstract class BaseGenePool implements GenePool {
         stateFrequencies = new int[GenomeDescription.root.getGenomeLength()][4];
     }
 
+    @Override
     public void initialize() {
         unusedGenomes.clear();
         //unusedGenomes.addAll(genomes);
@@ -34,6 +36,7 @@ public abstract class BaseGenePool implements GenePool {
     }
 
 
+    @Override
 	public Genome createGenome(Sequence sequence, GenomeDescription gd) {
 		Genome newGenome = createGenome(sequence);
 		newGenome.setDescription(gd);
@@ -42,6 +45,7 @@ public abstract class BaseGenePool implements GenePool {
     }
 
 	
+    @Override
     public int[][] getStateFrequencies() {
         calculateStateFrequencies();
         return stateFrequencies;
@@ -71,6 +75,7 @@ public abstract class BaseGenePool implements GenePool {
 	 * frequencies.
 	 *
 	 **/
+    @Override
     public int[][] getStateFrequencies(Feature feature, Set<Integer> sites) {
         int[][] freqs = new int[sites.size()][feature.getAlphabet().getStateCount()];
 
@@ -110,6 +115,7 @@ public abstract class BaseGenePool implements GenePool {
 	 * meaningful consensus without first aligning the sequences.
 	 **/
 
+    @Override
     public Sequence getConsensusSequence() {
 		/*
 		 * Fail if all genomes do not have the same GenomeDescription.
@@ -154,6 +160,7 @@ public abstract class BaseGenePool implements GenePool {
         }
     }
 
+    @Override
     public void updateAllFitnesses(FitnessFunction fitnessFunction) {
         for (Genome genome : genomes) {
             fitnessFunction.computeLogFitness(genome);
@@ -166,6 +173,7 @@ public abstract class BaseGenePool implements GenePool {
      * @param genome2 another genome
      * @return the hamming distance
      */
+    @Override
     public int hammingDistance(Genome genome1, Genome genome2) {
         return hammingDistance(genome1.getSequence(), genome2.getSequence());
     }
@@ -180,10 +188,12 @@ public abstract class BaseGenePool implements GenePool {
         return distance;
     }
 
+    @Override
     public int getUniqueGenomeCount() {
         return uniqueGenomeCount;
     }
 
+    @Override
     public int getUnusedGenomeCount() {
         return unusedGenomes.size();
     }

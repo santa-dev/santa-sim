@@ -7,6 +7,7 @@ import santa.simulator.Random;
 
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.distribution.BetaDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
  * A distribution of fitness effects motivated by
@@ -25,13 +26,14 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
     int alphabetSize;
 
     public BetaDistributedPurifyingFitnessModel(double a, double b, double pLethal, int alphabetSize, int sites) {
-
+        RandomGenerator rng = Random.randomData.getRandomGenerator();
+        
         this.alphabetSize = alphabetSize;
         this.pLethal = pLethal;
 
         fitnesses = new double[sites][alphabetSize];
 
-        beta = new BetaDistribution(Random.randomData.getRandomGenerator(), a, b);
+        beta = new BetaDistribution(rng, a, b);
         
 
         for (int i = 0; i < sites; i++) {
@@ -40,11 +42,11 @@ public class BetaDistributedPurifyingFitnessModel implements PurifyingFitnessMod
             f.add(1.0);
             for (int j = 1; j < alphabetSize; j++) {
 
-                if (Math.random() < pLethal) {
+                if (rng.nextDouble() < pLethal) {
                     f.add(0.0);
                 } else {
                     try {
-						f.add(beta.inverseCumulativeProbability(Math.random()));
+						f.add(beta.inverseCumulativeProbability(rng.nextDouble()));
 					} catch (OutOfRangeException e) {
 						e.printStackTrace();
 					}                    
